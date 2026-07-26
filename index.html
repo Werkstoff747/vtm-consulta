@@ -54,7 +54,7 @@
 
         /* Estilo para el logo principal de la cabecera */
         .header-logo {
-            max-height: 85px;
+            height: 75px;
             width: auto;
             object-fit: contain;
             filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
@@ -312,7 +312,7 @@
             margin-top: 50px;
         }
 
-        /* Adaptación a dispositivos móviles */
+        /* Adaptación a móviles */
         @media (max-width: 600px) {
             header {
                 flex-direction: column;
@@ -320,7 +320,7 @@
                 gap: 15px;
             }
             .header-logo {
-                max-height: 70px;
+                height: 60px;
             }
             h1 { font-size: 1.7rem; }
             .grid { grid-template-columns: 1fr; }
@@ -331,7 +331,7 @@
 
 <div class="container">
     <header>
-        <img src="./iconos/logovtm.png" class="header-logo" alt="Logo VTM" onerror="this.onerror=null; this.src='./Iconos/logovtm.png';">
+        <img src="iconos/logovtm.png" class="header-logo" alt="Logo VTM" onerror="this.onerror=null; this.src='Iconos/logovtm.png';">
         <div class="header-text">
             <h1>Compendio de Disciplinas</h1>
             <div class="subtitle">Guía de Juego - Vampiro: La Mascarada (5ª Edición)</div>
@@ -415,7 +415,7 @@
             const nombreArchivo = ICONOS_MAP[disc];
             let imgHTML = '';
             if (nombreArchivo) {
-                imgHTML = `<img src="./iconos/${nombreArchivo}" class="btn-icon" onerror="this.onerror=null; this.src='./Iconos/${nombreArchivo}';">`;
+                imgHTML = `<img src="iconos/${nombreArchivo}" class="btn-icon" onerror="this.onerror=null; this.src='Iconos/${nombreArchivo}';">`;
             }
 
             btn.innerHTML = `${imgHTML} <span>${disc}</span>`;
@@ -445,7 +445,7 @@
             
             let imgHTML = '';
             if (nombreArchivo) {
-                imgHTML = `<img src="./iconos/${nombreArchivo}" class="discipline-icon" onerror="this.onerror=null; this.src='./Iconos/${nombreArchivo}';">`;
+                imgHTML = `<img src="iconos/${nombreArchivo}" class="discipline-icon" onerror="this.onerror=null; this.src='Iconos/${nombreArchivo}';">`;
             }
 
             sec.innerHTML = `
