@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buscador de Disciplinas y Poderes - VTM</title>
+  <!-- Estilos sencillos y limpios con PicoCSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <!-- Librería para procesar el CSV fácilmente -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <style>
+    body { padding: 20px; max-width: 1400px; margin: 0 auto; }
+    .table-container { overflow-x: auto; max-height: 70vh; margin-top: 1rem; }
+    table { font-size: 0.85rem; width: 100%; border-collapse: collapse; }
+    th { position: sticky; top: 0; background: #11191f; z-index: 10; }
+    td, th { padding: 8px 12px; white-space: nowrap; }
+    td.desc { white-space: normal; min-width: 300px; }
+    .controls { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>Consulta de Poderes y Disciplinas</h2>
+  </header>
+
+  <main>
+    <section class="controls">
+      <div>
+        <label for="search">Buscar por texto (Nombre, Descripción, Clan...):</label>
+        <input type="text" id="search" placeholder="Escribe para filtrar en tiempo real..." oninput="filtrarTabla()">
+      </div>
+      <div>
+        <label for="filter-discipline">Filtrar por Disciplina:</label>
+        <select id="filter-discipline" onchange="filtrarTabla()">
+          <option value="">Todas las disciplinas</option>
+        </select>
+      </div>
+    </section>
+
+    <div id="loading">Cargando datos desde Google Sheets...</div>
+
+    <div class="table-container" id="table-wrapper" style="display:none;">
+      <table id="data-table">
+        <thead>
+          <tr id="table-head"></tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    // ⚠️ REEMPLAZA ESTA URL CON TU ENLACE CSV DE GOOGLE SHEETS
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=0&single=true&output=csv';
+
+    let datosGlobales = [];
+    let columnas = [];
+
+    // Cargar datos del CSV al iniciar
+    window.addEventListener('DOMContentLoaded', () => {
+      Papa.parse(CSV_URL, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          datosGlobales = results.data;
+          columnas = results.meta.fields;
+          
+          inicializarFiltros(datosGlobales);
+          renderizarTabla(datosGlobales);
+          
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('table-wrapper').style.display = 'block';
+        }
+      });
+    });
+
+    function inicializarFiltros(datos) {
+      // Poblar el selector de disciplinas dinámicamente
+      const disciplinas = [...new Set(datos.map(item => item['Disciplina']).filter(Boolean))].sort();
+      const select = document.getElementById('filter-discipline');
+      
+      disciplinas.forEach(disc => {
+        const option = document.createElement('option');
+        option.value = disc;
+        option.textContent = disc;
+        select.appendChild(option);
+      });
+
+      // Crear encabezados de tabla
+      const trHead = document.getElementById('table-head');
+      trHead.innerHTML = '';
+      columnas.forEach(col => {
+        const th = document.createElement('th');
+        th.textContent = col;
+        trHead.appendChild(th);
+      });
+    }
+
+    function renderizarTabla(datos) {
+      const tbody = document.getElementById('table-body');
+      tbody.innerHTML = '';
+
+      datos.forEach(row => {
+        const tr = document.createElement('tr');
+        columnas.forEach(col => {
+          const td = document.createElement('td');
+          td.textContent = row[col] || '-';
+          if (col.toLowerCase().includes('descripción') || col.toLowerCase().includes('notas')) {
+            td.classList.add('desc');
+          }
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filtrarTabla() {
+      const busqueda = document.getElementById('search').value.toLowerCase();
+      const disciplinaSel = document.getElementById('filter-discipline').value;
+
+      const datosFiltrados = datosGlobales.filter(row => {
+        // Filtro por dropdown de disciplina
+        const cumpleDisciplina = !disciplinaSel || row['Disciplina'] === disciplinaSel;
+        
+        // Filtro por texto general
+        const cumpleTexto = columnas.some(col => {
+          const valor = String(row[col] || '').toLowerCase();
+          return valor.includes(busqueda);
+        });
+
+        return cumpleDisciplina && cumpleTexto;
+      });
+
+      renderizarTabla(datosFiltrados);
+    }
+  </script>
+</body>
+</html>
