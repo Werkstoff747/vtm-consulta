@@ -137,12 +137,13 @@
             gap: 12px;
         }
 
-        /* Estilo para el icono de la disciplina en el título */
+        /* Estilo para el icono de la disciplina */
         .discipline-icon {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             object-fit: contain;
-            filter: drop-shadow(0px 0px 4px rgba(197, 160, 89, 0.5));
+            /* Si los PNG son negros, los invierte a blanco brillante para que resalten */
+            filter: brightness(0) invert(1) drop-shadow(0px 0px 3px var(--accent-gold));
         }
 
         .grid {
@@ -295,20 +296,20 @@
 <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=0&single=true&output=csv';
 
-    // Mapeo entre nombres en Español (Excel) y nombres de tus imágenes en GitHub
+    // Mapeo exacto según tus archivos subidos
     const ICONOS_MAP = {
-        'Animalismo': 'iconos/Animalism_symbol.png',
-        'Auspex': 'iconos/Auspex_symbol.png',
-        'Celeridad': 'iconos/Celerity_symbol.png',
-        'Dominación': 'iconos/Dominate_symbol.png',
-        'Fortaleza': 'iconos/Fortitude_symbol.png',
-        'Hechicería de Sangre': 'iconos/Blood_Sorcery_symbol.png',
-        'Ofuscación': 'iconos/Obfuscate_symbol.png',
-        'Olvido': 'iconos/Oblivion_symbol.png',
-        'Potencia': 'iconos/Potence_symbol.png',
-        'Presencia': 'iconos/Presence_symbol.png',
-        'Protean': 'iconos/Protean_symbol.png',
-        'Alquimia de Sangre Débil': 'iconos/Alchemy_symbol.png'
+        'Animalismo': 'Animalism_symbol.png',
+        'Auspex': 'Auspex_symbol.png',
+        'Celeridad': 'Celerity_symbol.png',
+        'Dominación': 'Dominate_symbol.png',
+        'Fortaleza': 'Fortitude_symbol.png',
+        'Hechicería de Sangre': 'Blood_Sorcery_symbol.png',
+        'Ofuscación': 'Obfuscate_symbol.png',
+        'Olvido': 'Oblivion_symbol.png',
+        'Potencia': 'Potence_symbol.png',
+        'Presencia': 'Presence_symbol.png',
+        'Protean': 'Protean_symbol.png',
+        'Alquimia de Sangre Débil': 'Alchemy_symbol.png'
     };
 
     let datosGlobales = [];
@@ -345,7 +346,6 @@
         const wrapper = document.getElementById('disciplinesWrapper');
         wrapper.innerHTML = '';
 
-        // Agrupar datos por Disciplina
         const agrupados = {};
         datos.forEach(row => {
             const disc = row['Disciplina'] || 'Otras';
@@ -353,19 +353,23 @@
             agrupados[disc].push(row);
         });
 
-        // Crear secciones por disciplina
         Object.keys(agrupados).sort().forEach(disc => {
             const sec = document.createElement('div');
             sec.className = 'discipline-section';
             sec.setAttribute('data-discipline', disc);
 
-            // Obtener la ruta del icono usando el mapa
-            const rutaIcono = ICONOS_MAP[disc] || `iconos/${disc}_symbol.png`;
+            const nombreArchivo = ICONOS_MAP[disc];
+            
+            // Intenta cargar la imagen desde ./iconos/ y si falla intenta desde ./Iconos/
+            let imgHTML = '';
+            if (nombreArchivo) {
+                imgHTML = `<img src="./iconos/${nombreArchivo}" class="discipline-icon" onerror="this.onerror=null; this.src='./Iconos/${nombreArchivo}';">`;
+            }
 
             sec.innerHTML = `
                 <h2 class="section-title">
-                    <img src="${rutaIcono}" class="discipline-icon" onerror="this.style.display='none'">
-                    ${disc}
+                    ${imgHTML}
+                    <span>${disc}</span>
                 </h2>
                 <div class="grid"></div>
             `;
@@ -378,7 +382,6 @@
                 card.setAttribute('data-name', item['Nombre'] || '');
                 card.setAttribute('data-desc', item['Descripción'] || '');
 
-                // Construir la meta información (Nivel, Amalgama, Requisitos, Coste...)
                 let metaPartes = [];
                 if (item['Nivel'] && item['Nivel'] !== '-') metaPartes.push(`Nivel ${item['Nivel']}`);
                 if (item['Amalgama'] && item['Amalgama'] !== '-') metaPartes.push(`Amalgama: ${item['Amalgama']}`);
@@ -387,7 +390,6 @@
                 
                 const metaText = metaPartes.join(' • ');
 
-                // Badges/Etiquetas
                 let badgeTipo = `<span class="badge">${item['Tipo'] || 'Poder'}</span>`;
                 if (item['Tipo'] && item['Tipo'].toLowerCase().includes('ceremonia')) {
                     badgeTipo = `<span class="badge badge-ceremonia">${item['Tipo']}</span>`;
