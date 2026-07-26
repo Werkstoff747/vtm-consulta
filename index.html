@@ -124,7 +124,6 @@
             border-color: var(--accent-crimson);
         }
 
-        /* Estilo para el icono dentro del botón de filtro */
         .btn-icon {
             width: 18px;
             height: 18px;
@@ -147,7 +146,6 @@
             gap: 12px;
         }
 
-        /* Estilo para el icono de la disciplina en los títulos */
         .discipline-icon {
             width: 38px;
             height: 38px;
@@ -219,10 +217,30 @@
             font-weight: 500;
         }
 
+        .card-roll {
+            font-size: 0.9rem;
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent-crimson);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
         .card-desc {
             font-size: 0.93rem;
             color: var(--text-main);
             flex-grow: 1;
+        }
+
+        .card-notes {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--card-border);
         }
 
         .card-tags {
@@ -251,6 +269,12 @@
             background-color: rgba(139, 0, 0, 0.3);
             border-color: rgba(220, 20, 60, 0.4);
             color: #fca5a5;
+        }
+
+        .badge-duration {
+            background-color: rgba(197, 160, 89, 0.15);
+            border-color: rgba(197, 160, 89, 0.3);
+            color: var(--accent-gold);
         }
 
         #loading {
@@ -304,7 +328,6 @@
 <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=0&single=true&output=csv';
 
-    // Mapeo entre los nombres en español de tu Excel y tus archivos en la carpeta "iconos"
     const ICONOS_MAP = {
         'Animalismo': 'Animalism_symbol.png',
         'Auspex': 'Auspex_symbol.png',
@@ -323,13 +346,25 @@
     let datosGlobales = [];
     let currentFilter = 'all';
 
+    // Función auxiliar para descartar la fila de cabecera si se cuela
+    function esFilaValida(item) {
+        if (!item) return false;
+        const nombre = (item['Nombre'] || '').trim().toLowerCase();
+        const disc = (item['Disciplina'] || '').trim().toLowerCase();
+        
+        // Si el nombre o disciplina coincide con los títulos de columna, no es un poder real
+        if (nombre === 'nombre' || disc === 'disciplina') return false;
+        return true;
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
         Papa.parse(CSV_URL, {
             download: true,
             header: true,
             skipEmptyLines: true,
             complete: function(results) {
-                datosGlobales = results.data;
+                // Filtramos las filas para descartar la cabecera repetida
+                datosGlobales = results.data.filter(esFilaValida);
                 document.getElementById('loading').style.display = 'none';
                 construirFiltros(datosGlobales);
                 renderizarCompendio(datosGlobales);
@@ -342,6 +377,8 @@
         const container = document.getElementById('filterContainer');
         
         disciplinas.forEach(disc => {
+            if (disc.toLowerCase() === 'disciplina') return; // Ignora la cabecera
+
             const btn = document.createElement('button');
             btn.className = 'filter-btn';
             btn.setAttribute('data-discipline', disc);
@@ -365,6 +402,8 @@
         const agrupados = {};
         datos.forEach(row => {
             const disc = row['Disciplina'] || 'Otras';
+            if (disc.toLowerCase() === 'disciplina') return; // Ignora la cabecera
+            
             if (!agrupados[disc]) agrupados[disc] = [];
             agrupados[disc].push(row);
         });
@@ -399,17 +438,40 @@
 
                 let metaPartes = [];
                 if (item['Nivel'] && item['Nivel'] !== '-') metaPartes.push(`Nivel ${item['Nivel']}`);
+                if (item['Coste'] && item['Coste'] !== '-') metaPartes.push(`Coste: ${item['Coste']}`);
                 if (item['Amalgama'] && item['Amalgama'] !== '-') metaPartes.push(`Amalgama: ${item['Amalgama']}`);
                 if (item['Requisito'] && item['Requisito'] !== '-') metaPartes.push(`Req: ${item['Requisito']}`);
-                if (item['Coste'] && item['Coste'] !== '-') metaPartes.push(`Coste: ${item['Coste']}`);
                 
                 const metaText = metaPartes.join(' • ');
+
+                let rollHTML = '';
+                const reservaDados = item['Reserva de dados'] || item['Reserva de Dados'] || item['Tirada'];
+                const reservaOposicion = item['Reserva de oposición'] || item['Reserva de Oposición'] || item['Oposición'];
+
+                if (reservaDados && reservaDados !== '-') {
+                    let textTirada = `🎲 <strong>Tirada:</strong> ${reservaDados}`;
+                    if (reservaOposicion && reservaOposicion !== '-') {
+                        textTirada += ` <em>vs</em> ${reservaOposicion}`;
+                    }
+                    rollHTML = `<div class="card-roll">${textTirada}</div>`;
+                }
+
+                let notesHTML = '';
+                const notas = item['Notas adicionales'] || item['Notas'] || item['Efecto rápido'];
+                if (notas && notas !== '-') {
+                    notesHTML = `<div class="card-notes">📌 ${notas}</div>`;
+                }
 
                 let badgeTipo = `<span class="badge">${item['Tipo'] || 'Poder'}</span>`;
                 if (item['Tipo'] && item['Tipo'].toLowerCase().includes('ceremonia')) {
                     badgeTipo = `<span class="badge badge-ceremonia">${item['Tipo']}</span>`;
                 } else if (item['Tipo'] && item['Tipo'].toLowerCase().includes('ritual')) {
                     badgeTipo = `<span class="badge badge-ritual">${item['Tipo']}</span>`;
+                }
+
+                let badgeDuracion = '';
+                if (item['Duración'] && item['Duración'] !== '-') {
+                    badgeDuracion = `<span class="badge badge-duration">⏳ ${item['Duración']}</span>`;
                 }
 
                 card.innerHTML = `
@@ -419,10 +481,13 @@
                             ${item['Fuente'] ? `<div class="card-page">${item['Fuente']}</div>` : ''}
                         </div>
                         ${metaText ? `<div class="card-meta">${metaText}</div>` : ''}
+                        ${rollHTML}
                         <div class="card-desc">${item['Descripción'] || ''}</div>
+                        ${notesHTML}
                     </div>
                     <div class="card-tags">
                         ${badgeTipo}
+                        ${badgeDuracion}
                         <span class="badge">${disc}</span>
                     </div>
                 `;
