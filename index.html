@@ -113,12 +113,22 @@
             font-size: 0.88rem;
             font-weight: 600;
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .filter-btn:hover, .filter-btn.active {
             background-color: var(--accent-red);
             color: #fff;
             border-color: var(--accent-crimson);
+        }
+
+        /* Estilo para el icono dentro del botón de filtro */
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
         }
 
         .discipline-section {
@@ -137,7 +147,7 @@
             gap: 12px;
         }
 
-        /* Estilo para el icono de la disciplina */
+        /* Estilo para el icono de la disciplina en los títulos */
         .discipline-icon {
             width: 38px;
             height: 38px;
@@ -278,7 +288,7 @@
             <input type="text" id="searchInput" placeholder="Buscar por nombre, palabra clave, nivel..." oninput="applyFilters()">
         </div>
         <div class="filter-buttons" id="filterContainer">
-            <button class="filter-btn active" onclick="filterDiscipline('all')">Todas</button>
+            <button class="filter-btn active" data-discipline="all" onclick="filterDiscipline('all')">Todas</button>
         </div>
     </div>
 
@@ -334,8 +344,16 @@
         disciplinas.forEach(disc => {
             const btn = document.createElement('button');
             btn.className = 'filter-btn';
-            btn.textContent = disc;
+            btn.setAttribute('data-discipline', disc);
             btn.onclick = () => filterDiscipline(disc);
+
+            const nombreArchivo = ICONOS_MAP[disc];
+            let imgHTML = '';
+            if (nombreArchivo) {
+                imgHTML = `<img src="./iconos/${nombreArchivo}" class="btn-icon" onerror="this.onerror=null; this.src='./Iconos/${nombreArchivo}';">`;
+            }
+
+            btn.innerHTML = `${imgHTML} <span>${disc}</span>`;
             container.appendChild(btn);
         });
     }
@@ -421,7 +439,8 @@
         
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => {
-            if ((btn.textContent.trim() === 'Todas' && discipline === 'all') || btn.textContent.trim() === discipline) {
+            const btnDisc = btn.getAttribute('data-discipline');
+            if ((btnDisc === 'all' && discipline === 'all') || btnDisc === discipline) {
                 btn.classList.add('active');
             } else {
                 btn.classList.remove('active');
