@@ -297,7 +297,7 @@
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=0&single=true&output=csv';
 
     // Mapeo exacto según tus archivos subidos
-    const ICONOS_MAP = {
+    const iconos_MAP = {
         'Animalismo': 'Animalism_symbol.png',
         'Auspex': 'Auspex_symbol.png',
         'Celeridad': 'Celerity_symbol.png',
@@ -358,12 +358,12 @@
             sec.className = 'discipline-section';
             sec.setAttribute('data-discipline', disc);
 
-            const nombreArchivo = ICONOS_MAP[disc];
+            const nombreArchivo = iconos_MAP[disc];
             
-            // Intenta cargar la imagen desde ./iconos/ y si falla intenta desde ./Iconos/
+            // Intenta cargar la imagen desde ./iconos/ y si falla intenta desde ./iconos/
             let imgHTML = '';
             if (nombreArchivo) {
-                imgHTML = `<img src="./iconos/${nombreArchivo}" class="discipline-icon" onerror="this.onerror=null; this.src='./Iconos/${nombreArchivo}';">`;
+                imgHTML = `<img src="./iconos/${nombreArchivo}" class="discipline-icon" onerror="this.onerror=null; this.src='./iconos/${nombreArchivo}';">`;
             }
 
             sec.innerHTML = `
