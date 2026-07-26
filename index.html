@@ -1,140 +1,471 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Buscador de Disciplinas y Poderes - VTM</title>
-  <!-- Estilos sencillos y limpios con PicoCSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-  <!-- Librería para procesar el CSV fácilmente -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-  <style>
-    body { padding: 20px; max-width: 1400px; margin: 0 auto; }
-    .table-container { overflow-x: auto; max-height: 70vh; margin-top: 1rem; }
-    table { font-size: 0.85rem; width: 100%; border-collapse: collapse; }
-    th { position: sticky; top: 0; background: #11191f; z-index: 10; }
-    td, th { padding: 8px 12px; white-space: nowrap; }
-    td.desc { white-space: normal; min-width: 300px; }
-    .controls { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compendio de Disciplinas - Vampiro: La Mascarada V5</title>
+    <!-- Librería para procesar el CSV de Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f0f12;
+            --card-bg: #18181c;
+            --card-border: #2a2a32;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #c5a059;
+            --text-main: #e1e1e6;
+            --text-muted: #a0a0b0;
+            --tag-bg: #25252e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 2px solid var(--accent-red);
+            margin-bottom: 30px;
+            background: linear-gradient(180deg, rgba(139,0,0,0.15) 0%, rgba(15,15,18,0) 100%);
+            border-radius: 8px 8px 0 0;
+        }
+
+        h1 {
+            font-family: 'Georgia', serif;
+            font-size: 2.5rem;
+            color: #fff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(201, 42, 42, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            font-style: italic;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent-crimson);
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-btn {
+            background-color: var(--tag-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--card-border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background-color: var(--accent-red);
+            color: #fff;
+            border-color: var(--accent-crimson);
+        }
+
+        .discipline-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-family: 'Georgia', serif;
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            border-bottom: 1px solid rgba(197, 160, 89, 0.3);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Estilo para el icono de la disciplina en el título */
+        .discipline-icon {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            filter: drop-shadow(0px 0px 4px rgba(197, 160, 89, 0.5));
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--accent-red);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(201, 42, 42, 0.4);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .card-page {
+            font-size: 0.8rem;
+            background-color: rgba(139, 0, 0, 0.2);
+            color: #ff8080;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(201, 42, 42, 0.3);
+            white-space: nowrap;
+        }
+
+        .card-meta {
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .card-desc {
+            font-size: 0.93rem;
+            color: var(--text-main);
+            flex-grow: 1;
+        }
+
+        .card-tags {
+            margin-top: 15px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background-color: var(--tag-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--card-border);
+        }
+
+        .badge-ceremonia {
+            background-color: rgba(75, 0, 130, 0.3);
+            border-color: rgba(138, 43, 226, 0.4);
+            color: #d8b4fe;
+        }
+
+        .badge-ritual {
+            background-color: rgba(139, 0, 0, 0.3);
+            border-color: rgba(220, 20, 60, 0.4);
+            color: #fca5a5;
+        }
+
+        #loading {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            padding: 40px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--card-border);
+            margin-top: 50px;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
-  <header>
-    <h2>Consulta de Poderes y Disciplinas</h2>
-  </header>
+<div class="container">
+    <header>
+        <h1>Compendio de Disciplinas</h1>
+        <div class="subtitle">Guía de Juego - Vampiro: La Mascarada (5ª Edición)</div>
+    </header>
 
-  <main>
-    <section class="controls">
-      <div>
-        <label for="search">Buscar por texto (Nombre, Descripción, Clan...):</label>
-        <input type="text" id="search" placeholder="Escribe para filtrar en tiempo real..." oninput="filtrarTabla()">
-      </div>
-      <div>
-        <label for="filter-discipline">Filtrar por Disciplina:</label>
-        <select id="filter-discipline" onchange="filtrarTabla()">
-          <option value="">Todas las disciplinas</option>
-        </select>
-      </div>
-    </section>
-
-    <div id="loading">Cargando datos desde Google Sheets...</div>
-
-    <div class="table-container" id="table-wrapper" style="display:none;">
-      <table id="data-table">
-        <thead>
-          <tr id="table-head"></tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-      </table>
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Buscar por nombre, palabra clave, nivel..." oninput="applyFilters()">
+        </div>
+        <div class="filter-buttons" id="filterContainer">
+            <button class="filter-btn active" onclick="filterDiscipline('all')">Todas</button>
+        </div>
     </div>
-  </main>
 
-  <script>
-    // ⚠️ REEMPLAZA ESTA URL CON TU ENLACE CSV DE GOOGLE SHEETS
+    <div id="loading">Cargando grimorio desde Google Sheets...</div>
+
+    <div id="disciplinesWrapper"></div>
+
+    <footer>
+        Compendio generado para Vampiro: La Mascarada 5ª Edición — Guía de Juego.
+    </footer>
+</div>
+
+<script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=0&single=true&output=csv';
 
-    let datosGlobales = [];
-    let columnas = [];
+    // Mapeo entre nombres en Español (Excel) y nombres de tus imágenes en GitHub
+    const ICONOS_MAP = {
+        'Animalismo': 'iconos/Animalism_symbol.png',
+        'Auspex': 'iconos/Auspex_symbol.png',
+        'Celeridad': 'iconos/Celerity_symbol.png',
+        'Dominación': 'iconos/Dominate_symbol.png',
+        'Fortaleza': 'iconos/Fortitude_symbol.png',
+        'Hechicería de Sangre': 'iconos/Blood_Sorcery_symbol.png',
+        'Ofuscación': 'iconos/Obfuscate_symbol.png',
+        'Olvido': 'iconos/Oblivion_symbol.png',
+        'Potencia': 'iconos/Potence_symbol.png',
+        'Presencia': 'iconos/Presence_symbol.png',
+        'Protean': 'iconos/Protean_symbol.png',
+        'Alquimia de Sangre Débil': 'iconos/Alchemy_symbol.png'
+    };
 
-    // Cargar datos del CSV al iniciar
+    let datosGlobales = [];
+    let currentFilter = 'all';
+
     window.addEventListener('DOMContentLoaded', () => {
-      Papa.parse(CSV_URL, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-          datosGlobales = results.data;
-          columnas = results.meta.fields;
-          
-          inicializarFiltros(datosGlobales);
-          renderizarTabla(datosGlobales);
-          
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('table-wrapper').style.display = 'block';
-        }
-      });
+        Papa.parse(CSV_URL, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                datosGlobales = results.data;
+                document.getElementById('loading').style.display = 'none';
+                construirFiltros(datosGlobales);
+                renderizarCompendio(datosGlobales);
+            }
+        });
     });
 
-    function inicializarFiltros(datos) {
-      // Poblar el selector de disciplinas dinámicamente
-      const disciplinas = [...new Set(datos.map(item => item['Disciplina']).filter(Boolean))].sort();
-      const select = document.getElementById('filter-discipline');
-      
-      disciplinas.forEach(disc => {
-        const option = document.createElement('option');
-        option.value = disc;
-        option.textContent = disc;
-        select.appendChild(option);
-      });
-
-      // Crear encabezados de tabla
-      const trHead = document.getElementById('table-head');
-      trHead.innerHTML = '';
-      columnas.forEach(col => {
-        const th = document.createElement('th');
-        th.textContent = col;
-        trHead.appendChild(th);
-      });
-    }
-
-    function renderizarTabla(datos) {
-      const tbody = document.getElementById('table-body');
-      tbody.innerHTML = '';
-
-      datos.forEach(row => {
-        const tr = document.createElement('tr');
-        columnas.forEach(col => {
-          const td = document.createElement('td');
-          td.textContent = row[col] || '-';
-          if (col.toLowerCase().includes('descripción') || col.toLowerCase().includes('notas')) {
-            td.classList.add('desc');
-          }
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-    }
-
-    function filtrarTabla() {
-      const busqueda = document.getElementById('search').value.toLowerCase();
-      const disciplinaSel = document.getElementById('filter-discipline').value;
-
-      const datosFiltrados = datosGlobales.filter(row => {
-        // Filtro por dropdown de disciplina
-        const cumpleDisciplina = !disciplinaSel || row['Disciplina'] === disciplinaSel;
+    function construirFiltros(datos) {
+        const disciplinas = [...new Set(datos.map(item => item['Disciplina']).filter(Boolean))].sort();
+        const container = document.getElementById('filterContainer');
         
-        // Filtro por texto general
-        const cumpleTexto = columnas.some(col => {
-          const valor = String(row[col] || '').toLowerCase();
-          return valor.includes(busqueda);
+        disciplinas.forEach(disc => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn';
+            btn.textContent = disc;
+            btn.onclick = () => filterDiscipline(disc);
+            container.appendChild(btn);
+        });
+    }
+
+    function renderizarCompendio(datos) {
+        const wrapper = document.getElementById('disciplinesWrapper');
+        wrapper.innerHTML = '';
+
+        // Agrupar datos por Disciplina
+        const agrupados = {};
+        datos.forEach(row => {
+            const disc = row['Disciplina'] || 'Otras';
+            if (!agrupados[disc]) agrupados[disc] = [];
+            agrupados[disc].push(row);
         });
 
-        return cumpleDisciplina && cumpleTexto;
-      });
+        // Crear secciones por disciplina
+        Object.keys(agrupados).sort().forEach(disc => {
+            const sec = document.createElement('div');
+            sec.className = 'discipline-section';
+            sec.setAttribute('data-discipline', disc);
 
-      renderizarTabla(datosFiltrados);
+            // Obtener la ruta del icono usando el mapa
+            const rutaIcono = ICONOS_MAP[disc] || `iconos/${disc}_symbol.png`;
+
+            sec.innerHTML = `
+                <h2 class="section-title">
+                    <img src="${rutaIcono}" class="discipline-icon" onerror="this.style.display='none'">
+                    ${disc}
+                </h2>
+                <div class="grid"></div>
+            `;
+
+            const grid = sec.querySelector('.grid');
+
+            agrupados[disc].forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.setAttribute('data-name', item['Nombre'] || '');
+                card.setAttribute('data-desc', item['Descripción'] || '');
+
+                // Construir la meta información (Nivel, Amalgama, Requisitos, Coste...)
+                let metaPartes = [];
+                if (item['Nivel'] && item['Nivel'] !== '-') metaPartes.push(`Nivel ${item['Nivel']}`);
+                if (item['Amalgama'] && item['Amalgama'] !== '-') metaPartes.push(`Amalgama: ${item['Amalgama']}`);
+                if (item['Requisito'] && item['Requisito'] !== '-') metaPartes.push(`Req: ${item['Requisito']}`);
+                if (item['Coste'] && item['Coste'] !== '-') metaPartes.push(`Coste: ${item['Coste']}`);
+                
+                const metaText = metaPartes.join(' • ');
+
+                // Badges/Etiquetas
+                let badgeTipo = `<span class="badge">${item['Tipo'] || 'Poder'}</span>`;
+                if (item['Tipo'] && item['Tipo'].toLowerCase().includes('ceremonia')) {
+                    badgeTipo = `<span class="badge badge-ceremonia">${item['Tipo']}</span>`;
+                } else if (item['Tipo'] && item['Tipo'].toLowerCase().includes('ritual')) {
+                    badgeTipo = `<span class="badge badge-ritual">${item['Tipo']}</span>`;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="card-header">
+                            <div class="card-title">${item['Nombre'] || 'Sin Nombre'}</div>
+                            ${item['Fuente'] ? `<div class="card-page">${item['Fuente']}</div>` : ''}
+                        </div>
+                        ${metaText ? `<div class="card-meta">${metaText}</div>` : ''}
+                        <div class="card-desc">${item['Descripción'] || ''}</div>
+                    </div>
+                    <div class="card-tags">
+                        ${badgeTipo}
+                        <span class="badge">${disc}</span>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            wrapper.appendChild(sec);
+        });
     }
-  </script>
+
+    function filterDiscipline(discipline) {
+        currentFilter = discipline;
+        
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => {
+            if ((btn.textContent.trim() === 'Todas' && discipline === 'all') || btn.textContent.trim() === discipline) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const sections = document.querySelectorAll('.discipline-section');
+
+        sections.forEach(section => {
+            const secDiscipline = section.getAttribute('data-discipline');
+            const cards = section.querySelectorAll('.card');
+            let visibleCardsInSection = 0;
+
+            const matchesDiscipline = (currentFilter === 'all' || currentFilter === secDiscipline);
+
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name').toLowerCase();
+                const desc = card.getAttribute('data-desc').toLowerCase();
+                const text = card.textContent.toLowerCase();
+
+                const matchesSearch = !query || name.includes(query) || desc.includes(query) || text.includes(query);
+
+                if (matchesDiscipline && matchesSearch) {
+                    card.style.display = 'flex';
+                    visibleCardsInSection++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (visibleCardsInSection > 0) {
+                section.style.display = 'block';
+            } else {
+                section.style.display = 'none';
+            }
+        });
+    }
+</script>
+
 </body>
 </html>
