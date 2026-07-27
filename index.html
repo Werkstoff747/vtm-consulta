@@ -474,10 +474,7 @@
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
 
 <script>
-    // Enlace a la pestaña de Disciplinas
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=0&single=true&output=csv';
-
-    // Enlace a la pestaña de Fuentes (¡Sustituye esta URL si publicaste la pestaña "Fuentes" por separado!)
     const CSV_FUENTES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=1950991302&single=true&output=csv';
 
     const ICONOS_MAP = {
@@ -508,7 +505,6 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-        // Cargar datos de Disciplinas
         Papa.parse(CSV_URL, {
             download: true,
             header: true,
@@ -519,7 +515,6 @@
                 construirFiltrosDisciplinas(datosGlobales);
                 renderizarCompendio(datosGlobales);
 
-                // Cargar lista de Fuentes desde la pestaña "Fuentes"
                 cargarFuentesDesdePestana();
             }
         });
@@ -548,19 +543,11 @@
                 results.data.forEach(row => {
                     if (row && row[0]) {
                         const valor = row[0].trim();
-                        // Ignoramos encabezados si los hay
                         if (valor && valor.toLowerCase() !== 'fuente' && valor.toLowerCase() !== 'fuentes') {
                             fuentesUnicas.add(valor);
                         }
                     }
                 });
-
-                // Si no pudo cargar por URL separada, intenta extraerlas de las tarjetas existentes
-                if (fuentesUnicas.size === 0) {
-                    datosGlobales.forEach(item => {
-                        if (item['Fuente']) fuentesUnicas.add(item['Fuente']);
-                    });
-                }
 
                 Array.from(fuentesUnicas).sort().forEach(fuente => {
                     const opt = document.createElement('option');
@@ -737,9 +724,22 @@
         filterLevel('all');
     }
 
+    // Extrae la palabra clave principal de un título de libro largo
+    function extraerClaveLibro(texto) {
+        if (!texto) return '';
+        let t = texto.toLowerCase();
+        // Elimina prefijos típicos
+        t = t.replace(/vampiro\s*(la\s*mascarada)?\s*(5ª?|v5)?\s*(edición|edicion)?\s*(-|:)?\s*/g, '');
+        // Elimina sufijos o extras
+        t = t.replace(/libro\s*básico|libro\s*basico/g, 'básico');
+        return t.trim();
+    }
+
     function applyFilters() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
-        const selectedSource = document.getElementById('sourceSelect').value.toLowerCase().trim();
+        const selectedSourceRaw = document.getElementById('sourceSelect').value;
+        const selectedSourceKey = extraerClaveLibro(selectedSourceRaw);
+        
         const sections = document.querySelectorAll('.discipline-section');
 
         let totalVisibleCards = 0;
@@ -760,8 +760,20 @@
 
                 const matchesSearch = !query || name.includes(query) || desc.includes(query) || text.includes(query);
                 
-                // Filtro flexible: comprueba si la tarjeta contiene el nombre del libro
-                const matchesSource = (selectedSource === 'all' || source.includes(selectedSource));
+                // Coincidencia Inteligente de Fuentes
+                let matchesSource = false;
+                if (selectedSourceRaw === 'all') {
+                    matchesSource = true;
+                } else if (source.includes(selectedSourceRaw.toLowerCase())) {
+                    matchesSource = true;
+                } else if (selectedSourceKey && source.includes(selectedSourceKey)) {
+                    matchesSource = true;
+                } else {
+                    // Prueba palabras individuales significativas (ej. "Gehenna", "Sellos", "Cultos")
+                    const palabrasClave = selectedSourceKey.split(' ').filter(p => p.length > 3);
+                    matchesSource = palabrasClave.some(palabra => source.includes(palabra));
+                }
+
                 const matchesLevel = (currentLevel === 'all' || level.trim() === currentLevel);
 
                 if (matchesDiscipline && matchesSearch && matchesSource && matchesLevel) {
