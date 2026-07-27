@@ -549,7 +549,8 @@
                     }
                 });
 
-                Array.from(fuentesUnicas).sort().forEach(fuente => {
+                // Carga respetando el orden exacto de las filas en el Excel
+                Array.from(fuentesUnicas).forEach(fuente => {
                     const opt = document.createElement('option');
                     opt.value = fuente;
                     opt.textContent = fuente;
@@ -724,13 +725,10 @@
         filterLevel('all');
     }
 
-    // Extrae la palabra clave principal de un título de libro largo
     function extraerClaveLibro(texto) {
         if (!texto) return '';
         let t = texto.toLowerCase();
-        // Elimina prefijos típicos
         t = t.replace(/vampiro\s*(la\s*mascarada)?\s*(5ª?|v5)?\s*(edición|edicion)?\s*(-|:)?\s*/g, '');
-        // Elimina sufijos o extras
         t = t.replace(/libro\s*básico|libro\s*basico/g, 'básico');
         return t.trim();
     }
@@ -760,7 +758,6 @@
 
                 const matchesSearch = !query || name.includes(query) || desc.includes(query) || text.includes(query);
                 
-                // Coincidencia Inteligente de Fuentes
                 let matchesSource = false;
                 if (selectedSourceRaw === 'all') {
                     matchesSource = true;
@@ -769,7 +766,6 @@
                 } else if (selectedSourceKey && source.includes(selectedSourceKey)) {
                     matchesSource = true;
                 } else {
-                    // Prueba palabras individuales significativas (ej. "Gehenna", "Sellos", "Cultos")
                     const palabrasClave = selectedSourceKey.split(' ').filter(p => p.length > 3);
                     matchesSource = palabrasClave.some(palabra => source.includes(palabra));
                 }
