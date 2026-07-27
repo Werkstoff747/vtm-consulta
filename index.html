@@ -38,7 +38,6 @@
             margin: 0 auto;
         }
 
-        /* Cabecera ajustada con Flexbox */
         header {
             display: flex;
             align-items: center;
@@ -81,7 +80,6 @@
             font-style: italic;
         }
 
-        /* Panel de Controles y Filtros Avanzados */
         .controls {
             background: var(--card-bg);
             padding: 20px;
@@ -127,7 +125,6 @@
             border-color: var(--accent-crimson);
         }
 
-        /* Filtro de Niveles en Círculos Rojos */
         .level-filter-container {
             display: flex;
             align-items: center;
@@ -217,7 +214,6 @@
             object-fit: contain;
         }
 
-        /* Contador de Resultados */
         .results-counter {
             font-size: 0.9rem;
             color: var(--accent-gold);
@@ -379,7 +375,6 @@
             padding: 40px;
         }
 
-        /* Botón Flotante para Subir Arriba */
         .scroll-top-btn {
             position: fixed;
             bottom: 25px;
@@ -479,8 +474,11 @@
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
 
 <script>
-    // URL de publicación CSV de Google Sheets (Compatible con pestaña "Disciplinas" o "Hoja1")
+    // Enlace a la pestaña de Disciplinas
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=0&single=true&output=csv';
+
+    // Enlace a la pestaña de Fuentes (¡Sustituye esta URL si publicaste la pestaña "Fuentes" por separado!)
+    const CSV_FUENTES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?sheet=Fuentes&output=csv';
 
     const ICONOS_MAP = {
         'Animalismo': 'Animalism_symbol.png',
@@ -510,6 +508,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+        // Cargar datos de Disciplinas
         Papa.parse(CSV_URL, {
             download: true,
             header: true,
@@ -518,12 +517,13 @@
                 datosGlobales = results.data.filter(esFilaValida);
                 document.getElementById('loading').style.display = 'none';
                 construirFiltrosDisciplinas(datosGlobales);
-                construirFiltroFuentes(datosGlobales);
                 renderizarCompendio(datosGlobales);
+
+                // Cargar lista de Fuentes desde la pestaña "Fuentes"
+                cargarFuentesDesdePestana();
             }
         });
 
-        // Evento para mostrar/ocultar botón flotante de subir
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('scrollTopBtn');
             if (window.scrollY > 300) {
@@ -533,6 +533,44 @@
             }
         });
     });
+
+    function cargarFuentesDesdePestana() {
+        Papa.parse(CSV_FUENTES_URL, {
+            download: true,
+            header: false,
+            skipEmptyLines: true,
+            complete: function(results) {
+                const select = document.getElementById('sourceSelect');
+                select.innerHTML = '<option value="all">📚 Todos los libros (Fuentes)</option>';
+                
+                let fuentesUnicas = new Set();
+
+                results.data.forEach(row => {
+                    if (row && row[0]) {
+                        const valor = row[0].trim();
+                        // Ignoramos encabezados si los hay
+                        if (valor && valor.toLowerCase() !== 'fuente' && valor.toLowerCase() !== 'fuentes') {
+                            fuentesUnicas.add(valor);
+                        }
+                    }
+                });
+
+                // Si no pudo cargar por URL separada, intenta extraerlas de las tarjetas existentes
+                if (fuentesUnicas.size === 0) {
+                    datosGlobales.forEach(item => {
+                        if (item['Fuente']) fuentesUnicas.add(item['Fuente']);
+                    });
+                }
+
+                Array.from(fuentesUnicas).sort().forEach(fuente => {
+                    const opt = document.createElement('option');
+                    opt.value = fuente;
+                    opt.textContent = fuente;
+                    select.appendChild(opt);
+                });
+            }
+        });
+    }
 
     function construirFiltrosDisciplinas(datos) {
         const disciplinas = [...new Set(datos.map(item => item['Disciplina']).filter(Boolean))].sort();
@@ -554,19 +592,6 @@
 
             btn.innerHTML = `${imgHTML} <span>${disc}</span>`;
             container.appendChild(btn);
-        });
-    }
-
-    function construirFiltroFuentes(datos) {
-        const fuentes = [...new Set(datos.map(item => item['Fuente']).filter(Boolean))].sort();
-        const select = document.getElementById('sourceSelect');
-        
-        fuentes.forEach(fuente => {
-            if (fuente.toLowerCase() === 'fuente') return;
-            const opt = document.createElement('option');
-            opt.value = fuente;
-            opt.textContent = fuente;
-            select.appendChild(opt);
         });
     }
 
@@ -714,7 +739,7 @@
 
     function applyFilters() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
-        const selectedSource = document.getElementById('sourceSelect').value;
+        const selectedSource = document.getElementById('sourceSelect').value.toLowerCase().trim();
         const sections = document.querySelectorAll('.discipline-section');
 
         let totalVisibleCards = 0;
@@ -729,12 +754,14 @@
             cards.forEach(card => {
                 const name = card.getAttribute('data-name').toLowerCase();
                 const desc = card.getAttribute('data-desc').toLowerCase();
-                const source = card.getAttribute('data-source');
+                const source = card.getAttribute('data-source').toLowerCase();
                 const level = card.getAttribute('data-level');
                 const text = card.textContent.toLowerCase();
 
                 const matchesSearch = !query || name.includes(query) || desc.includes(query) || text.includes(query);
-                const matchesSource = (selectedSource === 'all' || source === selectedSource);
+                
+                // Filtro flexible: comprueba si la tarjeta contiene el nombre del libro
+                const matchesSource = (selectedSource === 'all' || source.includes(selectedSource));
                 const matchesLevel = (currentLevel === 'all' || level.trim() === currentLevel);
 
                 if (matchesDiscipline && matchesSearch && matchesSource && matchesLevel) {
@@ -753,7 +780,6 @@
             }
         });
 
-        // Actualizar el contador de resultados
         const counterEl = document.getElementById('resultsCounter');
         if (counterEl) {
             counterEl.textContent = `Mostrando ${totalVisibleCards} poder${totalVisibleCards === 1 ? '' : 'es'}`;
