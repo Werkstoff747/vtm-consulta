@@ -46,13 +46,12 @@
             gap: 25px;
             padding: 30px 20px;
             border-bottom: 2px solid var(--accent-red);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             background: linear-gradient(180deg, rgba(139,0,0,0.15) 0%, rgba(15,15,18,0) 100%);
             border-radius: 8px 8px 0 0;
             text-align: left;
         }
 
-        /* Estilo para el logo principal de la cabecera */
         .header-logo {
             height: 75px;
             width: auto;
@@ -82,25 +81,31 @@
             font-style: italic;
         }
 
+        /* Panel de Controles y Filtros Avanzados */
         .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-            justify-content: space-between;
-            align-items: center;
             background: var(--card-bg);
-            padding: 15px 20px;
+            padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--card-border);
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .controls-row-top {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
         }
 
         .search-box {
-            flex: 1;
-            min-width: 250px;
+            flex: 2;
+            min-width: 240px;
         }
 
-        .search-box input {
+        .search-box input, .source-select {
             width: 100%;
             padding: 10px 15px;
             background-color: var(--bg-color);
@@ -112,7 +117,68 @@
             transition: border-color 0.2s;
         }
 
-        .search-box input:focus {
+        .source-select {
+            flex: 1;
+            min-width: 200px;
+            cursor: pointer;
+        }
+
+        .search-box input:focus, .source-select:focus {
+            border-color: var(--accent-crimson);
+        }
+
+        /* Filtro de Niveles en Círculos Rojos */
+        .level-filter-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .level-label {
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .level-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--tag-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--card-border);
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .level-btn:hover, .level-btn.active {
+            background-color: var(--accent-red);
+            color: #fff;
+            border-color: var(--accent-crimson);
+            box-shadow: 0 0 8px rgba(201, 42, 42, 0.5);
+        }
+
+        .clear-btn {
+            background-color: var(--tag-bg);
+            border: 1px solid var(--card-border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .clear-btn:hover {
+            background-color: var(--accent-red);
             border-color: var(--accent-crimson);
         }
 
@@ -120,21 +186,23 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
+            border-top: 1px dashed var(--card-border);
+            padding-top: 12px;
         }
 
         .filter-btn {
             background-color: var(--tag-bg);
             color: var(--text-muted);
             border: 1px solid var(--card-border);
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 600;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .filter-btn:hover, .filter-btn.active {
@@ -144,9 +212,17 @@
         }
 
         .btn-icon {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             object-fit: contain;
+        }
+
+        /* Contador de Resultados */
+        .results-counter {
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            font-style: italic;
         }
 
         .discipline-section {
@@ -303,6 +379,32 @@
             padding: 40px;
         }
 
+        /* Botón Flotante para Subir Arriba */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--accent-red);
+            color: #fff;
+            border: 1px solid var(--accent-crimson);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            transition: all 0.2s;
+            z-index: 100;
+        }
+
+        .scroll-top-btn:hover {
+            transform: translateY(-3px);
+            background-color: var(--accent-crimson);
+        }
+
         footer {
             text-align: center;
             padding: 30px;
@@ -312,16 +414,13 @@
             margin-top: 50px;
         }
 
-        /* Adaptación a móviles */
         @media (max-width: 600px) {
             header {
                 flex-direction: column;
                 text-align: center;
                 gap: 15px;
             }
-            .header-logo {
-                height: 60px;
-            }
+            .header-logo { height: 60px; }
             h1 { font-size: 1.7rem; }
             .grid { grid-template-columns: 1fr; }
         }
@@ -339,13 +438,34 @@
     </header>
 
     <div class="controls">
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Buscar por nombre, palabra clave, nivel..." oninput="applyFilters()">
+        <div class="controls-row-top">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre, palabra clave, efecto..." oninput="applyFilters()">
+            </div>
+            
+            <select id="sourceSelect" class="source-select" onchange="applyFilters()">
+                <option value="all">📚 Todos los libros (Fuentes)</option>
+            </select>
+
+            <div class="level-filter-container">
+                <span class="level-label">Nivel:</span>
+                <button class="level-btn active" data-level="all" onclick="filterLevel('all')">∞</button>
+                <button class="level-btn" data-level="1" onclick="filterLevel('1')">1</button>
+                <button class="level-btn" data-level="2" onclick="filterLevel('2')">2</button>
+                <button class="level-btn" data-level="3" onclick="filterLevel('3')">3</button>
+                <button class="level-btn" data-level="4" onclick="filterLevel('4')">4</button>
+                <button class="level-btn" data-level="5" onclick="filterLevel('5')">5</button>
+            </div>
+
+            <button class="clear-btn" onclick="clearAllFilters()" title="Limpiar filtros">🧹</button>
         </div>
+
         <div class="filter-buttons" id="filterContainer">
             <button class="filter-btn active" data-discipline="all" onclick="filterDiscipline('all')">Todas</button>
         </div>
     </div>
+
+    <div id="resultsCounter" class="results-counter"></div>
 
     <div id="loading">Cargando grimorio desde Google Sheets...</div>
 
@@ -356,8 +476,11 @@
     </footer>
 </div>
 
+<button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
+
 <script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?output=csv';
+    // URL de publicación CSV de Google Sheets (Compatible con pestaña "Disciplinas" o "Hoja1")
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=0&single=true&output=csv';
 
     const ICONOS_MAP = {
         'Animalismo': 'Animalism_symbol.png',
@@ -375,13 +498,13 @@
     };
 
     let datosGlobales = [];
-    let currentFilter = 'all';
+    let currentDiscipline = 'all';
+    let currentLevel = 'all';
 
     function esFilaValida(item) {
         if (!item) return false;
         const nombre = (item['Nombre'] || '').trim().toLowerCase();
         const disc = (item['Disciplina'] || '').trim().toLowerCase();
-        
         if (nombre === 'nombre' || disc === 'disciplina') return false;
         return true;
     }
@@ -394,13 +517,24 @@
             complete: function(results) {
                 datosGlobales = results.data.filter(esFilaValida);
                 document.getElementById('loading').style.display = 'none';
-                construirFiltros(datosGlobales);
+                construirFiltrosDisciplinas(datosGlobales);
+                construirFiltroFuentes(datosGlobales);
                 renderizarCompendio(datosGlobales);
+            }
+        });
+
+        // Evento para mostrar/ocultar botón flotante de subir
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTopBtn');
+            if (window.scrollY > 300) {
+                btn.style.display = 'flex';
+            } else {
+                btn.style.display = 'none';
             }
         });
     });
 
-    function construirFiltros(datos) {
+    function construirFiltrosDisciplinas(datos) {
         const disciplinas = [...new Set(datos.map(item => item['Disciplina']).filter(Boolean))].sort();
         const container = document.getElementById('filterContainer');
         
@@ -423,6 +557,19 @@
         });
     }
 
+    function construirFiltroFuentes(datos) {
+        const fuentes = [...new Set(datos.map(item => item['Fuente']).filter(Boolean))].sort();
+        const select = document.getElementById('sourceSelect');
+        
+        fuentes.forEach(fuente => {
+            if (fuente.toLowerCase() === 'fuente') return;
+            const opt = document.createElement('option');
+            opt.value = fuente;
+            opt.textContent = fuente;
+            select.appendChild(opt);
+        });
+    }
+
     function renderizarCompendio(datos) {
         const wrapper = document.getElementById('disciplinesWrapper');
         wrapper.innerHTML = '';
@@ -442,7 +589,6 @@
             sec.setAttribute('data-discipline', disc);
 
             const nombreArchivo = ICONOS_MAP[disc];
-            
             let imgHTML = '';
             if (nombreArchivo) {
                 imgHTML = `<img src="iconos/${nombreArchivo}" class="discipline-icon" onerror="this.onerror=null; this.src='Iconos/${nombreArchivo}';">`;
@@ -463,6 +609,8 @@
                 card.className = 'card';
                 card.setAttribute('data-name', item['Nombre'] || '');
                 card.setAttribute('data-desc', item['Descripción'] || '');
+                card.setAttribute('data-source', item['Fuente'] || '');
+                card.setAttribute('data-level', item['Nivel'] || '');
 
                 let metaPartes = [];
                 if (item['Nivel'] && item['Nivel'] !== '-') metaPartes.push(`Nivel ${item['Nivel']}`);
@@ -525,45 +673,74 @@
 
             wrapper.appendChild(sec);
         });
+
+        applyFilters();
     }
 
     function filterDiscipline(discipline) {
-        currentFilter = discipline;
-        
+        currentDiscipline = discipline;
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => {
             const btnDisc = btn.getAttribute('data-discipline');
-            if ((btnDisc === 'all' && discipline === 'all') || btnDisc === discipline) {
+            if (btnDisc === discipline) {
                 btn.classList.add('active');
             } else {
                 btn.classList.remove('active');
             }
         });
-
         applyFilters();
+    }
+
+    function filterLevel(level) {
+        currentLevel = level;
+        const buttons = document.querySelectorAll('.level-btn');
+        buttons.forEach(btn => {
+            const btnLvl = btn.getAttribute('data-level');
+            if (btnLvl === level) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        applyFilters();
+    }
+
+    function clearAllFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('sourceSelect').value = 'all';
+        filterDiscipline('all');
+        filterLevel('all');
     }
 
     function applyFilters() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const selectedSource = document.getElementById('sourceSelect').value;
         const sections = document.querySelectorAll('.discipline-section');
+
+        let totalVisibleCards = 0;
 
         sections.forEach(section => {
             const secDiscipline = section.getAttribute('data-discipline');
             const cards = section.querySelectorAll('.card');
             let visibleCardsInSection = 0;
 
-            const matchesDiscipline = (currentFilter === 'all' || currentFilter === secDiscipline);
+            const matchesDiscipline = (currentDiscipline === 'all' || currentDiscipline === secDiscipline);
 
             cards.forEach(card => {
                 const name = card.getAttribute('data-name').toLowerCase();
                 const desc = card.getAttribute('data-desc').toLowerCase();
+                const source = card.getAttribute('data-source');
+                const level = card.getAttribute('data-level');
                 const text = card.textContent.toLowerCase();
 
                 const matchesSearch = !query || name.includes(query) || desc.includes(query) || text.includes(query);
+                const matchesSource = (selectedSource === 'all' || source === selectedSource);
+                const matchesLevel = (currentLevel === 'all' || level.trim() === currentLevel);
 
-                if (matchesDiscipline && matchesSearch) {
+                if (matchesDiscipline && matchesSearch && matchesSource && matchesLevel) {
                     card.style.display = 'flex';
                     visibleCardsInSection++;
+                    totalVisibleCards++;
                 } else {
                     card.style.display = 'none';
                 }
@@ -575,6 +752,16 @@
                 section.style.display = 'none';
             }
         });
+
+        // Actualizar el contador de resultados
+        const counterEl = document.getElementById('resultsCounter');
+        if (counterEl) {
+            counterEl.textContent = `Mostrando ${totalVisibleCards} poder${totalVisibleCards === 1 ? '' : 'es'}`;
+        }
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 
