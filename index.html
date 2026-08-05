@@ -283,12 +283,16 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 10px;
+            gap: 10px;
         }
 
+        /* --- TÍTULO DEL PODER EN VERSALITAS --- */
         .card-title {
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: #fff;
+            font-variant: small-caps; /* Aplica efecto Versalitas */
+            letter-spacing: 0.5px;
         }
 
         .card-page {
@@ -474,8 +478,9 @@
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
 
 <script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=0&single=true&output=csv';
-    const CSV_FUENTES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSbJqXkyep98lFMgASBnEKiloqmRoV2hJaLfKyTHNzIzoOXGuNUuqVtrs0rwis8hYsg_s66T7ek2gux/pub?gid=1950991302&single=true&output=csv';
+    // SUSTITUYE ESTAS DOS URLs CON TUS ENLACES CSV DE GOOGLE SHEETS
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
+    const CSV_FUENTES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
 
     const ICONOS_MAP = {
         'Animalismo': 'Animalism_symbol.png',
@@ -498,9 +503,9 @@
 
     function esFilaValida(item) {
         if (!item) return false;
-        const nombre = (item['Nombre'] || '').trim().toLowerCase();
+        const nombre = (item['Nombre Poder'] || item['Nombre'] || '').trim().toLowerCase();
         const disc = (item['Disciplina'] || '').trim().toLowerCase();
-        if (nombre === 'nombre' || disc === 'disciplina') return false;
+        if (nombre === 'nombre poder' || nombre === 'nombre' || disc === 'disciplina') return false;
         return true;
     }
 
@@ -515,7 +520,11 @@
                 construirFiltrosDisciplinas(datosGlobales);
                 renderizarCompendio(datosGlobales);
 
-                cargarFuentesDesdePestana();
+                if (CSV_FUENTES_URL && !CSV_FUENTES_URL.includes('TU_ID_AQUI')) {
+                    cargarFuentesDesdePestana();
+                } else {
+                    construirFuentesDesdeDatos(datosGlobales);
+                }
             }
         });
 
@@ -528,6 +537,18 @@
             }
         });
     });
+
+    function construirFuentesDesdeDatos(datos) {
+        const select = document.getElementById('sourceSelect');
+        select.innerHTML = '<option value="all">📚 Todos los libros (Fuentes)</option>';
+        const fuentes = [...new Set(datos.map(item => item['Fuente_Libro'] || item['Fuente']).filter(Boolean))].sort();
+        fuentes.forEach(fuente => {
+            const opt = document.createElement('option');
+            opt.value = fuente;
+            opt.textContent = fuente;
+            select.appendChild(opt);
+        });
+    }
 
     function cargarFuentesDesdePestana() {
         Papa.parse(CSV_FUENTES_URL, {
@@ -549,7 +570,6 @@
                     }
                 });
 
-                // Carga respetando el orden exacto de las filas en el Excel
                 Array.from(fuentesUnicas).forEach(fuente => {
                     const opt = document.createElement('option');
                     opt.value = fuente;
@@ -620,42 +640,59 @@
             agrupados[disc].forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.setAttribute('data-name', item['Nombre'] || '');
+                
+                const nombrePoder = item['Nombre Poder'] || item['Nombre'] || 'Sin Nombre';
+                const fuenteLibro = item['Fuente_Libro'] || item['Fuente'] || '';
+                const fuentePag = item['Fuente_Pag'] ? `pág. ${item['Fuente_Pag']}` : '';
+                const fuenteCompleta = [fuenteLibro, fuentePag].filter(Boolean).join(', ');
+
+                card.setAttribute('data-name', nombrePoder);
                 card.setAttribute('data-desc', item['Descripción'] || '');
-                card.setAttribute('data-source', item['Fuente'] || '');
+                card.setAttribute('data-source', fuenteLibro);
                 card.setAttribute('data-level', item['Nivel'] || '');
 
                 let metaPartes = [];
                 if (item['Nivel'] && item['Nivel'] !== '-') metaPartes.push(`Nivel ${item['Nivel']}`);
-                if (item['Coste'] && item['Coste'] !== '-') metaPartes.push(`Coste: ${item['Coste']}`);
-                if (item['Amalgama'] && item['Amalgama'] !== '-') metaPartes.push(`Amalgama: ${item['Amalgama']}`);
-                if (item['Requisito'] && item['Requisito'] !== '-') metaPartes.push(`Req: ${item['Requisito']}`);
+                
+                const costeAnsia = item['Controles de Ansia'] || item['Coste'];
+                if (costeAnsia && costeAnsia !== '-') metaPartes.push(`Coste: ${costeAnsia}`);
+                
+                if (item['Amalgama'] && item['Amalgama'] !== '-' && item['Amalgama'] !== 'Ninguna') metaPartes.push(`Amalgama: ${item['Amalgama']}`);
+                
+                const prereq = item['Prerequisito'] || item['Requisito'];
+                if (prereq && prereq !== '-' && prereq !== 'Ninguno') metaPartes.push(`Req: ${prereq}`);
                 
                 const metaText = metaPartes.join(' • ');
 
                 let rollHTML = '';
-                const reservaDados = item['Reserva de dados'] || item['Reserva de Dados'] || item['Tirada'];
-                const reservaOposicion = item['Reserva de oposición'] || item['Reserva de Oposición'] || item['Oposición'];
+                const reservaDados = item['Reserva de Dados'] || item['Reserva de dados'] || item['Tirada'];
+                const reservaOposicion = item['Reserva Oposición'] || item['Reserva de oposición'] || item['Oposición'];
 
-                if (reservaDados && reservaDados !== '-') {
+                if (reservaDados && reservaDados !== '-' && reservaDados !== 'Ninguna') {
                     let textTirada = `🎲 <strong>Tirada:</strong> ${reservaDados}`;
-                    if (reservaOposicion && reservaOposicion !== '-') {
+                    if (reservaOposicion && reservaOposicion !== '-' && reservaOposicion !== 'Sin oposición') {
                         textTirada += ` <em>vs</em> ${reservaOposicion}`;
                     }
                     rollHTML = `<div class="card-roll">${textTirada}</div>`;
                 }
 
                 let notesHTML = '';
-                const notas = item['Notas adicionales'] || item['Notas'] || item['Efecto rápido'];
-                if (notas && notas !== '-') {
-                    notesHTML = `<div class="card-notes">📌 ${notas}</div>`;
+                const notas = item['Notas Adicionales'] || item['Notas adicionales'] || item['Notas'];
+                const efectoRapido = item['Efecto Rápido'];
+                let textoNotas = [];
+                if (efectoRapido && efectoRapido !== '-' && efectoRapido !== 'N/A') textoNotas.push(efectoRapido);
+                if (notas && notas !== '-' && notas !== 'Ninguna') textoNotas.push(notas);
+
+                if (textoNotas.length > 0) {
+                    notesHTML = `<div class="card-notes">📌 ${textoNotas.join(' — ')}</div>`;
                 }
 
-                let badgeTipo = `<span class="badge">${item['Tipo'] || 'Poder'}</span>`;
-                if (item['Tipo'] && item['Tipo'].toLowerCase().includes('ceremonia')) {
-                    badgeTipo = `<span class="badge badge-ceremonia">${item['Tipo']}</span>`;
-                } else if (item['Tipo'] && item['Tipo'].toLowerCase().includes('ritual')) {
-                    badgeTipo = `<span class="badge badge-ritual">${item['Tipo']}</span>`;
+                const categoria = item['Categoría'] || item['Tipo'] || 'Poder';
+                let badgeTipo = `<span class="badge">${categoria}</span>`;
+                if (categoria.toLowerCase().includes('ceremonia')) {
+                    badgeTipo = `<span class="badge badge-ceremonia">${categoria}</span>`;
+                } else if (categoria.toLowerCase().includes('ritual')) {
+                    badgeTipo = `<span class="badge badge-ritual">${categoria}</span>`;
                 }
 
                 let badgeDuracion = '';
@@ -666,8 +703,8 @@
                 card.innerHTML = `
                     <div>
                         <div class="card-header">
-                            <div class="card-title">${item['Nombre'] || 'Sin Nombre'}</div>
-                            ${item['Fuente'] ? `<div class="card-page">${item['Fuente']}</div>` : ''}
+                            <div class="card-title">${nombrePoder}</div>
+                            ${fuenteCompleta ? `<div class="card-page">${fuenteCompleta}</div>` : ''}
                         </div>
                         ${metaText ? `<div class="card-meta">${metaText}</div>` : ''}
                         ${rollHTML}
@@ -725,18 +762,9 @@
         filterLevel('all');
     }
 
-    function extraerClaveLibro(texto) {
-        if (!texto) return '';
-        let t = texto.toLowerCase();
-        t = t.replace(/vampiro\s*(la\s*mascarada)?\s*(5ª?|v5)?\s*(edición|edicion)?\s*(-|:)?\s*/g, '');
-        t = t.replace(/libro\s*básico|libro\s*basico/g, 'básico');
-        return t.trim();
-    }
-
     function applyFilters() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
-        const selectedSourceRaw = document.getElementById('sourceSelect').value;
-        const selectedSourceKey = extraerClaveLibro(selectedSourceRaw);
+        const selectedSourceRaw = document.getElementById('sourceSelect').value.toLowerCase().trim();
         
         const sections = document.querySelectorAll('.discipline-section');
 
@@ -758,17 +786,7 @@
 
                 const matchesSearch = !query || name.includes(query) || desc.includes(query) || text.includes(query);
                 
-                let matchesSource = false;
-                if (selectedSourceRaw === 'all') {
-                    matchesSource = true;
-                } else if (source.includes(selectedSourceRaw.toLowerCase())) {
-                    matchesSource = true;
-                } else if (selectedSourceKey && source.includes(selectedSourceKey)) {
-                    matchesSource = true;
-                } else {
-                    const palabrasClave = selectedSourceKey.split(' ').filter(p => p.length > 3);
-                    matchesSource = palabrasClave.some(palabra => source.includes(palabra));
-                }
+                let matchesSource = (selectedSourceRaw === 'all' || source.includes(selectedSourceRaw));
 
                 const matchesLevel = (currentLevel === 'all' || level.trim() === currentLevel);
 
