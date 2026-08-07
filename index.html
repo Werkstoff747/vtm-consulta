@@ -4,51 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compendio de Disciplinas - Vampiro: La Mascarada V5</title>
+    <!-- Librería para procesar el CSV de Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         /* =========================================================
-           VARIABLES DE TEMA (MUNDO DE TINIEBLAS)
+           VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
            ========================================================= */
 
-        /* MODO NOCHE / OSCURO (Predeterminado de Vampiro V5) */
+        /* MODO NOCHE / OSCURO (Predeterminado) */
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
             --card-border: #2a2a32;
-            --accent-red: #8b0000;          /* Rojo sangre de dragón */
-            --accent-crimson: #c92a2a;      /* Rojo carmesí brillante */
-            --accent-gold: #c5a059;         /* Dorado antiguo */
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #c5a059;
             --text-main: #e1e1e6;
             --text-muted: #a0a0b0;
             --tag-bg: #25252e;
             --input-bg: #0f0f12;
+            --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
+            --header-border: #8b0000;
             --header-title-color: #ffffff;
             --card-title-color: #ffffff;
             --card-roll-bg: rgba(255, 255, 255, 0.05);
-            --header-gradient: linear-gradient(180deg, rgba(139,0,0,0.25) 0%, rgba(15,15,18,0) 100%);
-            --icon-filter: none;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
         }
 
-        /* MODO DÍA / CLARO ("Manuscrito de la Camarilla") */
+        /* MODO DÍA / CLARO ("Rojo Sangre Oscuro en Cabecera") */
         body.light-mode {
-            --bg-color: #e4dfd5;            /* Pergamino / piedra antiguo */
-            --card-bg: #f5f2eb;            /* Papel marfil claro */
-            --card-border: #c4bcae;        /* Bordes sepia/grisáceos */
-            --accent-red: #7a0000;          /* Rojo sangre oscuro e intenso */
-            --accent-crimson: #a61c1c;      /* Carmesí medieval */
-            --accent-gold: #9e782f;          /* Dorado envejecido */
-            --text-main: #1f1f24;          /* Tinta oscura principal */
-            --text-muted: #5e5d66;        /* Tinta secundaria */
-            --tag-bg: #e2dcd0;             /* Fondos de botones e insignias */
+            --bg-color: #e4dfd5;
+            --card-bg: #f5f2eb;
+            --card-border: #c4bcae;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #9e782f;
+            --text-main: #1f1f24;
+            --text-muted: #5e5d66;
+            --tag-bg: #e2dcd0;
             --input-bg: #ede7dd;
-            --header-title-color: #540000;
+            /* Fondo sólido rojo sangre oscuro sin degradado a negro */
+            --header-bg: #2b0408;
+            --header-border: #7a0000;
+            --header-title-color: #ffffff;
             --card-title-color: #111115;
             --card-roll-bg: rgba(122, 0, 0, 0.06);
-            --header-gradient: linear-gradient(180deg, rgba(122,0,0,0.18) 0%, rgba(228,223,213,0) 100%);
-            /* Inversión sutil para adaptar iconos de líneas blancas a tonos oscuros */
-            --icon-filter: invert(0.9) brightness(0.2);
-            --logo-filter: drop-shadow(0px 2px 6px rgba(122, 0, 0, 0.3));
+            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
         }
 
         /* =========================================================
@@ -76,15 +77,16 @@
         }
 
         header {
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 25px;
-            padding: 30px 20px;
-            border-bottom: 2px solid var(--accent-red);
+            padding: 35px 20px;
+            border-bottom: 2px solid var(--header-border);
             margin-bottom: 25px;
-            background: var(--header-gradient);
-            border-radius: 8px 8px 0 0;
+            background: var(--header-bg);
+            border-radius: 8px;
             text-align: left;
             transition: background 0.3s ease, border-color 0.3s ease;
         }
@@ -109,7 +111,7 @@
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 4px;
-            text-shadow: 0 2px 10px rgba(201, 42, 42, 0.2);
+            text-shadow: 0 2px 10px rgba(201, 42, 42, 0.3);
             line-height: 1.1;
             transition: color 0.3s ease;
         }
@@ -118,6 +120,33 @@
             font-size: 1.05rem;
             color: var(--accent-gold);
             font-style: italic;
+        }
+
+        /* Botón Día/Noche en la Esquina Superior Derecha de la Cabecera */
+        .theme-btn-header {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .theme-btn-header:hover {
+            background-color: var(--accent-red);
+            color: #ffffff;
+            border-color: var(--accent-crimson);
+            transform: scale(1.08);
         }
 
         /* =========================================================
@@ -203,10 +232,10 @@
             background-color: var(--accent-red);
             color: #fff;
             border-color: var(--accent-crimson);
-            box-shadow: 0 0 8px rgba(201, 42, 42, 0.4);
+            box-shadow: 0 0 8px rgba(201, 42, 42, 0.5);
         }
 
-        .clear-btn, .theme-btn {
+        .clear-btn {
             background-color: var(--tag-bg);
             border: 1px solid var(--card-border);
             padding: 8px 12px;
@@ -220,7 +249,7 @@
             justify-content: center;
         }
 
-        .clear-btn:hover, .theme-btn:hover {
+        .clear-btn:hover {
             background-color: var(--accent-red);
             color: #fff;
             border-color: var(--accent-crimson);
@@ -255,16 +284,17 @@
             border-color: var(--accent-crimson);
         }
 
-        .filter-btn:hover .btn-icon, .filter-btn.active .btn-icon {
-            filter: none !important; /* Mantiene icono blanco al estar activo el botón */
+        /* ICONOS DE DISCIPLINAS: Corrección para mostrar transparencia clara sin bloque negro */
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            filter: none;
+            transition: filter 0.2s ease;
         }
 
-        .btn-icon {
-            width: 16px;
-            height: 16px;
-            object-fit: contain;
-            filter: var(--icon-filter);
-            transition: filter 0.3s ease;
+        .filter-btn:hover .btn-icon, .filter-btn.active .btn-icon {
+            filter: brightness(0) invert(1); /* Pone el icono completamente blanco al estar seleccionado */
         }
 
         .results-counter {
@@ -298,8 +328,7 @@
             width: 38px;
             height: 38px;
             object-fit: contain;
-            filter: var(--icon-filter);
-            transition: filter 0.3s ease;
+            filter: none;
         }
 
         .grid {
@@ -333,8 +362,8 @@
 
         .card:hover {
             transform: translateY(-3px);
-            border-color: rgba(201, 42, 42, 0.5);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            border-color: rgba(201, 42, 42, 0.4);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
         }
 
         .card-header {
@@ -356,13 +385,16 @@
 
         .card-page {
             font-size: 0.8rem;
-            background-color: rgba(139, 0, 0, 0.15);
-            color: var(--accent-crimson);
+            background-color: rgba(139, 0, 0, 0.2);
+            color: #ff8080;
             padding: 3px 8px;
             border-radius: 4px;
             border: 1px solid rgba(201, 42, 42, 0.3);
             white-space: nowrap;
-            font-weight: 600;
+        }
+
+        body.light-mode .card-page {
+            color: #8b0000;
         }
 
         .card-meta {
@@ -415,19 +447,19 @@
         }
 
         .badge-ceremonia {
-            background-color: rgba(75, 0, 130, 0.2);
+            background-color: rgba(75, 0, 130, 0.3);
             border-color: rgba(138, 43, 226, 0.4);
-            color: #b37feb;
+            color: #d8b4fe;
         }
 
         body.light-mode .badge-ceremonia {
-            color: #5b21b6;
+            color: #6b21a8;
         }
 
         .badge-ritual {
-            background-color: rgba(139, 0, 0, 0.2);
+            background-color: rgba(139, 0, 0, 0.3);
             border-color: rgba(220, 20, 60, 0.4);
-            color: #f87171;
+            color: #fca5a5;
         }
 
         body.light-mode .badge-ritual {
@@ -486,10 +518,15 @@
                 flex-direction: column;
                 text-align: center;
                 gap: 15px;
+                padding-top: 45px;
             }
             .header-logo { height: 60px; }
             h1 { font-size: 1.7rem; }
             .grid { grid-template-columns: 1fr; }
+            .theme-btn-header {
+                top: 10px;
+                right: 10px;
+            }
         }
     </style>
 </head>
@@ -497,6 +534,7 @@
 
 <div class="container">
     <header>
+        <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
         <img src="iconos/logovtm.png" class="header-logo" alt="Logo VTM" onerror="this.onerror=null; this.src='Iconos/logovtm.png';">
         <div class="header-text">
             <h1>Compendio de Disciplinas</h1>
@@ -524,8 +562,7 @@
                 <button class="level-btn" data-level="5" onclick="filterLevel('5')">5</button>
             </div>
 
-            <button id="themeToggleBtn" class="theme-btn" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
-
+            <!-- Botón Limpiar Filtros -->
             <button class="clear-btn" onclick="clearAllFilters()" title="Limpiar filtros">🧹</button>
         </div>
 
@@ -549,8 +586,8 @@
 
 <script>
     // SUSTITUYE ESTAS DOS URLs CON TUS ENLACES CSV DE GOOGLE SHEETS
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
-    const CSV_FUENTES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=1447186823&single=true&output=csv';
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/TU_ID_AQUI/pub?gid=0&single=true&output=csv';
+    const CSV_FUENTES_URL = 'https://docs.google.com/spreadsheets/d/e/TU_ID_AQUI/pub?gid=1950991302&single=true&output=csv';
 
     const ICONOS_MAP = {
         'Animalismo': 'Animalism_symbol.png',
