@@ -284,7 +284,7 @@
             border-color: var(--accent-crimson);
         }
 
-        /* ICONOS DE DISCIPLINAS: Corrección para mostrar transparencia clara sin bloque negro */
+        /* ICONOS DE DISCIPLINAS: Transparencia limpia */
         .btn-icon {
             width: 18px;
             height: 18px;
@@ -585,9 +585,9 @@
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
 
 <script>
-    // SUSTITUYE ESTAS DOS URLs CON TUS ENLACES CSV DE GOOGLE SHEETS
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/TU_ID_AQUI/pub?gid=0&single=true&output=csv';
-    const CSV_FUENTES_URL = 'https://docs.google.com/spreadsheets/d/e/TU_ID_AQUI/pub?gid=1950991302&single=true&output=csv';
+    // ENLACES ACTUALIZADOS A TUS HOJAS DE GOOGLE SHEETS
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
+    const CSV_FUENTES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=1447186823&single=true&output=csv';
 
     const ICONOS_MAP = {
         'Animalismo': 'Animalism_symbol.png',
@@ -640,9 +640,9 @@
 
     function esFilaValida(item) {
         if (!item) return false;
-        const nombre = (item['Nombre Poder'] || item['Nombre'] || '').trim().toLowerCase();
-        const disc = (item['Disciplina'] || '').trim().toLowerCase();
-        if (nombre === 'nombre poder' || nombre === 'nombre' || disc === 'disciplina') return false;
+        const nombre = (item['Nombre Poder'] || item['Nombre'] || item['NOMBRE'] || '').trim().toLowerCase();
+        const disc = (item['Disciplina'] || item['DISCIPLINA'] || '').trim().toLowerCase();
+        if (!nombre || nombre === 'nombre poder' || nombre === 'nombre' || disc === 'disciplina') return false;
         return true;
     }
 
@@ -680,7 +680,7 @@
     function construirFuentesDesdeDatos(datos) {
         const select = document.getElementById('sourceSelect');
         select.innerHTML = '<option value="all">📚 Todos los libros (Fuentes)</option>';
-        const fuentes = [...new Set(datos.map(item => item['Fuente_Libro'] || item['Fuente']).filter(Boolean))].sort();
+        const fuentes = [...new Set(datos.map(item => item['Fuente_Libro'] || item['Fuente'] || item['FUENTE']).filter(Boolean))].sort();
         fuentes.forEach(fuente => {
             const opt = document.createElement('option');
             opt.value = fuente;
@@ -703,13 +703,13 @@
                 results.data.forEach(row => {
                     if (row && row[0]) {
                         const valor = row[0].trim();
-                        if (valor && valor.toLowerCase() !== 'fuente' && valor.toLowerCase() !== 'fuentes') {
+                        if (valor && valor.toLowerCase() !== 'fuente' && valor.toLowerCase() !== 'fuentes' && valor.toLowerCase() !== 'libro') {
                             fuentesUnicas.add(valor);
                         }
                     }
                 });
 
-                Array.from(fuentesUnicas).forEach(fuente => {
+                Array.from(fuentesUnicas).sort().forEach(fuente => {
                     const opt = document.createElement('option');
                     opt.value = fuente;
                     opt.textContent = fuente;
@@ -720,7 +720,7 @@
     }
 
     function construirFiltrosDisciplinas(datos) {
-        const disciplinas = [...new Set(datos.map(item => item['Disciplina']).filter(Boolean))].sort();
+        const disciplinas = [...new Set(datos.map(item => item['Disciplina'] || item['DISCIPLINA']).filter(Boolean))].sort();
         const container = document.getElementById('filterContainer');
         
         disciplinas.forEach(disc => {
@@ -748,7 +748,7 @@
 
         const agrupados = {};
         datos.forEach(row => {
-            const disc = row['Disciplina'] || 'Otras';
+            const disc = row['Disciplina'] || row['DISCIPLINA'] || 'Otras';
             if (disc.toLowerCase() === 'disciplina') return;
             
             if (!agrupados[disc]) agrupados[disc] = [];
@@ -780,26 +780,30 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 
-                const nombrePoder = item['Nombre Poder'] || item['Nombre'] || 'Sin Nombre';
-                const fuenteLibro = item['Fuente_Libro'] || item['Fuente'] || '';
-                const fuentePag = item['Fuente_Pag'] ? `pág. ${item['Fuente_Pag']}` : '';
+                const nombrePoder = item['Nombre Poder'] || item['Nombre'] || item['NOMBRE'] || 'Sin Nombre';
+                const fuenteLibro = item['Fuente_Libro'] || item['Fuente'] || item['FUENTE'] || '';
+                const fuentePagRaw = item['Fuente_Pag'] || item['Página'] || item['PAGINA'] || '';
+                const fuentePag = fuentePagRaw ? `pág. ${fuentePagRaw}` : '';
                 const fuenteCompleta = [fuenteLibro, fuentePag].filter(Boolean).join(', ');
 
+                const nivelPoder = item['Nivel'] || item['NIVEL'] || '';
+
                 card.setAttribute('data-name', nombrePoder);
-                card.setAttribute('data-desc', item['Descripción'] || '');
+                card.setAttribute('data-desc', item['Descripción'] || item['DESCRIPCION'] || '');
                 card.setAttribute('data-source', fuenteLibro);
-                card.setAttribute('data-level', item['Nivel'] || '');
+                card.setAttribute('data-level', nivelPoder);
 
                 let metaPartes = [];
-                if (item['Nivel'] && item['Nivel'] !== '-') metaPartes.push(`Nivel ${item['Nivel']}`);
+                if (nivelPoder && nivelPoder !== '-') metaPartes.push(`Nivel ${nivelPoder}`);
                 
-                const costeAnsia = item['Controles de Ansia'] || item['Coste'];
+                const costeAnsia = item['Controles de Ansia'] || item['Coste'] || item['COSTE'];
                 if (costeAnsia && costeAnsia !== '-') metaPartes.push(`Coste: ${costeAnsia}`);
                 
-                if (item['Amalgama'] && item['Amalgama'] !== '-' && item['Amalgama'] !== 'Ninguna') metaPartes.push(`Amalgama: ${item['Amalgama']}`);
+                const amalgama = item['Amalgama'] || item['AMALGAMA'];
+                if (amalgama && amalgama !== '-' && amalgama.toLowerCase() !== 'ninguna') metaPartes.push(`Amalgama: ${amalgama}`);
                 
-                const prereq = item['Prerequisito'] || item['Requisito'];
-                if (prereq && prereq !== '-' && prereq !== 'Ninguno') metaPartes.push(`Req: ${prereq}`);
+                const prereq = item['Prerequisito'] || item['Requisito'] || item['REQUISITO'];
+                if (prereq && prereq !== '-' && prereq.toLowerCase() !== 'ninguno') metaPartes.push(`Req: ${prereq}`);
                 
                 const metaText = metaPartes.join(' • ');
 
@@ -807,9 +811,9 @@
                 const reservaDados = item['Reserva de Dados'] || item['Reserva de dados'] || item['Tirada'];
                 const reservaOposicion = item['Reserva Oposición'] || item['Reserva de oposición'] || item['Oposición'];
 
-                if (reservaDados && reservaDados !== '-' && reservaDados !== 'Ninguna') {
+                if (reservaDados && reservaDados !== '-' && reservaDados.toLowerCase() !== 'ninguna') {
                     let textTirada = `🎲 <strong>Tirada:</strong> ${reservaDados}`;
-                    if (reservaOposicion && reservaOposicion !== '-' && reservaOposicion !== 'Sin oposición') {
+                    if (reservaOposicion && reservaOposicion !== '-' && reservaOposicion.toLowerCase() !== 'sin oposición') {
                         textTirada += ` <em>vs</em> ${reservaOposicion}`;
                     }
                     rollHTML = `<div class="card-roll">${textTirada}</div>`;
@@ -819,8 +823,8 @@
                 const notas = item['Notas Adicionales'] || item['Notas adicionales'] || item['Notas'];
                 const efectoRapido = item['Efecto Rápido'];
                 let textoNotas = [];
-                if (efectoRapido && efectoRapido !== '-' && efectoRapido !== 'N/A') textoNotas.push(efectoRapido);
-                if (notas && notas !== '-' && notas !== 'Ninguna') textoNotas.push(notas);
+                if (efectoRapido && efectoRapido !== '-' && efectoRapido.toLowerCase() !== 'n/a') textoNotas.push(efectoRapido);
+                if (notas && notas !== '-' && notas.toLowerCase() !== 'ninguna') textoNotas.push(notas);
 
                 if (textoNotas.length > 0) {
                     notesHTML = `<div class="card-notes">📌 ${textoNotas.join(' — ')}</div>`;
@@ -835,8 +839,9 @@
                 }
 
                 let badgeDuracion = '';
-                if (item['Duración'] && item['Duración'] !== '-') {
-                    badgeDuracion = `<span class="badge badge-duration">⏳ ${item['Duración']}</span>`;
+                const duracion = item['Duración'] || item['DURACION'];
+                if (duracion && duracion !== '-') {
+                    badgeDuracion = `<span class="badge badge-duration">⏳ ${duracion}</span>`;
                 }
 
                 card.innerHTML = `
@@ -847,7 +852,7 @@
                         </div>
                         ${metaText ? `<div class="card-meta">${metaText}</div>` : ''}
                         ${rollHTML}
-                        <div class="card-desc">${item['Descripción'] || ''}</div>
+                        <div class="card-desc">${item['Descripción'] || item['DESCRIPCION'] || ''}</div>
                         ${notesHTML}
                     </div>
                     <div class="card-tags">
