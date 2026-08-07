@@ -28,27 +28,32 @@
             --header-title-color: #ffffff;
             --card-title-color: #ffffff;
             --card-roll-bg: rgba(255, 255, 255, 0.05);
+            --card-notes-bg: rgba(255, 255, 255, 0.03);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
         }
 
         /* MODO DÍA / CLARO ("Rojo Sangre Oscuro en Cabecera") */
         body.light-mode {
-            --bg-color: #e4dfd5;
-            --card-bg: #f5f2eb;
-            --card-border: #c4bcae;
+            --bg-color: #e4dfd5;            /* Fondo pergamino general */
+            --card-bg: #f3efe6;            /* Fondo principal de tarjeta */
+            --card-border: #c8c0b0;        /* Borde suave */
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
-            --accent-gold: #9e782f;
-            --text-main: #1f1f24;
-            --text-muted: #5e5d66;
+            --accent-gold: #8d6722;
+            --text-main: #222226;          /* Texto bien legible */
+            --text-muted: #585760;
             --tag-bg: #e2dcd0;
-            --input-bg: #ede7dd;
+            --input-bg: #ffffff;           /* Campos de texto en blanco limpio */
+            
             /* Fondo sólido rojo sangre oscuro sin degradado a negro */
             --header-bg: #2b0408;
             --header-border: #7a0000;
             --header-title-color: #ffffff;
             --card-title-color: #111115;
-            --card-roll-bg: rgba(122, 0, 0, 0.06);
+            
+            /* Cajas internas (Tiradas y Notas): Tono blanco suave/marfil para destacar */
+            --card-roll-bg: rgba(255, 255, 255, 0.75);
+            --card-notes-bg: rgba(255, 255, 255, 0.55);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
         }
 
@@ -163,6 +168,12 @@
             flex-direction: column;
             gap: 15px;
             transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.light-mode .controls {
+            background-color: #fcfbfa; /* Tono blanco crema/marfil muy claro para hacer destacar la barra de controles */
+            border-color: #dad4c8;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
         .controls-row-top {
@@ -363,7 +374,7 @@
         .card:hover {
             transform: translateY(-3px);
             border-color: rgba(201, 42, 42, 0.4);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
 
         .card-header {
@@ -395,6 +406,7 @@
 
         body.light-mode .card-page {
             color: #8b0000;
+            background-color: rgba(139, 0, 0, 0.1);
         }
 
         .card-meta {
@@ -404,6 +416,7 @@
             font-weight: 500;
         }
 
+        /* CAJA DE TIRADA (Destaca más clara en Modo Día) */
         .card-roll {
             font-size: 0.9rem;
             color: var(--text-main);
@@ -413,6 +426,12 @@
             border-left: 3px solid var(--accent-crimson);
             margin-bottom: 12px;
             font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        body.light-mode .card-roll {
+            border-left: 4px solid var(--accent-red);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
         }
 
         .card-desc {
@@ -421,13 +440,17 @@
             flex-grow: 1;
         }
 
+        /* CAJA DE NOTAS (Destaca más clara en Modo Día) */
         .card-notes {
             font-size: 0.85rem;
             color: var(--text-muted);
             font-style: italic;
             margin-top: 10px;
-            padding-top: 8px;
+            padding: 8px 10px;
+            background-color: var(--card-notes-bg);
+            border-radius: 6px;
             border-top: 1px dashed var(--card-border);
+            transition: background-color 0.3s ease;
         }
 
         .card-tags {
@@ -446,6 +469,12 @@
             border: 1px solid var(--card-border);
         }
 
+        body.light-mode .badge {
+            background-color: #ffffff; /* Insignias/Tags con fondo blanco muy limpio */
+            border-color: #d2cbbe;
+            color: #44434a;
+        }
+
         .badge-ceremonia {
             background-color: rgba(75, 0, 130, 0.3);
             border-color: rgba(138, 43, 226, 0.4);
@@ -453,7 +482,9 @@
         }
 
         body.light-mode .badge-ceremonia {
+            background-color: rgba(107, 33, 168, 0.1);
             color: #6b21a8;
+            border-color: rgba(107, 33, 168, 0.3);
         }
 
         .badge-ritual {
@@ -463,7 +494,9 @@
         }
 
         body.light-mode .badge-ritual {
+            background-color: rgba(153, 27, 27, 0.1);
             color: #991b1b;
+            border-color: rgba(153, 27, 27, 0.3);
         }
 
         .badge-duration {
@@ -585,7 +618,7 @@
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
 
 <script>
-    // ENLACES ACTUALIZADOS A TUS HOJAS DE GOOGLE SHEETS
+    // ENLACES DIRECTOS A TU HOJA DE GOOGLE SHEETS
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
     const CSV_FUENTES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=1447186823&single=true&output=csv';
 
