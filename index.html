@@ -305,7 +305,7 @@
         }
 
         .filter-btn:hover .btn-icon, .filter-btn.active .btn-icon {
-            filter: brightness(0) invert(1); /* Pone el icono completamente blanco al estar seleccionado */
+            filter: brightness(0) invert(1);
         }
 
         .results-counter {
@@ -416,7 +416,7 @@
             font-weight: 500;
         }
 
-        /* CAJA DE TIRADA (Destaca más clara en Modo Día) */
+        /* CAJA DE TIRADA */
         .card-roll {
             font-size: 0.9rem;
             color: var(--text-main);
@@ -440,7 +440,7 @@
             flex-grow: 1;
         }
 
-        /* CAJA DE NOTAS (Destaca más clara en Modo Día) */
+        /* CAJA DE NOTAS */
         .card-notes {
             font-size: 0.85rem;
             color: var(--text-muted);
@@ -470,7 +470,7 @@
         }
 
         body.light-mode .badge {
-            background-color: #ffffff; /* Insignias/Tags con fondo blanco muy limpio */
+            background-color: #ffffff;
             border-color: #d2cbbe;
             color: #44434a;
         }
@@ -640,6 +640,7 @@
     let datosGlobales = [];
     let currentDiscipline = 'all';
     let currentLevel = 'all';
+    let mapaFuentes = {}; // Diccionario para relacionar Nombre Corto (Col. A) -> Nombre Largo (Col. B)
 
     // =========================================================
     // LÓGICA DE TEMA (DÍA / NOCHE)
@@ -682,6 +683,12 @@
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
 
+        // 1. Cargar pestaña de Fuentes primero o en paralelo
+        if (CSV_FUENTES_URL && !CSV_FUENTES_URL.includes('TU_ID_AQUI')) {
+            cargarFuentesDesdePestana();
+        }
+
+        // 2. Cargar datos de Disciplinas
         Papa.parse(CSV_URL, {
             download: true,
             header: true,
@@ -692,9 +699,7 @@
                 construirFiltrosDisciplinas(datosGlobales);
                 renderizarCompendio(datosGlobales);
 
-                if (CSV_FUENTES_URL && !CSV_FUENTES_URL.includes('TU_ID_AQUI')) {
-                    cargarFuentesDesdePestana();
-                } else {
+                if (!CSV_FUENTES_URL || CSV_FUENTES_URL.includes('TU_ID_AQUI')) {
                     construirFuentesDesdeDatos(datosGlobales);
                 }
             }
@@ -717,7 +722,7 @@
         fuentes.forEach(fuente => {
             const opt = document.createElement('option');
             opt.value = fuente;
-            opt.textContent = fuente;
+            opt.textContent = mapaFuentes[fuente] || fuente;
             select.appendChild(opt);
         });
     }
@@ -731,23 +736,30 @@
                 const select = document.getElementById('sourceSelect');
                 select.innerHTML = '<option value="all">📚 Todos los libros (Fuentes)</option>';
                 
-                let fuentesUnicas = new Set();
+                mapaFuentes = {};
 
                 results.data.forEach(row => {
                     if (row && row[0]) {
-                        const valor = row[0].trim();
-                        if (valor && valor.toLowerCase() !== 'fuente' && valor.toLowerCase() !== 'fuentes' && valor.toLowerCase() !== 'libro') {
-                            fuentesUnicas.add(valor);
+                        const codigoCorto = row[0].trim();
+                        const nombreLargo = (row[1] && row[1].trim()) ? row[1].trim() : codigoCorto;
+
+                        if (codigoCorto && !['fuente', 'fuentes', 'libro', 'código'].includes(codigoCorto.toLowerCase())) {
+                            mapaFuentes[codigoCorto] = nombreLargo;
                         }
                     }
                 });
 
-                Array.from(fuentesUnicas).sort().forEach(fuente => {
+                Object.keys(mapaFuentes).sort().forEach(codigoCorto => {
                     const opt = document.createElement('option');
-                    opt.value = fuente;
-                    opt.textContent = fuente;
+                    opt.value = codigoCorto;               // Mantiene el valor corto para filtrar correctamente
+                    opt.textContent = mapaFuentes[codigoCorto]; // Muestra el Nombre Completo (Columna B)
                     select.appendChild(opt);
                 });
+
+                // Si ya teníamos cargados los poderes, volvemos a renderizar para actualizar nombres
+                if (datosGlobales.length > 0) {
+                    renderizarCompendio(datosGlobales);
+                }
             }
         });
     }
@@ -815,9 +827,13 @@
                 
                 const nombrePoder = item['Nombre Poder'] || item['Nombre'] || item['NOMBRE'] || 'Sin Nombre';
                 const fuenteLibro = item['Fuente_Libro'] || item['Fuente'] || item['FUENTE'] || '';
+                
+                // Muestra el nombre largo si existe en el mapaFuentes, si no el corto
+                const libroNombreMostrar = mapaFuentes[fuenteLibro] || fuenteLibro;
+
                 const fuentePagRaw = item['Fuente_Pag'] || item['Página'] || item['PAGINA'] || '';
                 const fuentePag = fuentePagRaw ? `pág. ${fuentePagRaw}` : '';
-                const fuenteCompleta = [fuenteLibro, fuentePag].filter(Boolean).join(', ');
+                const fuenteCompleta = [libroNombreMostrar, fuentePag].filter(Boolean).join(', ');
 
                 const nivelPoder = item['Nivel'] || item['NIVEL'] || '';
 
