@@ -8,7 +8,7 @@
     <!-- FUENTES OFICIALES V5 (Google Fonts) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 
     <!-- Librería para procesar el CSV de Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
@@ -32,8 +32,8 @@
             --input-bg: #0f0f12;
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
-            --header-title-color: #c5a059; /* Título en dorado */
-            --card-title-color: #921416;  /* Rojo sangre V5 */
+            --header-title-color: #c5a059;
+            --card-title-color: #ffffff;  /* Blanco en Modo Noche */
             --card-roll-bg: rgba(255, 255, 255, 0.05);
             --card-notes-bg: rgba(255, 255, 255, 0.03);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
@@ -46,30 +46,30 @@
             --subcat-active: #6b21a8;
         }
 
-        /* MODO DÍA / CLARO ("Gris Pergamino Neutro") */
+        /* MODO DÍA / CLARO ("Gris Urbano Neutro") */
         body.light-mode {
-            --bg-color: #d2ccc1;            /* Gris neutro pergamino */
-            --card-bg: #ffffff;            /* Tarjetas blanco puro */
-            --card-border: #b3ac9f;        /* Borde sutil neutro */
+            --bg-color: #a8a7a4;            /* Gris medio solicitado */
+            --card-bg: #ffffff;            /* Tarjetas blanco puro para contrastar */
+            --card-border: #8c8a85;        /* Borde gris definido */
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #8d6722;
-            --text-main: #222226;          
-            --text-muted: #585760;
-            --tag-bg: #e5dfd5;
+            --text-main: #1f1f22;          
+            --text-muted: #4e4d52;
+            --tag-bg: #f0eee9;
             --input-bg: #ffffff;           
             
             /* Cabecera Rojo Sangre Oscuro */
             --header-bg: #2b0408;
             --header-border: #7a0000;
             --header-title-color: #c5a059; 
-            --card-title-color: #921416;  /* Rojo sangre V5 en modo día */
+            --card-title-color: #111115;  /* Negro puro en Modo Día */
             
             /* Cajas internas */
-            --card-roll-bg: #f4f1ea;
-            --card-notes-bg: #f7f5f0;
+            --card-roll-bg: #f4f3f0;
+            --card-notes-bg: #f8f7f4;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
-            --section-title-color: #8b0000; /* Rojo Sangre Oscuro para nombres de disciplina */
+            --section-title-color: #8b0000; /* Rojo Sangre Oscuro en las cabeceras */
 
             /* Subcategorías Modo Día */
             --subcat-bg: #ede9fe;
@@ -103,7 +103,7 @@
         }
 
         /* =========================================================
-           CABECERA CON FUENTE 'CINZEL'
+           CABECERA
            ========================================================= */
 
         header {
@@ -126,7 +126,7 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             max-width: 100%;
         }
 
@@ -151,26 +151,18 @@
             align-items: center;
         }
 
-        /* TÍTULO PRINCIPAL CON 'CINZEL' */
-        h1, .cabecera-principal {
+        /* TÍTULO PRINCIPAL ÚNICAMENTE EN CINZEL */
+        h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: 1.75rem;
             color: var(--header-title-color);
             letter-spacing: 3px;
             text-transform: uppercase;
-            margin-bottom: 3px;
+            margin-bottom: 0px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             line-height: 1.15;
             transition: color 0.3s ease;
-        }
-
-        .subtitle {
-            font-family: 'Cinzel', serif;
-            font-size: 0.88rem;
-            color: var(--accent-gold);
-            letter-spacing: 1px;
-            opacity: 0.9;
         }
 
         .theme-btn-header {
@@ -217,9 +209,9 @@
         }
 
         body.light-mode .controls {
-            background-color: #fbf9f5;
-            border-color: #b8b1a4;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            background-color: #ffffff;
+            border-color: #8c8a85;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
         .controls-row-top {
@@ -250,8 +242,6 @@
             flex: 1;
             min-width: 200px;
             cursor: pointer;
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
         }
 
         .search-box input:focus, .source-select:focus {
@@ -266,11 +256,9 @@
         }
 
         .level-label {
-            font-family: 'Cinzel', serif;
             font-size: 0.85rem;
             color: var(--accent-gold);
             font-weight: 700;
-            letter-spacing: 1px;
         }
 
         .level-btn {
@@ -325,16 +313,14 @@
         }
 
         .filter-btn {
-            font-family: 'Cinzel', serif;
-            letter-spacing: 0.5px;
             background-color: var(--tag-bg);
             color: var(--text-muted);
             border: 1px solid var(--card-border);
             padding: 6px 14px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.82rem;
-            font-weight: 700;
+            font-size: 0.85rem;
+            font-weight: 600;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -347,7 +333,7 @@
             border-color: var(--accent-crimson);
         }
 
-        /* SUBCATEGORÍAS CON ESTILO CINZEL */
+        /* SUBCATEGORÍAS DINÁMICAS */
         .subcategories-container {
             display: none;
             flex-wrap: wrap;
@@ -357,25 +343,21 @@
             align-items: center;
         }
 
-        .subcat-label, .subtitulo-poder {
-            font-family: 'Cinzel', serif;
+        .subcat-label {
             font-size: 0.85rem;
             color: var(--accent-gold);
             font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+            margin-right: 4px;
         }
 
         .subcat-btn {
-            font-family: 'Cinzel', serif;
-            letter-spacing: 0.5px;
             background-color: var(--subcat-bg);
             color: var(--subcat-text);
             border: 1px solid var(--subcat-border);
             padding: 4px 12px;
             border-radius: 14px;
             cursor: pointer;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             font-weight: 600;
             transition: all 0.2s ease;
         }
@@ -400,22 +382,21 @@
         }
 
         .results-counter {
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--accent-gold);
             margin-bottom: 20px;
-            letter-spacing: 1px;
+            font-style: italic;
         }
 
         /* =========================================================
-           TARJETAS CON 'CORMORANT GARAMOND' Y 'CINZEL'
+           TARJETAS Y TITULARES
            ========================================================= */
 
         .discipline-section {
             margin-bottom: 40px;
         }
 
-        /* TITULAR DE DISCIPLINA CON 'CINZEL' */
+        /* TITULAR DE LA DISCIPLINA EN CINZEL */
         .section-title {
             font-family: 'Cinzel', serif;
             font-weight: 700;
@@ -463,7 +444,7 @@
         }
 
         body.light-mode .card {
-            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .card::before {
@@ -479,7 +460,7 @@
         .card:hover {
             transform: translateY(-3px);
             border-color: rgba(201, 42, 42, 0.4);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
 
         .card-header {
@@ -490,20 +471,20 @@
             gap: 10px;
         }
 
-        /* TÍTULO DE CADA PODER CON 'CORMORANT GARAMOND' Y ESTILO GÓTICO */
-        .card-title, .titulo-tarjeta-disciplina {
-            font-family: 'Cormorant Garamond', serif;
+        /* TÍTULO DEL PODER EN FUENTE BASE CON VERSALITAS (ALTO CONTRASTE) */
+        .card-title {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             font-weight: 700;
-            font-size: 1.85rem;
-            color: var(--card-title-color); /* #921416 Rojo Sangre V5 */
-            line-height: 1.1;
+            font-size: 1.25rem;
+            font-variant: small-caps;
+            letter-spacing: 0.5px;
+            color: var(--card-title-color); /* Blanco en Noche, Negro Puro en Día */
+            line-height: 1.2;
             transition: color 0.3s ease;
         }
 
         .card-page {
-            font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
+            font-size: 0.8rem;
             background-color: rgba(139, 0, 0, 0.2);
             color: #ff8080;
             padding: 3px 8px;
@@ -519,9 +500,7 @@
         }
 
         .card-meta {
-            font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
+            font-size: 0.85rem;
             color: var(--accent-gold);
             margin-bottom: 12px;
             font-weight: 600;
@@ -569,10 +548,8 @@
         }
 
         .badge {
-            font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            letter-spacing: 0.5px;
-            padding: 3px 8px;
+            font-size: 0.75rem;
+            padding: 2px 8px;
             border-radius: 4px;
             background-color: var(--tag-bg);
             color: var(--text-muted);
@@ -580,8 +557,8 @@
         }
 
         body.light-mode .badge {
-            border-color: #c0b9ac;
-            color: #44434a;
+            border-color: #b8b5ae;
+            color: #333236;
         }
 
         .badge-ceremonia {
@@ -615,12 +592,10 @@
         }
 
         #loading {
-            font-family: 'Cinzel', serif;
             text-align: center;
             font-size: 1.1rem;
             color: var(--accent-gold);
             padding: 40px;
-            letter-spacing: 1px;
         }
 
         .scroll-top-btn {
@@ -649,12 +624,9 @@
         }
 
         footer {
-            font-family: 'Cinzel', serif;
             text-align: center;
-            padding: 30px;
+            padding: 30px 20px;
             color: var(--text-muted);
-            font-size: 0.8rem;
-            letter-spacing: 1px;
             border-top: 1px solid var(--card-border);
             margin-top: 50px;
         }
@@ -665,8 +637,7 @@
             }
             .header-ank-logo { height: 44px; }
             .header-main-logo { height: 52px; }
-            h1 { font-size: 1.35rem; }
-            .subtitle { font-size: 0.8rem; }
+            h1.cabecera-principal { font-size: 1.35rem; }
             .grid { grid-template-columns: 1fr; }
             .theme-btn-header {
                 top: 10px;
@@ -686,7 +657,6 @@
         </div>
         <div class="header-text">
             <h1 class="cabecera-principal">Compendio de Disciplinas</h1>
-            <div class="subtitle">Guía de Juego - Vampiro: La Mascarada (5ª Edición)</div>
         </div>
     </header>
 
@@ -729,7 +699,22 @@
     <div id="disciplinesWrapper"></div>
 
     <footer>
-        Compendio generado para Vampiro: La Mascarada 5ª Edición — Guía de Juego.
+        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 6px;">
+            Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)
+        </div>
+        
+        <p style="margin-bottom: 12px; font-size: 0.85rem;">
+            Consigue los libros y suplementos oficiales en 
+            <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">Nosolorol</a> y 
+            <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
+        </p>
+
+        <!-- DISCLAIMER LEGAL -->
+        <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.4; opacity: 0.85;">
+            Esta aplicación es una herramienta/ayuda de juego no oficial para jugadores y Narradores, creada sin ánimo de lucro. 
+            <em>Vampiro: La Mascarada</em>, <em>Mundo de Tinieblas</em> y sus logotipos son marcas registradas de Paradox Interactive AB. 
+            El material original y sus traducciones oficiales pertenecen a Paradox Interactive, White Wolf y Nosolorol Ediciones.
+        </div>
     </footer>
 </div>
 
