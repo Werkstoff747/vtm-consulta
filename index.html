@@ -18,7 +18,7 @@
            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
            ========================================================= */
 
-        /* MODO NOCHE / OSCURO (Predeterminado) */
+        /* MODO NOCHE / OSCURO (Predeterminado - "Medianoche Vampírica") */
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
@@ -39,24 +39,24 @@
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
             --section-title-color: #c5a059;
             
-            /* Subcategorías */
+            /* Subcategorías Modo Noche */
             --subcat-bg: #1f1b2e;
             --subcat-border: #4a3b69;
             --subcat-text: #c4b5fd;
             --subcat-active: #6b21a8;
         }
 
-        /* MODO DÍA / CLARO ("Gris Urbano Neutro") */
+        /* MODO DÍA / CLARO ("Pergamino Frío de la Camarilla") */
         body.light-mode {
-            --bg-color: #a8a7a4;            /* Gris medio solicitado */
-            --card-bg: #ffffff;            /* Tarjetas blanco puro para contrastar */
-            --card-border: #8c8a85;        /* Borde gris definido */
+            --bg-color: #e3e0d8;            /* Gris hueso / Pergamino frío */
+            --card-bg: #ffffff;            /* Tarjetas blanco puro para destacar */
+            --card-border: #bcaba0;        /* Borde sutil en tono piedra/cuero */
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #8d6722;
-            --text-main: #1f1f22;          
-            --text-muted: #4e4d52;
-            --tag-bg: #f0eee9;
+            --text-main: #1f1f22;          /* Texto oscuro nítido */
+            --text-muted: #555459;
+            --tag-bg: #f2f0eb;
             --input-bg: #ffffff;           
             
             /* Cabecera Rojo Sangre Oscuro */
@@ -65,17 +65,17 @@
             --header-title-color: #c5a059; 
             --card-title-color: #111115;  /* Negro puro en Modo Día */
             
-            /* Cajas internas */
-            --card-roll-bg: #f4f3f0;
-            --card-notes-bg: #f8f7f4;
+            /* Cajas internas de tarjetas */
+            --card-roll-bg: #f5f4f0;
+            --card-notes-bg: #f9f8f5;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
-            --section-title-color: #8b0000; /* Rojo Sangre Oscuro en las cabeceras */
+            --section-title-color: #8b0000; /* Rojo Sangre Oscuro en títulos de disciplina */
 
-            /* Subcategorías Modo Día */
-            --subcat-bg: #ede9fe;
-            --subcat-border: #ddd6fe;
-            --subcat-text: #5b21b6;
-            --subcat-active: #6b21a8;
+            /* Subcategorías Modo Día (Vino Tinto / Granate Profundo) */
+            --subcat-bg: #f0ebe5;
+            --subcat-border: #8c7a6b;
+            --subcat-text: #3d0c13;
+            --subcat-active: #5c101c;
         }
 
         /* =========================================================
@@ -151,13 +151,14 @@
             align-items: center;
         }
 
-        /* TÍTULO PRINCIPAL ÚNICAMENTE EN CINZEL */
+        /* TÍTULO PRINCIPAL ÚNICAMENTE EN CINZEL CON VERSALITAS */
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: 1.75rem;
             color: var(--header-title-color);
-            letter-spacing: 3px;
+            font-variant: small-caps;
+            letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 0px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -210,7 +211,7 @@
 
         body.light-mode .controls {
             background-color: #ffffff;
-            border-color: #8c8a85;
+            border-color: #bcaba0;
             box-shadow: 0 2px 8px rgba(0,0,0,0.06);
         }
 
@@ -365,8 +366,8 @@
         .subcat-btn:hover, .subcat-btn.active {
             background-color: var(--subcat-active);
             color: #ffffff;
-            border-color: #a855f7;
-            box-shadow: 0 0 6px rgba(168, 85, 247, 0.4);
+            border-color: var(--subcat-border);
+            box-shadow: 0 2px 6px rgba(92, 16, 28, 0.3);
         }
 
         .btn-icon {
