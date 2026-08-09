@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compendio de Disciplinas - Vampiro: La Mascarada V5</title>
+
     <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="./iconos/drRol.png">
+    <link rel="icon" type="image/png" href="./icons/drRol.png">
     
-    <!-- FUENTES OFICIALES V5 (Google Fonts) -->
+    <!-- FUENTES OFICIALES V5 (Google Fonts: Cinzel) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
@@ -140,7 +141,7 @@
         }
 
         .header-main-logo {
-            height: 72px;
+            height: 80px; /* Logo principal ampliado */
             max-width: 85vw;
             width: auto;
             object-fit: contain;
@@ -153,11 +154,11 @@
             align-items: center;
         }
 
-        /* TÍTULO PRINCIPAL ÚNICAMENTE EN CINZEL CON VERSALITAS */
+        /* TÍTULO PRINCIPAL EN CINZEL CON VERSALITAS */
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.75rem;
+            font-size: 1.55rem; /* Ligeramente más pequeño para mantener equilibrio */
             color: var(--header-title-color);
             font-variant: small-caps;
             letter-spacing: 2px;
@@ -474,26 +475,28 @@
             gap: 10px;
         }
 
-        /* TÍTULO DEL PODER EN FUENTE BASE CON VERSALITAS (ALTO CONTRASTE) */
+        /* TÍTULO DEL PODER AMPLIADO Y EN VERSALITAS */
         .card-title {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 1.45rem;
             font-variant: small-caps;
             letter-spacing: 0.5px;
             color: var(--card-title-color); /* Blanco en Noche, Negro Puro en Día */
-            line-height: 1.2;
+            line-height: 1.15;
             transition: color 0.3s ease;
         }
 
+        /* REFERENCIA DE LA FUENTE EN LA ESQUINA INFERIOR DERECHA */
         .card-page {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             background-color: rgba(139, 0, 0, 0.2);
             color: #ff8080;
-            padding: 3px 8px;
+            padding: 2px 8px;
             border-radius: 4px;
             border: 1px solid rgba(201, 42, 42, 0.3);
             white-space: nowrap;
+            margin-left: auto;
         }
 
         body.light-mode .card-page {
@@ -548,6 +551,7 @@
             display: flex;
             gap: 6px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .badge {
@@ -639,8 +643,8 @@
                 padding-top: 45px;
             }
             .header-ank-logo { height: 44px; }
-            .header-main-logo { height: 52px; }
-            h1.cabecera-principal { font-size: 1.35rem; }
+            .header-main-logo { height: 60px; }
+            h1.cabecera-principal { font-size: 1.25rem; }
             .grid { grid-template-columns: 1fr; }
             .theme-btn-header {
                 top: 10px;
@@ -724,7 +728,6 @@
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
 
 <script>
-    // ENLACES DIRECTOS A TU HOJA DE GOOGLE SHEETS
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
     const CSV_FUENTES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=1447186823&single=true&output=csv';
 
@@ -748,10 +751,6 @@
     let currentCategory = 'all';
     let currentLevel = 'all';
     let mapaFuentes = {}; 
-
-    // =========================================================
-    // LÓGICA DE TEMA (DÍA / NOCHE)
-    // =========================================================
 
     function initTheme() {
         const savedTheme = localStorage.getItem('vtm-theme');
@@ -787,7 +786,6 @@
         return true;
     }
 
-    // ORDENACIÓN: 1º Nivel, 2º Poder Estándar primero, 3º Nombre
     function ordenarPoderes(a, b) {
         const lvlA = parseInt(a['Nivel'] || a['NIVEL'] || '0', 10) || 0;
         const lvlB = parseInt(b['Nivel'] || b['NIVEL'] || '0', 10) || 0;
@@ -1035,7 +1033,6 @@
                     <div>
                         <div class="card-header">
                             <div class="card-title">${nombrePoder}</div>
-                            ${fuenteCompleta ? `<div class="card-page">${fuenteCompleta}</div>` : ''}
                         </div>
                         ${metaText ? `<div class="card-meta">${metaText}</div>` : ''}
                         ${rollHTML}
@@ -1046,6 +1043,7 @@
                         ${badgeTipo}
                         ${badgeDuracion}
                         <span class="badge">${disc}</span>
+                        ${fuenteCompleta ? `<div class="card-page">${fuenteCompleta}</div>` : ''}
                     </div>
                 `;
 
