@@ -18,45 +18,57 @@
             --card-border: #2a2a32;
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
-            --accent-gold: #c5a059;
+            --accent-gold: #c5a059; /* Dorado Oficial V5 */
             --text-main: #e1e1e6;
             --text-muted: #a0a0b0;
             --tag-bg: #25252e;
             --input-bg: #0f0f12;
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
-            --header-title-color: #ffffff;
+            --header-title-color: #c5a059; /* Texto del título en dorado */
             --card-title-color: #ffffff;
             --card-roll-bg: rgba(255, 255, 255, 0.05);
             --card-notes-bg: rgba(255, 255, 255, 0.03);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
-            --section-title-color: #c5a059; /* Dorado en Noche */
+            --section-title-color: #c5a059;
+            
+            /* Subcategorías */
+            --subcat-bg: #1f1b2e;
+            --subcat-border: #4a3b69;
+            --subcat-text: #c4b5fd;
+            --subcat-active: #6b21a8;
         }
 
-        /* MODO DÍA / CLARO ("Rojo Sangre Oscuro en Cabecera") */
+        /* MODO DÍA / CLARO ("Gris Pergamino Neutro") */
         body.light-mode {
-            --bg-color: #e4dfd5;            /* Fondo pergamino general */
-            --card-bg: #ffffff;            /* Blanco limpio para tarjetas */
-            --card-border: #c8c0b0;        /* Borde sutil */
+            --bg-color: #d2ccc1;            /* Gris neutro pergamino más gris que beige */
+            --card-bg: #ffffff;            /* Tarjetas blanco puro */
+            --card-border: #b3ac9f;        /* Borde sutil neutro */
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #8d6722;
-            --text-main: #222226;          /* Texto legible */
+            --text-main: #222226;          
             --text-muted: #585760;
-            --tag-bg: #f0ebe1;
+            --tag-bg: #e5dfd5;
             --input-bg: #ffffff;           
             
-            /* Cabecera Rojo Sangre Oscuro sin degradado */
+            /* Cabecera Rojo Sangre Oscuro */
             --header-bg: #2b0408;
             --header-border: #7a0000;
-            --header-title-color: #ffffff;
+            --header-title-color: #c5a059; /* Título en dorado también en modo día */
             --card-title-color: #111115;
             
             /* Cajas internas */
-            --card-roll-bg: #f5f2eb;
-            --card-notes-bg: #f8f6f0;
+            --card-roll-bg: #f4f1ea;
+            --card-notes-bg: #f7f5f0;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
-            --section-title-color: #8b0000; /* Rojo Sangre Oscuro en Día */
+            --section-title-color: #8b0000; /* Rojo Sangre Oscuro para nombres de disciplina */
+
+            /* Subcategorías Modo Día */
+            --subcat-bg: #ede9fe;
+            --subcat-border: #ddd6fe;
+            --subcat-text: #5b21b6;
+            --subcat-active: #6b21a8;
         }
 
         /* =========================================================
@@ -84,7 +96,7 @@
         }
 
         /* =========================================================
-           CABECERA RESPONSIVE CON NUEVO LOGO
+           CABECERA RESPONSIVE AJUSTADA
            ========================================================= */
 
         header {
@@ -107,20 +119,21 @@
             align-items: center;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             max-width: 100%;
         }
 
         .header-ank-logo {
-            height: 52px;
+            height: 55px;
             width: auto;
             object-fit: contain;
             filter: var(--logo-filter);
         }
 
+        /* LOGO MÁS GRANDE */
         .header-main-logo {
-            height: 58px;
-            max-width: 75vw;
+            height: 72px; /* Aumentado para mayor presencia */
+            max-width: 85vw;
             width: auto;
             object-fit: contain;
             filter: var(--logo-filter);
@@ -132,25 +145,26 @@
             align-items: center;
         }
 
+        /* TEXTO DE COMPENDIO UN POCO MÁS PEQUEÑO Y DORADO */
         h1 {
             font-family: 'Georgia', serif;
-            font-size: 2.1rem;
-            color: var(--header-title-color);
+            font-size: 1.75rem; /* Ajustado para mejor proporción */
+            color: var(--header-title-color); /* Color Dorado #c5a059 */
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 2px;
-            text-shadow: 0 2px 10px rgba(201, 42, 42, 0.4);
+            margin-bottom: 3px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             line-height: 1.15;
             transition: color 0.3s ease;
         }
 
         .subtitle {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--accent-gold);
             font-style: italic;
+            opacity: 0.9;
         }
 
-        /* Botón Día/Noche en la Esquina Superior Derecha de la Cabecera */
         .theme-btn-header {
             position: absolute;
             top: 15px;
@@ -195,8 +209,8 @@
         }
 
         body.light-mode .controls {
-            background-color: #fcfbfa;
-            border-color: #dad4c8;
+            background-color: #fbf9f5;
+            border-color: #b8b1a4;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
 
@@ -319,6 +333,42 @@
             border-color: var(--accent-crimson);
         }
 
+        /* ESTILOS DE SUBCATEGORÍA (DINÁMICA Y DIFERENCIADA) */
+        .subcategories-container {
+            display: none;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding-top: 10px;
+            border-top: 1px dotted var(--card-border);
+            align-items: center;
+        }
+
+        .subcat-label {
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .subcat-btn {
+            background-color: var(--subcat-bg);
+            color: var(--subcat-text);
+            border: 1px solid var(--subcat-border);
+            padding: 4px 12px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .subcat-btn:hover, .subcat-btn.active {
+            background-color: var(--subcat-active);
+            color: #ffffff;
+            border-color: #a855f7;
+            box-shadow: 0 0 6px rgba(168, 85, 247, 0.4);
+        }
+
         .btn-icon {
             width: 18px;
             height: 18px;
@@ -390,7 +440,7 @@
         }
 
         body.light-mode .card {
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
         }
 
         .card::before {
@@ -500,7 +550,7 @@
         }
 
         body.light-mode .badge {
-            border-color: #d8d2c5;
+            border-color: #c0b9ac;
             color: #44434a;
         }
 
@@ -579,10 +629,10 @@
             header {
                 padding-top: 45px;
             }
-            .header-ank-logo { height: 42px; }
-            .header-main-logo { height: 46px; }
-            h1 { font-size: 1.5rem; }
-            .subtitle { font-size: 0.88rem; }
+            .header-ank-logo { height: 44px; }
+            .header-main-logo { height: 52px; }
+            h1 { font-size: 1.35rem; }
+            .subtitle { font-size: 0.85rem; }
             .grid { grid-template-columns: 1fr; }
             .theme-btn-header {
                 top: 10px;
@@ -602,6 +652,7 @@
         </div>
         <div class="header-text">
             <h1>Compendio de Disciplinas</h1>
+            <div class="subtitle">Guía de Juego - Vampiro: La Mascarada (5ª Edición)</div>
         </div>
     </header>
 
@@ -628,9 +679,13 @@
             <button class="clear-btn" onclick="clearAllFilters()" title="Limpiar filtros">🧹</button>
         </div>
 
+        <!-- Botonera Principal de Disciplinas -->
         <div class="filter-buttons" id="filterContainer">
             <button class="filter-btn active" data-discipline="all" onclick="filterDiscipline('all')">Todas</button>
         </div>
+
+        <!-- Botonera Secundaria Dinámica de Subcategorías (Oculta por defecto) -->
+        <div class="subcategories-container" id="subcategoriesContainer"></div>
     </div>
 
     <div id="resultsCounter" class="results-counter"></div>
@@ -668,8 +723,9 @@
 
     let datosGlobales = [];
     let currentDiscipline = 'all';
+    let currentCategory = 'all';
     let currentLevel = 'all';
-    let mapaFuentes = {}; // Diccionario para relacionar Nombre Corto (Col. A) -> Nombre Largo (Col. B)
+    let mapaFuentes = {}; 
 
     // =========================================================
     // LÓGICA DE TEMA (DÍA / NOCHE)
@@ -709,13 +765,34 @@
         return true;
     }
 
-    // Función de Ordenación: 1º por Nivel, 2º Alfabéticamente por Nombre
+    // =========================================================
+    // ORDENACIÓN: 1º Nivel, 2º Poder Estándar primero, 3º Nombre
+    // =========================================================
     function ordenarPoderes(a, b) {
         const lvlA = parseInt(a['Nivel'] || a['NIVEL'] || '0', 10) || 0;
         const lvlB = parseInt(b['Nivel'] || b['NIVEL'] || '0', 10) || 0;
 
         if (lvlA !== lvlB) {
             return lvlA - lvlB;
+        }
+
+        function esPoderEstandar(item) {
+            const cat = (item['Categoría'] || item['Tipo'] || '').toLowerCase().trim();
+            return cat.includes('estándar') || cat.includes('estandar') || cat === 'poder' || cat === '' || cat === '-';
+        }
+
+        const esEstandarA = esPoderEstandar(a);
+        const esEstandarB = esPoderEstandar(b);
+
+        if (esEstandarA && !esEstandarB) return -1;
+        if (!esEstandarA && esEstandarB) return 1;
+
+        if (!esEstandarA && !esEstandarB) {
+            const catA = (a['Categoría'] || a['Tipo'] || '').toLowerCase();
+            const catB = (b['Categoría'] || b['Tipo'] || '').toLowerCase();
+            if (catA !== catB) {
+                return catA.localeCompare(catB, 'es', { sensitivity: 'base' });
+            }
         }
 
         const nomA = (a['Nombre Poder'] || a['Nombre'] || a['NOMBRE'] || '').toLowerCase();
@@ -727,12 +804,10 @@
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
 
-        // 1. Cargar pestaña de Fuentes
         if (CSV_FUENTES_URL && !CSV_FUENTES_URL.includes('TU_ID_AQUI')) {
             cargarFuentesDesdePestana();
         }
 
-        // 2. Cargar datos de Disciplinas
         Papa.parse(CSV_URL, {
             download: true,
             header: true,
@@ -795,8 +870,8 @@
 
                 Object.keys(mapaFuentes).sort().forEach(codigoCorto => {
                     const opt = document.createElement('option');
-                    opt.value = codigoCorto;               // Valor corto para comparar con la BD
-                    opt.textContent = mapaFuentes[codigoCorto]; // Nombre Completo (Columna B) para el select
+                    opt.value = codigoCorto;               
+                    opt.textContent = mapaFuentes[codigoCorto]; 
                     select.appendChild(opt);
                 });
 
@@ -864,7 +939,6 @@
 
             const grid = sec.querySelector('.grid');
 
-            // Ordenar los poderes de esta disciplina: 1º Nivel, 2º Nombre
             agrupados[disc].sort(ordenarPoderes);
 
             agrupados[disc].forEach(item => {
@@ -873,8 +947,8 @@
                 
                 const nombrePoder = item['Nombre Poder'] || item['Nombre'] || item['NOMBRE'] || 'Sin Nombre';
                 const fuenteLibro = item['Fuente_Libro'] || item['Fuente'] || item['FUENTE'] || '';
-                
-                // En la tarjeta usamos el NOMBRE CORTO (fuenteLibro) directamente
+                const categoria = item['Categoría'] || item['Tipo'] || 'Poder Estándar';
+
                 const fuentePagRaw = item['Fuente_Pag'] || item['Página'] || item['PAGINA'] || '';
                 const fuentePag = fuentePagRaw ? `pág. ${fuentePagRaw}` : '';
                 const fuenteCompleta = [fuenteLibro, fuentePag].filter(Boolean).join(', ');
@@ -885,6 +959,7 @@
                 card.setAttribute('data-desc', item['Descripción'] || item['DESCRIPCION'] || '');
                 card.setAttribute('data-source', fuenteLibro);
                 card.setAttribute('data-level', nivelPoder);
+                card.setAttribute('data-category', categoria);
 
                 let metaPartes = [];
                 if (nivelPoder && nivelPoder !== '-') metaPartes.push(`Nivel ${nivelPoder}`);
@@ -923,7 +998,6 @@
                     notesHTML = `<div class="card-notes">📌 ${textoNotas.join(' — ')}</div>`;
                 }
 
-                const categoria = item['Categoría'] || item['Tipo'] || 'Poder';
                 let badgeTipo = `<span class="badge">${categoria}</span>`;
                 if (categoria.toLowerCase().includes('ceremonia')) {
                     badgeTipo = `<span class="badge badge-ceremonia">${categoria}</span>`;
@@ -966,10 +1040,78 @@
 
     function filterDiscipline(discipline) {
         currentDiscipline = discipline;
+        currentCategory = 'all'; // Resetea subcategoría al cambiar disciplina
+        
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => {
-            const btnDisc = btn.getAttribute('data-discipline');
-            if (btnDisc === discipline) {
+            if (btn.getAttribute('data-discipline') === discipline) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        actualizarBotoneraSubcategorias();
+        applyFilters();
+    }
+
+    function actualizarBotoneraSubcategorias() {
+        const subContainer = document.getElementById('subcategoriesContainer');
+        subContainer.innerHTML = '';
+
+        if (currentDiscipline === 'all') {
+            subContainer.style.display = 'none';
+            return;
+        }
+
+        // Obtener poderes de la disciplina seleccionada
+        const poderesDisciplina = datosGlobales.filter(item => {
+            const d = item['Disciplina'] || item['DISCIPLINA'] || '';
+            return d === currentDiscipline;
+        });
+
+        const categoriasSet = new Set();
+        poderesDisciplina.forEach(item => {
+            const cat = item['Categoría'] || item['Tipo'] || 'Poder Estándar';
+            if (cat && cat !== '-') categoriasSet.add(cat.trim());
+        });
+
+        const categoriasUnicas = Array.from(categoriasSet);
+
+        // Si tiene 2 o más categorías, creamos la sub-botonera
+        if (categoriasUnicas.length > 1) {
+            subContainer.style.display = 'flex';
+
+            const label = document.createElement('span');
+            label.className = 'subcat-label';
+            label.textContent = 'Tipo:';
+            subContainer.appendChild(label);
+
+            const btnAll = document.createElement('button');
+            btnAll.className = 'subcat-btn active';
+            btnAll.setAttribute('data-subcat', 'all');
+            btnAll.textContent = 'Todos';
+            btnAll.onclick = () => filterSubcategory('all');
+            subContainer.appendChild(btnAll);
+
+            categoriasUnicas.sort().forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'subcat-btn';
+                btn.setAttribute('data-subcat', cat);
+                btn.textContent = cat;
+                btn.onclick = () => filterSubcategory(cat);
+                subContainer.appendChild(btn);
+            });
+        } else {
+            subContainer.style.display = 'none';
+        }
+    }
+
+    function filterSubcategory(cat) {
+        currentCategory = cat;
+        const buttons = document.querySelectorAll('.subcat-btn');
+        buttons.forEach(btn => {
+            if (btn.getAttribute('data-subcat') === cat) {
                 btn.classList.add('active');
             } else {
                 btn.classList.remove('active');
@@ -982,8 +1124,7 @@
         currentLevel = level;
         const buttons = document.querySelectorAll('.level-btn');
         buttons.forEach(btn => {
-            const btnLvl = btn.getAttribute('data-level');
-            if (btnLvl === level) {
+            if (btn.getAttribute('data-level') === level) {
                 btn.classList.add('active');
             } else {
                 btn.classList.remove('active');
@@ -1004,7 +1145,6 @@
         const selectedSourceRaw = document.getElementById('sourceSelect').value.toLowerCase().trim();
         
         const sections = document.querySelectorAll('.discipline-section');
-
         let totalVisibleCards = 0;
 
         sections.forEach(section => {
@@ -1019,15 +1159,15 @@
                 const desc = card.getAttribute('data-desc').toLowerCase();
                 const source = card.getAttribute('data-source').toLowerCase();
                 const level = card.getAttribute('data-level');
+                const category = card.getAttribute('data-category').toLowerCase();
                 const text = card.textContent.toLowerCase();
 
                 const matchesSearch = !query || name.includes(query) || desc.includes(query) || text.includes(query);
-                
-                let matchesSource = (selectedSourceRaw === 'all' || source === selectedSourceRaw || source.includes(selectedSourceRaw));
-
+                const matchesSource = (selectedSourceRaw === 'all' || source === selectedSourceRaw || source.includes(selectedSourceRaw));
                 const matchesLevel = (currentLevel === 'all' || level.trim() === currentLevel);
+                const matchesCategory = (currentCategory === 'all' || category === currentCategory.toLowerCase());
 
-                if (matchesDiscipline && matchesSearch && matchesSource && matchesLevel) {
+                if (matchesDiscipline && matchesSearch && matchesSource && matchesLevel && matchesCategory) {
                     card.style.display = 'flex';
                     visibleCardsInSection++;
                     totalVisibleCards++;
