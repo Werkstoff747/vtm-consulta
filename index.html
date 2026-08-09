@@ -30,31 +30,33 @@
             --card-roll-bg: rgba(255, 255, 255, 0.05);
             --card-notes-bg: rgba(255, 255, 255, 0.03);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
+            --section-title-color: #c5a059; /* Dorado en Noche */
         }
 
         /* MODO DÍA / CLARO ("Rojo Sangre Oscuro en Cabecera") */
         body.light-mode {
             --bg-color: #e4dfd5;            /* Fondo pergamino general */
-            --card-bg: #f3efe6;            /* Fondo principal de tarjeta */
-            --card-border: #c8c0b0;        /* Borde suave */
+            --card-bg: #ffffff;            /* Blanco limpio para tarjetas */
+            --card-border: #c8c0b0;        /* Borde sutil */
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #8d6722;
-            --text-main: #222226;          /* Texto bien legible */
+            --text-main: #222226;          /* Texto legible */
             --text-muted: #585760;
-            --tag-bg: #e2dcd0;
-            --input-bg: #ffffff;           /* Campos de texto en blanco limpio */
+            --tag-bg: #f0ebe1;
+            --input-bg: #ffffff;           
             
-            /* Fondo sólido rojo sangre oscuro sin degradado a negro */
+            /* Cabecera Rojo Sangre Oscuro sin degradado */
             --header-bg: #2b0408;
             --header-border: #7a0000;
             --header-title-color: #ffffff;
             --card-title-color: #111115;
             
-            /* Cajas internas (Tiradas y Notas): Tono blanco suave/marfil para destacar */
-            --card-roll-bg: rgba(255, 255, 255, 0.75);
-            --card-notes-bg: rgba(255, 255, 255, 0.55);
+            /* Cajas internas */
+            --card-roll-bg: #f5f2eb;
+            --card-notes-bg: #f8f6f0;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
+            --section-title-color: #8b0000; /* Rojo Sangre Oscuro en Día */
         }
 
         /* =========================================================
@@ -81,48 +83,69 @@
             margin: 0 auto;
         }
 
+        /* =========================================================
+           CABECERA RESPONSIVE CON NUEVO LOGO
+           ========================================================= */
+
         header {
             position: relative;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 25px;
-            padding: 35px 20px;
+            padding: 25px 20px 20px 20px;
             border-bottom: 2px solid var(--header-border);
             margin-bottom: 25px;
             background: var(--header-bg);
             border-radius: 8px;
-            text-align: left;
+            text-align: center;
             transition: background 0.3s ease, border-color 0.3s ease;
         }
 
-        .header-logo {
-            height: 75px;
+        .header-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            max-width: 100%;
+        }
+
+        .header-ank-logo {
+            height: 52px;
             width: auto;
             object-fit: contain;
             filter: var(--logo-filter);
-            transition: filter 0.3s ease;
+        }
+
+        .header-main-logo {
+            height: 58px;
+            max-width: 75vw;
+            width: auto;
+            object-fit: contain;
+            filter: var(--logo-filter);
         }
 
         .header-text {
             display: flex;
             flex-direction: column;
+            align-items: center;
         }
 
         h1 {
             font-family: 'Georgia', serif;
-            font-size: 2.3rem;
+            font-size: 2.1rem;
             color: var(--header-title-color);
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 4px;
-            text-shadow: 0 2px 10px rgba(201, 42, 42, 0.3);
-            line-height: 1.1;
+            margin-bottom: 2px;
+            text-shadow: 0 2px 10px rgba(201, 42, 42, 0.4);
+            line-height: 1.15;
             transition: color 0.3s ease;
         }
 
         .subtitle {
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: var(--accent-gold);
             font-style: italic;
         }
@@ -145,6 +168,7 @@
             justify-content: center;
             transition: all 0.2s ease;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            z-index: 10;
         }
 
         .theme-btn-header:hover {
@@ -171,7 +195,7 @@
         }
 
         body.light-mode .controls {
-            background-color: #fcfbfa; /* Tono blanco crema/marfil muy claro para hacer destacar la barra de controles */
+            background-color: #fcfbfa;
             border-color: #dad4c8;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
@@ -295,7 +319,6 @@
             border-color: var(--accent-crimson);
         }
 
-        /* ICONOS DE DISCIPLINAS: Transparencia limpia */
         .btn-icon {
             width: 18px;
             height: 18px;
@@ -326,13 +349,18 @@
         .section-title {
             font-family: 'Georgia', serif;
             font-size: 1.8rem;
-            color: var(--accent-gold);
+            color: var(--section-title-color);
             border-bottom: 1px solid rgba(197, 160, 89, 0.3);
             padding-bottom: 8px;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 12px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.light-mode .section-title {
+            border-bottom-color: rgba(139, 0, 0, 0.25);
         }
 
         .discipline-icon {
@@ -361,6 +389,10 @@
             overflow: hidden;
         }
 
+        body.light-mode .card {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
         .card::before {
             content: '';
             position: absolute;
@@ -374,7 +406,7 @@
         .card:hover {
             transform: translateY(-3px);
             border-color: rgba(201, 42, 42, 0.4);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
         }
 
         .card-header {
@@ -406,7 +438,8 @@
 
         body.light-mode .card-page {
             color: #8b0000;
-            background-color: rgba(139, 0, 0, 0.1);
+            background-color: rgba(139, 0, 0, 0.08);
+            border-color: rgba(139, 0, 0, 0.25);
         }
 
         .card-meta {
@@ -416,7 +449,6 @@
             font-weight: 500;
         }
 
-        /* CAJA DE TIRADA */
         .card-roll {
             font-size: 0.9rem;
             color: var(--text-main);
@@ -431,7 +463,6 @@
 
         body.light-mode .card-roll {
             border-left: 4px solid var(--accent-red);
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
         }
 
         .card-desc {
@@ -440,7 +471,6 @@
             flex-grow: 1;
         }
 
-        /* CAJA DE NOTAS */
         .card-notes {
             font-size: 0.85rem;
             color: var(--text-muted);
@@ -470,8 +500,7 @@
         }
 
         body.light-mode .badge {
-            background-color: #ffffff;
-            border-color: #d2cbbe;
+            border-color: #d8d2c5;
             color: #44434a;
         }
 
@@ -482,9 +511,9 @@
         }
 
         body.light-mode .badge-ceremonia {
-            background-color: rgba(107, 33, 168, 0.1);
+            background-color: rgba(107, 33, 168, 0.08);
             color: #6b21a8;
-            border-color: rgba(107, 33, 168, 0.3);
+            border-color: rgba(107, 33, 168, 0.25);
         }
 
         .badge-ritual {
@@ -494,9 +523,9 @@
         }
 
         body.light-mode .badge-ritual {
-            background-color: rgba(153, 27, 27, 0.1);
+            background-color: rgba(153, 27, 27, 0.08);
             color: #991b1b;
-            border-color: rgba(153, 27, 27, 0.3);
+            border-color: rgba(153, 27, 27, 0.25);
         }
 
         .badge-duration {
@@ -548,13 +577,12 @@
 
         @media (max-width: 600px) {
             header {
-                flex-direction: column;
-                text-align: center;
-                gap: 15px;
                 padding-top: 45px;
             }
-            .header-logo { height: 60px; }
-            h1 { font-size: 1.7rem; }
+            .header-ank-logo { height: 42px; }
+            .header-main-logo { height: 46px; }
+            h1 { font-size: 1.5rem; }
+            .subtitle { font-size: 0.88rem; }
             .grid { grid-template-columns: 1fr; }
             .theme-btn-header {
                 top: 10px;
@@ -568,7 +596,10 @@
 <div class="container">
     <header>
         <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
-        <img src="iconos/logovtm.png" class="header-logo" alt="Logo VTM" onerror="this.onerror=null; this.src='Iconos/logovtm.png';">
+        <div class="header-logos">
+            <img src="iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='Iconos/VTM-Ank.png';">
+            <img src="iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='Iconos/VTM-Logo-Largo.png';">
+        </div>
         <div class="header-text">
             <h1>Compendio de Disciplinas</h1>
             <div class="subtitle">Guía de Juego - Vampiro: La Mascarada (5ª Edición)</div>
@@ -595,7 +626,6 @@
                 <button class="level-btn" data-level="5" onclick="filterLevel('5')">5</button>
             </div>
 
-            <!-- Botón Limpiar Filtros -->
             <button class="clear-btn" onclick="clearAllFilters()" title="Limpiar filtros">🧹</button>
         </div>
 
@@ -680,10 +710,25 @@
         return true;
     }
 
+    // Función de Ordenación: 1º por Nivel, 2º Alfabéticamente por Nombre
+    function ordenarPoderes(a, b) {
+        const lvlA = parseInt(a['Nivel'] || a['NIVEL'] || '0', 10) || 0;
+        const lvlB = parseInt(b['Nivel'] || b['NIVEL'] || '0', 10) || 0;
+
+        if (lvlA !== lvlB) {
+            return lvlA - lvlB;
+        }
+
+        const nomA = (a['Nombre Poder'] || a['Nombre'] || a['NOMBRE'] || '').toLowerCase();
+        const nomB = (b['Nombre Poder'] || b['Nombre'] || b['NOMBRE'] || '').toLowerCase();
+
+        return nomA.localeCompare(nomB, 'es', { sensitivity: 'base' });
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
 
-        // 1. Cargar pestaña de Fuentes primero o en paralelo
+        // 1. Cargar pestaña de Fuentes
         if (CSV_FUENTES_URL && !CSV_FUENTES_URL.includes('TU_ID_AQUI')) {
             cargarFuentesDesdePestana();
         }
@@ -751,12 +796,11 @@
 
                 Object.keys(mapaFuentes).sort().forEach(codigoCorto => {
                     const opt = document.createElement('option');
-                    opt.value = codigoCorto;               // Mantiene el valor corto para filtrar correctamente
-                    opt.textContent = mapaFuentes[codigoCorto]; // Muestra el Nombre Completo (Columna B)
+                    opt.value = codigoCorto;               // Valor corto para comparar con la BD
+                    opt.textContent = mapaFuentes[codigoCorto]; // Nombre Completo (Columna B) para el select
                     select.appendChild(opt);
                 });
 
-                // Si ya teníamos cargados los poderes, volvemos a renderizar para actualizar nombres
                 if (datosGlobales.length > 0) {
                     renderizarCompendio(datosGlobales);
                 }
@@ -821,6 +865,9 @@
 
             const grid = sec.querySelector('.grid');
 
+            // Ordenar los poderes de esta disciplina: 1º Nivel, 2º Nombre
+            agrupados[disc].sort(ordenarPoderes);
+
             agrupados[disc].forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
@@ -828,12 +875,10 @@
                 const nombrePoder = item['Nombre Poder'] || item['Nombre'] || item['NOMBRE'] || 'Sin Nombre';
                 const fuenteLibro = item['Fuente_Libro'] || item['Fuente'] || item['FUENTE'] || '';
                 
-                // Muestra el nombre largo si existe en el mapaFuentes, si no el corto
-                const libroNombreMostrar = mapaFuentes[fuenteLibro] || fuenteLibro;
-
+                // En la tarjeta usamos el NOMBRE CORTO (fuenteLibro) directamente
                 const fuentePagRaw = item['Fuente_Pag'] || item['Página'] || item['PAGINA'] || '';
                 const fuentePag = fuentePagRaw ? `pág. ${fuentePagRaw}` : '';
-                const fuenteCompleta = [libroNombreMostrar, fuentePag].filter(Boolean).join(', ');
+                const fuenteCompleta = [fuenteLibro, fuentePag].filter(Boolean).join(', ');
 
                 const nivelPoder = item['Nivel'] || item['NIVEL'] || '';
 
@@ -979,7 +1024,7 @@
 
                 const matchesSearch = !query || name.includes(query) || desc.includes(query) || text.includes(query);
                 
-                let matchesSource = (selectedSourceRaw === 'all' || source.includes(selectedSourceRaw));
+                let matchesSource = (selectedSourceRaw === 'all' || source === selectedSourceRaw || source.includes(selectedSourceRaw));
 
                 const matchesLevel = (currentLevel === 'all' || level.trim() === currentLevel);
 
