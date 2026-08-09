@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compendio de Disciplinas - Vampiro: La Mascarada V5</title>
+    
+    <!-- FUENTES OFICIALES V5 (Google Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+
     <!-- Librería para procesar el CSV de Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
     <style>
         /* =========================================================
            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
@@ -25,8 +32,8 @@
             --input-bg: #0f0f12;
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
-            --header-title-color: #c5a059; /* Texto del título en dorado */
-            --card-title-color: #ffffff;
+            --header-title-color: #c5a059; /* Título en dorado */
+            --card-title-color: #921416;  /* Rojo sangre V5 */
             --card-roll-bg: rgba(255, 255, 255, 0.05);
             --card-notes-bg: rgba(255, 255, 255, 0.03);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
@@ -41,7 +48,7 @@
 
         /* MODO DÍA / CLARO ("Gris Pergamino Neutro") */
         body.light-mode {
-            --bg-color: #d2ccc1;            /* Gris neutro pergamino más gris que beige */
+            --bg-color: #d2ccc1;            /* Gris neutro pergamino */
             --card-bg: #ffffff;            /* Tarjetas blanco puro */
             --card-border: #b3ac9f;        /* Borde sutil neutro */
             --accent-red: #8b0000;
@@ -55,8 +62,8 @@
             /* Cabecera Rojo Sangre Oscuro */
             --header-bg: #2b0408;
             --header-border: #7a0000;
-            --header-title-color: #c5a059; /* Título en dorado también en modo día */
-            --card-title-color: #111115;
+            --header-title-color: #c5a059; 
+            --card-title-color: #921416;  /* Rojo sangre V5 en modo día */
             
             /* Cajas internas */
             --card-roll-bg: #f4f1ea;
@@ -96,7 +103,7 @@
         }
 
         /* =========================================================
-           CABECERA RESPONSIVE AJUSTADA
+           CABECERA CON FUENTE 'CINZEL'
            ========================================================= */
 
         header {
@@ -130,9 +137,8 @@
             filter: var(--logo-filter);
         }
 
-        /* LOGO MÁS GRANDE */
         .header-main-logo {
-            height: 72px; /* Aumentado para mayor presencia */
+            height: 72px;
             max-width: 85vw;
             width: auto;
             object-fit: contain;
@@ -145,12 +151,13 @@
             align-items: center;
         }
 
-        /* TEXTO DE COMPENDIO UN POCO MÁS PEQUEÑO Y DORADO */
-        h1 {
-            font-family: 'Georgia', serif;
-            font-size: 1.75rem; /* Ajustado para mejor proporción */
-            color: var(--header-title-color); /* Color Dorado #c5a059 */
-            letter-spacing: 2px;
+        /* TÍTULO PRINCIPAL CON 'CINZEL' */
+        h1, .cabecera-principal {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.75rem;
+            color: var(--header-title-color);
+            letter-spacing: 3px;
             text-transform: uppercase;
             margin-bottom: 3px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -159,9 +166,10 @@
         }
 
         .subtitle {
-            font-size: 0.95rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.88rem;
             color: var(--accent-gold);
-            font-style: italic;
+            letter-spacing: 1px;
             opacity: 0.9;
         }
 
@@ -242,6 +250,8 @@
             flex: 1;
             min-width: 200px;
             cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
         }
 
         .search-box input:focus, .source-select:focus {
@@ -256,9 +266,11 @@
         }
 
         .level-label {
+            font-family: 'Cinzel', serif;
             font-size: 0.85rem;
             color: var(--accent-gold);
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         .level-btn {
@@ -313,14 +325,16 @@
         }
 
         .filter-btn {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.5px;
             background-color: var(--tag-bg);
             color: var(--text-muted);
             border: 1px solid var(--card-border);
             padding: 6px 14px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.82rem;
+            font-weight: 700;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
@@ -333,7 +347,7 @@
             border-color: var(--accent-crimson);
         }
 
-        /* ESTILOS DE SUBCATEGORÍA (DINÁMICA Y DIFERENCIADA) */
+        /* SUBCATEGORÍAS CON ESTILO CINZEL */
         .subcategories-container {
             display: none;
             flex-wrap: wrap;
@@ -343,21 +357,25 @@
             align-items: center;
         }
 
-        .subcat-label {
-            font-size: 0.8rem;
+        .subcat-label, .subtitulo-poder {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
             color: var(--accent-gold);
             font-weight: 600;
-            margin-right: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .subcat-btn {
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.5px;
             background-color: var(--subcat-bg);
             color: var(--subcat-text);
             border: 1px solid var(--subcat-border);
             padding: 4px 12px;
             border-radius: 14px;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 600;
             transition: all 0.2s ease;
         }
@@ -382,23 +400,28 @@
         }
 
         .results-counter {
-            font-size: 0.9rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
             color: var(--accent-gold);
             margin-bottom: 20px;
-            font-style: italic;
+            letter-spacing: 1px;
         }
 
         /* =========================================================
-           TARJETAS Y PODERES
+           TARJETAS CON 'CORMORANT GARAMOND' Y 'CINZEL'
            ========================================================= */
 
         .discipline-section {
             margin-bottom: 40px;
         }
 
+        /* TITULAR DE DISCIPLINA CON 'CINZEL' */
         .section-title {
-            font-family: 'Georgia', serif;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
             font-size: 1.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
             color: var(--section-title-color);
             border-bottom: 1px solid rgba(197, 160, 89, 0.3);
             padding-bottom: 8px;
@@ -467,17 +490,20 @@
             gap: 10px;
         }
 
-        .card-title {
-            font-size: 1.3rem;
+        /* TÍTULO DE CADA PODER CON 'CORMORANT GARAMOND' Y ESTILO GÓTICO */
+        .card-title, .titulo-tarjeta-disciplina {
+            font-family: 'Cormorant Garamond', serif;
             font-weight: 700;
-            color: var(--card-title-color);
-            font-variant: small-caps;
-            letter-spacing: 0.5px;
+            font-size: 1.85rem;
+            color: var(--card-title-color); /* #921416 Rojo Sangre V5 */
+            line-height: 1.1;
             transition: color 0.3s ease;
         }
 
         .card-page {
-            font-size: 0.8rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
             background-color: rgba(139, 0, 0, 0.2);
             color: #ff8080;
             padding: 3px 8px;
@@ -493,10 +519,12 @@
         }
 
         .card-meta {
-            font-size: 0.85rem;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
             color: var(--accent-gold);
             margin-bottom: 12px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .card-roll {
@@ -541,8 +569,10 @@
         }
 
         .badge {
-            font-size: 0.75rem;
-            padding: 2px 8px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+            padding: 3px 8px;
             border-radius: 4px;
             background-color: var(--tag-bg);
             color: var(--text-muted);
@@ -585,10 +615,12 @@
         }
 
         #loading {
+            font-family: 'Cinzel', serif;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--accent-gold);
             padding: 40px;
+            letter-spacing: 1px;
         }
 
         .scroll-top-btn {
@@ -617,10 +649,12 @@
         }
 
         footer {
+            font-family: 'Cinzel', serif;
             text-align: center;
             padding: 30px;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
             border-top: 1px solid var(--card-border);
             margin-top: 50px;
         }
@@ -632,7 +666,7 @@
             .header-ank-logo { height: 44px; }
             .header-main-logo { height: 52px; }
             h1 { font-size: 1.35rem; }
-            .subtitle { font-size: 0.85rem; }
+            .subtitle { font-size: 0.8rem; }
             .grid { grid-template-columns: 1fr; }
             .theme-btn-header {
                 top: 10px;
@@ -651,7 +685,7 @@
             <img src="iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='Iconos/VTM-Logo-Largo.png';">
         </div>
         <div class="header-text">
-            <h1>Compendio de Disciplinas</h1>
+            <h1 class="cabecera-principal">Compendio de Disciplinas</h1>
             <div class="subtitle">Guía de Juego - Vampiro: La Mascarada (5ª Edición)</div>
         </div>
     </header>
@@ -684,7 +718,7 @@
             <button class="filter-btn active" data-discipline="all" onclick="filterDiscipline('all')">Todas</button>
         </div>
 
-        <!-- Botonera Secundaria Dinámica de Subcategorías (Oculta por defecto) -->
+        <!-- Botonera Secundaria Dinámica de Subcategorías -->
         <div class="subcategories-container" id="subcategoriesContainer"></div>
     </div>
 
@@ -765,9 +799,7 @@
         return true;
     }
 
-    // =========================================================
     // ORDENACIÓN: 1º Nivel, 2º Poder Estándar primero, 3º Nombre
-    // =========================================================
     function ordenarPoderes(a, b) {
         const lvlA = parseInt(a['Nivel'] || a['NIVEL'] || '0', 10) || 0;
         const lvlB = parseInt(b['Nivel'] || b['NIVEL'] || '0', 10) || 0;
@@ -1040,7 +1072,7 @@
 
     function filterDiscipline(discipline) {
         currentDiscipline = discipline;
-        currentCategory = 'all'; // Resetea subcategoría al cambiar disciplina
+        currentCategory = 'all'; 
         
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => {
@@ -1064,7 +1096,6 @@
             return;
         }
 
-        // Obtener poderes de la disciplina seleccionada
         const poderesDisciplina = datosGlobales.filter(item => {
             const d = item['Disciplina'] || item['DISCIPLINA'] || '';
             return d === currentDiscipline;
@@ -1078,7 +1109,6 @@
 
         const categoriasUnicas = Array.from(categoriasSet);
 
-        // Si tiene 2 o más categorías, creamos la sub-botonera
         if (categoriasUnicas.length > 1) {
             subContainer.style.display = 'flex';
 
