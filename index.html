@@ -141,7 +141,7 @@
         }
 
         .header-main-logo {
-            height: 80px; /* Logo principal ampliado */
+            height: 80px;
             max-width: 85vw;
             width: auto;
             object-fit: contain;
@@ -154,11 +154,10 @@
             align-items: center;
         }
 
-        /* TÍTULO PRINCIPAL EN CINZEL CON VERSALITAS */
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.55rem; /* Ligeramente más pequeño para mantener equilibrio */
+            font-size: 1.55rem;
             color: var(--header-title-color);
             font-variant: small-caps;
             letter-spacing: 2px;
@@ -400,7 +399,6 @@
             margin-bottom: 40px;
         }
 
-        /* TITULAR DE LA DISCIPLINA EN CINZEL */
         .section-title {
             font-family: 'Cinzel', serif;
             font-weight: 700;
@@ -482,27 +480,44 @@
             font-size: 1.45rem;
             font-variant: small-caps;
             letter-spacing: 0.5px;
-            color: var(--card-title-color); /* Blanco en Noche, Negro Puro en Día */
+            color: var(--card-title-color);
             line-height: 1.15;
+            flex-grow: 1;
             transition: color 0.3s ease;
         }
 
-        /* REFERENCIA DE LA FUENTE EN LA ESQUINA INFERIOR DERECHA */
-        .card-page {
-            font-size: 0.78rem;
+        /* REFERENCIA DE LA FUENTE EN LA ESQUINA SUPERIOR DERECHA (2 LÍNEAS) */
+        .card-page-badge {
+            font-size: 0.75rem;
             background-color: rgba(139, 0, 0, 0.2);
             color: #ff8080;
-            padding: 2px 8px;
+            padding: 4px 8px;
             border-radius: 4px;
             border: 1px solid rgba(201, 42, 42, 0.3);
-            white-space: nowrap;
-            margin-left: auto;
+            text-align: right;
+            line-height: 1.2;
+            flex-shrink: 0;
+            max-width: 140px;
         }
 
-        body.light-mode .card-page {
+        body.light-mode .card-page-badge {
             color: #8b0000;
             background-color: rgba(139, 0, 0, 0.08);
             border-color: rgba(139, 0, 0, 0.25);
+        }
+
+        .card-page-badge .book-name {
+            font-weight: 700;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-page-badge .page-num {
+            display: block;
+            opacity: 0.9;
+            font-size: 0.7rem;
         }
 
         .card-meta {
@@ -969,8 +984,7 @@
 
                 const fuentePagRaw = item['Fuente_Pag'] || item['Página'] || item['PAGINA'] || '';
                 const fuentePag = fuentePagRaw ? `pág. ${fuentePagRaw}` : '';
-                const fuenteCompleta = [fuenteLibro, fuentePag].filter(Boolean).join(', ');
-
+                
                 const nivelPoder = item['Nivel'] || item['NIVEL'] || '';
 
                 card.setAttribute('data-name', nombrePoder);
@@ -1029,10 +1043,22 @@
                     badgeDuracion = `<span class="badge badge-duration">⏳ ${duracion}</span>`;
                 }
 
+                // Insignia de fuente en dos líneas para la esquina superior derecha
+                let badgeFuenteHTML = '';
+                if (fuenteLibro) {
+                    badgeFuenteHTML = `
+                        <div class="card-page-badge">
+                            <span class="book-name">${fuenteLibro}</span>
+                            ${fuentePag ? `<span class="page-num">${fuentePag}</span>` : ''}
+                        </div>
+                    `;
+                }
+
                 card.innerHTML = `
                     <div>
                         <div class="card-header">
                             <div class="card-title">${nombrePoder}</div>
+                            ${badgeFuenteHTML}
                         </div>
                         ${metaText ? `<div class="card-meta">${metaText}</div>` : ''}
                         ${rollHTML}
@@ -1043,7 +1069,6 @@
                         ${badgeTipo}
                         ${badgeDuracion}
                         <span class="badge">${disc}</span>
-                        ${fuenteCompleta ? `<div class="card-page">${fuenteCompleta}</div>` : ''}
                     </div>
                 `;
 
