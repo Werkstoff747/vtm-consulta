@@ -111,9 +111,10 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            background-size: 28px;
+            background-size: 26px;
             background-repeat: no-repeat;
             background-position: center;
+            flex-shrink: 0;
         }
 
         /* 1-5 Normales: Vacíos (Gris oscuro) */
@@ -232,36 +233,25 @@
         // 1. Tirar dados normales
         for (let i = 0; i < normalDiceCount; i++) {
             let val = Math.floor(Math.random() * 10) + 1;
-            let tipo = "";
             if (val >= 6) {
                 totalSuccesses++;
                 todosFallos = false;
-                if (val === 10) { normalTens++; tipo = "crit-normal"; }
-                else { tipo = "success-normal"; }
-            } else {
-                tipo = "empty-normal"; // 1-5 vacíos
+                if (val === 10) { normalTens++; }
             }
-            resultadosVisuales.push({ val, isHunger: false, tipo });
+            resultadosVisuales.push({ val, isHunger: false });
         }
 
         // 2. Tirar dados de Ansia (Sangre)
         for (let i = 0; i < hungerDiceCount; i++) {
             let val = Math.floor(Math.random() * 10) + 1;
-            let tipo = "";
             if (val >= 6) {
                 totalSuccesses++;
                 todosFallos = false;
-                if (val === 10) { hungerTens++; tipo = "crit-hunger"; }
-                else { tipo = "success-hunger"; }
+                if (val === 10) { hungerTens++; }
             } else {
-                if (val === 1) { 
-                    hungerOnes++; 
-                    tipo = "fail-hunger-1"; // Calavera 
-                } else { 
-                    tipo = "empty-hunger"; // 2-5 vacíos en rojo
-                }
+                if (val === 1) { hungerOnes++; }
             }
-            resultadosVisuales.push({ val, isHunger: true, tipo });
+            resultadosVisuales.push({ val, isHunger: true });
         }
 
         // Cálculo de éxitos críticos (cada pareja de 10s suma 4 éxitos en total: 2 normales + 2 extra)
@@ -269,7 +259,7 @@
         let paresCriticos = Math.floor(totalTens / 2);
         let exitosFinales = totalSuccesses + (paresCriticos * 2);
 
-        // Renderizado visual en el DOM
+        // Renderizado visual en el DOM (asegurando limpiar y mostrar antes de asignar estilos)
         const container = document.getElementById('diceOutput');
         container.innerHTML = '';
         
@@ -299,6 +289,9 @@
             container.appendChild(dieEl);
         });
 
+        // Mostrar la sección de resultados ahora que ya tiene los dados dentro
+        document.getElementById('rollerResults').style.display = 'block';
+
         // Evaluación de éxito o fracaso frente a la dificultad
         let cumpleDificultad = difficulty > 0 ? (exitosFinales >= difficulty) : null;
         let resumenHTML = `<strong>Éxitos Totales: ${exitosFinales}</strong>`;
@@ -320,7 +313,6 @@
             }
         }
         
-        // El fallo bestial ocurre si la tirada es un fallo total (o no cumple la dificultad) Y hay un 1 en los dados de ansia
         let esFalloPrueba = (difficulty > 0 ? !cumpleDificultad : todosFallos);
         if (esFalloPrueba && hungerOnes > 0) {
             resumenHTML += `<span style="color: #b30000; font-weight: bold;">💀 ¡Fallo Bestial (Bestial Failure)! Consecuencias graves del Ansia.</span>`;
@@ -329,7 +321,6 @@
         }
 
         document.getElementById('rollSummary').innerHTML = resumenHTML;
-        document.getElementById('rollerResults').style.display = 'block';
     }
 </script>
 
