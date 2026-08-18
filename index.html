@@ -49,9 +49,9 @@
             --subcat-active: #6b21a8;
         }
 
-        /* MODO DÍA / CLARO ("Pergamino Frío de la Camarilla") */
+        /* MODO DÍA / CLARO ("Gris Pizarra / Pergamino Neutro") */
         body.light-mode {
-            --bg-color: #e3e0d8;            /* Gris hueso / Pergamino frío */
+            --bg-color: #a8a7a4;            /* Gris neutro */
             --card-bg: #ffffff;            /* Tarjetas blanco puro para destacar */
             --card-border: #bcaba0;        /* Borde sutil en tono piedra/cuero */
             --accent-red: #8b0000;
@@ -141,7 +141,7 @@
         }
 
         .header-main-logo {
-            height: 80px;
+            height: 95px;
             max-width: 85vw;
             width: auto;
             object-fit: contain;
@@ -157,8 +157,8 @@
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.55rem;
-            color: var(--header-title-color);
+            font-size: 1.35rem;
+            color: var(--accent-gold);
             font-variant: small-caps;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -236,7 +236,7 @@
             border: 1px solid var(--card-border);
             border-radius: 6px;
             color: var(--text-main);
-            font-size: 1.2rem;
+            font-size: 1.15rem; /* Letras del buscador ampliadas */
             outline: none;
             transition: border-color 0.2s, background-color 0.3s ease, color 0.3s ease;
         }
@@ -473,11 +473,11 @@
             gap: 10px;
         }
 
-        /* TÍTULO DEL PODER AMPLIADO Y EN VERSALITAS */
+        /* TÍTULO DEL PODER */
         .card-title {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             font-weight: 700;
-            font-size: 1.65rem;
+            font-size: 1.45rem;
             font-variant: small-caps;
             letter-spacing: 0.5px;
             color: var(--card-title-color);
@@ -486,7 +486,7 @@
             transition: color 0.3s ease;
         }
 
-        /* REFERENCIA DE LA FUENTE EN LA ESQUINA SUPERIOR DERECHA (2 LÍNEAS) */
+        /* REFERENCIA DE LA FUENTE EN LA ESQUINA SUPERIOR DERECHA */
         .card-page-badge {
             font-size: 0.75rem;
             background-color: rgba(139, 0, 0, 0.2);
@@ -658,8 +658,8 @@
                 padding-top: 45px;
             }
             .header-ank-logo { height: 44px; }
-            .header-main-logo { height: 60px; }
-            h1.cabecera-principal { font-size: 1.25rem; }
+            .header-main-logo { height: 65px; }
+            h1.cabecera-principal { font-size: 1.15rem; }
             .grid { grid-template-columns: 1fr; }
             .theme-btn-header {
                 top: 10px;
@@ -674,8 +674,8 @@
     <header>
         <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
         <div class="header-logos">
-            <img src="iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='Iconos/VTM-Ank.png';">
-            <img src="iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='Iconos/VTM-Logo-Largo.png';">
+            <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
+            <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo.png';">
         </div>
         <div class="header-text">
             <h1 class="cabecera-principal">Compendio de Disciplinas</h1>
@@ -685,7 +685,7 @@
     <div class="controls">
         <div class="controls-row-top">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar por nombre, palabra clave, efecto..." oninput="applyFilters()">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre (español/inglés), efecto..." oninput="applyFilters()">
             </div>
             
             <select id="sourceSelect" class="source-select" onchange="applyFilters()">
@@ -930,7 +930,7 @@
             const nombreArchivo = ICONOS_MAP[disc];
             let imgHTML = '';
             if (nombreArchivo) {
-                imgHTML = `<img src="iconos/${nombreArchivo}" class="btn-icon" onerror="this.onerror=null; this.src='Iconos/${nombreArchivo}';">`;
+                imgHTML = `<img src="./iconos/${nombreArchivo}" class="btn-icon" onerror="this.onerror=null; this.src='iconos/${nombreArchivo}';">`;
             }
 
             btn.innerHTML = `${imgHTML} <span>${disc}</span>`;
@@ -959,7 +959,7 @@
             const nombreArchivo = ICONOS_MAP[disc];
             let imgHTML = '';
             if (nombreArchivo) {
-                imgHTML = `<img src="iconos/${nombreArchivo}" class="discipline-icon" onerror="this.onerror=null; this.src='Iconos/${nombreArchivo}';">`;
+                imgHTML = `<img src="./iconos/${nombreArchivo}" class="discipline-icon" onerror="this.onerror=null; this.src='iconos/${nombreArchivo}';">`;
             }
 
             sec.innerHTML = `
@@ -979,6 +979,9 @@
                 card.className = 'card';
                 
                 const nombrePoder = item['Nombre Poder'] || item['Nombre'] || item['NOMBRE'] || 'Sin Nombre';
+                // Columna B (Nombre en Inglés, ajusta si tu cabecera es distinta en el CSV)
+                const nombreIngles = item['Nombre Ingles'] || item['Nombre_Ingles'] || item['Columna B'] || '';
+                
                 const fuenteLibro = item['Fuente_Libro'] || item['Fuente'] || item['FUENTE'] || '';
                 const categoria = item['Categoría'] || item['Tipo'] || 'Poder Estándar';
 
@@ -987,9 +990,10 @@
                 
                 const nivelPoder = item['Nivel'] || item['NIVEL'] || '';
 
-                card.setAttribute('data-name', nombrePoder);
-                card.setAttribute('data-desc', item['Descripción'] || item['DESCRIPCION'] || '');
-                card.setAttribute('data-source', fuenteLibro);
+                card.setAttribute('data-name', nombrePoder.toLowerCase());
+                card.setAttribute('data-name-en', nombreIngles.toLowerCase());
+                card.setAttribute('data-desc', (item['Descripción'] || item['DESCRIPCION'] || '').toLowerCase());
+                card.setAttribute('data-source', fuenteLibro.toLowerCase());
                 card.setAttribute('data-level', nivelPoder);
                 card.setAttribute('data-category', categoria);
 
@@ -1043,7 +1047,6 @@
                     badgeDuracion = `<span class="badge badge-duration">⏳ ${duracion}</span>`;
                 }
 
-                // Insignia de fuente en dos líneas para la esquina superior derecha
                 let badgeFuenteHTML = '';
                 if (fuenteLibro) {
                     badgeFuenteHTML = `
@@ -1057,7 +1060,10 @@
                 card.innerHTML = `
                     <div>
                         <div class="card-header">
-                            <div class="card-title">${nombrePoder}</div>
+                            <div class="card-title">
+                                ${nombrePoder}
+                                ${nombreIngles ? `<div style="font-size: 0.9rem; font-weight: normal; color: var(--text-muted); margin-top: 2px;">${nombreIngles}</div>` : ''}
+                            </div>
                             ${badgeFuenteHTML}
                         </div>
                         ${metaText ? `<div class="card-meta">${metaText}</div>` : ''}
@@ -1196,14 +1202,15 @@
             const matchesDiscipline = (currentDiscipline === 'all' || currentDiscipline === secDiscipline);
 
             cards.forEach(card => {
-                const name = card.getAttribute('data-name').toLowerCase();
-                const desc = card.getAttribute('data-desc').toLowerCase();
-                const source = card.getAttribute('data-source').toLowerCase();
+                const name = card.getAttribute('data-name');
+                const nameEn = card.getAttribute('data-name-en');
+                const desc = card.getAttribute('data-desc');
+                const source = card.getAttribute('data-source');
                 const level = card.getAttribute('data-level');
                 const category = card.getAttribute('data-category').toLowerCase();
                 const text = card.textContent.toLowerCase();
 
-                const matchesSearch = !query || name.includes(query) || desc.includes(query) || text.includes(query);
+                const matchesSearch = !query || name.includes(query) || nameEn.includes(query) || desc.includes(query) || text.includes(query);
                 const matchesSource = (selectedSourceRaw === 'all' || source === selectedSourceRaw || source.includes(selectedSourceRaw));
                 const matchesLevel = (currentLevel === 'all' || level.trim() === currentLevel);
                 const matchesCategory = (currentCategory === 'all' || category === currentCategory.toLowerCase());
