@@ -1,0 +1,226 @@
+<div class="dice-roller-v5">
+    <h2>🎲 Lanzador de Dados — Vampiro V5</h2>
+    
+    <div class="roller-inputs">
+        <div class="input-group">
+            <label for="dicePool">Reserva de Dados (Atributo + Habilidad):</label>
+            <input type="number" id="dicePool" min="1" max="20" value="6">
+        </div>
+        <div class="input-group">
+            <label for="hungerLevel">Nivel de Ansia (Hambre 0-5):</label>
+            <input type="number" id="hungerLevel" min="0" max="5" value="2">
+        </div>
+        <button id="rollButton" onclick="lanzarDadosV5()">Lanzar Tirada</button>
+    </div>
+
+    <div id="rollerResults" class="roller-results" style="display: none;">
+        <h3>Resultado de la Tirada</h3>
+        <div id="diceOutput" class="dice-output-grid"></div>
+        <div id="rollSummary" class="roll-summary"></div>
+    </div>
+</div>
+
+<style>
+    .dice-roller-v5 {
+        max-width: 550px;
+        margin: 20px auto;
+        padding: 25px;
+        background: var(--card-bg, #ffffff);
+        border: 2px solid var(--card-border, #8b0000);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        font-family: 'Cinzel', serif;
+    }
+    .dice-roller-v5 h2 {
+        color: #8b0000;
+        text-align: center;
+        margin-top: 0;
+    }
+    .roller-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .input-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.95rem;
+    }
+    .input-group input {
+        width: 60px;
+        padding: 6px;
+        text-align: center;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    #rollButton {
+        background-color: #8b0000;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    #rollButton:hover {
+        background-color: #5c101c;
+    }
+    .roller-results {
+        margin-top: 20px;
+        border-top: 1px dashed #b5a48b;
+        padding-top: 15px;
+    }
+    .dice-output-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        margin: 20px 0;
+    }
+    /* Estilo de los dados usando tus iconos SVG personalizados */
+    .die-icon {
+        width: 48px;
+        height: 48px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    /* Mapeo de los 4 archivos SVG subidos a /iconos/ */
+    .die-normal-success { background-image: url('./iconos/VtMDiceSymbols-01.svg'); } /* Ankh normal (6-9) */
+    .die-normal-crit    { background-image: url('./iconos/VtMDiceSymbols-02.svg'); } /* Ankh con estrellas (10 normal) */
+    .die-hunger-crit    { background-image: url('./iconos/VtMDiceSymbols-03.svg'); } /* Ankh con dos colmillos (10 sangre) */
+    .die-hunger-fail    { background-image: url('./iconos/VtMDiceSymbols-04.svg'); } /* Calavera (1 pifia sangre) */
+    
+    /* Fallbacks visuales por si el SVG carga numéricamente o texto auxiliar */
+    .die-fallback {
+        width: 42px;
+        height: 42px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #fff;
+        font-size: 1.1rem;
+    }
+    .fallback-normal { background: #333; border: 2px solid #555; }
+    .fallback-hunger { background: #8b0000; border: 2px solid #5c101c; }
+
+    .roll-summary {
+        background: rgba(139, 0, 0, 0.05);
+        padding: 12px;
+        border-left: 4px solid #8b0000;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+</style>
+
+<script>
+    function lanzarDadosV5() {
+        let pool = parseInt(document.getElementById('dicePool').value) || 0;
+        let hunger = parseInt(document.getElementById('hungerLevel').value) || 0;
+
+        if (pool < 1) return;
+
+        // Regla V5: Los dados de ansia sustituyen a los dados normales
+        let hungerDiceCount = Math.min(hunger, pool);
+        let normalDiceCount = pool - hungerDiceCount;
+
+        let totalSuccesses = 0;
+        let normalTens = 0;
+        let hungerTens = 0;
+        let hungerOnes = 0;
+        let todosFallos = true;
+        let resultadosVisuales = [];
+
+        // 1. Tirar dados normales
+        for (let i = 0; i < normalDiceCount; i++) {
+            let val = Math.floor(Math.random() * 10) + 1;
+            let tipo = "";
+            if (val >= 6) {
+                totalSuccesses++;
+                todosFallos = false;
+                if (val === 10) { normalTens++; tipo = "crit-normal"; }
+                else { tipo = "success-normal"; }
+            } else {
+                tipo = "fail-normal";
+            }
+            resultadosVisuales.push({ val, isHunger: false, tipo });
+        }
+
+        // 2. Tirar dados de Ansia (Sangre)
+        for (let i = 0; i < hungerDiceCount; i++) {
+            let val = Math.floor(Math.random() * 10) + 1;
+            let tipo = "";
+            if (val >= 6) {
+                totalSuccesses++;
+                todosFallos = false;
+                if (val === 10) { hungerTens++; tipo = "crit-hunger"; }
+                else { tipo = "success-hunger"; }
+            } else {
+                if (val === 1) { hungerOnes++; tipo = "fail-hunger-1"; }
+                else { tipo = "fail-hunger"; }
+            }
+            resultadosVisuales.push({ val, isHunger: true, tipo });
+        }
+
+        // Cálculo de éxitos críticos (cada par de 10s otorga 2 éxitos extra, total 4 por pareja)
+        let totalTens = normalTens + hungerTens;
+        let paresCriticos = Math.floor(totalTens / 2);
+        let exitosFinales = totalSuccesses + (paresCriticos * 2);
+
+        // Renderizado visual en el DOM
+        const container = document.getElementById('diceOutput');
+        container.innerHTML = '';
+        
+        resultadosVisuales.forEach(d => {
+            const dieEl = document.createElement('div');
+            
+            // Asignación directa de tus iconos SVG de la carpeta /iconos/
+            if (!d.isHunger && (d.val >= 6 && d.val <= 9)) {
+                dieEl.className = 'die-icon die-normal-success'; // 01.svg
+            } else if (!d.isHunger && d.val === 10) {
+                dieEl.className = 'die-icon die-normal-crit';    // 02.svg
+            } else if (d.isHunger && d.val === 10) {
+                dieEl.className = 'die-icon die-hunger-crit';    // 03.svg
+            } else if (d.isHunger && d.val === 1) {
+                dieEl.className = 'die-icon die-hunger-fail';    // 04.svg
+            } else {
+                // Fallback visual numérico estándar para fallos normales (1-5) o intermedios de ansia
+                dieEl.className = `die-fallback ${d.isHunger ? 'fallback-hunger' : 'fallback-normal'}`;
+                dieEl.textContent = d.val;
+            }
+            container.appendChild(dieEl);
+        });
+
+        // Resumen narrativo y de mecánicas V5
+        let resumenHTML = `<strong>Éxitos Totales: ${exitosFinales}</strong><br>`;
+        
+        if (paresCriticos > 0) {
+            resumenHTML += `✨ <strong>¡Éxito Crítico!</strong> (${paresCriticos} pareja${paresCriticos > 1 ? 's' : ''} de 10)<br>`;
+            if (hungerTens > 0) {
+                resumenHTML += `<span style="color: #b30000; font-weight: bold;">⚠️ ¡Crítico Conflictivo (Messy Critical)! La Bestia toma el control de tus actos.</span><br>`;
+            }
+        }
+        
+        if (todosFallos && hungerOnes > 0) {
+            resumenHTML += `<span style="color: #b30000; font-weight: bold;">💀 ¡Fallo Bestial (Bestial Failure)! El Ansia se manifiesta de forma catastrófica.</span>`;
+        } else if (todosFallos) {
+            resumenHTML += `<span style="color: #666;">Fallo total en la prueba.</span>`;
+        }
+
+        document.getElementById('rollSummary').innerHTML = resumenHTML;
+        document.getElementById('rollerResults').style.display = 'block';
+    }
+</script>
