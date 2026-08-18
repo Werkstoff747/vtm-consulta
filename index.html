@@ -236,7 +236,7 @@
             border: 1px solid var(--card-border);
             border-radius: 6px;
             color: var(--text-main);
-            font-size: 1.15rem; /* Letras del buscador ampliadas */
+            font-size: 1.15rem;
             outline: none;
             transition: border-color 0.2s, background-color 0.3s ease, color 0.3s ease;
         }
@@ -979,7 +979,9 @@
                 card.className = 'card';
                 
                 const nombrePoder = item['Nombre Poder'] || item['Nombre'] || item['NOMBRE'] || 'Sin Nombre';
-                const nombreIngles = item['Name ENG'] || item['Name_ENG'] || '';
+                
+                /* Lee la columna 'Name' para el índice de búsqueda en inglés de forma invisible */
+                const nombreIngles = item['Name'] || item['NAME'] || '';
                 
                 const fuenteLibro = item['Fuente_Libro'] || item['Fuente'] || item['FUENTE'] || '';
                 const categoria = item['Categoría'] || item['Tipo'] || 'Poder Estándar';
@@ -1056,7 +1058,7 @@
                     `;
                 }
 
-                /* Se mantiene únicamente el nombre principal en castellano, guardando la búsqueda interna en inglés pero sin pintarla visualmente */
+                /* Tarjeta limpia con título principal en castellano */
                 card.innerHTML = `
                     <div>
                         <div class="card-header">
@@ -1200,7 +1202,7 @@
 
             cards.forEach(card => {
                 const name = card.getAttribute('data-name');
-                const nameEn = card.getAttribute('data-name-en'); // Permite buscar en inglés por debajo
+                const nameEn = card.getAttribute('data-name-en'); 
                 const desc = card.getAttribute('data-desc');
                 const source = card.getAttribute('data-source');
                 const level = card.getAttribute('data-level');
