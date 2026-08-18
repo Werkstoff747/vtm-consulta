@@ -102,7 +102,7 @@
             margin: 15px 0;
         }
         
-        /* Estilos visuales de los dados */
+        /* Estilos visuales de los dados con iconos en BLANCO nítido */
         .die-box {
             width: 44px;
             height: 44px;
@@ -122,24 +122,27 @@
             border: 1px solid #222; 
         }
         
-        /* 6-9 Normales: Ankh normal (01.svg) */
+        /* 6-9 Normales: Ankh normal (01.svg) en Blanco */
         .die-normal-success { 
             background-color: #3a3a3a; 
             background-image: url('./iconos/VtMDiceSymbols-01.svg'); 
+            filter: brightness(0) invert(1);
             border: 1px solid #222; 
         }
         
-        /* 10 Normal: Ankh con estrellas (02.svg) */
+        /* 10 Normal: Ankh con estrellas (02.svg) en Blanco */
         .die-normal-crit { 
             background-color: #3a3a3a; 
             background-image: url('./iconos/VtMDiceSymbols-02.svg'); 
+            filter: brightness(0) invert(1);
             border: 1px solid #222; 
         }
 
-        /* 1 de Ansia: Calavera de fallo bestial (04.svg) */
+        /* 1 de Ansia: Calavera de fallo bestial (04.svg) en Blanco */
         .die-hunger-fail-1 { 
             background-color: #8b0000; 
             background-image: url('./iconos/VtMDiceSymbols-04.svg'); 
+            filter: brightness(0) invert(1);
             border: 1px solid #5c101c; 
         }
 
@@ -149,17 +152,19 @@
             border: 1px solid #3c0a12; 
         }
 
-        /* 6-9 de Ansia: Ankh normal en rojo */
+        /* 6-9 de Ansia: Ankh normal en rojo, con el icono en Blanco */
         .die-hunger-success { 
             background-color: #8b0000; 
             background-image: url('./iconos/VtMDiceSymbols-01.svg'); 
+            filter: brightness(0) invert(1);
             border: 1px solid #5c101c; 
         }
 
-        /* 10 de Ansia: Ankh con dos colmillos (03.svg) */
+        /* 10 de Ansia: Ankh con dos colmillos (03.svg) en Blanco */
         .die-hunger-crit { 
             background-color: #8b0000; 
             background-image: url('./iconos/VtMDiceSymbols-03.svg'); 
+            filter: brightness(0) invert(1);
             border: 1px solid #5c101c; 
         }
 
@@ -191,6 +196,10 @@
             <label for="hungerLevel">Nivel de Ansia (Hambre 0-5):</label>
             <input type="number" id="hungerLevel" min="0" max="5" value="2">
         </div>
+        <div class="input-group">
+            <label for="difficulty">Dificultad (Éxitos necesarios - Opcional):</label>
+            <input type="number" id="difficulty" min="0" max="20" value="3">
+        </div>
         <button id="rollButton" onclick="lanzarDadosV5()">Lanzar Tirada</button>
     </div>
 
@@ -205,6 +214,7 @@
     function lanzarDadosV5() {
         let pool = parseInt(document.getElementById('dicePool').value) || 0;
         let hunger = parseInt(document.getElementById('hungerLevel').value) || 0;
+        let difficulty = parseInt(document.getElementById('difficulty').value) || 0;
 
         if (pool < 1) return;
 
@@ -269,28 +279,39 @@
             
             if (!d.isHunger) {
                 if (d.val >= 6 && d.val <= 9) {
-                    dieEl.classList.add('die-normal-success'); // 01.svg
+                    dieEl.classList.add('die-normal-success'); // 01.svg en blanco
                 } else if (d.val === 10) {
-                    dieEl.classList.add('die-normal-crit'); // 02.svg
+                    dieEl.classList.add('die-normal-crit'); // 02.svg en blanco
                 } else {
                     dieEl.classList.add('die-normal-empty'); // 1-5 vacío
                 }
             } else {
                 if (d.val === 1) {
-                    dieEl.classList.add('die-hunger-fail-1'); // 04.svg (Calavera)
+                    dieEl.classList.add('die-hunger-fail-1'); // 04.svg en blanco (Calavera)
                 } else if (d.val >= 2 && d.val <= 5) {
                     dieEl.classList.add('die-hunger-empty'); // 2-5 vacío rojo
                 } else if (d.val >= 6 && d.val <= 9) {
-                    dieEl.classList.add('die-hunger-success'); // 01.svg en rojo
+                    dieEl.classList.add('die-hunger-success'); // 01.svg en blanco
                 } else if (d.val === 10) {
-                    dieEl.classList.add('die-hunger-crit'); // 03.svg (Colmillos)
+                    dieEl.classList.add('die-hunger-crit'); // 03.svg en blanco (Colmillos)
                 }
             }
             container.appendChild(dieEl);
         });
 
-        // Resumen adaptado a la V5
-        let resumenHTML = `<strong>Éxitos Totales: ${exitosFinales}</strong><br>`;
+        // Evaluación de éxito o fracaso frente a la dificultad
+        let cumpleDificultad = difficulty > 0 ? (exitosFinales >= difficulty) : null;
+        let resumenHTML = `<strong>Éxitos Totales: ${exitosFinales}</strong>`;
+        
+        if (difficulty > 0) {
+            if (cumpleDificultad) {
+                resumenHTML += ` <span style="color: #2e7d32; font-weight: bold;">(¡Supera la Dificultad ${difficulty}!)</span><br>`;
+            } else {
+                resumenHTML += ` <span style="color: #c62828; font-weight: bold;">(No alcanza la Dificultad ${difficulty})</span><br>`;
+            }
+        } else {
+            resumenHTML += `<br>`;
+        }
         
         if (paresCriticos > 0) {
             resumenHTML += `✨ <strong>¡Éxito Crítico!</strong> (${paresCriticos} pareja${paresCriticos > 1 ? 's' : ''} de 10)<br>`;
@@ -299,7 +320,9 @@
             }
         }
         
-        if (todosFallos && hungerOnes > 0) {
+        // El fallo bestial ocurre si la tirada es un fallo total (o no cumple la dificultad) Y hay un 1 en los dados de ansia
+        let esFalloPrueba = (difficulty > 0 ? !cumpleDificultad : todosFallos);
+        if (esFalloPrueba && hungerOnes > 0) {
             resumenHTML += `<span style="color: #b30000; font-weight: bold;">💀 ¡Fallo Bestial (Bestial Failure)! Consecuencias graves del Ansia.</span>`;
         } else if (todosFallos) {
             resumenHTML += `<span style="color: #666;">Fallo total.</span>`;
