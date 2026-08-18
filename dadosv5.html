@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lanzador de Dados — Vampiro V5</title>
+    <!-- FUENTE OFICIAL V5 (Cinzel) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Cinzel', serif, Georgia, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .dice-roller-v5 {
+            width: 100%;
+            max-width: 520px;
+            padding: 25px;
+            background: #ffffff;
+            border: 2px solid #8b0000;
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            box-sizing: border-box;
+        }
+        .roller-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px dashed #b5a48b;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .roller-header h2 {
+            color: #8b0000;
+            font-size: 1.25rem;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        .roller-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .input-group input {
+            padding: 8px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: #fff;
+            color: #000;
+        }
+        #rollButton {
+            background-color: #8b0000;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+        #rollButton:hover {
+            background-color: #5c101c;
+        }
+        .roller-results {
+            margin-top: 20px;
+            border-top: 1px dashed #b5a48b;
+            padding-top: 15px;
+        }
+        .roller-results h3 {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            color: #111;
+            margin: 0 0 12px 0;
+            letter-spacing: 0.5px;
+        }
+        .dice-output-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: flex-start;
+            margin: 15px 0;
+        }
+        
+        /* Estilos visuales de los dados */
+        .die-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            background-size: 28px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* 1-5 Normales: Vacíos (Gris oscuro) */
+        .die-normal-empty { 
+            background-color: #3a3a3a; 
+            border: 1px solid #222; 
+        }
+        
+        /* 6-9 Normales: Ankh normal (01.svg) */
+        .die-normal-success { 
+            background-color: #3a3a3a; 
+            background-image: url('./iconos/VtMDiceSymbols-01.svg'); 
+            border: 1px solid #222; 
+        }
+        
+        /* 10 Normal: Ankh con estrellas (02.svg) */
+        .die-normal-crit { 
+            background-color: #3a3a3a; 
+            background-image: url('./iconos/VtMDiceSymbols-02.svg'); 
+            border: 1px solid #222; 
+        }
+
+        /* 1 de Ansia: Calavera de fallo bestial (04.svg) */
+        .die-hunger-fail-1 { 
+            background-color: #8b0000; 
+            background-image: url('./iconos/VtMDiceSymbols-04.svg'); 
+            border: 1px solid #5c101c; 
+        }
+
+        /* 2-5 de Ansia: Vacíos en rojo (burdeos oscuro) */
+        .die-hunger-empty { 
+            background-color: #5c101c; 
+            border: 1px solid #3c0a12; 
+        }
+
+        /* 6-9 de Ansia: Ankh normal en rojo */
+        .die-hunger-success { 
+            background-color: #8b0000; 
+            background-image: url('./iconos/VtMDiceSymbols-01.svg'); 
+            border: 1px solid #5c101c; 
+        }
+
+        /* 10 de Ansia: Ankh con dos colmillos (03.svg) */
+        .die-hunger-crit { 
+            background-color: #8b0000; 
+            background-image: url('./iconos/VtMDiceSymbols-03.svg'); 
+            border: 1px solid #5c101c; 
+        }
+
+        .roll-summary {
+            background: #fdf8f8;
+            padding: 12px;
+            border-left: 4px solid #8b0000;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dice-roller-v5">
+    <div class="roller-header">
+        <span>🎲</span>
+        <h2>Lanzador de Dados — Vampiro V5</h2>
+    </div>
+    
+    <div class="roller-inputs">
+        <div class="input-group">
+            <label for="dicePool">Reserva de Dados (Atributo + Habilidad):</label>
+            <input type="number" id="dicePool" min="1" max="20" value="4">
+        </div>
+        <div class="input-group">
+            <label for="hungerLevel">Nivel de Ansia (Hambre 0-5):</label>
+            <input type="number" id="hungerLevel" min="0" max="5" value="2">
+        </div>
+        <button id="rollButton" onclick="lanzarDadosV5()">Lanzar Tirada</button>
+    </div>
+
+    <div id="rollerResults" class="roller-results" style="display: none;">
+        <h3>Resultado de la Tirada</h3>
+        <div id="diceOutput" class="dice-output-grid"></div>
+        <div id="rollSummary" class="roll-summary"></div>
+    </div>
+</div>
+
+<script>
+    function lanzarDadosV5() {
+        let pool = parseInt(document.getElementById('dicePool').value) || 0;
+        let hunger = parseInt(document.getElementById('hungerLevel').value) || 0;
+
+        if (pool < 1) return;
+
+        // Regla V5: Los dados de ansia sustituyen a los normales
+        let hungerDiceCount = Math.min(hunger, pool);
+        let normalDiceCount = pool - hungerDiceCount;
+
+        let totalSuccesses = 0;
+        let normalTens = 0;
+        let hungerTens = 0;
+        let hungerOnes = 0;
+        let todosFallos = true;
+        let resultadosVisuales = [];
+
+        // 1. Tirar dados normales
+        for (let i = 0; i < normalDiceCount; i++) {
+            let val = Math.floor(Math.random() * 10) + 1;
+            let tipo = "";
+            if (val >= 6) {
+                totalSuccesses++;
+                todosFallos = false;
+                if (val === 10) { normalTens++; tipo = "crit-normal"; }
+                else { tipo = "success-normal"; }
+            } else {
+                tipo = "empty-normal"; // 1-5 vacíos
+            }
+            resultadosVisuales.push({ val, isHunger: false, tipo });
+        }
+
+        // 2. Tirar dados de Ansia (Sangre)
+        for (let i = 0; i < hungerDiceCount; i++) {
+            let val = Math.floor(Math.random() * 10) + 1;
+            let tipo = "";
+            if (val >= 6) {
+                totalSuccesses++;
+                todosFallos = false;
+                if (val === 10) { hungerTens++; tipo = "crit-hunger"; }
+                else { tipo = "success-hunger"; }
+            } else {
+                if (val === 1) { 
+                    hungerOnes++; 
+                    tipo = "fail-hunger-1"; // Calavera 
+                } else { 
+                    tipo = "empty-hunger"; // 2-5 vacíos en rojo
+                }
+            }
+            resultadosVisuales.push({ val, isHunger: true, tipo });
+        }
+
+        // Cálculo de éxitos críticos (cada pareja de 10s suma 4 éxitos en total: 2 normales + 2 extra)
+        let totalTens = normalTens + hungerTens;
+        let paresCriticos = Math.floor(totalTens / 2);
+        let exitosFinales = totalSuccesses + (paresCriticos * 2);
+
+        // Renderizado visual en el DOM
+        const container = document.getElementById('diceOutput');
+        container.innerHTML = '';
+        
+        resultadosVisuales.forEach(d => {
+            const dieEl = document.createElement('div');
+            dieEl.className = 'die-box';
+            
+            if (!d.isHunger) {
+                if (d.val >= 6 && d.val <= 9) {
+                    dieEl.classList.add('die-normal-success'); // 01.svg
+                } else if (d.val === 10) {
+                    dieEl.classList.add('die-normal-crit'); // 02.svg
+                } else {
+                    dieEl.classList.add('die-normal-empty'); // 1-5 vacío
+                }
+            } else {
+                if (d.val === 1) {
+                    dieEl.classList.add('die-hunger-fail-1'); // 04.svg (Calavera)
+                } else if (d.val >= 2 && d.val <= 5) {
+                    dieEl.classList.add('die-hunger-empty'); // 2-5 vacío rojo
+                } else if (d.val >= 6 && d.val <= 9) {
+                    dieEl.classList.add('die-hunger-success'); // 01.svg en rojo
+                } else if (d.val === 10) {
+                    dieEl.classList.add('die-hunger-crit'); // 03.svg (Colmillos)
+                }
+            }
+            container.appendChild(dieEl);
+        });
+
+        // Resumen adaptado a la V5
+        let resumenHTML = `<strong>Éxitos Totales: ${exitosFinales}</strong><br>`;
+        
+        if (paresCriticos > 0) {
+            resumenHTML += `✨ <strong>¡Éxito Crítico!</strong> (${paresCriticos} pareja${paresCriticos > 1 ? 's' : ''} de 10)<br>`;
+            if (hungerTens > 0) {
+                resumenHTML += `<span style="color: #b30000; font-weight: bold;">⚠️ ¡Crítico Conflictivo (Messy Critical)! La Bestia toma el control.</span><br>`;
+            }
+        }
+        
+        if (todosFallos && hungerOnes > 0) {
+            resumenHTML += `<span style="color: #b30000; font-weight: bold;">💀 ¡Fallo Bestial (Bestial Failure)! Consecuencias graves del Ansia.</span>`;
+        } else if (todosFallos) {
+            resumenHTML += `<span style="color: #666;">Fallo total.</span>`;
+        }
+
+        document.getElementById('rollSummary').innerHTML = resumenHTML;
+        document.getElementById('rollerResults').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
