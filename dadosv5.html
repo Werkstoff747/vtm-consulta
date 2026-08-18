@@ -2,98 +2,197 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lanzador de Dados — Vampiro V5</title>
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="./iconos/drRol.png">
+
     <!-- FUENTE OFICIAL V5 (Cinzel) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* =========================================================
+           VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
+           ========================================================= */
+
+        /* MODO NOCHE / OSCURO (Predeterminado - "Medianoche Vampírica") */
+        :root {
+            --bg-color: #0f0f12;
+            --card-bg: #18181c;
+            --card-border: #2a2a32;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #c5a059;
+            --text-main: #e1e1e6;
+            --text-muted: #a0a0b0;
+            --input-bg: #0f0f12;
+            --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
+            --header-border: #8b0000;
+            --summary-bg: rgba(139, 0, 0, 0.1);
+        }
+
+        /* MODO DÍA / CLARO ("Pergamino Frío / Camarilla") */
+        body.light-mode {
+            --bg-color: #e3e0d8;
+            --card-bg: #ffffff;
+            --card-border: #bcaba0;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #8d6722;
+            --text-main: #1f1f22;
+            --text-muted: #555459;
+            --input-bg: #ffffff;
+            --header-bg: #2b0408;
+            --header-border: #7a0000;
+            --summary-bg: #fdf8f8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            background-color: #1a1a1a;
-            font-family: 'Cinzel', serif, Georgia, serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+
         .dice-roller-v5 {
             width: 100%;
             max-width: 520px;
             padding: 25px;
-            background: #ffffff;
-            border: 2px solid #8b0000;
-            border-radius: 6px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            box-sizing: border-box;
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            position: relative;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
+
+        /* BOTÓN DE TEMA EN LA ESQUINA SUPERIOR DERECHA */
+        .theme-btn-header {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .theme-btn-header:hover {
+            background-color: var(--accent-red);
+            color: #ffffff;
+            border-color: var(--accent-crimson);
+            transform: scale(1.08);
+        }
+
         .roller-header {
             display: flex;
             align-items: center;
             gap: 10px;
-            border-bottom: 1px dashed #b5a48b;
+            border-bottom: 1px dashed var(--card-border);
             padding-bottom: 12px;
             margin-bottom: 20px;
+            padding-right: 40px; /* Espacio para que no choque con el botón de tema */
         }
+
         .roller-header h2 {
-            color: #8b0000;
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
             font-size: 1.25rem;
             margin: 0;
             letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
+
         .roller-inputs {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
+
         .input-group {
             display: flex;
             flex-direction: column;
             gap: 5px;
             font-size: 0.8rem;
             font-weight: bold;
-            color: #333;
+            color: var(--text-main);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
         .input-group input {
-            padding: 8px;
+            padding: 10px;
             font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background: #fff;
-            color: #000;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            background: var(--input-bg);
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s;
         }
+
+        .input-group input:focus {
+            border-color: var(--accent-crimson);
+        }
+
         #rollButton {
-            background-color: #8b0000;
+            background-color: var(--accent-red);
             color: white;
             border: none;
             padding: 12px;
             font-size: 1rem;
             font-weight: bold;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             transition: background 0.2s;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-top: 5px;
         }
+
         #rollButton:hover {
-            background-color: #5c101c;
+            background-color: var(--accent-crimson);
         }
+
         .roller-results {
             margin-top: 20px;
-            border-top: 1px dashed #b5a48b;
+            border-top: 1px dashed var(--card-border);
             padding-top: 15px;
         }
+
         .roller-results h3 {
+            font-family: 'Cinzel', serif;
             font-size: 0.9rem;
             text-transform: uppercase;
-            color: #111;
+            color: var(--text-main);
             margin: 0 0 12px 0;
             letter-spacing: 0.5px;
         }
+
         .dice-output-grid {
             display: flex;
             flex-wrap: wrap;
@@ -125,27 +224,28 @@
             width: 28px;
             height: 28px;
             object-fit: contain;
-            /* Si tus imágenes ya son blancas, elimina la línea de abajo (filter) */
             filter: brightness(0) invert(1);
         }
 
         .roll-summary {
-            background: #fdf8f8;
+            background: var(--summary-bg);
             padding: 12px;
-            border-left: 4px solid #8b0000;
+            border-left: 4px solid var(--accent-red);
             border-radius: 4px;
             font-size: 0.9rem;
             line-height: 1.5;
-            color: #222;
+            color: var(--text-main);
         }
     </style>
 </head>
 <body>
 
 <div class="dice-roller-v5">
+    <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
+    
     <div class="roller-header">
         <span>🎲</span>
-        <h2>Lanzador de Dados — Vampiro V5</h2>
+        <h2>Lanzador de Dados</h2>
     </div>
     
     <div class="roller-inputs">
@@ -172,6 +272,37 @@
 </div>
 
 <script>
+    // Gestión del Tema Día/Noche sincronizada con localStorage
+    function initTheme() {
+        const savedTheme = localStorage.getItem('vtm-theme');
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            if (themeBtn) themeBtn.textContent = '☀️';
+        } else {
+            document.body.classList.remove('light-mode');
+            if (themeBtn) themeBtn.textContent = '🌙';
+        }
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        const themeBtn = document.getElementById('themeToggleBtn');
+        body.classList.toggle('light-mode');
+
+        if (body.classList.contains('light-mode')) {
+            themeBtn.textContent = '☀️';
+            localStorage.setItem('vtm-theme', 'light');
+        } else {
+            themeBtn.textContent = '🌙';
+            localStorage.setItem('vtm-theme', 'dark');
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+    });
+
     function lanzarDadosV5() {
         let pool = parseInt(document.getElementById('dicePool').value) || 0;
         let hunger = parseInt(document.getElementById('hungerLevel').value) || 0;
@@ -179,7 +310,6 @@
 
         if (pool < 1) return;
 
-        // Regla V5: Los dados de ansia sustituyen a los normales
         let hungerDiceCount = Math.min(hunger, pool);
         let normalDiceCount = pool - hungerDiceCount;
 
@@ -214,12 +344,10 @@
             resultadosVisuales.push({ val, isHunger: true });
         }
 
-        // Cálculo de éxitos críticos (cada pareja de 10s suma 4 éxitos en total: 2 normales + 2 extra)
         let totalTens = normalTens + hungerTens;
         let paresCriticos = Math.floor(totalTens / 2);
         let exitosFinales = totalSuccesses + (paresCriticos * 2);
 
-        // Renderizado visual en el DOM usando elementos <img> directos
         const container = document.getElementById('diceOutput');
         container.innerHTML = '';
         
@@ -232,29 +360,28 @@
             if (!d.isHunger) {
                 if (d.val >= 6 && d.val <= 9) {
                     dieEl.classList.add('bg-normal-dice');
-                    iconoSrc = './iconos/VtMDiceSymbols-01.svg'; // Ankh normal
+                    iconoSrc = './iconos/VtMDiceSymbols-01.svg';
                 } else if (d.val === 10) {
                     dieEl.classList.add('bg-normal-dice');
-                    iconoSrc = './iconos/VtMDiceSymbols-02.svg'; // Ankh con estrellas
+                    iconoSrc = './iconos/VtMDiceSymbols-02.svg';
                 } else {
-                    dieEl.classList.add('bg-normal-empty'); // 1-5 vacío (sin icono)
+                    dieEl.classList.add('bg-normal-empty');
                 }
             } else {
                 if (d.val === 1) {
                     dieEl.classList.add('bg-hunger-dice');
-                    iconoSrc = './iconos/VtMDiceSymbols-04.svg'; // Calavera
+                    iconoSrc = './iconos/VtMDiceSymbols-04.svg';
                 } else if (d.val >= 2 && d.val <= 5) {
-                    dieEl.classList.add('bg-hunger-empty'); // 2-5 vacío en rojo (sin icono)
+                    dieEl.classList.add('bg-hunger-empty');
                 } else if (d.val >= 6 && d.val <= 9) {
                     dieEl.classList.add('bg-hunger-dice');
-                    iconoSrc = './iconos/VtMDiceSymbols-01.svg'; // Ankh normal en rojo
+                    iconoSrc = './iconos/VtMDiceSymbols-01.svg';
                 } else if (d.val === 10) {
                     dieEl.classList.add('bg-hunger-dice');
-                    iconoSrc = './iconos/VtMDiceSymbols-03.svg'; // Ankh con colmillos
+                    iconoSrc = './iconos/VtMDiceSymbols-03.svg';
                 }
             }
 
-            // Si hay icono asignado, lo insertamos como imagen HTML limpia
             if (iconoSrc) {
                 const img = document.createElement('img');
                 img.src = iconoSrc;
@@ -265,10 +392,8 @@
             container.appendChild(dieEl);
         });
 
-        // Mostrar sección de resultados
         document.getElementById('rollerResults').style.display = 'block';
 
-        // Evaluación de éxito o fracaso frente a la dificultad
         let cumpleDificultad = difficulty > 0 ? (exitosFinales >= difficulty) : null;
         let resumenHTML = `<strong>Éxitos Totales: ${exitosFinales}</strong>`;
         
