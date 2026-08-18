@@ -1008,12 +1008,18 @@
                     `;
                 }
 
+                let subtituloInglesHTML = '';
+                if (item.nombreIngles && item.nombreIngles !== '-') {
+                    subtituloInglesHTML = `<div style="font-size: 0.9rem; color: var(--text-muted); opacity: 0.75; font-style: italic; margin-top: -4px; margin-bottom: 8px;">(${item.nombreIngles})</div>`;
+                }
+
                 card.innerHTML = `
                     <div>
                         <div class="card-header">
                             <div class="card-title">${item.nombre}</div>
                             ${badgeFuenteHTML}
                         </div>
+                        ${subtituloInglesHTML}
                         ${metaText ? `<div class="card-meta">${metaText}</div>` : ''}
                         ${rollHTML}
                         <div class="card-desc">${item.descripcion}</div>
