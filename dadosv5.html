@@ -102,7 +102,7 @@
             margin: 15px 0;
         }
         
-        /* Estilos visuales de los dados con iconos en BLANCO nítido */
+        /* Contenedor individual del dado */
         .die-box {
             width: 44px;
             height: 44px;
@@ -111,62 +111,22 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            background-size: 26px;
-            background-repeat: no-repeat;
-            background-position: center;
             flex-shrink: 0;
         }
 
-        /* 1-5 Normales: Vacíos (Gris oscuro) */
-        .die-normal-empty { 
-            background-color: #3a3a3a; 
-            border: 1px solid #222; 
-        }
-        
-        /* 6-9 Normales: Ankh normal (01.svg) en Blanco */
-        .die-normal-success { 
-            background-color: #3a3a3a; 
-            background-image: url('./iconos/VtMDiceSymbols-01.svg'); 
-            filter: brightness(0) invert(1);
-            border: 1px solid #222; 
-        }
-        
-        /* 10 Normal: Ankh con estrellas (02.svg) en Blanco */
-        .die-normal-crit { 
-            background-color: #3a3a3a; 
-            background-image: url('./iconos/VtMDiceSymbols-02.svg'); 
-            filter: brightness(0) invert(1);
-            border: 1px solid #222; 
-        }
+        /* Colores de fondo de los dados */
+        .bg-normal-empty { background-color: #3a3a3a; border: 1px solid #222; }
+        .bg-normal-dice { background-color: #3a3a3a; border: 1px solid #222; }
+        .bg-hunger-empty { background-color: #5c101c; border: 1px solid #3c0a12; }
+        .bg-hunger-dice { background-color: #8b0000; border: 1px solid #5c101c; }
 
-        /* 1 de Ansia: Calavera de fallo bestial (04.svg) en Blanco */
-        .die-hunger-fail-1 { 
-            background-color: #8b0000; 
-            background-image: url('./iconos/VtMDiceSymbols-04.svg'); 
+        /* Tamaño y filtro blanco para las imágenes de los iconos */
+        .die-icon {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            /* Si tus imágenes ya son blancas, elimina la línea de abajo (filter) */
             filter: brightness(0) invert(1);
-            border: 1px solid #5c101c; 
-        }
-
-        /* 2-5 de Ansia: Vacíos en rojo (burdeos oscuro) */
-        .die-hunger-empty { 
-            background-color: #5c101c; 
-            border: 1px solid #3c0a12; 
-        }
-
-        /* 6-9 de Ansia: Ankh normal en rojo, con el icono en Blanco */
-        .die-hunger-success { 
-            background-color: #8b0000; 
-            background-image: url('./iconos/VtMDiceSymbols-01.svg'); 
-            filter: brightness(0) invert(1);
-            border: 1px solid #5c101c; 
-        }
-
-        /* 10 de Ansia: Ankh con dos colmillos (03.svg) en Blanco */
-        .die-hunger-crit { 
-            background-color: #8b0000; 
-            background-image: url('./iconos/VtMDiceSymbols-03.svg'); 
-            filter: brightness(0) invert(1);
-            border: 1px solid #5c101c; 
         }
 
         .roll-summary {
@@ -259,7 +219,7 @@
         let paresCriticos = Math.floor(totalTens / 2);
         let exitosFinales = totalSuccesses + (paresCriticos * 2);
 
-        // Renderizado visual en el DOM (asegurando limpiar y mostrar antes de asignar estilos)
+        // Renderizado visual en el DOM usando elementos <img> directos
         const container = document.getElementById('diceOutput');
         container.innerHTML = '';
         
@@ -267,29 +227,45 @@
             const dieEl = document.createElement('div');
             dieEl.className = 'die-box';
             
+            let iconoSrc = '';
+            
             if (!d.isHunger) {
                 if (d.val >= 6 && d.val <= 9) {
-                    dieEl.classList.add('die-normal-success'); // 01.svg en blanco
+                    dieEl.classList.add('bg-normal-dice');
+                    iconoSrc = './iconos/VtMDiceSymbols-01.svg'; // Ankh normal
                 } else if (d.val === 10) {
-                    dieEl.classList.add('die-normal-crit'); // 02.svg en blanco
+                    dieEl.classList.add('bg-normal-dice');
+                    iconoSrc = './iconos/VtMDiceSymbols-02.svg'; // Ankh con estrellas
                 } else {
-                    dieEl.classList.add('die-normal-empty'); // 1-5 vacío
+                    dieEl.classList.add('bg-normal-empty'); // 1-5 vacío (sin icono)
                 }
             } else {
                 if (d.val === 1) {
-                    dieEl.classList.add('die-hunger-fail-1'); // 04.svg en blanco (Calavera)
+                    dieEl.classList.add('bg-hunger-dice');
+                    iconoSrc = './iconos/VtMDiceSymbols-04.svg'; // Calavera
                 } else if (d.val >= 2 && d.val <= 5) {
-                    dieEl.classList.add('die-hunger-empty'); // 2-5 vacío rojo
+                    dieEl.classList.add('bg-hunger-empty'); // 2-5 vacío en rojo (sin icono)
                 } else if (d.val >= 6 && d.val <= 9) {
-                    dieEl.classList.add('die-hunger-success'); // 01.svg en blanco
+                    dieEl.classList.add('bg-hunger-dice');
+                    iconoSrc = './iconos/VtMDiceSymbols-01.svg'; // Ankh normal en rojo
                 } else if (d.val === 10) {
-                    dieEl.classList.add('die-hunger-crit'); // 03.svg en blanco (Colmillos)
+                    dieEl.classList.add('bg-hunger-dice');
+                    iconoSrc = './iconos/VtMDiceSymbols-03.svg'; // Ankh con colmillos
                 }
             }
+
+            // Si hay icono asignado, lo insertamos como imagen HTML limpia
+            if (iconoSrc) {
+                const img = document.createElement('img');
+                img.src = iconoSrc;
+                img.className = 'die-icon';
+                dieEl.appendChild(img);
+            }
+
             container.appendChild(dieEl);
         });
 
-        // Mostrar la sección de resultados ahora que ya tiene los dados dentro
+        // Mostrar sección de resultados
         document.getElementById('rollerResults').style.display = 'block';
 
         // Evaluación de éxito o fracaso frente a la dificultad
