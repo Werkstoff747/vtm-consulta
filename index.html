@@ -28,7 +28,7 @@
             --card-border: #2a2a32;
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
-            --accent-gold: #c5a059; /* Dorado Oficial V5 */
+            --accent-gold: #c5a059;
             --text-main: #e1e1e6;
             --text-muted: #a0a0b0;
             --tag-bg: #25252e;
@@ -36,54 +36,48 @@
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
             --header-title-color: #c5a059;
-            --card-title-color: #ffffff;  /* Blanco en Modo Noche */
+            --card-title-color: #ffffff;
             --card-roll-bg: rgba(255, 255, 255, 0.05);
             --card-notes-bg: rgba(255, 255, 255, 0.03);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
             --section-title-color: #c5a059;
             
-            /* Subcategorías Modo Noche */
             --subcat-bg: #1f1b2e;
             --subcat-border: #4a3b69;
             --subcat-text: #c4b5fd;
             --subcat-active: #6b21a8;
+            --summary-bg: rgba(139, 0, 0, 0.1);
         }
 
         /* MODO DÍA / CLARO ("Gris Pizarra / Pergamino Neutro") */
         body.light-mode {
-            --bg-color: #a8a7a4;            /* Gris neutro */
-            --card-bg: #ffffff;            /* Tarjetas blanco puro para destacar */
-            --card-border: #bcaba0;        /* Borde sutil en tono piedra/cuero */
+            --bg-color: #a8a7a4;
+            --card-bg: #ffffff;
+            --card-border: #bcaba0;
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #8d6722;
-            --text-main: #1f1f22;          /* Texto oscuro nítido */
+            --text-main: #1f1f22;
             --text-muted: #555459;
             --tag-bg: #f2f0eb;
             --input-bg: #ffffff;           
             
-            /* Cabecera Rojo Sangre Oscuro */
             --header-bg: #2b0408;
             --header-border: #7a0000;
             --header-title-color: #c5a059; 
-            --card-title-color: #111115;  /* Negro puro en Modo Día */
+            --card-title-color: #111115;
             
-            /* Cajas internas de tarjetas */
             --card-roll-bg: #f5f4f0;
             --card-notes-bg: #f9f8f5;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
-            --section-title-color: #8b0000; /* Rojo Sangre Oscuro en títulos de disciplina */
+            --section-title-color: #8b0000;
 
-            /* Subcategorías Modo Día (Vino Tinto / Granate Profundo) */
             --subcat-bg: #f0ebe5;
             --subcat-border: #8c7a6b;
             --subcat-text: #3d0c13;
             --subcat-active: #5c101c;
+            --summary-bg: #fdf8f8;
         }
-
-        /* =========================================================
-           ESTILOS GENERALES Y ESTRUCTURA
-           ========================================================= */
 
         * {
             box-sizing: border-box;
@@ -105,10 +99,7 @@
             margin: 0 auto;
         }
 
-        /* =========================================================
-           CABECERA
-           ========================================================= */
-
+        /* CABECERA */
         header {
             position: relative;
             display: flex;
@@ -146,12 +137,6 @@
             width: auto;
             object-fit: contain;
             filter: var(--logo-filter);
-        }
-
-        .header-text {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         h1.cabecera-principal {
@@ -195,10 +180,7 @@
             transform: scale(1.08);
         }
 
-        /* =========================================================
-           CONTROLES Y FILTROS
-           ========================================================= */
-
+        /* CONTROLES Y FILTROS */
         .controls {
             background: var(--card-bg);
             padding: 20px;
@@ -391,10 +373,7 @@
             font-style: italic;
         }
 
-        /* =========================================================
-           TARJETAS Y TITULARES
-           ========================================================= */
-
+        /* TARJETAS Y TITULARES */
         .discipline-section {
             margin-bottom: 40px;
         }
@@ -473,7 +452,6 @@
             gap: 10px;
         }
 
-        /* TÍTULO DEL PODER */
         .card-title {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             font-weight: 700;
@@ -486,21 +464,19 @@
             transition: color 0.3s ease;
         }
 
-        /* CUADRO ROJO VINO PARA EL NIVEL */
         .card-level-badge {
             display: inline-block;
-            background-color: #5c101c; /* Rojo vino / granate */
+            background-color: #5c101c;
             color: #ffffff;
             font-weight: 700;
             font-size: 0.85rem;
             padding: 3px 8px;
             border-radius: 4px;
             border: 1px solid #8b0000;
+            margin-bottom: 8px;
             letter-spacing: 0.5px;
-            flex-shrink: 0;
         }
 
-        /* REFERENCIA DE LA FUENTE EN LA ESQUINA SUPERIOR DERECHA */
         .card-page-badge {
             font-size: 0.75rem;
             background-color: rgba(139, 0, 0, 0.2);
@@ -537,6 +513,7 @@
         .card-meta {
             font-size: 0.85rem;
             color: var(--accent-gold);
+            margin-bottom: 12px;
             font-weight: 600;
         }
 
@@ -633,10 +610,18 @@
             padding: 40px;
         }
 
-        .scroll-top-btn {
+        /* BOTONES FLOTANTES (DADOS Y SCROLL) */
+        .floating-btn-container {
             position: fixed;
             bottom: 25px;
             right: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .scroll-top-btn, .dice-float-btn {
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -645,17 +630,188 @@
             border: 1px solid var(--accent-crimson);
             font-size: 1.2rem;
             cursor: pointer;
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             transition: all 0.2s;
-            z-index: 100;
         }
 
-        .scroll-top-btn:hover {
+        .scroll-top-btn {
+            display: none; /* Se muestra con JS al hacer scroll */
+        }
+
+        .scroll-top-btn:hover, .dice-float-btn:hover {
             transform: translateY(-3px);
             background-color: var(--accent-crimson);
+        }
+
+        /* =========================================================
+           ESTILOS DEL POPUP (MODAL) DEL LANZADOR DE DADOS
+           ========================================================= */
+        .dice-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .dice-modal-content {
+            width: 100%;
+            max-width: 520px;
+            background: var(--card-bg);
+            border: 2px solid var(--accent-red);
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            padding: 25px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .close-modal-btn:hover {
+            color: var(--accent-crimson);
+        }
+
+        /* Estilos internos del lanzador dentro del popup */
+        .roller-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px dashed var(--card-border);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            padding-right: 30px;
+        }
+
+        .roller-header h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            font-size: 1.15rem;
+            margin: 0;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .roller-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
+            padding: 8px 10px;
+            font-size: 1rem;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            background: var(--input-bg);
+            color: var(--text-main);
+            outline: none;
+        }
+
+        #rollButton {
+            background-color: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        #rollButton:hover {
+            background-color: var(--accent-crimson);
+        }
+
+        .roller-results {
+            margin-top: 15px;
+            border-top: 1px dashed var(--card-border);
+            padding-top: 12px;
+        }
+
+        .roller-results h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--text-main);
+            margin: 0 0 10px 0;
+        }
+
+        .dice-output-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-start;
+            margin: 12px 0;
+        }
+        
+        .die-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .bg-normal-empty { background-color: #3a3a3a; border: 1px solid #222; }
+        .bg-normal-dice { background-color: #3a3a3a; border: 1px solid #222; }
+        .bg-hunger-empty { background-color: #5c101c; border: 1px solid #3c0a12; }
+        .bg-hunger-dice { background-color: #8b0000; border: 1px solid #5c101c; }
+
+        .die-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+
+        .roll-summary {
+            background: var(--summary-bg);
+            padding: 10px;
+            border-left: 4px solid var(--accent-red);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: var(--text-main);
         }
 
         footer {
@@ -667,17 +823,12 @@
         }
 
         @media (max-width: 600px) {
-            header {
-                padding-top: 45px;
-            }
+            header { padding-top: 45px; }
             .header-ank-logo { height: 44px; }
             .header-main-logo { height: 65px; }
             h1.cabecera-principal { font-size: 1.15rem; }
             .grid { grid-template-columns: 1fr; }
-            .theme-btn-header {
-                top: 10px;
-                right: 10px;
-            }
+            .theme-btn-header { top: 10px; right: 10px; }
         }
     </style>
 </head>
@@ -744,7 +895,6 @@
             <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
         </p>
 
-        <!-- DISCLAIMER LEGAL -->
         <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.4; opacity: 0.85;">
             Esta aplicación es una herramienta/ayuda de juego no oficial para jugadores y Narradores, creada sin ánimo de lucro. 
             <em>Vampiro: La Mascarada</em>, <em>Mundo de Tinieblas</em> y sus logotipos son marcas registradas de Paradox Interactive AB. 
@@ -753,7 +903,44 @@
     </footer>
 </div>
 
-<button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
+<!-- BOTONES FLOTANTES INFERIORES -->
+<div class="floating-btn-container">
+    <button class="dice-float-btn" onclick="openDiceModal()" title="Abrir Lanzador de Dados">🎲</button>
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
+</div>
+
+<!-- VENTANA POPUP (MODAL) DEL LANZADOR DE DADOS -->
+<div id="diceModal" class="dice-modal-overlay">
+    <div class="dice-modal-content">
+        <button class="close-modal-btn" onclick="closeDiceModal()">&times;</button>
+        <div class="roller-header">
+            <span>🎲</span>
+            <h2>Lanzador de Dados V5</h2>
+        </div>
+        
+        <div class="roller-inputs">
+            <div class="input-group">
+                <label for="dicePool">Reserva de Dados (Atributo + Habilidad):</label>
+                <input type="number" id="dicePool" min="1" max="20" value="4">
+            </div>
+            <div class="input-group">
+                <label for="hungerLevel">Nivel de Ansia (Hambre 0-5):</label>
+                <input type="number" id="hungerLevel" min="0" max="5" value="2">
+            </div>
+            <div class="input-group">
+                <label for="difficulty">Dificultad (Éxitos necesarios - Opcional):</label>
+                <input type="number" id="difficulty" min="0" max="20" value="3">
+            </div>
+            <button id="rollButton" onclick="lanzarDadosV5()">Lanzar Tirada</button>
+        </div>
+
+        <div id="rollerResults" class="roller-results" style="display: none;">
+            <h3>Resultado de la Tirada</h3>
+            <div id="diceOutput" class="dice-output-grid"></div>
+            <div id="rollSummary" class="roll-summary"></div>
+        </div>
+    </div>
+</div>
 
 <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
@@ -806,6 +993,23 @@
         }
     }
 
+    // Funciones del Popup del Lanzador de Dados
+    function openDiceModal() {
+        document.getElementById('diceModal').style.display = 'flex';
+    }
+
+    function closeDiceModal() {
+        document.getElementById('diceModal').style.display = 'none';
+    }
+
+    // Cerrar modal al hacer clic fuera del contenido
+    window.addEventListener('click', (event) => {
+        const modal = document.getElementById('diceModal');
+        if (event.target === modal) {
+            closeDiceModal();
+        }
+    });
+
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
 
@@ -829,7 +1033,6 @@
             });
         }
 
-        // Lectura por posición numérica exacta (Columna A=0, B=1, C=2, etc.) adaptada a tu Google Sheet
         Papa.parse(CSV_URL, {
             download: true,
             header: false,
@@ -1025,7 +1228,6 @@
                     subtituloInglesHTML = `<div style="font-size: 1.05rem; color: var(--text-muted); opacity: 0.8; font-style: italic; margin-top: -6px; margin-bottom: 8px;">(${item.nombreIngles})</div>`;
                 }
 
-                // Cuadro rojo vino para destacar el nivel
                 let nivelBadgeHTML = '';
                 if (item.nivel && item.nivel !== '-') {
                     nivelBadgeHTML = `<div class="card-level-badge">Nivel ${item.nivel}</div>`;
@@ -1060,6 +1262,126 @@
         });
 
         applyFilters();
+    }
+
+    // Lógica del Lanzador de Dados en el Popup
+    function lanzarDadosV5() {
+        let pool = parseInt(document.getElementById('dicePool').value) || 0;
+        let hunger = parseInt(document.getElementById('hungerLevel').value) || 0;
+        let difficulty = parseInt(document.getElementById('difficulty').value) || 0;
+
+        if (pool < 1) return;
+
+        let hungerDiceCount = Math.min(hunger, pool);
+        let normalDiceCount = pool - hungerDiceCount;
+
+        let totalSuccesses = 0;
+        let normalTens = 0;
+        let hungerTens = 0;
+        let hungerOnes = 0;
+        let todosFallos = true;
+        let resultadosVisuales = [];
+
+        for (let i = 0; i < normalDiceCount; i++) {
+            let val = Math.floor(Math.random() * 10) + 1;
+            if (val >= 6) {
+                totalSuccesses++;
+                todosFallos = false;
+                if (val === 10) { normalTens++; }
+            }
+            resultadosVisuales.push({ val, isHunger: false });
+        }
+
+        for (let i = 0; i < hungerDiceCount; i++) {
+            let val = Math.floor(Math.random() * 10) + 1;
+            if (val >= 6) {
+                totalSuccesses++;
+                todosFallos = false;
+                if (val === 10) { hungerTens++; }
+            } else {
+                if (val === 1) { hungerOnes++; }
+            }
+            resultadosVisuales.push({ val, isHunger: true });
+        }
+
+        let totalTens = normalTens + hungerTens;
+        let paresCriticos = Math.floor(totalTens / 2);
+        let exitosFinales = totalSuccesses + (paresCriticos * 2);
+
+        const container = document.getElementById('diceOutput');
+        container.innerHTML = '';
+        
+        resultadosVisuales.forEach(d => {
+            const dieEl = document.createElement('div');
+            dieEl.className = 'die-box';
+            
+            let iconoSrc = '';
+            
+            if (!d.isHunger) {
+                if (d.val >= 6 && d.val <= 9) {
+                    dieEl.classList.add('bg-normal-dice');
+                    iconoSrc = './iconos/VtMDiceSymbols-01.svg';
+                } else if (d.val === 10) {
+                    dieEl.classList.add('bg-normal-dice');
+                    iconoSrc = './iconos/VtMDiceSymbols-02.svg';
+                } else {
+                    dieEl.classList.add('bg-normal-empty');
+                }
+            } else {
+                if (d.val === 1) {
+                    dieEl.classList.add('bg-hunger-dice');
+                    iconoSrc = './iconos/VtMDiceSymbols-04.svg';
+                } else if (d.val >= 2 && d.val <= 5) {
+                    dieEl.classList.add('bg-hunger-empty');
+                } else if (d.val >= 6 && d.val <= 9) {
+                    dieEl.classList.add('bg-hunger-dice');
+                    iconoSrc = './iconos/VtMDiceSymbols-01.svg';
+                } else if (d.val === 10) {
+                    dieEl.classList.add('bg-hunger-dice');
+                    iconoSrc = './iconos/VtMDiceSymbols-03.svg';
+                }
+            }
+
+            if (iconoSrc) {
+                const img = document.createElement('img');
+                img.src = iconoSrc;
+                img.className = 'die-icon';
+                dieEl.appendChild(img);
+            }
+
+            container.appendChild(dieEl);
+        });
+
+        document.getElementById('rollerResults').style.display = 'block';
+
+        let cumpleDificultad = difficulty > 0 ? (exitosFinales >= difficulty) : null;
+        let resumenHTML = `<strong>Éxitos Totales: ${exitosFinales}</strong>`;
+        
+        if (difficulty > 0) {
+            if (cumpleDificultad) {
+                resumenHTML += ` <span style="color: #2e7d32; font-weight: bold;">(¡Supera la Dificultad ${difficulty}!)</span><br>`;
+            } else {
+                resumenHTML += ` <span style="color: #c62828; font-weight: bold;">(No alcanza la Dificultad ${difficulty})</span><br>`;
+            }
+        } else {
+            resumenHTML += `<br>`;
+        }
+        
+        if (paresCriticos > 0) {
+            resumenHTML += `✨ <strong>¡Éxito Crítico!</strong> (${paresCriticos} pareja${paresCriticos > 1 ? 's' : ''} de 10)<br>`;
+            if (hungerTens > 0) {
+                resumenHTML += `<span style="color: #b30000; font-weight: bold;">⚠️ ¡Crítico Conflictivo (Messy Critical)! La Bestia toma el control.</span><br>`;
+            }
+        }
+        
+        let esFalloPrueba = (difficulty > 0 ? !cumpleDificultad : todosFallos);
+        if (esFalloPrueba && hungerOnes > 0) {
+            resumenHTML += `<span style="color: #b30000; font-weight: bold;">💀 ¡Fallo Bestial (Bestial Failure)! Consecuencias graves del Ansia.</span>`;
+        } else if (todosFallos) {
+            resumenHTML += `<span style="color: #666;">Fallo total.</span>`;
+        }
+
+        document.getElementById('rollSummary').innerHTML = resumenHTML;
     }
 
     function filterDiscipline(discipline) {
