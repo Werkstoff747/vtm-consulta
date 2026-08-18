@@ -979,8 +979,7 @@
                 card.className = 'card';
                 
                 const nombrePoder = item['Nombre Poder'] || item['Nombre'] || item['NOMBRE'] || 'Sin Nombre';
-                // Columna B (Nombre en Inglés, ajusta si tu cabecera es distinta en el CSV)
-                const nombreIngles = item['Nombre Ingles'] || item['Nombre_Ingles'] || item['Columna B'] || '';
+                const nombreIngles = item['Name ENG'] || item['Name_ENG'] || '';
                 
                 const fuenteLibro = item['Fuente_Libro'] || item['Fuente'] || item['FUENTE'] || '';
                 const categoria = item['Categoría'] || item['Tipo'] || 'Poder Estándar';
@@ -1057,13 +1056,11 @@
                     `;
                 }
 
+                /* Se mantiene únicamente el nombre principal en castellano, guardando la búsqueda interna en inglés pero sin pintarla visualmente */
                 card.innerHTML = `
                     <div>
                         <div class="card-header">
-                            <div class="card-title">
-                                ${nombrePoder}
-                                ${nombreIngles ? `<div style="font-size: 0.9rem; font-weight: normal; color: var(--text-muted); margin-top: 2px;">${nombreIngles}</div>` : ''}
-                            </div>
+                            <div class="card-title">${nombrePoder}</div>
                             ${badgeFuenteHTML}
                         </div>
                         ${metaText ? `<div class="card-meta">${metaText}</div>` : ''}
@@ -1203,7 +1200,7 @@
 
             cards.forEach(card => {
                 const name = card.getAttribute('data-name');
-                const nameEn = card.getAttribute('data-name-en');
+                const nameEn = card.getAttribute('data-name-en'); // Permite buscar en inglés por debajo
                 const desc = card.getAttribute('data-desc');
                 const source = card.getAttribute('data-source');
                 const level = card.getAttribute('data-level');
