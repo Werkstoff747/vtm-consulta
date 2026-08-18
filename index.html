@@ -486,6 +486,20 @@
             transition: color 0.3s ease;
         }
 
+        /* CUADRO ROJO VINO PARA EL NIVEL */
+        .card-level-badge {
+            display: inline-block;
+            background-color: #5c101c; /* Rojo vino / granate */
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid #8b0000;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
         /* REFERENCIA DE LA FUENTE EN LA ESQUINA SUPERIOR DERECHA */
         .card-page-badge {
             font-size: 0.75rem;
@@ -961,7 +975,7 @@
                 card.setAttribute('data-category', item.categoria);
 
                 let metaPartes = [];
-                if (item.nivel && item.nivel !== '-') metaPartes.push(`Nivel ${item.nivel}`);
+                // Quitamos el Nivel de aquí ya que ahora tiene su propio cuadro destacado arriba
                 if (item.coste && item.coste !== '-') metaPartes.push(`Coste: ${item.coste}`);
                 if (item.amalgama && item.amalgama !== '-' && item.amalgama.toLowerCase() !== 'ninguna') metaPartes.push(`Amalgama: ${item.amalgama}`);
                 if (item.prereq && item.prereq !== '-' && item.prereq.toLowerCase() !== 'ninguno') metaPartes.push(`Req: ${item.prereq}`);
@@ -1010,7 +1024,13 @@
 
                 let subtituloInglesHTML = '';
                 if (item.nombreIngles && item.nombreIngles !== '-') {
-                    subtituloInglesHTML = `<div style="font-size: 0.9rem; color: var(--text-muted); opacity: 0.75; font-style: italic; margin-top: -4px; margin-bottom: 8px;">(${item.nombreIngles})</div>`;
+                    subtituloInglesHTML = `<div style="font-size: 1.05rem; color: var(--text-muted); opacity: 0.8; font-style: italic; margin-top: -6px; margin-bottom: 8px;">(${item.nombreIngles})</div>`;
+                }
+
+                // Cuadro rojo vino para destacar el nivel
+                let nivelBadgeHTML = '';
+                if (item.nivel && item.nivel !== '-') {
+                    nivelBadgeHTML = `<div class="card-level-badge">Nivel ${item.nivel}</div>`;
                 }
 
                 card.innerHTML = `
@@ -1020,6 +1040,7 @@
                             ${badgeFuenteHTML}
                         </div>
                         ${subtituloInglesHTML}
+                        ${nivelBadgeHTML}
                         ${metaText ? `<div class="card-meta">${metaText}</div>` : ''}
                         ${rollHTML}
                         <div class="card-desc">${item.descripcion}</div>
