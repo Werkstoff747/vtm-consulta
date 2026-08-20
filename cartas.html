@@ -9,9 +9,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
 
         :root {
-            --bg-color: #f2f2f2;
+            --bg-color: #e3e0d8;
             --card-bg: #ffffff;
-            --text-main: #111111;
+            --text-main: #1a1a1a;
             --accent-blood: #5c101c;
             --accent-gold: #b38f58;
             --card-width: 63mm;
@@ -31,12 +31,12 @@
             padding: 20px;
         }
 
-        /* Panel de control (Oculto al imprimir) */
+        /* Panel de control de filtros (Oculto al imprimir) */
         .no-print-controls {
             max-width: 1200px;
             margin: 0 auto 30px auto;
             background: #ffffff;
-            color: #1a1a1a;
+            color: var(--text-main);
             border: 2px solid var(--accent-blood);
             padding: 20px;
             border-radius: 8px;
@@ -99,6 +99,7 @@
             font-size: 0.8rem;
             margin-bottom: 5px;
             color: var(--accent-blood);
+            font-weight: 600;
         }
 
         .filter-group select, .filter-group input {
@@ -291,7 +292,7 @@
 
     <div class="no-print-controls">
         <div class="controls-header">
-            <h1>🎴 Generador de Cartas VTM (Print-Friendly)</h1>
+            <h1>🎴 Generador de Cartas Imprimibles V5</h1>
             <div class="btn-group">
                 <a href="index.html" style="text-decoration: none;"><button type="button">⬅️ Volver al Compendio</button></a>
                 <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Cartas (A4)</button>
@@ -329,7 +330,7 @@
     <script>
         let allDisciplinesData = [];
 
-        // Mapeo automático de iconos para las marcas de agua de fondo
+        // Mapeo automático de símbolos para las marcas de agua de fondo
         const disciplineIcons = {
             "celeridad": "⚡",
             "potencia": "💪",
@@ -345,7 +346,7 @@
             "ofuscación": "👥"
         };
 
-        // Carga automática al abrir la página utilizando tu enlace exacto de Google Sheets
+        // Carga automática al iniciar usando tu enlace exacto de Google Sheets
         window.onload = function() {
             const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv";
 
@@ -355,12 +356,24 @@
                 skipEmptyLines: true,
                 complete: function(results) {
                     allDisciplinesData = results.data;
+                    
+                    // Orden por defecto: 1º por Nivel y 2º Alfabéticamente por Nombre
+                    allDisciplinesData.sort((a, b) => {
+                        let levelA = parseInt(a.Nivel || a.level || 1);
+                        let levelB = parseInt(b.Nivel || b.level || 1);
+                        if (levelA !== levelB) return levelA - levelB;
+                        
+                        let nameA = (a.Nombre || a.name || "").toLowerCase();
+                        let nameB = (b.Nombre || b.name || "").toLowerCase();
+                        return nameA.localeCompare(nameB);
+                    });
+
                     populateFilters(allDisciplinesData);
                     renderCards(allDisciplinesData);
                 },
                 error: function(err) {
                     console.error("Error al cargar Google Sheets:", err);
-                    alert("No se pudieron cargar los datos del Google Sheets. Comprueba tu conexión.");
+                    alert("No se pudieron cargar los datos de las disciplinas.");
                 }
             });
         };
@@ -374,7 +387,7 @@
 
             const selectDisc = document.getElementById('filterDiscipline');
             selectDisc.innerHTML = '<option value="all">Todas las Disciplinas</option>';
-            disciplinesSet.forEach(disc => {
+            Array.from(disciplinesSet).sort().forEach(disc => {
                 const opt = document.createElement('option');
                 opt.value = disc.toLowerCase();
                 opt.textContent = disc;
