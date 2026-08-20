@@ -31,6 +31,7 @@
             padding: 20px;
         }
 
+        /* Panel de control (Oculto al imprimir) */
         .no-print-controls {
             max-width: 1200px;
             margin: 0 auto 30px auto;
@@ -108,6 +109,7 @@
             padding: 6px;
         }
 
+        /* Cuadrícula de Cartas */
         .cards-grid {
             max-width: 1200px;
             margin: 0 auto;
@@ -117,7 +119,7 @@
             justify-content: center;
         }
 
-        /* DISEÑO DE CARTA FÍSICA V5 (Fondo Blanco e Icono de Fondo) */
+        /* DISEÑO DE CARTA FÍSICA V5 (Print-Friendly con Marca de Agua) */
         .vtm-card {
             width: var(--card-width);
             height: var(--card-height);
@@ -145,7 +147,7 @@
             pointer-events: none;
         }
 
-        /* Marca de agua translúcida de disciplina al fondo */
+        /* Marca de agua translúcida de la disciplina al fondo */
         .discipline-watermark {
             position: absolute;
             top: 50%;
@@ -250,6 +252,7 @@
             z-index: 1;
         }
 
+        /* Estilos limpios para impresión A4 */
         @media print {
             body {
                 background: white !important;
@@ -290,21 +293,8 @@
         <div class="controls-header">
             <h1>🎴 Generador de Cartas VTM (Print-Friendly)</h1>
             <div class="btn-group">
+                <a href="index.html" style="text-decoration: none;"><button type="button">⬅️ Volver al Compendio</button></a>
                 <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Cartas (A4)</button>
-            </div>
-        </div>
-
-        <div class="filters-row">
-            <div class="filter-group">
-                <label for="csvFileInput">Cargar CSV local de tu proyecto:</label>
-                <input type="file" id="csvFileInput" accept=".csv" onchange="loadLocalCSV(event)">
-            </div>
-            <div class="filter-group">
-                <label for="sheetUrl">O Enlace CSV / Google Sheets:</label>
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="sheetUrl" placeholder="URL CSV pública..." value="">
-                    <button onclick="loadGoogleSheet()">Cargar</button>
-                </div>
             </div>
         </div>
 
@@ -337,11 +327,9 @@
         </div>
 
     <script>
-        let allDisciplinesData = [
-            { Nombre: "Borrón y Cuenta Nueva", Disciplina: "Celeridad", Nivel: "1", Reserva: "Destreza + Atletismo", Coste: "Gratuito", Sistema: "El vampiro se mueve con velocidad sobrenatural, permitiéndole esquivar ataques con bonificador adicional frente a proyectiles.", Fuente: "Guía de Juego" },
-            { Nombre: "Fuerza Descomunal", Disciplina: "Potencia", Nivel: "1", Reserva: "Automática", Coste: "1 Enardecimiento", Sistema: "Añade dados automáticos de daño contundente o permite romper objetos pesados sin esfuerzo.", Fuente: "Corebook" }
-        ];
+        let allDisciplinesData = [];
 
+        // Mapeo automático de iconos para las marcas de agua de fondo
         const disciplineIcons = {
             "celeridad": "⚡",
             "potencia": "💪",
@@ -357,34 +345,11 @@
             "ofuscación": "👥"
         };
 
+        // Carga automática al abrir la página utilizando tu enlace exacto de Google Sheets
         window.onload = function() {
-            populateFilters(allDisciplinesData);
-            renderCards(allDisciplinesData);
-        };
+            const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv";
 
-        function loadLocalCSV(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    allDisciplinesData = results.data;
-                    populateFilters(allDisciplinesData);
-                    renderCards(allDisciplinesData);
-                },
-                error: function(err) {
-                    alert("Error al leer CSV: " + err.message);
-                }
-            });
-        }
-
-        function loadGoogleSheet() {
-            const url = document.getElementById('sheetUrl').value.trim();
-            if (!url) return;
-
-            Papa.parse(url, {
+            Papa.parse(sheetCsvUrl, {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
@@ -394,10 +359,11 @@
                     renderCards(allDisciplinesData);
                 },
                 error: function(err) {
-                    alert("Error al cargar URL: " + err.message);
+                    console.error("Error al cargar Google Sheets:", err);
+                    alert("No se pudieron cargar los datos del Google Sheets. Comprueba tu conexión.");
                 }
             });
-        }
+        };
 
         function populateFilters(data) {
             const disciplinesSet = new Set();
