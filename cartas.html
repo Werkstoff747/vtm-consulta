@@ -4,29 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compendio de Disciplinas V5 - Cartas Imprimibles</title>
-    <!-- PapaParse para la carga de datos desde Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
 
         :root {
-            --bg-color: #e3e0d8;
-            --card-bg: #f5f2eb;
-            --text-main: #1a1a1a;
+            --bg-color: #f2f2f2;
+            --card-bg: #ffffff;
+            --text-main: #111111;
             --accent-blood: #5c101c;
             --accent-gold: #b38f58;
-            --card-border: #8c857b;
             --card-width: 63mm;
-            --card-height: 88mm; /* Tamaño estándar de carta de juego (Bridge/Poker) */
-        }
-
-        body.dark-mode {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-main: #e0e0e0;
-            --accent-blood: #8a1c2d;
-            --accent-gold: #c5a059;
-            --card-border: #444;
+            --card-height: 88mm;
         }
 
         * {
@@ -40,18 +29,17 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             padding: 20px;
-            transition: background 0.3s, color 0.3s;
         }
 
-        /* Controles de la interfaz (pantalla) */
         .no-print-controls {
             max-width: 1200px;
             margin: 0 auto 30px auto;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            background: #ffffff;
+            color: #1a1a1a;
+            border: 2px solid var(--accent-blood);
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .controls-header {
@@ -66,7 +54,8 @@
         h1 {
             font-family: 'Cinzel', serif;
             color: var(--accent-blood);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
         }
 
         .btn-group {
@@ -80,11 +69,10 @@
             padding: 8px 14px;
             background: var(--accent-blood);
             color: white;
-            border: none;
+            border: 1px solid var(--accent-gold);
             border-radius: 4px;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: opacity 0.2s;
+            font-size: 0.85rem;
         }
 
         button:hover, select:hover {
@@ -107,19 +95,19 @@
         .filter-group label {
             display: block;
             font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-bottom: 5px;
-            color: var(--accent-gold);
+            color: var(--accent-blood);
         }
 
         .filter-group select, .filter-group input {
             width: 100%;
-            background: var(--bg-color);
-            color: var(--text-main);
-            border: 1px solid var(--card-border);
+            background: #fff;
+            color: #1a1a1a;
+            border: 1px solid var(--accent-blood);
+            padding: 6px;
         }
 
-        /* Contenedor de Cuadrícula para Pantalla */
         .cards-grid {
             max-width: 1200px;
             margin: 0 auto;
@@ -129,96 +117,139 @@
             justify-content: center;
         }
 
-        /* Estilo de la Carta (Física y Digital) */
+        /* DISEÑO DE CARTA FÍSICA V5 (Fondo Blanco e Icono de Fondo) */
         .vtm-card {
             width: var(--card-width);
             height: var(--card-height);
             background-color: var(--card-bg);
-            border: 2px solid var(--accent-blood);
-            border-radius: 6px;
-            padding: 6mm;
+            color: var(--text-main);
+            border: 3px double var(--accent-blood);
+            border-radius: 8px;
+            padding: 4mm;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        .vtm-card::before {
+        .vtm-card::after {
             content: "";
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 4px;
-            background: var(--accent-blood);
+            top: 2px; left: 2px; right: 2px; bottom: 2px;
+            border: 1px solid var(--accent-gold);
+            border-radius: 6px;
+            pointer-events: none;
+        }
+
+        /* Marca de agua translúcida de disciplina al fondo */
+        .discipline-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            opacity: 0.06;
+            pointer-events: none;
+            z-index: 0;
+            user-select: none;
         }
 
         .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            border-bottom: 1px solid var(--accent-gold);
-            padding-bottom: 3px;
-            margin-bottom: 4px;
-        }
-
-        .card-title {
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--accent-blood);
-            line-height: 1.1;
-        }
-
-        .card-level {
-            font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
-            font-weight: 600;
             background: var(--accent-blood);
             color: white;
-            width: 18px;
-            height: 18px;
+            padding: 3px 6px;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-discipline {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        .card-level-badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.62rem;
+            font-weight: 700;
+            background: var(--accent-gold);
+            color: #1a1a1a;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
 
-        .card-meta {
-            font-size: 0.65rem;
-            color: #666;
-            margin-bottom: 4px;
-            font-style: italic;
-            display: flex;
-            justify-content: space-between;
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-blood);
+            text-align: center;
+            line-height: 1.1;
+            margin: 2px 0;
+            border-bottom: 1px solid var(--accent-gold);
+            padding-bottom: 2px;
+            position: relative;
+            z-index: 1;
         }
 
-        body.dark-mode .card-meta {
-            color: #aaa;
+        .card-attributes {
+            font-size: 0.56rem;
+            background: rgba(179, 143, 88, 0.12);
+            border: 1px solid var(--accent-gold);
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-bottom: 3px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-attributes div span {
+            font-weight: bold;
+            color: var(--accent-blood);
         }
 
         .card-body {
-            font-size: 0.7rem;
-            line-height: 1.25;
+            font-size: 0.58rem;
+            line-height: 1.2;
             overflow-y: hidden;
             flex-grow: 1;
-            margin-bottom: 4px;
+            padding: 1px 2px;
+            position: relative;
+            z-index: 1;
+            text-align: justify;
         }
 
         .card-footer {
-            border-top: 1px dashed var(--card-border);
-            padding-top: 3px;
-            font-size: 0.6rem;
+            border-top: 1px solid var(--accent-gold);
+            padding-top: 2px;
+            font-size: 0.5rem;
             display: flex;
             justify-content: space-between;
-            color: var(--accent-gold);
+            color: #444;
             font-family: 'Cinzel', serif;
+            position: relative;
+            z-index: 1;
         }
 
-        /* Estilos de Impresión Profesional (A4 / Carta con marcas de corte) */
         @media print {
             body {
                 background: white !important;
@@ -239,40 +270,41 @@
             .vtm-card {
                 margin: 0;
                 float: left;
-                border: 1px solid #333 !important;
                 box-shadow: none !important;
                 background-color: #fff !important;
-                color: #000 !important;
+                border: 1px solid #222 !important;
                 page-break-inside: avoid;
                 break-inside: avoid;
             }
 
             @page {
                 size: A4;
-                margin: 10mm;
+                margin: 8mm;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Panel de control interactivo (oculto al imprimir) -->
     <div class="no-print-controls">
         <div class="controls-header">
-            <h1>🎴 Generador de Cartas Imprimibles - V5</h1>
+            <h1>🎴 Generador de Cartas VTM (Print-Friendly)</h1>
             <div class="btn-group">
-                <button onclick="toggleDarkMode()">🌓 Modo Noche / Día</button>
-                <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Cartas</button>
+                <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Cartas (A4)</button>
             </div>
         </div>
 
-        <div class="filter-row">
+        <div class="filters-row">
             <div class="filter-group">
-                <label for="sheetUrl">Enlace CSV / Google Sheets (Publicado):</label>
-                <input type="text" id="sheetUrl" placeholder="Pega tu enlace CSV aquí..." value="">
+                <label for="csvFileInput">Cargar CSV local de tu proyecto:</label>
+                <input type="file" id="csvFileInput" accept=".csv" onchange="loadLocalCSV(event)">
             </div>
-            <div class="filter-group" style="display: flex; align-items: flex-end;">
-                <button onclick="loadGoogleSheet()" style="width: 100%;">📥 Cargar Datos</button>
+            <div class="filter-group">
+                <label for="sheetUrl">O Enlace CSV / Google Sheets:</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="sheetUrl" placeholder="URL CSV pública..." value="">
+                    <button onclick="loadGoogleSheet()">Cargar</button>
+                </div>
             </div>
         </div>
 
@@ -301,44 +333,56 @@
         </div>
     </div>
 
-    <!-- Contenedor donde se generan dinámicamente las cartas -->
     <div id="cardsContainer" class="cards-grid">
-        <!-- Tarjeta de ejemplo por defecto si no hay CSV cargado -->
-        <div class="vtm-card" data-discipline="Celeridad" data-level="1" data-name="borrón y cuenta nueva">
-            <div class="card-header">
-                <span class="card-title">Borrón y Cuenta Nueva</span>
-                <span class="card-level">1</span>
-            </div>
-            <div class="card-meta">
-                <span>Celeridad</span>
-                <span>Guía de Juego</span>
-            </div>
-            <div class="card-body">
-                <b>Reserva:</b> Destreza + Atletismo<br>
-                <b>Coste:</b> Gratuito<br>
-                <b>Efecto:</b> El vampiro se mueve con velocidad sobrenatural, permitiéndole esquivar ataques con bonificador adicional.
-            </div>
-            <div class="card-footer">
-                <span>V5 MDT</span>
-                <span>Poder</span>
-            </div>
         </div>
-    </div>
 
     <script>
-        let allDisciplinesData = [];
+        let allDisciplinesData = [
+            { Nombre: "Borrón y Cuenta Nueva", Disciplina: "Celeridad", Nivel: "1", Reserva: "Destreza + Atletismo", Coste: "Gratuito", Sistema: "El vampiro se mueve con velocidad sobrenatural, permitiéndole esquivar ataques con bonificador adicional frente a proyectiles.", Fuente: "Guía de Juego" },
+            { Nombre: "Fuerza Descomunal", Disciplina: "Potencia", Nivel: "1", Reserva: "Automática", Coste: "1 Enardecimiento", Sistema: "Añade dados automáticos de daño contundente o permite romper objetos pesados sin esfuerzo.", Fuente: "Corebook" }
+        ];
 
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
+        const disciplineIcons = {
+            "celeridad": "⚡",
+            "potencia": "💪",
+            "presencia": "👑",
+            "auspex": "👁️",
+            "dominación": "👁️‍🗨️",
+            "animalismo": "🐺",
+            "protean": "🐾",
+            "olvido": "🌑",
+            "oblivion": "🌑",
+            "hechicería de sangre": "🩸",
+            "fortaleza": "🛡️",
+            "ofuscación": "👥"
+        };
+
+        window.onload = function() {
+            populateFilters(allDisciplinesData);
+            renderCards(allDisciplinesData);
+        };
+
+        function loadLocalCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    allDisciplinesData = results.data;
+                    populateFilters(allDisciplinesData);
+                    renderCards(allDisciplinesData);
+                },
+                error: function(err) {
+                    alert("Error al leer CSV: " + err.message);
+                }
+            });
         }
 
-        // Carga de datos mediante PapaParse (compatible con tu Google Sheets del compendio)
         function loadGoogleSheet() {
             const url = document.getElementById('sheetUrl').value.trim();
-            if (!url) {
-                alert("Por favor, introduce una URL válida de CSV o Google Sheets publicado.");
-                return;
-            }
+            if (!url) return;
 
             Papa.parse(url, {
                 download: true,
@@ -350,7 +394,7 @@
                     renderCards(allDisciplinesData);
                 },
                 error: function(err) {
-                    alert("Error al cargar el archivo CSV: " + err.message);
+                    alert("Error al cargar URL: " + err.message);
                 }
             });
         }
@@ -377,37 +421,40 @@
             container.innerHTML = '';
 
             data.forEach(row => {
-                const name = row.Nombre || row.name || 'Sin Nombre';
+                const name = row.Nombre || row.name || row.Poder || 'Sin Nombre';
                 const discipline = row.Disciplina || row.discipline || 'General';
                 const level = row.Nivel || row.level || '1';
                 const pool = row.Reserva || row.pool || 'Especial';
                 const cost = row.Coste || row.cost || 'Ninguno';
-                const desc = row.Sistema || row.Description || row.descripcion || 'Sin descripción disponible.';
+                const desc = row.Sistema || row.Description || row.descripcion || row.Efecto || 'Sin descripción.';
                 const source = row.Fuente || row.source || 'V5';
+
+                const discKey = discipline.toLowerCase().trim();
+                const icon = disciplineIcons[discKey] || '🦇';
 
                 const card = document.createElement('div');
                 card.className = 'vtm-card';
-                card.setAttribute('data-discipline', discipline.toLowerCase());
+                card.setAttribute('data-discipline', discKey);
                 card.setAttribute('data-level', level);
                 card.setAttribute('data-name', name.toLowerCase());
 
                 card.innerHTML = `
+                    <div class="discipline-watermark">${icon}</div>
                     <div class="card-header">
-                        <span class="card-title">${name}</span>
-                        <span class="card-level">${level}</span>
+                        <span class="card-discipline">${discipline}</span>
+                        <span class="card-level-badge">${level}</span>
                     </div>
-                    <div class="card-meta">
-                        <span>${discipline}</span>
-                        <span>${source}</span>
+                    <div class="card-title">${name}</div>
+                    <div class="card-attributes">
+                        <div><span>Reserva:</span> ${pool}</div>
+                        <div><span>Coste:</span> ${cost}</div>
                     </div>
                     <div class="card-body">
-                        <b>Reserva:</b> ${pool}<br>
-                        <b>Coste:</b> ${cost}<br>
                         ${desc}
                     </div>
                     <div class="card-footer">
                         <span>V5 MDT</span>
-                        <span>Poder</span>
+                        <span>${source}</span>
                     </div>
                 `;
                 container.appendChild(card);
