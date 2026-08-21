@@ -2,50 +2,40 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Versión Imprenta - Disciplinas V5</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <title>Edición Imprenta Profesional - V5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
-            --card-width: 63mm;
-            --card-height: 88mm;
+            --card-w: 63mm; --card-h: 88mm;
             --bleed: 3mm;
-            --full-w: 69mm;
-            --full-h: 94mm;
+            --full-w: 69mm; --full-h: 94mm;
         }
 
-        body { background: #333; margin: 0; padding: 10mm; display: flex; flex-wrap: wrap; justify-content: center; }
+        body { background: #1a1a1a; margin: 0; padding: 10mm; display: flex; justify-content: center; }
+        #printArea { display: grid; grid-template-columns: repeat(3, var(--full-w)); gap: 0; }
 
-        /* Contenedor con Sangrado (Bleed) */
+        /* Contenedor de Sangrado */
         .print-card-wrapper {
-            width: var(--full-w);
-            height: var(--full-h);
-            background: black;
-            position: relative;
-            outline: 0.1mm solid #555;
-            page-break-inside: avoid;
+            width: var(--full-w); height: var(--full-h);
+            background: black; position: relative;
         }
 
-        /* Estilos de carta adaptados a negro */
+        /* La Carta (Estilo Vampírico sobre Negro) */
         .vtm-card {
-            width: var(--card-width);
-            height: var(--card-height);
-            position: absolute;
-            top: var(--bleed);
-            left: var(--bleed);
-            background: black;
-            color: #ddd;
-            padding: 3.5mm;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #222;
+            width: var(--card-w); height: var(--card-h);
+            position: absolute; top: var(--bleed); left: var(--bleed);
+            background: #050505; color: #e1e1e6;
+            padding: 3.5mm; display: flex; flex-direction: column;
+            border: 1px solid #333; overflow: hidden;
         }
 
-        .card-title { color: #c5a059; font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; text-align: center; margin-bottom: 2mm; }
-        .card-body { font-family: 'EB Garamond', serif; font-size: 0.7rem; color: #ccc; text-align: justify; }
-        .card-costs { color: #c5a059; font-size: 0.6rem; margin-top: auto; border-top: 1px solid #333; padding-top: 2mm; }
-        .discipline-watermark-img { opacity: 0.08; width: 30mm; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-
+        /* IMPORTAMOS TUS ESTILOS ORIGINALES ADAPTADOS */
+        .card-title { font-family: 'Cinzel', serif; font-size: 0.9rem; color: #c5a059; text-align: center; font-weight: 700; margin-bottom: 2mm; }
+        .card-body { font-family: 'EB Garamond', serif; font-size: 0.7rem; color: #ccc; text-align: justify; line-height: 1.2; }
+        .card-costs { font-size: 0.6rem; color: #c5a059; margin-top: auto; border-top: 1px solid #333; padding-top: 1.5mm; }
+        .discipline-watermark-img { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30mm; opacity: 0.1; }
+        
         @media print {
             body { background: white; padding: 0; }
             .print-card-wrapper { outline: none; }
@@ -54,7 +44,7 @@
 </head>
 <body>
 
-    <div id="printArea" style="display: grid; grid-template-columns: repeat(3, var(--full-w)); gap: 0;"></div>
+    <div id="printArea"></div>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
@@ -71,22 +61,20 @@
                 results.data.forEach(row => {
                     if (!(row['Nombre Poder'] || row['Nombre'])) return;
 
+                    const disc = (row['Disciplina'] || '').toLowerCase().trim();
+                    const iconPath = ICONOS_MAP[disc] ? `<img src="./iconos/${ICONOS_MAP[disc]}" class="discipline-watermark-img">` : '';
+
                     const wrapper = document.createElement('div');
                     wrapper.className = 'print-card-wrapper';
                     
-                    const disc = (row['Disciplina'] || 'General').toLowerCase().trim();
-                    const icon = ICONOS_MAP[disc] ? `<img src="./iconos/${ICONOS_MAP[disc]}" class="discipline-watermark-img">` : '';
-
-                    const card = document.createElement('div');
-                    card.className = 'vtm-card';
-                    card.innerHTML = `
-                        ${icon}
-                        <div class="card-title">${row['Nombre Poder'] || row['Nombre']}</div>
-                        <div class="card-body">${row['Descripción'] || ''}</div>
-                        <div class="card-costs">Coste: ${row['Coste'] || 'Ninguno'} | Duración: ${row['Duración'] || 'Escena'}</div>
+                    wrapper.innerHTML = `
+                        <div class="vtm-card">
+                            ${iconPath}
+                            <div class="card-title">${row['Nombre Poder'] || row['Nombre']}</div>
+                            <div class="card-body">${row['Descripción'] || ''}</div>
+                            <div class="card-costs">Coste: ${row['Coste'] || '-'} | Nivel: ${row['Nivel'] || '-'}</div>
+                        </div>
                     `;
-                    
-                    wrapper.appendChild(card);
                     container.appendChild(wrapper);
                 });
             }
