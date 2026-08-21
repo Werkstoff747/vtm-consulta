@@ -490,6 +490,40 @@
                 margin: 0mm;
             }
         }
+        /* BOTÓN FLOTANTE MULTIFUNCIÓN (VOLVER & SUBIR) */
+        .floating-nav-container {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 999;
+        }
+
+        .floating-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            border: 2px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .floating-btn:hover {
+            background-color: var(--accent-red);
+            color: #ffffff;
+            border-color: var(--accent-crimson);
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -866,5 +900,10 @@
             setTimeout(() => { window.print(); }, 300);
         }
     </script>
-</body>
+        <!-- Botón flotante para volver al index y subir arriba -->
+            <div class="floating-nav-container">
+                <a href="index.html" class="floating-btn" title="Volver al Compendio Principal">⬅️</a>
+                <button class="floating-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Subir Arriba">⬆️</button>
+            </div>
+        </body>
 </html>
