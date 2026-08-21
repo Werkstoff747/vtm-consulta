@@ -210,7 +210,7 @@
             text-transform: small-caps;
         }
 
-        /* Caja de Tirada de Dados centrada */
+        /* Caja de Tirada de Dados centrada estricta en 3 líneas */
         .card-roll-box {
             font-size: 0.56rem;
             background: rgba(139, 0, 0, 0.04);
@@ -489,7 +489,6 @@
                 const level = row['Nivel'] || '1';
                 
                 const pool = (row['Reserva de Dados'] || row['Reserva de dados'] || row['Tirada'] || '').trim();
-                // Lectura robusta con y sin tilde para evitar fallos de claves en el CSV
                 const opposition = (row['Reserva Oposición'] || row['Reserva Oposicion'] || row['Reserva oposicion'] || '').trim();
                 
                 const cost = row['Controles de Ansia'] || row['Coste'] || 'Ninguno';
@@ -508,20 +507,21 @@
                     cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="card-discipline-icon-img" alt="${discipline}" onerror="this.style.display='none'">`;
                 }
 
+                // Generación limpia del bloque de 3 líneas centradas
                 let rollBoxHTML = '';
                 const oppositionLower = opposition.toLowerCase();
                 const isSinOposicion = !opposition || opposition === '-' || oppositionLower === 'sin oposición' || oppositionLower === 'sin oposicion';
 
-                if (pool && pool !== '-' && pool.toLowerCase() !== 'sin tirada') {
+                if (pool && pool !== '-') {
                     if (isSinOposicion) {
-                        // Si no hay oposición real, solo mostramos la reserva
+                        // Si es "Sin oposición", mostramos solo la reserva centrada sin el vs. ni la línea de abajo
                         rollBoxHTML = `
                             <div class="card-roll-box">
                                 <div class="card-roll-line-1">${pool}</div>
                             </div>
                         `;
                     } else {
-                        // Si hay oposición real (ej. Resistencia + Resolución, Dificultad 2, etc.), mostramos las 3 líneas
+                        // Si hay oposición real, mostramos las 3 líneas centradas obligatoriamente
                         rollBoxHTML = `
                             <div class="card-roll-box">
                                 <div class="card-roll-line-1">${pool}</div>
