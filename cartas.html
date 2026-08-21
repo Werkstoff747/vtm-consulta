@@ -4,16 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compendio de Disciplinas V5 - Cartas Imprimibles</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./iconos/drRol.png">
+    <!-- Fuentes oficiales V5 -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <!-- PapaParse para leer el CSV de tu Google Sheet -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap');
-
         :root {
             --bg-color: #e3e0d8;
             --card-bg: #ffffff;
-            --text-main: #1a1a1a;
+            --text-main: #111115;
             --accent-blood: #5c101c;
-            --accent-gold: #b38f58;
+            --accent-gold: #c5a059;
             --card-width: 63mm;
             --card-height: 88mm;
         }
@@ -31,7 +34,7 @@
             padding: 20px;
         }
 
-        /* Panel de control de filtros (Oculto al imprimir) */
+        /* Panel de control superior (Oculto al imprimir) */
         .no-print-controls {
             max-width: 1200px;
             margin: 0 auto 30px auto;
@@ -57,6 +60,7 @@
             color: var(--accent-blood);
             font-size: 1.5rem;
             letter-spacing: 1px;
+            font-variant: small-caps;
         }
 
         .btn-group {
@@ -82,7 +86,7 @@
 
         .btn-secondary {
             background: var(--accent-gold);
-            color: #1a1a1a;
+            color: #111115;
             font-weight: 600;
         }
 
@@ -105,12 +109,13 @@
         .filter-group select, .filter-group input {
             width: 100%;
             background: #fff;
-            color: #1a1a1a;
+            color: #111115;
             border: 1px solid var(--accent-blood);
             padding: 6px;
+            font-family: inherit;
         }
 
-        /* Cuadrícula de Cartas */
+        /* Cuadrícula de Cartas para Pantalla */
         .cards-grid {
             max-width: 1200px;
             margin: 0 auto;
@@ -120,7 +125,7 @@
             justify-content: center;
         }
 
-        /* DISEÑO DE CARTA FÍSICA V5 (Print-Friendly con Marca de Agua) */
+        /* DISEÑO DE CARTA FÍSICA V5 (Tamaño Bridge/Poker 63x88mm) */
         .vtm-card {
             width: var(--card-width);
             height: var(--card-height);
@@ -139,6 +144,7 @@
             break-inside: avoid;
         }
 
+        /* Marco ornamentado interior dorado */
         .vtm-card::after {
             content: "";
             position: absolute;
@@ -148,14 +154,16 @@
             pointer-events: none;
         }
 
-        /* Marca de agua translúcida de la disciplina al fondo */
-        .discipline-watermark {
+        /* Marca de agua translúcida del icono de la disciplina en el fondo */
+        .discipline-watermark-img {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 4rem;
-            opacity: 0.06;
+            width: 40mm;
+            height: 40mm;
+            object-fit: contain;
+            opacity: 0.07;
             pointer-events: none;
             z-index: 0;
             user-select: none;
@@ -188,7 +196,7 @@
             font-size: 0.62rem;
             font-weight: 700;
             background: var(--accent-gold);
-            color: #1a1a1a;
+            color: #111115;
             width: 15px;
             height: 15px;
             border-radius: 50%;
@@ -213,7 +221,7 @@
 
         .card-attributes {
             font-size: 0.56rem;
-            background: rgba(179, 143, 88, 0.12);
+            background: rgba(197, 160, 89, 0.12);
             border: 1px solid var(--accent-gold);
             padding: 2px 4px;
             border-radius: 3px;
@@ -253,7 +261,15 @@
             z-index: 1;
         }
 
-        /* Estilos limpios para impresión A4 */
+        #loading {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--accent-blood);
+            padding: 40px;
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Estilos limpios y profesionales para Impresión A4 */
         @media print {
             body {
                 background: white !important;
@@ -290,6 +306,7 @@
 </head>
 <body>
 
+    <!-- Panel de control de la aplicación (Se oculta al imprimir) -->
     <div class="no-print-controls">
         <div class="controls-header">
             <h1>🎴 Generador de Cartas Imprimibles V5</h1>
@@ -324,48 +341,50 @@
         </div>
     </div>
 
-    <div id="cardsContainer" class="cards-grid">
-        </div>
+    <div id="loading">Cargando cartas desde Google Sheets...</div>
+
+    <!-- Contenedor donde se generan las cartas dinámicamente -->
+    <div id="cardsContainer" class="cards-grid"></div>
 
     <script>
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
         let allDisciplinesData = [];
 
-        // Mapeo automático de símbolos para las marcas de agua de fondo
-        const disciplineIcons = {
-            "celeridad": "⚡",
-            "potencia": "💪",
-            "presencia": "👑",
-            "auspex": "👁️",
-            "dominación": "👁️‍🗨️",
-            "animalismo": "🐺",
-            "protean": "🐾",
-            "olvido": "🌑",
-            "oblivion": "🌑",
-            "hechicería de sangre": "🩸",
-            "fortaleza": "🛡️",
-            "ofuscación": "👥"
+        // Mapeo exacto de los nombres de tus iconos en la carpeta /iconos/
+        const ICONOS_MAP = {
+            'animalismo': 'Animalism_symbol.png',
+            'auspex': 'Auspex_symbol.png',
+            'celeridad': 'Celerity_symbol.png',
+            'dominación': 'Dominate_symbol.png',
+            'fortaleza': 'Fortitude_symbol.png',
+            'hechicería de sangre': 'Blood_Sorcery_symbol.png',
+            'ofuscación': 'Obfuscate_symbol.png',
+            'olvido': 'Oblivion_symbol.png',
+            'potencia': 'Potence_symbol.png',
+            'presencia': 'Presence_symbol.png',
+            'protean': 'Protean_symbol.png',
+            'alquimia de sangre débil': 'Alchemy_symbol.png'
         };
 
-        // Carga automática al iniciar usando tu enlace exacto de Google Sheets
         window.onload = function() {
-            const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv";
-
-            Papa.parse(sheetCsvUrl, {
+            Papa.parse(CSV_URL, {
                 download: true,
                 header: true,
                 skipEmptyLines: true,
                 complete: function(results) {
-                    allDisciplinesData = results.data;
-                    
-                    // Orden por defecto: 1º por Nivel y 2º Alfabéticamente por Nombre
+                    allDisciplinesData = results.data.filter(row => {
+                        const nombre = (row['Nombre Poder'] || row['Nombre'] || '').trim();
+                        return nombre && nombre.toLowerCase() !== 'nombre poder';
+                    });
+
+                    document.getElementById('loading').style.display = 'none';
+
+                    // Ordenar por Nivel y luego por Nombre
                     allDisciplinesData.sort((a, b) => {
-                        let levelA = parseInt(a.Nivel || a.level || 1);
-                        let levelB = parseInt(b.Nivel || b.level || 1);
-                        if (levelA !== levelB) return levelA - levelB;
-                        
-                        let nameA = (a.Nombre || a.name || "").toLowerCase();
-                        let nameB = (b.Nombre || b.name || "").toLowerCase();
-                        return nameA.localeCompare(nameB);
+                        let lvlA = parseInt(a['Nivel'] || 1, 10);
+                        let lvlB = parseInt(b['Nivel'] || 1, 10);
+                        if (lvlA !== lvlB) return lvlA - lvlB;
+                        return (a['Nombre Poder'] || '').localeCompare(b['Nombre Poder']);
                     });
 
                     populateFilters(allDisciplinesData);
@@ -373,7 +392,7 @@
                 },
                 error: function(err) {
                     console.error("Error al cargar Google Sheets:", err);
-                    alert("No se pudieron cargar los datos de las disciplinas.");
+                    document.getElementById('loading').textContent = "Error al cargar los datos del compendio.";
                 }
             });
         };
@@ -381,12 +400,11 @@
         function populateFilters(data) {
             const disciplinesSet = new Set();
             data.forEach(row => {
-                const disc = row.Disciplina || row.discipline || row.Clase;
+                const disc = row['Disciplina'] || row['DISCIPLINA'];
                 if (disc) disciplinesSet.add(disc.trim());
             });
 
             const selectDisc = document.getElementById('filterDiscipline');
-            selectDisc.innerHTML = '<option value="all">Todas las Disciplinas</option>';
             Array.from(disciplinesSet).sort().forEach(disc => {
                 const opt = document.createElement('option');
                 opt.value = disc.toLowerCase();
@@ -400,16 +418,22 @@
             container.innerHTML = '';
 
             data.forEach(row => {
-                const name = row.Nombre || row.name || row.Poder || 'Sin Nombre';
-                const discipline = row.Disciplina || row.discipline || 'General';
-                const level = row.Nivel || row.level || '1';
-                const pool = row.Reserva || row.pool || 'Especial';
-                const cost = row.Coste || row.cost || 'Ninguno';
-                const desc = row.Sistema || row.Description || row.descripcion || row.Efecto || 'Sin descripción.';
-                const source = row.Fuente || row.source || 'V5';
+                const name = row['Nombre Poder'] || row['Nombre'] || 'Sin Nombre';
+                const discipline = row['Disciplina'] || 'General';
+                const level = row['Nivel'] || '1';
+                
+                // Mapeo flexible de celdas de tu CSV para la reserva y el coste
+                const pool = row['Reserva de Dados'] || row['Reserva de dados'] || row['Tirada'] || 'Especial';
+                const cost = row['Controles de Ansia'] || row['Coste'] || 'Ninguno';
+                const desc = row['Descripción'] || row['DESCRIPCION'] || 'Sin descripción disponible.';
+                const source = row['Fuente_Libro'] || row['Fuente'] || 'V5';
 
                 const discKey = discipline.toLowerCase().trim();
-                const icon = disciplineIcons[discKey] || '🦇';
+                const archivoIcono = ICONOS_MAP[discKey];
+                let iconHTML = '';
+                if (archivoIcono) {
+                    iconHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="${discipline}" onerror="this.style.display='none'">`;
+                }
 
                 const card = document.createElement('div');
                 card.className = 'vtm-card';
@@ -418,7 +442,7 @@
                 card.setAttribute('data-name', name.toLowerCase());
 
                 card.innerHTML = `
-                    <div class="discipline-watermark">${icon}</div>
+                    ${iconHTML}
                     <div class="card-header">
                         <span class="card-discipline">${discipline}</span>
                         <span class="card-level-badge">${level}</span>
