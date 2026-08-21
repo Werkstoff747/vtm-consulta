@@ -17,7 +17,7 @@
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
-            --card-border: #2a2a32;
+            --card-border: #8b0000;
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #c5a059;
@@ -35,7 +35,7 @@
         body.light-mode {
             --bg-color: #a8a7a4;
             --card-bg: #ffffff;
-            --card-border: #bcaba0;
+            --card-border: #8b0000;
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #8d6722;
@@ -327,17 +327,17 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* CUADRÍCULA ESTRICTA DE CARTAS (3 columnas fijas para asegurar distribución perfecta) */
+        /* CUADRÍCULA ESTRICTA DE CARTAS (3x3 con gap: 0 para máxima optimización de espacio y líneas de corte claras) */
         .cards-grid {
-            max-width: 215mm;
+            max-width: 189mm;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(3, var(--card-width));
-            gap: 4mm;
+            gap: 0;
             justify-content: center;
         }
 
-        /* DISEÑO DE CARTA FÍSICA V5 (Tamaño Estricto 63x88mm) */
+        /* DISEÑO DE CARTA FÍSICA V5 (Borde de corte de 4px bien definido) */
         .vtm-card {
             width: var(--card-width);
             min-width: var(--card-width);
@@ -347,8 +347,7 @@
             max-height: var(--card-height);
             background-color: var(--card-bg);
             color: var(--text-main);
-            border: 3px double var(--accent-red);
-            border-radius: 8px;
+            border: 4px solid var(--accent-red);
             padding: 3.5mm;
             display: flex;
             flex-direction: column;
@@ -360,7 +359,7 @@
             break-inside: avoid;
         }
 
-        /* DISEÑO DE LA TRASERA DE CARTA (Personalizada por Disciplina) */
+        /* DISEÑO DE LA TRASERA DE CARTA (Logo largo arriba, Ankh centrado abajo) */
         .vtm-card-back {
             width: var(--card-width);
             min-width: var(--card-width);
@@ -369,13 +368,12 @@
             min-height: var(--card-height);
             max-height: var(--card-height);
             background-color: var(--card-bg);
-            border: 3px double var(--accent-red);
-            border-radius: 8px;
+            border: 4px solid var(--accent-red);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 4mm;
+            padding: 6mm 4mm;
             position: relative;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
@@ -388,51 +386,36 @@
             position: absolute;
             top: 2px; left: 2px; right: 2px; bottom: 2px;
             border: 1px solid var(--accent-gold);
-            border-radius: 6px;
             pointer-events: none;
         }
 
-        .back-discipline-header {
-            background: var(--accent-red);
-            color: white;
-            width: 100%;
-            height: 6mm;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 3px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .back-discipline-title {
-            font-family: 'Cinzel', serif;
-            font-size: 0.55rem;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--accent-gold);
-            font-weight: 600;
-        }
-
-        .back-center-icon {
-            width: 28mm;
-            height: 28mm;
-            object-fit: contain;
-            opacity: 0.85;
-            filter: var(--logo-filter);
-            position: relative;
-            z-index: 1;
-        }
-
-        .back-footer-logo {
-            width: 22mm;
+        .back-top-logo {
+            width: 32mm;
             height: auto;
             object-fit: contain;
-            opacity: 0.7;
-            filter: var(--logo-filter);
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
             position: relative;
             z-index: 1;
-            margin-bottom: 1mm;
+        }
+
+        .back-center-ank {
+            width: 30mm;
+            height: 30mm;
+            object-fit: contain;
+            filter: drop-shadow(0px 2px 6px rgba(0,0,0,0.5));
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-bottom-discipline {
+            font-family: 'Cinzel', serif;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
         }
 
         .vtm-card::after {
@@ -440,7 +423,6 @@
             position: absolute;
             top: 2px; left: 2px; right: 2px; bottom: 2px;
             border: 1px solid var(--accent-gold);
-            border-radius: 6px;
             pointer-events: none;
         }
 
@@ -600,7 +582,7 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* Estilos de Impresión A4 estrictos (3x3 por página de forma simétrica) */
+        /* Estilos de Impresión A4 compactos (gap: 0 para ajuste exacto) */
         @media print {
             body {
                 background: white !important;
@@ -617,7 +599,7 @@
                 grid-template-columns: repeat(3, var(--card-width)) !important;
                 justify-content: center !important;
                 align-content: start !important;
-                gap: 4mm !important;
+                gap: 0 !important;
                 max-width: none !important;
                 margin: 0 auto !important;
             }
@@ -627,7 +609,7 @@
                 float: none !important;
                 box-shadow: none !important;
                 background-color: #fff !important;
-                border: 1px solid #222 !important;
+                border: 2px solid #333 !important;
                 page-break-inside: avoid;
                 break-inside: avoid;
                 color: #111115 !important;
@@ -643,7 +625,7 @@
 
             @page {
                 size: A4;
-                margin: 12mm;
+                margin: 10mm;
             }
         }
     </style>
@@ -668,7 +650,7 @@
             <div class="mode-tabs">
                 <button class="tab-btn active" id="tabCatalog" onclick="switchMode('catalog')">📚 Catálogo General (Filtros)</button>
                 <button class="tab-btn" id="tabBuilder" onclick="switchMode('builder')">🧙‍♂️ Mazo Personalizado de Personaje</button>
-                <button class="tab-btn btn-secondary" id="tabBacks" onclick="switchMode('backs')" style="margin-left: auto;">🎴 Generar Traseras por Disciplina</button>
+                <button class="tab-btn btn-secondary" id="tabBacks" onclick="switchMode('backs')" style="margin-left: auto;">🎴 Generar Traseras de Cartas</button>
             </div>
 
             <!-- MODO CATÁLOGO GENERAL -->
@@ -1150,7 +1132,6 @@
                         return selectedCharacterPowers.has(name);
                     });
                 } else {
-                    // Si no hay mazo personalizado, coge los del catálogo actual o todos
                     dataToRender = allDisciplinesData;
                 }
             }
@@ -1163,11 +1144,9 @@
                 const backCard = document.createElement('div');
                 backCard.className = 'vtm-card-back';
                 backCard.innerHTML = `
-                    <div class="back-discipline-header">
-                        <span class="back-discipline-title">${discipline}</span>
-                    </div>
-                    <img src="./iconos/${archivoIcono}" class="back-center-icon" alt="${discipline}" onerror="this.src='./iconos/VTM-Ank.png'">
-                    <img src="./iconos/VTM-Logo-Largo.png" class="back-footer-logo" alt="Vampiro La Mascarada" onerror="this.style.display='none'">
+                    <img src="./iconos/VTM-Logo-Largo.png" class="back-top-logo" alt="Vampiro La Mascarada" onerror="this.style.display='none'">
+                    <img src="./iconos/${archivoIcono}" class="back-center-ank" alt="${discipline}" onerror="this.src='./iconos/VTM-Ank.png'">
+                    <div class="back-bottom-discipline">${discipline}</div>
                 `;
                 container.appendChild(backCard);
             });
