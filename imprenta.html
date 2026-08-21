@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edición Imprenta Profesional - Compendio V5</title>
+    <title>Compendio de Disciplinas V5 - Impresión Profesional</title>
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="./iconos/drRol.png">
     <!-- Fuentes oficiales V5 -->
@@ -12,34 +12,43 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         /* =========================================================
-            VARIABLES Y ESTILOS DE IMPRESIÓN CON SANGRADO (BLEED)
+            VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL (OSCURO)
            ========================================================= */
-        * { 
-            -webkit-print-color-adjust: exact !important; 
-            print-color-adjust: exact !important; 
-            box-sizing: border-box; 
-            margin: 0;
-            padding: 0;
-        }
-
         :root {
-            --card-w: 63mm; 
-            --card-h: 88mm;
-            --bleed: 3mm;
-            --full-w: 69mm; 
-            --full-h: 94mm;
-            --border-red: #8b0000;
-            --border-gold: #c5a059;
-            --bg-dark: #121212;
+            --bg-color: #0f0f12;
+            --card-bg: #18181c;
+            --card-border: #2a2a32;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #c5a059;
             --text-main: #e1e1e6;
             --text-muted: #a0a0b0;
             --tag-bg: #25252e;
             --input-bg: #0f0f12;
+            --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
+            --header-border: #8b0000;
+            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
+            
+            --card-width: 63mm;
+            --card-height: 88mm;
+            --bleed: 3mm;
+            --full-width: 69mm;
+            --full-height: 94mm;
+            
+            --wrapper-bg: #000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important;
         }
 
         body {
             font-family: 'EB Garamond', serif;
-            background-color: #1a1a1a;
+            background-color: var(--bg-color);
             color: var(--text-main);
             padding: 20px;
         }
@@ -56,38 +65,66 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 25px 20px;
-            border-bottom: 2px solid var(--border-red);
+            padding: 25px 20px 20px 20px;
+            border-bottom: 2px solid var(--header-border);
             margin-bottom: 25px;
-            background: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
+            background: var(--header-bg);
             border-radius: 8px;
             text-align: center;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            max-width: 100%;
+        }
+
+        .header-ank-logo {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+            filter: var(--logo-filter);
+        }
+
+        .header-main-logo {
+            height: 95px;
+            max-width: 85vw;
+            width: auto;
+            object-fit: contain;
+            filter: var(--logo-filter);
         }
 
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: 1.35rem;
-            color: var(--border-gold);
-            text-transform: uppercase;
+            color: var(--accent-gold);
+            font-variant: small-caps;
             letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            line-height: 1.15;
         }
 
-        /* PANEL DE CONTROL Y PESTAÑAS */
+        /* PANEL DE CONTROL Y PESTAÑAS DE MODO */
         .no-print-controls {
-            background: var(--bg-dark);
-            border: 1px solid #333;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .mode-tabs {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 15px;
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
             flex-wrap: wrap;
         }
 
@@ -96,34 +133,50 @@
             padding: 8px 16px;
             background: var(--tag-bg);
             color: var(--text-muted);
-            border: 1px solid #444;
+            border: 1px solid var(--card-border);
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
         }
 
         .tab-btn.active {
-            background: var(--border-red);
+            background: var(--accent-red);
             color: white;
-            border-color: var(--border-gold);
+            border-color: var(--accent-gold);
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         button, select, input {
             font-family: 'Cinzel', serif;
             padding: 8px 14px;
-            background: var(--border-red);
+            background: var(--accent-red);
             color: white;
-            border: 1px solid var(--border-gold);
+            border: 1px solid var(--accent-gold);
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.85rem;
+            transition: background 0.2s;
         }
 
-        button:hover, select:hover { background: #a51d1d; }
+        button:hover, select:hover {
+            background: var(--accent-crimson);
+        }
 
         .btn-secondary {
-            background: var(--border-gold);
-            color: #111;
+            background: var(--accent-gold);
+            color: #111115;
             font-weight: 600;
         }
 
@@ -139,7 +192,7 @@
             font-family: 'Cinzel', serif;
             font-size: 0.8rem;
             margin-bottom: 5px;
-            color: var(--border-gold);
+            color: var(--accent-gold);
             font-weight: 600;
         }
 
@@ -147,112 +200,70 @@
             width: 100%;
             background: var(--input-bg);
             color: var(--text-main);
-            border: 1px solid #444;
+            border: 1px solid var(--card-border);
             padding: 8px;
+            font-family: inherit;
         }
 
-        #builderSection {
-            display: none;
-            background: var(--bg-dark);
-            border: 1px solid #333;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-
-        .builder-list {
-            max-height: 380px;
-            overflow-y: auto;
-            border: 1px solid #444;
-            padding: 10px;
-            border-radius: 6px;
-            background: var(--input-bg);
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .builder-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        /* =========================================================
-            ESTILOS DE CARTA PARA IMPRENTA (CON SANGRADO Y LÍNEA DE CORTE)
-           ========================================================= */
+        /* CUADRÍCULA ESTRICTA DE CARTAS Y LÍNEAS DE CORTE */
         .cards-grid {
-            max-width: calc(var(--full-w) * 3);
+            max-width: calc(var(--full-width) * 3);
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(3, var(--full-w));
+            grid-template-columns: repeat(3, var(--full-width));
             gap: 0;
             justify-content: center;
         }
 
-        /* Contenedor de Sangrado (Bleed 3mm) con LÍNEA DE CORTE GRIS VISIBLE */
         .print-card-wrapper {
-            width: var(--full-w);
-            height: var(--full-h);
-            background: #000 !important;
+            width: var(--full-width);
+            height: var(--full-height);
+            background: var(--wrapper-bg) !important;
             position: relative;
-            border: 0.3mm solid #888; 
+            border: 0.3mm solid #888;
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* CARTA DE LUJO (MEDIDAS ORIGINALES) */
         .vtm-card {
-            width: var(--card-w);
-            height: var(--card-h);
+            width: var(--card-width);
+            height: var(--card-height);
             position: absolute;
             top: var(--bleed);
             left: var(--bleed);
-            background: var(--bg-dark) !important;
-            color: #e1e1e6 !important;
-            border: 3px solid var(--border-red);
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 3px solid var(--accent-red);
             padding: 3.5mm;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        .vtm-card::after {
-            content: "";
-            position: absolute;
-            top: 2px; left: 2px; right: 2px; bottom: 2px;
-            border: 1px solid var(--border-gold);
-            pointer-events: none;
-        }
-
-        /* TRASERA ORIGINAL (IMAGENES BLANCAS ORIGINALES) */
         .vtm-card-back {
-            width: var(--card-w);
-            height: var(--card-h);
+            width: var(--card-width);
+            height: var(--card-height);
             position: absolute;
             top: var(--bleed);
             left: var(--bleed);
-            background-color: var(--bg-dark) !important;
-            border: 3px solid var(--border-red);
+            background-color: var(--card-bg);
+            border: 3px solid var(--accent-red);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        .vtm-card-back::after {
+        .vtm-card-back::after, .vtm-card::after {
             content: "";
             position: absolute;
             top: 2px; left: 2px; right: 2px; bottom: 2px;
-            border: 1px solid var(--border-gold);
+            border: 1px solid var(--accent-gold);
             pointer-events: none;
         }
 
@@ -276,113 +287,207 @@
             transform: translate(-50%, -50%);
         }
 
-        /* ELEMENTOS INTERNOS DE LA CARTA */
         .discipline-watermark-img {
             position: absolute;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            width: 35mm; height: 35mm;
+            width: 35mm;
+            height: 35mm;
             object-fit: contain;
-            opacity: 0.12;
+            opacity: 0.15;
             pointer-events: none;
+            z-index: 0;
+            user-select: none;
         }
 
-        .card-main-content { display: flex; flex-direction: column; flex-grow: 1; position: relative; z-index: 1; }
-        
-        /* CABECERA DE DISCIPLINA SIN BLOQUE ROJO SÓLIDO (ESTILO MINIMALISTA ELEGANTE) */
-        .card-header { 
-            background: transparent !important; 
-            color: var(--border-gold) !important; 
-            height: auto; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            border-bottom: 1px solid var(--border-red); 
-            margin-bottom: 2mm; 
+        .card-main-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* CABECERA TRANSPARENTE CON TEXTO EN ROJO ACENTO */
+        .card-header {
+            background: transparent !important;
+            color: var(--accent-red) !important;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid var(--accent-red);
+            margin-bottom: 2mm;
             padding-bottom: 1mm;
-            font-family: 'Cinzel', serif; 
-            font-size: 0.68rem; 
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase; 
         }
 
-        .card-title { 
-            font-family: 'Cinzel', serif; 
-            color: #fff !important; 
-            font-size: 0.9rem; 
-            font-weight: 700; 
-            text-align: center; 
-            margin-bottom: 1.5mm; 
-            border-bottom: 1px solid var(--border-gold);
+        .card-discipline {
+            font-family: 'Cinzel', serif;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-red);
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .card-titles-container {
+            text-align: center;
+            margin-bottom: 1.5mm;
+            border-bottom: 1px solid var(--accent-gold);
             padding-bottom: 2px;
         }
 
-        .card-roll-box { 
-            background: rgba(0,0,0,0.4); 
-            border: 1px solid var(--border-gold); 
-            padding: 3px 6px; 
-            margin-bottom: 1.5mm; 
-            text-align: center; 
-            font-size: 0.68rem; 
-            color: #ffffff !important; 
-            font-weight: bold; 
+        .card-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.15;
+            text-transform: small-caps;
         }
 
-        .card-body { 
-            font-family: 'EB Garamond', serif; 
-            font-size: clamp(5pt, 7pt, 8pt); 
-            line-height: 1.1; 
-            color: #ccc !important; 
-            text-align: justify; 
-            overflow: hidden; 
-        }
-
-        .card-costs { 
-            font-size: 0.6rem; 
-            background: rgba(0,0,0,0.4); 
-            border: 1px solid var(--border-gold); 
-            padding: 3px 5px; 
-            margin-top: auto; 
+        .card-roll-box {
+            font-size: 0.65rem;
+            background: rgba(197, 160, 89, 0.08);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            padding: 4px 6px;
+            border-radius: 3px;
             margin-bottom: 1.5mm;
-            display: flex; 
-            justify-content: space-between; 
-            color: var(--border-gold); 
+            text-align: center;
+            line-height: 1.25;
+        }
+
+        .card-roll-line-1 {
+            font-weight: bold;
+            color: var(--accent-crimson);
+            font-size: 0.68rem;
+        }
+
+        .card-roll-line-2 {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 0.55rem;
+            margin: 1px 0;
+        }
+
+        .card-roll-line-3 {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.65rem;
+        }
+
+        .card-body {
+            font-size: 0.7rem;
+            line-height: 1.25;
+            overflow-y: hidden;
+            padding: 1px 2px;
+            text-align: justify;
+        }
+
+        .card-costs {
+            font-size: 0.6rem;
+            background: rgba(197, 160, 89, 0.12);
+            border: 1px solid var(--accent-gold);
+            padding: 3px 5px;
+            border-radius: 3px;
+            margin-top: auto;
+            margin-bottom: 1.5mm;
+            display: flex;
+            justify-content: space-between;
             font-weight: 600;
         }
 
-        .card-footer-container { border-top: 1px solid var(--border-gold); padding-top: 1.5mm; position: relative; z-index: 1; }
-        .card-footer-layout { display: flex; justify-content: space-between; align-items: center; }
-        .card-level-img, .card-discipline-icon-img { width: 6.5mm; height: 6.5mm; object-fit: contain; }
-        .card-source-text { font-size: 0.5rem; color: var(--text-muted); font-family: 'Cinzel', serif; text-align: center; }
+        .card-costs span span {
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
 
-        #loading { text-align: center; font-size: 1.1rem; color: var(--border-gold); padding: 40px; font-family: 'Cinzel', serif; }
-        .page-break { display: none; }
+        .card-footer-container {
+            border-top: 1px solid var(--accent-gold);
+            padding-top: 1.5mm;
+            margin-top: 0;
+            position: relative;
+            z-index: 1;
+        }
 
-        /* REGLAS DE IMPRESIÓN */
+        .card-footer-layout {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-level-img {
+            width: 6.5mm;
+            height: 6.5mm;
+            object-fit: contain;
+        }
+
+        .card-source-text {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        .card-discipline-icon-img {
+            width: 6.5mm;
+            height: 6.5mm;
+            object-fit: contain;
+            opacity: 1;
+        }
+
+        #loading {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            padding: 40px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .page-break {
+            display: none;
+        }
+
         @media print {
-            body { background: #000 !important; padding: 0 !important; }
-            .no-print-controls, header { display: none !important; }
-            .cards-grid { 
-                display: grid !important; 
-                grid-template-columns: repeat(3, var(--full-w)) !important; 
+            body {
+                background: var(--wrapper-bg) !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+
+            .no-print-controls, header {
+                display: none !important;
+            }
+
+            .cards-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, var(--full-width)) !important;
                 justify-content: center !important;
-                align-content: center !important;
+                align-content: start !important;
+                gap: 0 !important;
+                max-width: none !important;
+                margin: 0 auto !important;
             }
-            .print-card-wrapper { 
-                border: 0.3mm solid #888 !important; 
+
+            .print-card-wrapper {
+                border: 0.3mm solid #888 !important;
             }
-            .page-break { 
-                display: block !important; 
-                page-break-after: always; 
-                break-after: page; 
-                height: 0; 
-                width: 100%; 
-                grid-column: span 3; 
+
+            .page-break {
+                display: block !important;
+                page-break-after: always;
+                break-after: page;
+                height: 0;
+                width: 100%;
+                grid-column: span 3;
             }
-            @page { 
-                size: A4; 
-                margin: 0mm; 
+
+            @page {
+                size: A4;
+                margin: 0mm;
             }
         }
     </style>
@@ -390,64 +495,83 @@
 <body>
 
     <div class="container">
+        <!-- Cabecera -->
         <header>
-            <h1 class="cabecera-principal">Edición Imprenta Profesional - V5</h1>
+            <div class="header-logos">
+                <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
+                <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo.png';">
+            </div>
+            <div class="header-text">
+                <h1 class="cabecera-principal">Compendio de Cartas Imprimibles - Profesional</h1>
+            </div>
         </header>
 
-        <!-- CONTROLES Y FILTROS -->
+        <!-- Panel de Control y Opciones -->
         <div class="no-print-controls">
-            <div class="mode-tabs">
-                <button class="tab-btn active" id="tabCatalog" onclick="switchMode('catalog')">📚 Catálogo General (Filtros)</button>
-                <button class="tab-btn" id="tabBuilder" onclick="switchMode('builder')">🧙‍♂️ Mazo Personalizado</button>
+            <div class="controls-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <div class="mode-tabs">
+                    <a href="cartas.html" class="tab-btn">⬅️ Volver a Cartas (Claro)</a>
+                </div>
+                
+                <!-- SELECTOR DE ESTILO DE IMPRESIÓN -->
+                <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--accent-gold);">
+                    <label for="printStyleSelect" style="font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--accent-gold); white-space: nowrap; margin-bottom: 0;">Estilo Impresión:</label>
+                    <select id="printStyleSelect" onchange="togglePrintStyle(this.value)" style="padding: 6px 10px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--accent-gold); border-radius: 4px; cursor: pointer;">
+                        <option value="professional" selected>Profesional (Oscuro)</option>
+                        <option value="printfriendly">Print-Friendly (Claro / Ahorro de Tinta)</option>
+                    </select>
+                </div>
             </div>
 
-            <div style="margin-bottom: 15px; display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;">
+            <!-- Botones de Impresión Dúplex y Simplex -->
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--card-border); display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;">
                 <button class="btn-secondary" onclick="imprimirSimplex()">🖨️ IMPRIMIR ANVERSOS (SIMPLEX)</button>
                 <button class="btn-secondary" onclick="imprimirDuplex()">🖨️ IMPRIMIR DÚPLEX (ANVERSO/REVERSO)</button>
             </div>
 
-            <div id="catalogSection">
+            <!-- Filtros -->
+            <div style="margin-top: 15px;">
                 <div class="filters-row">
                     <div class="filter-group">
                         <label for="filterDiscipline">Filtrar Disciplina:</label>
-                        <select id="filterDiscipline" onchange="filterCatalogCards()"><option value="all">Todas</option></select>
+                        <select id="filterDiscipline" onchange="filterCatalogCards()">
+                            <option value="all">Todas las Disciplinas</option>
+                        </select>
                     </div>
                     <div class="filter-group">
                         <label for="filterLevel">Filtrar Nivel:</label>
                         <select id="filterLevel" onchange="filterCatalogCards()">
-                            <option value="all">Todos</option>
-                            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                            <option value="all">Todos los Niveles</option>
+                            <option value="1">Nivel 1</option>
+                            <option value="2">Nivel 2</option>
+                            <option value="3">Nivel 3</option>
+                            <option value="4">Nivel 4</option>
+                            <option value="5">Nivel 5</option>
                         </select>
                     </div>
                     <div class="filter-group">
                         <label for="filterSource">Filtrar Fuente:</label>
-                        <select id="filterSource" onchange="filterCatalogCards()"><option value="all">Todas</option></select>
+                        <select id="filterSource" onchange="filterCatalogCards()">
+                            <option value="all">Todas las Fuentes</option>
+                        </select>
                     </div>
                     <div class="filter-group">
-                        <label for="searchCard">Buscar:</label>
-                        <input type="text" id="searchCard" placeholder="Nombre..." oninput="filterCatalogCards()">
+                        <label for="searchCard">Buscar Poder:</label>
+                        <input type="text" id="searchCard" placeholder="Nombre o palabra clave..." oninput="filterCatalogCards()">
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="builderSection">
-            <h3 style="font-family: 'Cinzel', serif; color: var(--border-gold); margin-bottom: 10px;">Selecciona los poderes de tu mazo</h3>
-            <div style="margin-bottom: 10px;">
-                <input type="text" id="searchBuilder" placeholder="Buscar en lista..." oninput="populateBuilderList(allDisciplinesData)" style="width:100%; padding:8px; background:var(--input-bg); color:var(--text-main); border:1px solid #444; border-radius:4px;">
-            </div>
-            <div class="builder-list" id="builderListContainer"></div>
-        </div>
+        <div id="loading">Cargando cartas desde Google Sheets...</div>
 
-        <div id="loading">Cargando datos para imprenta...</div>
+        <!-- Contenedor donde se generan las cartas dinámicamente -->
         <div id="cardsContainer" class="cards-grid"></div>
     </div>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
         let allDisciplinesData = [];
-        let currentMode = 'catalog';
-        let selectedCharacterPowers = new Set();
 
         const ICONOS_MAP = {
             'animalismo': 'Animalism_symbol.png', 'auspex': 'Auspex_symbol.png', 'celeridad': 'Celerity_symbol.png',
@@ -456,206 +580,290 @@
             'presencia': 'Presence_symbol.png', 'protean': 'Protean_symbol.png', 'alquimia de sangre débil': 'Alchemy_symbol.png'
         };
 
-        const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo.png';
+        const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo.png'; 
+
+        function togglePrintStyle(style) {
+            if (style === 'printfriendly') {
+                window.location.href = 'cartas.html';
+            }
+        }
 
         window.onload = function() {
             Papa.parse(CSV_URL, {
-                download: true, header: true, skipEmptyLines: true,
+                download: true,
+                header: true,
+                skipEmptyLines: true,
                 complete: function(results) {
-                    allDisciplinesData = results.data.filter(row => (row['Nombre Poder'] || row['Nombre']));
+                    allDisciplinesData = results.data.filter(row => {
+                        const nombre = (row['Nombre Poder'] || row['Nombre'] || '').trim();
+                        return nombre && nombre.toLowerCase() !== 'nombre poder';
+                    });
+
                     document.getElementById('loading').style.display = 'none';
+
+                    allDisciplinesData.sort((a, b) => {
+                        let lvlA = parseInt(a['Nivel'] || 1, 10);
+                        let lvlB = parseInt(b['Nivel'] || 1, 10);
+                        if (lvlA !== lvlB) return lvlA - lvlB;
+                        return (a['Nombre Poder'] || '').localeCompare(b['Nombre Poder']);
+                    });
+
                     populateFilters(allDisciplinesData);
-                    populateBuilderList(allDisciplinesData);
                     filterCatalogCards();
+                },
+                error: function(err) {
+                    console.error("Error al cargar Google Sheets:", err);
+                    document.getElementById('loading').textContent = "Error al cargar los datos del compendio.";
                 }
             });
         };
 
-        function switchMode(mode) {
-            currentMode = mode;
-            document.getElementById('catalogSection').style.display = mode === 'catalog' ? 'block' : 'none';
-            document.getElementById('builderSection').style.display = mode === 'builder' ? 'block' : 'none';
-            document.getElementById('tabCatalog').classList.toggle('active', mode === 'catalog');
-            document.getElementById('tabBuilder').classList.toggle('active', mode === 'builder');
-            renderActiveMode();
-        }
-
         function populateFilters(data) {
-            const disciplinesSet = new Set(), sourcesSet = new Set();
+            const disciplinesSet = new Set();
+            const sourcesSet = new Set();
+
             data.forEach(row => {
-                if (row['Disciplina']) disciplinesSet.add(row['Disciplina'].trim());
-                if (row['Fuente_Libro'] || row['Fuente']) sourcesSet.add((row['Fuente_Libro'] || row['Fuente']).trim());
+                const disc = row['Disciplina'] || row['DISCIPLINA'];
+                if (disc) disciplinesSet.add(disc.trim());
+
+                const source = row['Fuente_Libro'] || row['Fuente'];
+                if (source && source.trim() !== '-') sourcesSet.add(source.trim());
             });
-            const selDisc = document.getElementById('filterDiscipline');
-            disciplinesSet.forEach(d => selDisc.innerHTML += `<option value="${d.toLowerCase()}">${d}</option>`);
-            const selSrc = document.getElementById('filterSource');
-            sourcesSet.forEach(s => selSrc.innerHTML += `<option value="${s.toLowerCase()}">${s}</option>`);
-        }
 
-        function populateBuilderList(data) {
-            const container = document.getElementById('builderListContainer');
-            container.innerHTML = '';
-            const query = (document.getElementById('searchBuilder') ? document.getElementById('searchBuilder').value : '').toLowerCase();
-
-            data.forEach((row) => {
-                const name = row['Nombre Poder'] || row['Nombre'];
-                const disc = row['Disciplina'] || 'General';
-                if (query && !name.toLowerCase().includes(query) && !disc.toLowerCase().includes(query)) return;
-
-                const isChecked = selectedCharacterPowers.has(name) ? 'checked' : '';
-                container.innerHTML += `
-                    <label class="builder-item">
-                        <div><input type="checkbox" value="${name}" ${isChecked} onchange="togglePower('${name.replace(/'/g, "\\'")}', this.checked)"> <strong>${name}</strong> (${disc})</div>
-                    </label>`;
+            const selectDisc = document.getElementById('filterDiscipline');
+            Array.from(disciplinesSet).sort().forEach(disc => {
+                const opt = document.createElement('option');
+                opt.value = disc.toLowerCase();
+                opt.textContent = disc;
+                selectDisc.appendChild(opt);
             });
-        }
 
-        function togglePower(name, isChecked) {
-            if (isChecked) selectedCharacterPowers.add(name); else selectedCharacterPowers.delete(name);
-            if (currentMode === 'builder') renderActiveMode();
-        }
-
-        function renderActiveMode() {
-            if (currentMode === 'catalog') filterCatalogCards();
-            else renderSelectedBuilderCards();
+            const selectSource = document.getElementById('filterSource');
+            Array.from(sourcesSet).sort().forEach(src => {
+                const opt = document.createElement('option');
+                opt.value = src.toLowerCase();
+                opt.textContent = src;
+                selectSource.appendChild(opt);
+            });
         }
 
         function createCardElement(row) {
-            const name = row['Nombre Poder'] || row['Nombre'] || '';
-            const disc = row['Disciplina'] || 'General';
-            const level = row['Nivel'] || '1';
-            const discKey = disc.toLowerCase().trim();
-            const icon = ICONOS_MAP[discKey] ? `<img src="./iconos/${ICONOS_MAP[discKey]}" class="discipline-watermark-img">` : '';
-            const levelImg = `<img src="./iconos/${level}_symbol.png" class="card-level-img" onerror="this.style.display='none'">`;
-            const cornerIcon = ICONOS_MAP[discKey] ? `<img src="./iconos/${ICONOS_MAP[discKey]}" class="card-discipline-icon-img">` : '';
+            const name = row['Nombre Poder'] || row['Nombre'] || 'Sin Nombre';
+            const discipline = row['Disciplina'] || 'General';
+            let level = (row['Nivel'] || '1').trim();
+            
+            if (!['1', '2', '3', '4', '5'].includes(level)) {
+                level = '1';
+            }
+            
+            const pool = (row['Reserva de Dados'] || row['Reserva de dados'] || row['Tirada'] || '').trim();
+            const opposition = (row['Reserva Oposición'] || row['Reserva Oposicion'] || row['Reserva oposicion'] || '').trim();
+            
+            const cost = row['Controles de Ansia'] || row['Coste'] || 'Ninguno';
+            const duration = row['Duracion'] || row['Duración'] || 'Escena';
+            const desc = row['Descripción'] || row['DESCRIPCION'] || 'Sin descripción disponible.';
+            
+            const sourceBook = row['Fuente_Libro'] || row['Fuente'] || 'V5';
+            const sourcePage = row['Fuente_Pag'] || row['Página'] || '';
+
+            const discKey = discipline.toLowerCase().trim();
+            const archivoIcono = ICONOS_MAP[discKey];
+            let watermarkHTML = '';
+            let cornerIconHTML = '';
+            if (archivoIcono) {
+                watermarkHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="" onerror="this.style.display='none'">`;
+                cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="${discipline}" style="position:static; width:6.5mm; height:6.5mm; opacity:1; transform:none;" onerror="this.style.display='none'">`;
+            }
+
+            const levelImgHTML = `<img src="./iconos/${level}_symbol.png" class="card-level-img" alt="Nivel ${level}" onerror="this.style.display='none'">`;
+
+            let rollBoxHTML = '';
+            const oppositionLower = opposition.toLowerCase();
+            const isSinOposicion = !opposition || opposition === '-' || oppositionLower === 'sin oposición' || oppositionLower === 'sin oposicion';
+
+            if (pool && pool !== '-') {
+                if (isSinOposicion) {
+                    rollBoxHTML = `
+                        <div class="card-roll-box">
+                            <div class="card-roll-line-1">${pool}</div>
+                        </div>
+                    `;
+                } else {
+                    rollBoxHTML = `
+                        <div class="card-roll-box">
+                            <div class="card-roll-line-1">${pool}</div>
+                            <div class="card-roll-line-2">vs.</div>
+                            <div class="card-roll-line-3">${opposition}</div>
+                        </div>
+                    `;
+                }
+            } else {
+                rollBoxHTML = `
+                    <div class="card-roll-box">
+                        <div class="card-roll-line-1">Sin tirada</div>
+                    </div>
+                `;
+            }
+
+            let sourceDisplay = sourceBook;
+            if (sourcePage && sourcePage.trim() !== '-' && sourcePage.trim() !== '') {
+                sourceDisplay += ` (pág. ${sourcePage})`;
+            }
 
             const wrapper = document.createElement('div');
             wrapper.className = 'print-card-wrapper';
+
             wrapper.innerHTML = `
                 <div class="vtm-card">
-                    ${icon}
+                    ${watermarkHTML}
                     <div class="card-main-content">
-                        <div class="card-header"><span>${disc}</span></div>
-                        <div class="card-title">${name}</div>
-                        <div class="card-roll-box">${row['Tirada'] || row['Reserva de Dados'] || 'Sin tirada'}</div>
-                        <div class="card-body">${row['Descripción'] || ''}</div>
-                        <div class="card-costs"><span>Coste: ${row['Coste'] || '-'}</span><span>Duración: ${row['Duración'] || '-'}</span></div>
+                        <div class="card-header">
+                            <span class="card-discipline">${discipline}</span>
+                        </div>
+                        <div class="card-titles-container">
+                            <div class="card-title">${name}</div>
+                        </div>
+                        ${rollBoxHTML}
+                        <div class="card-body">
+                            ${desc}
+                        </div>
+                        <div class="card-costs">
+                            <span>Coste: <span>${cost}</span></span>
+                            <span>Duración: <span>${duration}</span></span>
+                        </div>
                     </div>
                     <div class="card-footer-container">
                         <div class="card-footer-layout">
-                            <div>${levelImg}</div>
-                            <div class="card-source-text">${row['Fuente_Libro'] || row['Fuente'] || 'V5'}</div>
-                            <div>${cornerIcon}</div>
+                            <div>${levelImgHTML}</div>
+                            <div class="card-source-text">${sourceDisplay}</div>
+                            <div>${cornerIconHTML}</div>
                         </div>
                     </div>
-                </div>`;
+                </div>
+            `;
             return wrapper;
         }
 
         function filterCatalogCards() {
-            if (currentMode !== 'catalog') return;
+            const selectedDisc = document.getElementById('filterDiscipline').value;
+            const selectedLevel = document.getElementById('filterLevel').value;
+            const selectedSource = document.getElementById('filterSource').value;
+            const searchQuery = document.getElementById('searchCard').value.toLowerCase();
+
             const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
-            
-            const sDisc = document.getElementById('filterDiscipline').value;
-            const sLvl = document.getElementById('filterLevel').value;
-            const sSrc = document.getElementById('filterSource').value;
-            const sQuery = document.getElementById('searchCard').value.toLowerCase();
 
-            allDisciplinesData.filter(row => {
-                const d = (row['Disciplina'] || '').toLowerCase();
-                const l = (row['Nivel'] || '1').trim();
-                const src = (row['Fuente_Libro'] || row['Fuente'] || '').toLowerCase();
-                const n = (row['Nombre Poder'] || row['Nombre'] || '').toLowerCase();
-                return (sDisc === 'all' || d.includes(sDisc)) && (sLvl === 'all' || l === sLvl) && (sSrc === 'all' || src.includes(sSrc)) && (!sQuery || n.includes(sQuery));
-            }).forEach(row => container.appendChild(createCardElement(row)));
-        }
+            const filteredData = allDisciplinesData.filter(row => {
+                const discipline = (row['Disciplina'] || 'General').toLowerCase().trim();
+                let level = (row['Nivel'] || '1').trim();
+                const source = (row['Fuente_Libro'] || row['Fuente'] || 'V5').toLowerCase().trim();
+                const name = (row['Nombre Poder'] || row['Nombre'] || '').toLowerCase();
+                const fullText = Object.values(row).join(' ').toLowerCase();
 
-        function renderSelectedBuilderCards() {
-            if (currentMode !== 'builder') return;
-            const container = document.getElementById('cardsContainer');
-            container.innerHTML = '';
-            allDisciplinesData.filter(row => selectedCharacterPowers.has(row['Nombre Poder'] || row['Nombre'])).forEach(row => container.appendChild(createCardElement(row)));
+                const matchesDisc = (selectedDisc === 'all' || discipline.includes(selectedDisc));
+                const matchesLevel = (selectedLevel === 'all' || level === selectedLevel);
+                const matchesSource = (selectedSource === 'all' || source.includes(selectedSource));
+                const matchesSearch = (!searchQuery || name.includes(searchQuery) || fullText.includes(searchQuery));
+
+                return matchesDisc && matchesLevel && matchesSource && matchesSearch;
+            });
+
+            filteredData.forEach(row => {
+                container.appendChild(createCardElement(row));
+            });
         }
 
         function obtenerCartasActivas() {
-            if (currentMode === 'builder') {
-                return allDisciplinesData.filter(row => selectedCharacterPowers.has(row['Nombre Poder'] || row['Nombre']));
-            } else {
-                const sDisc = document.getElementById('filterDiscipline').value;
-                const sLvl = document.getElementById('filterLevel').value;
-                const sSrc = document.getElementById('filterSource').value;
-                const sQuery = document.getElementById('searchCard').value.toLowerCase();
-                return allDisciplinesData.filter(row => {
-                    const d = (row['Disciplina'] || '').toLowerCase();
-                    const l = (row['Nivel'] || '1').trim();
-                    const src = (row['Fuente_Libro'] || row['Fuente'] || '').toLowerCase();
-                    const n = (row['Nombre Poder'] || row['Nombre'] || '').toLowerCase();
-                    return (sDisc === 'all' || d.includes(sDisc)) && (sLvl === 'all' || l === sLvl) && (sSrc === 'all' || src.includes(sSrc)) && (!sQuery || n.includes(sQuery));
-                });
-            }
+            const selectedDisc = document.getElementById('filterDiscipline').value;
+            const selectedLevel = document.getElementById('filterLevel').value;
+            const selectedSource = document.getElementById('filterSource').value;
+            const searchQuery = document.getElementById('searchCard').value.toLowerCase();
+
+            return allDisciplinesData.filter(row => {
+                const discipline = (row['Disciplina'] || 'General').toLowerCase().trim();
+                let level = (row['Nivel'] || '1').trim();
+                const source = (row['Fuente_Libro'] || row['Fuente'] || 'V5').toLowerCase().trim();
+                const name = (row['Nombre Poder'] || row['Nombre'] || '').toLowerCase();
+                const fullText = Object.values(row).join(' ').toLowerCase();
+
+                const matchesDisc = (selectedDisc === 'all' || discipline.includes(selectedDisc));
+                const matchesLevel = (selectedLevel === 'all' || level === selectedLevel);
+                const matchesSource = (selectedSource === 'all' || source.includes(selectedSource));
+                const matchesSearch = (!searchQuery || name.includes(searchQuery) || fullText.includes(searchQuery));
+
+                return matchesDisc && matchesLevel && matchesSource && matchesSearch;
+            });
         }
 
+        /* IMPRESIÓN SIMPLEX */
         function imprimirSimplex() {
             const cartas = obtenerCartasActivas();
-            if (!cartas.length) return alert("No hay cartas seleccionadas.");
+            if (cartas.length === 0) {
+                alert("No hay cartas visibles para imprimir.");
+                return;
+            }
+
             const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
             cartas.forEach(row => container.appendChild(createCardElement(row)));
-            setTimeout(() => window.print(), 300);
+
+            setTimeout(() => { window.print(); }, 300);
         }
 
+        /* IMPRESIÓN DÚPLEX (BLOQUES DE 9) */
         function imprimirDuplex() {
             const cartas = obtenerCartasActivas();
-            if (!cartas.length) return alert("No hay cartas seleccionadas.");
-            
+            if (cartas.length === 0) {
+                alert("No hay cartas visibles para imprimir.");
+                return;
+            }
+
             const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
-            
-            const totalPaginas = Math.ceil(cartas.length / 9);
+            const chunkSize = 9;
+            const totalPaginas = Math.ceil(cartas.length / chunkSize);
 
             for (let p = 0; p < totalPaginas; p++) {
-                const inicio = p * 9;
-                const fin = Math.min(inicio + 9, cartas.length);
-                
-                for (let i = inicio; i < fin; i++) {
-                    container.appendChild(createCardElement(cartas[i]));
-                }
+                const inicio = p * chunkSize;
+                const fin = Math.min(inicio + chunkSize, cartas.length);
+                const chunk = cartas.slice(inicio, fin);
 
-                const resto = (fin - inicio) % 9;
+                chunk.forEach(row => container.appendChild(createCardElement(row)));
+
+                const resto = chunkSize - chunk.length;
                 if (resto !== 0) {
-                    const huecosFaltantes = 9 - resto;
-                    for (let h = 0; h < huecosFaltantes; h++) {
-                        const empty = document.createElement('div');
-                        empty.className = 'print-card-wrapper';
-                        empty.style.visibility = 'hidden';
-                        container.appendChild(empty);
+                    for (let r = 0; r < resto; r++) {
+                        const emptyWrapper = document.createElement('div');
+                        emptyWrapper.className = 'print-card-wrapper';
+                        emptyWrapper.style.visibility = 'hidden';
+                        container.appendChild(emptyWrapper);
                     }
                 }
 
-                const pb1 = document.createElement('div');
-                pb1.className = 'page-break';
-                container.appendChild(pb1);
+                const break1 = document.createElement('div');
+                break1.className = 'page-break';
+                container.appendChild(break1);
 
-                for (let r = 0; r < 9; r++) {
-                    const wrap = document.createElement('div');
-                    wrap.className = 'print-card-wrapper';
-                    wrap.innerHTML = `
+                for (let j = 0; j < chunkSize; j++) {
+                    const wrapBack = document.createElement('div');
+                    wrapBack.className = 'print-card-wrapper';
+                    wrapBack.innerHTML = `
                         <div class="vtm-card-back">
                             <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
                             <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
-                        </div>`;
-                    container.appendChild(wrap);
+                        </div>
+                    `;
+                    container.appendChild(wrapBack);
                 }
 
                 if (p < totalPaginas - 1) {
-                    const pb2 = document.createElement('div');
-                    pb2.className = 'page-break';
-                    container.appendChild(pb2);
+                    const break2 = document.createElement('div');
+                    break2.className = 'page-break';
+                    container.appendChild(break2);
                 }
             }
 
-            setTimeout(() => window.print(), 300);
+            setTimeout(() => { window.print(); }, 300);
         }
     </script>
 </body>
