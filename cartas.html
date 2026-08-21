@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         /* =========================================================
-            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
+            VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL
            ========================================================= */
         :root {
             --bg-color: #0f0f12;
@@ -28,8 +28,14 @@
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
+            
             --card-width: 63mm;
             --card-height: 88mm;
+            --bleed: 3mm;
+            --full-width: 69mm;
+            --full-height: 94mm;
+            
+            --wrapper-bg: #000;
         }
 
         body.light-mode {
@@ -46,12 +52,23 @@
             --header-bg: #2b0408;
             --header-border: #7a0000;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
+            --wrapper-bg: #fff;
+        }
+
+        /* Estilo de Impresión Ahorro de Tinta / Claro */
+        body.print-friendly {
+            --wrapper-bg: #fff;
+            --card-bg: #fcfbfa;
+            --text-main: #1a1a1a;
+            --text-muted: #555555;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important;
         }
 
         body {
@@ -327,48 +344,54 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* CUADRÍCULA ESTRICTA DE CARTAS (3x3 con gap: 0) */
+        /* CUADRÍCULA ESTRICTA DE CARTAS Y LÍNEAS DE CORTE */
         .cards-grid {
-            max-width: 189mm;
+            max-width: calc(var(--full-width) * 3);
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(3, var(--card-width));
+            grid-template-columns: repeat(3, var(--full-width));
             gap: 0;
             justify-content: center;
+        }
+
+        /* Contenedor con líneas de corte grises */
+        .print-card-wrapper {
+            width: var(--full-width);
+            height: var(--full-height);
+            background: var(--wrapper-bg) !important;
+            position: relative;
+            border: 0.3mm solid #888;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         /* CARTA FÍSICA V5 */
         .vtm-card {
             width: var(--card-width);
-            min-width: var(--card-width);
-            max-width: var(--card-width);
             height: var(--card-height);
-            min-height: var(--card-height);
-            max-height: var(--card-height);
+            position: absolute;
+            top: var(--bleed);
+            left: var(--bleed);
             background-color: var(--card-bg);
             color: var(--text-main);
-            border: 4px solid var(--accent-red);
+            border: 3px solid var(--accent-red);
             padding: 3.5mm;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            page-break-inside: avoid;
-            break-inside: avoid;
         }
 
         /* TRASERA GENÉRICA */
         .vtm-card-back {
             width: var(--card-width);
-            min-width: var(--card-width);
-            max-width: var(--card-width);
             height: var(--card-height);
-            min-height: var(--card-height);
-            max-height: var(--card-height);
-            background-color: white;
-            border: 4px solid var(--accent-red);
+            position: absolute;
+            top: var(--bleed);
+            left: var(--bleed);
+            background-color: var(--card-bg);
+            border: 3px solid var(--accent-red);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -376,11 +399,9 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            page-break-inside: avoid;
-            break-inside: avoid;
         }
 
-        .vtm-card-back::after {
+        .vtm-card-back::after, .vtm-card::after {
             content: "";
             position: absolute;
             top: 2px; left: 2px; right: 2px; bottom: 2px;
@@ -396,7 +417,6 @@
             top: 10mm;
             left: 50%;
             transform: translateX(-50%);
-            filter: invert(1);
         }
 
         .back-center-ank {
@@ -407,18 +427,9 @@
             top: 52%;
             left: 50%;
             transform: translate(-50%, -50%);
-            filter: invert(1);
         }
 
-        .vtm-card::after {
-            content: "";
-            position: absolute;
-            top: 2px; left: 2px; right: 2px; bottom: 2px;
-            border: 1px solid var(--accent-gold);
-            pointer-events: none;
-        }
-
-        /* MARCA DE AGUA CON OPACIDAD 0.15 */
+        /* MARCA DE AGUA */
         .discipline-watermark-img {
             position: absolute;
             top: 50%;
@@ -441,24 +452,26 @@
             z-index: 1;
         }
 
+        /* CABECERA TRANSPARENTE CON TEXTO EN ROJO ACENTO */
         .card-header {
-            background: var(--accent-red);
-            color: white;
-            height: 6mm;
+            background: transparent !important;
+            color: var(--accent-red) !important;
+            height: auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 3px;
-            margin-bottom: 1.5mm;
+            border-bottom: 1px solid var(--accent-red);
+            margin-bottom: 2mm;
+            padding-bottom: 1mm;
         }
 
         .card-discipline {
             font-family: 'Cinzel', serif;
-            font-size: 0.62rem;
+            font-size: 0.68rem;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            color: var(--accent-gold);
-            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--accent-red);
+            font-weight: 700;
             line-height: 1;
         }
 
@@ -478,7 +491,7 @@
             text-transform: small-caps;
         }
 
-        /* BLOQUE DE TIRADA AMPLIADO */
+        /* BLOQUE DE TIRADA */
         .card-roll-box {
             font-size: 0.65rem;
             background: rgba(197, 160, 89, 0.08);
@@ -509,7 +522,7 @@
             font-size: 0.65rem;
         }
 
-        /* CUERPO DE CARTA AMPLIADO */
+        /* CUERPO */
         .card-body {
             font-size: 0.7rem;
             line-height: 1.25;
@@ -579,15 +592,14 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* SALTO DE PÁGINA PARA INTERCALADO DÚPLEX */
         .page-break {
             display: none;
         }
 
-        /* Estilos de Impresión A4 técnicos */
+        /* ESTILOS DE IMPRESIÓN TÉCNICA A4 */
         @media print {
             body {
-                background: white !important;
+                background: var(--wrapper-bg) !important;
                 color: black !important;
                 padding: 0 !important;
             }
@@ -598,7 +610,7 @@
 
             .cards-grid {
                 display: grid !important;
-                grid-template-columns: repeat(3, var(--card-width)) !important;
+                grid-template-columns: repeat(3, var(--full-width)) !important;
                 justify-content: center !important;
                 align-content: start !important;
                 gap: 0 !important;
@@ -606,23 +618,8 @@
                 margin: 0 auto !important;
             }
 
-            .vtm-card, .vtm-card-back {
-                margin: 0 !important;
-                float: none !important;
-                box-shadow: none !important;
-                background-color: #fff !important;
-                border: 2px solid #333 !important;
-                page-break-inside: avoid;
-                break-inside: avoid;
-                color: #111115 !important;
-            }
-
-            .vtm-card .card-title {
-                color: #5c101c !important;
-            }
-
-            .vtm-card .card-source-text {
-                color: #444 !important;
+            .print-card-wrapper {
+                border: 0.3mm solid #888 !important;
             }
 
             .page-break {
@@ -636,7 +633,7 @@
 
             @page {
                 size: A4;
-                margin: 10mm;
+                margin: 0mm;
             }
         }
     </style>
@@ -656,28 +653,32 @@
             </div>
         </header>
 
-        <!-- Selector de Modo / Pestañas y Botones de Impresión Técnica -->
+        <!-- Panel de Control y Opciones -->
         <div class="no-print-controls">
-            <div class="mode-tabs">
-                <button class="tab-btn active" id="tabCatalog" onclick="switchMode('catalog')">📚 Catálogo General (Filtros)</button>
-                <button class="tab-btn" id="tabBuilder" onclick="switchMode('builder')">🧙‍♂️ Mazo Personalizado de Personaje</button>
+            <div class="controls-header">
+                <div class="mode-tabs" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
+                    <button class="tab-btn active" id="tabCatalog" onclick="switchMode('catalog')">📚 Catálogo General (Filtros)</button>
+                    <button class="tab-btn" id="tabBuilder" onclick="switchMode('builder')">🧙‍♂️ Mazo Personalizado</button>
+                </div>
+                
+                <!-- Selector de Estilo de Impresión -->
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label for="printStyleSelect" style="font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--accent-gold);">Estilo:</label>
+                    <select id="printStyleSelect" onchange="togglePrintStyle(this.value)" style="padding: 6px 10px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--accent-gold); border-radius: 4px;">
+                        <option value="professional">Profesional (Oscuro)</option>
+                        <option value="printfriendly">Print-Friendly (Claro / Ahorro de Tinta)</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- BOTONES DE IMPRESIÓN TÉCNICOS -->
-            <div style="margin-bottom: 15px; display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;">
+            <!-- Botones de Impresión Dúplex y Simplex -->
+            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--card-border); display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;">
                 <button class="btn-secondary" onclick="imprimirSimplex()">🖨️ IMPRIMIR ANVERSOS (SIMPLEX)</button>
                 <button class="btn-secondary" onclick="imprimirDuplex()">🖨️ IMPRIMIR DÚPLEX (ANVERSO/REVERSO)</button>
             </div>
 
-            <!-- MODO CATÁLOGO GENERAL -->
-            <div id="catalogSection">
-                <div class="controls-header">
-                    <div style="font-family: 'Cinzel', serif; color: var(--accent-gold); font-weight: 700;">🎴 Generador por Filtros</div>
-                    <div class="btn-group">
-                        <a href="index.html" style="text-decoration: none;"><button type="button">⬅️ Volver al Compendio</button></a>
-                    </div>
-                </div>
-
+            <!-- Modo Catálogo General -->
+            <div id="catalogSection" style="margin-top: 15px;">
                 <div class="filters-row">
                     <div class="filter-group">
                         <label for="filterDiscipline">Filtrar Disciplina:</label>
@@ -710,7 +711,7 @@
             </div>
         </div>
 
-        <!-- MODO MAZO DE PERSONAJE -->
+        <!-- Modo Mazo de Personaje -->
         <div id="builderSection">
             <div class="builder-top-bar">
                 <div>
@@ -769,18 +770,10 @@
         let selectedCharacterPowers = new Set();
 
         const ICONOS_MAP = {
-            'animalismo': 'Animalism_symbol.png',
-            'auspex': 'Auspex_symbol.png',
-            'celeridad': 'Celerity_symbol.png',
-            'dominación': 'Dominate_symbol.png',
-            'fortaleza': 'Fortitude_symbol.png',
-            'hechicería de sangre': 'Blood_Sorcery_symbol.png',
-            'ofuscación': 'Obfuscate_symbol.png',
-            'olvido': 'Oblivion_symbol.png',
-            'potencia': 'Potence_symbol.png',
-            'presencia': 'Presence_symbol.png',
-            'protean': 'Protean_symbol.png',
-            'alquimia de sangre débil': 'Alchemy_symbol.png'
+            'animalismo': 'Animalism_symbol.png', 'auspex': 'Auspex_symbol.png', 'celeridad': 'Celerity_symbol.png',
+            'dominación': 'Dominate_symbol.png', 'fortaleza': 'Fortitude_symbol.png', 'hechicería de sangre': 'Blood_Sorcery_symbol.png',
+            'ofuscación': 'Obfuscate_symbol.png', 'olvido': 'Oblivion_symbol.png', 'potencia': 'Potence_symbol.png',
+            'presencia': 'Presence_symbol.png', 'protean': 'Protean_symbol.png', 'alquimia de sangre débil': 'Alchemy_symbol.png'
         };
 
         const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo.png'; 
@@ -808,6 +801,14 @@
             } else {
                 themeBtn.textContent = '🌙';
                 localStorage.setItem('vtm-theme', 'dark');
+            }
+        }
+
+        function togglePrintStyle(style) {
+            if (style === 'printfriendly') {
+                document.body.classList.add('print-friendly');
+            } else {
+                document.body.classList.remove('print-friendly');
             }
         }
 
@@ -931,7 +932,7 @@
                 item.innerHTML = `
                     <label class="builder-item" for="${uniqueId}" style="width: 100%; margin: 0;">
                         <div class="builder-item-left">
-                            <input type="checkbox" id="${uniqueId}" value="${name}" ${isChecked} onchange="toggleBuilderPower('${name}', this.checked)">
+                            <input type="checkbox" id="${uniqueId}" value="${name}" ${isChecked} onchange="toggleBuilderPower('${name.replace(/'/g, "\\'")}', this.checked)">
                             <span><strong>${name}</strong> <span style="font-size:0.75rem; color:var(--text-muted);">(${source})</span></span>
                         </div>
                         <div>
@@ -1072,40 +1073,38 @@
                 sourceDisplay += ` (pág. ${sourcePage})`;
             }
 
-            const card = document.createElement('div');
-            card.className = 'vtm-card';
-            card.setAttribute('data-discipline', discKey);
-            card.setAttribute('data-level', level);
-            card.setAttribute('data-source', sourceBook.toLowerCase());
-            card.setAttribute('data-name', name.toLowerCase());
+            const wrapper = document.createElement('div');
+            wrapper.className = 'print-card-wrapper';
 
-            card.innerHTML = `
-                ${watermarkHTML}
-                <div class="card-main-content">
-                    <div class="card-header">
-                        <span class="card-discipline">${discipline}</span>
+            wrapper.innerHTML = `
+                <div class="vtm-card">
+                    ${watermarkHTML}
+                    <div class="card-main-content">
+                        <div class="card-header">
+                            <span class="card-discipline">${discipline}</span>
+                        </div>
+                        <div class="card-titles-container">
+                            <div class="card-title">${name}</div>
+                        </div>
+                        ${rollBoxHTML}
+                        <div class="card-body">
+                            ${desc}
+                        </div>
+                        <div class="card-costs">
+                            <span>Coste: <span>${cost}</span></span>
+                            <span>Duración: <span>${duration}</span></span>
+                        </div>
                     </div>
-                    <div class="card-titles-container">
-                        <div class="card-title">${name}</div>
-                    </div>
-                    ${rollBoxHTML}
-                    <div class="card-body">
-                        ${desc}
-                    </div>
-                    <div class="card-costs">
-                        <span>Coste: <span>${cost}</span></span>
-                        <span>Duración: <span>${duration}</span></span>
-                    </div>
-                </div>
-                <div class="card-footer-container">
-                    <div class="card-footer-layout">
-                        <div>${levelImgHTML}</div>
-                        <div class="card-source-text">${sourceDisplay}</div>
-                        <div>${cornerIconHTML}</div>
+                    <div class="card-footer-container">
+                        <div class="card-footer-layout">
+                            <div>${levelImgHTML}</div>
+                            <div class="card-source-text">${sourceDisplay}</div>
+                            <div>${cornerIconHTML}</div>
+                        </div>
                     </div>
                 </div>
             `;
-            return card;
+            return wrapper;
         }
 
         function filterCatalogCards() {
@@ -1184,7 +1183,7 @@
             }
         }
 
-        /* FUNCIÓN TÉCNICA 1: IMPRESIÓN SIMPLEX (SOLO ANVERSOS) */
+        /* FUNCIÓN 1: IMPRESIÓN SIMPLEX */
         function imprimirSimplex() {
             const cartas = obtenerCartasActivas();
             if (cartas.length === 0) {
@@ -1199,7 +1198,7 @@
             setTimeout(() => { window.print(); }, 300);
         }
 
-        /* FUNCIÓN TÉCNICA 2: IMPRESIÓN DÚPLEX (INTERCALADO ANVERSO / REVERSO) */
+        /* FUNCIÓN 2: IMPRESIÓN DÚPLEX INTERCALADA POR PÁGINAS (BLOQUES DE 9) */
         function imprimirDuplex() {
             const cartas = obtenerCartasActivas();
             if (cartas.length === 0) {
@@ -1210,20 +1209,25 @@
             const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
             const chunkSize = 9;
+            const totalPaginas = Math.ceil(cartas.length / chunkSize);
 
-            for (let i = 0; i < cartas.length; i += chunkSize) {
-                const chunk = cartas.slice(i, i + chunkSize);
+            for (let p = 0; p < totalPaginas; p++) {
+                const inicio = p * chunkSize;
+                const fin = Math.min(inicio + chunkSize, cartas.length);
+                const chunk = cartas.slice(inicio, fin);
 
-                // 1. Renderizar Anversos del bloque
+                // 1. Renderizar Anversos de la página
                 chunk.forEach(row => container.appendChild(createCardElement(row)));
 
-                // Rellenar espacios vacíos si el bloque tiene menos de 9 cartas
+                // Rellenar espacios vacíos si la página tiene menos de 9 cartas
                 const resto = chunkSize - chunk.length;
-                for (let r = 0; r < resto; r++) {
-                    const emptyCard = document.createElement('div');
-                    emptyCard.className = 'vtm-card';
-                    emptyCard.style.visibility = 'hidden';
-                    container.appendChild(emptyCard);
+                if (resto !== 0) {
+                    for (let r = 0; r < resto; r++) {
+                        const emptyWrapper = document.createElement('div');
+                        emptyWrapper.className = 'print-card-wrapper';
+                        emptyWrapper.style.visibility = 'hidden';
+                        container.appendChild(emptyWrapper);
+                    }
                 }
 
                 // Salto de página para forzar que los reversos vayan en la hoja posterior
@@ -1231,21 +1235,25 @@
                 break1.className = 'page-break';
                 container.appendChild(break1);
 
-                // 2. Renderizar Reversos correspondientes al bloque
+                // 2. Renderizar exactamente 9 Reversos para el reverso de la página A4
                 for (let j = 0; j < chunkSize; j++) {
-                    const backCard = document.createElement('div');
-                    backCard.className = 'vtm-card-back';
-                    backCard.innerHTML = `
-                        <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
-                        <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
+                    const wrapBack = document.createElement('div');
+                    wrapBack.className = 'print-card-wrapper';
+                    wrapBack.innerHTML = `
+                        <div class="vtm-card-back">
+                            <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
+                            <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
+                        </div>
                     `;
-                    container.appendChild(backCard);
+                    container.appendChild(wrapBack);
                 }
 
-                // Salto de página para el siguiente bloque de cartas
-                const break2 = document.createElement('div');
-                break2.className = 'page-break';
-                container.appendChild(break2);
+                // Salto de página para el siguiente bloque de anversos (si lo hay)
+                if (p < totalPaginas - 1) {
+                    const break2 = document.createElement('div');
+                    break2.className = 'page-break';
+                    container.appendChild(break2);
+                }
             }
 
             setTimeout(() => { window.print(); }, 300);
