@@ -55,12 +55,24 @@
             --wrapper-bg: #fff;
         }
 
-        /* Estilo de Impresión Ahorro de Tinta / Claro */
+        /* Estilo de Impresión Ahorro de Tinta / Claro (Print-Friendly) */
         body.print-friendly {
             --wrapper-bg: #fff;
             --card-bg: #fcfbfa;
             --text-main: #1a1a1a;
             --text-muted: #555555;
+        }
+
+        /* Refuerzo en Print-Friendly para la cabecera de carta: sin fondo, texto en rojo de acento y en negrita destacada */
+        body.print-friendly .card-header {
+            background: transparent !important;
+            border-bottom: 1.5px solid var(--accent-red) !important;
+        }
+
+        body.print-friendly .card-discipline {
+            color: var(--accent-red) !important;
+            font-weight: 900 !important;
+            font-size: 0.72rem !important;
         }
 
         * {
@@ -354,7 +366,6 @@
             justify-content: center;
         }
 
-        /* Contenedor con líneas de corte grises */
         .print-card-wrapper {
             width: var(--full-width);
             height: var(--full-height);
@@ -365,7 +376,6 @@
             break-inside: avoid;
         }
 
-        /* CARTA FÍSICA V5 */
         .vtm-card {
             width: var(--card-width);
             height: var(--card-height);
@@ -383,7 +393,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        /* TRASERA GENÉRICA */
         .vtm-card-back {
             width: var(--card-width);
             height: var(--card-height);
@@ -429,7 +438,6 @@
             transform: translate(-50%, -50%);
         }
 
-        /* MARCA DE AGUA */
         .discipline-watermark-img {
             position: absolute;
             top: 50%;
@@ -491,7 +499,6 @@
             text-transform: small-caps;
         }
 
-        /* BLOQUE DE TIRADA */
         .card-roll-box {
             font-size: 0.65rem;
             background: rgba(197, 160, 89, 0.08);
@@ -522,7 +529,6 @@
             font-size: 0.65rem;
         }
 
-        /* CUERPO */
         .card-body {
             font-size: 0.7rem;
             line-height: 1.25;
@@ -596,7 +602,6 @@
             display: none;
         }
 
-        /* ESTILOS DE IMPRESIÓN TÉCNICA A4 */
         @media print {
             body {
                 background: var(--wrapper-bg) !important;
@@ -655,16 +660,16 @@
 
         <!-- Panel de Control y Opciones -->
         <div class="no-print-controls">
-            <div class="controls-header">
+            <div class="controls-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                 <div class="mode-tabs" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">
                     <button class="tab-btn active" id="tabCatalog" onclick="switchMode('catalog')">📚 Catálogo General (Filtros)</button>
                     <button class="tab-btn" id="tabBuilder" onclick="switchMode('builder')">🧙‍♂️ Mazo Personalizado</button>
                 </div>
                 
-                <!-- Selector de Estilo de Impresión -->
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <label for="printStyleSelect" style="font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--accent-gold);">Estilo:</label>
-                    <select id="printStyleSelect" onchange="togglePrintStyle(this.value)" style="padding: 6px 10px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--accent-gold); border-radius: 4px;">
+                <!-- SELECTOR DE ESTILO DE IMPRESIÓN -->
+                <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--accent-gold);">
+                    <label for="printStyleSelect" style="font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--accent-gold); white-space: nowrap; margin-bottom: 0;">Estilo Impresión:</label>
+                    <select id="printStyleSelect" onchange="togglePrintStyle(this.value)" style="padding: 6px 10px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--accent-gold); border-radius: 4px; cursor: pointer;">
                         <option value="professional">Profesional (Oscuro)</option>
                         <option value="printfriendly">Print-Friendly (Claro / Ahorro de Tinta)</option>
                     </select>
