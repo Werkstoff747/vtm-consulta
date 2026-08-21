@@ -439,6 +439,41 @@
             opacity: 1;
         }
 
+        /* BOTÓN FLOTANTE IDÉNTICO AL INDEX */
+        .floating-nav-container {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 999;
+        }
+
+        .floating-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--accent-red);
+            border: 1px solid var(--accent-crimson);
+            color: #ffffff;
+            font-size: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .floating-btn:hover {
+            background-color: var(--accent-crimson);
+            border-color: var(--accent-gold);
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.6);
+        }
+
         #loading {
             text-align: center;
             font-size: 1.1rem;
@@ -458,7 +493,7 @@
                 padding: 0 !important;
             }
 
-            .no-print-controls, header {
+            .no-print-controls, header, .floating-nav-container {
                 display: none !important;
             }
 
@@ -490,40 +525,6 @@
                 margin: 0mm;
             }
         }
-        /* BOTÓN FLOTANTE IDÉNTICO AL INDEX (FONDO ROJO / FLECHA BLANCA) */
-                .floating-nav-container {
-                    position: fixed;
-                    bottom: 25px;
-                    right: 25px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 12px;
-                    z-index: 999;
-                }
-        
-                .floating-btn {
-                    width: 48px;
-                    height: 48px;
-                    border-radius: 50%;
-                    background-color: var(--accent-red);
-                    border: 1px solid var(--accent-crimson);
-                    color: #ffffff;
-                    font-size: 1.25rem;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-                    transition: all 0.2s ease;
-                    text-decoration: none;
-                }
-        
-                .floating-btn:hover {
-                    background-color: var(--accent-crimson);
-                    border-color: var(--accent-gold);
-                    transform: scale(1.1);
-                    box-shadow: 0 6px 20px rgba(139, 0, 0, 0.6);
-        }
     </style>
 </head>
 <body>
@@ -544,7 +545,7 @@
         <div class="no-print-controls">
             <div class="controls-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                 <div class="mode-tabs">
-                    <a href="cartas.html" class="tab-btn">⬅️ Volver a Cartas (Claro)</a>
+                    <a href="cartas.html" class="tab-btn">📚 Volver a Cartas (Claro)</a>
                 </div>
                 
                 <!-- SELECTOR DE ESTILO DE IMPRESIÓN -->
@@ -601,6 +602,12 @@
 
         <!-- Contenedor donde se generan las cartas dinámicamente -->
         <div id="cardsContainer" class="cards-grid"></div>
+    </div>
+
+    <!-- Botón flotante idéntico al del index -->
+    <div class="floating-nav-container">
+        <a href="index.html" class="floating-btn" title="Volver al Compendio Principal">◀</a>
+        <button class="floating-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Subir Arriba">▲</button>
     </div>
 
     <script>
@@ -900,10 +907,5 @@
             setTimeout(() => { window.print(); }, 300);
         }
     </script>
-        <!-- Botón flotante para volver al index y subir arriba -->
-            <div class="floating-nav-container">
-                <a href="index.html" class="floating-btn" title="Volver al Compendio Principal">⬅️</a>
-                <button class="floating-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Subir Arriba">⬆️</button>
-            </div>
-        </body>
+</body>
 </html>
