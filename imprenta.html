@@ -290,16 +290,18 @@
         .card-main-content { display: flex; flex-direction: column; flex-grow: 1; position: relative; z-index: 1; }
         
         .card-header { 
-            background: #8b0000 !important; 
-            color: #fff !important; 
-            height: 6mm; 
+            background: transparent !important; /* Quitamos el rojo sólido */
+            color: var(--border-gold) !important; /* Letras en tono dorado oficial */
+            height: auto; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            border: 1px solid var(--border-gold); 
-            margin-bottom: 1.5mm; 
+            border-bottom: 1px solid var(--border-red); /* Una línea sutil roja en lugar de bloque */
+            margin-bottom: 2mm; 
+            padding-bottom: 1mm;
             font-family: 'Cinzel', serif; 
-            font-size: 0.62rem; 
+            font-size: 0.68rem; 
+            letter-spacing: 1px;
             text-transform: uppercase; 
         }
 
