@@ -41,7 +41,7 @@
             font-family: 'EB Garamond', serif;
             background-color: #1a1a1a;
             color: var(--text-main);
-            padding: 20px;
+            padding: 10px;
         }
 
         .container {
@@ -184,7 +184,7 @@
         }
 
         /* =========================================================
-            ESTILOS DE CARTA PARA IMPRENTA (CON SANGRADO)
+            ESTILOS DE CARTA PARA IMPRENTA (CON SANGRADO Y LÍNEA DE CORTE)
            ========================================================= */
         .cards-grid {
             max-width: calc(var(--full-w) * 3);
@@ -195,15 +195,32 @@
             justify-content: center;
         }
 
-        /* Contenedor de Sangrado (Bleed 3mm) */
+        /* Contenedor de Sangrado (Bleed 3mm) con línea de corte visible en gris claro */
         .print-card-wrapper {
             width: var(--full-w);
             height: var(--full-h);
             background: #000 !important;
             position: relative;
-            outline: 0.1mm solid #444;
+            border: 0.2mm solid #777; /* Línea gris de guía de corte */
             page-break-inside: avoid;
             break-inside: avoid;
+        }
+
+        /* Checkbox de selección rápida sobre la tarjeta (para pantalla) */
+        .card-select-checkbox {
+            position: absolute;
+            top: 4mm;
+            right: 4mm;
+            width: 5mm;
+            height: 5mm;
+            z-index: 10;
+            cursor: pointer;
+            accent-color: var(--border-red);
+        }
+
+        /* Estado visual cuando la carta está seleccionada */
+        .print-card-wrapper.selected {
+            outline: 2px solid var(--border-gold);
         }
 
         /* CARTA DE LUJO (MEDIDAS ORIGINALES) */
@@ -231,7 +248,7 @@
             pointer-events: none;
         }
 
-        /* TRASERA ORIGINAL (SIN FILTROS, USANDO LOS PNG BLANCOS ORIGINALES) */
+        /* TRASERA ORIGINAL */
         .vtm-card-back {
             width: var(--card-w);
             height: var(--card-h);
@@ -359,10 +376,28 @@
         @media print {
             body { background: #000 !important; padding: 0 !important; }
             .no-print-controls, header { display: none !important; }
-            .cards-grid { display: grid !important; grid-template-columns: repeat(3, var(--full-w)) !important; }
-            .print-card-wrapper { outline: none !important; }
-            .page-break { display: block !important; page-break-after: always; break-after: page; height: 0; width: 100%; grid-column: span 3; }
-            @page { size: A4; margin: 10mm; }
+            .card-select-checkbox { display: none !important; } /* Ocultar checkbox al imprimir */
+            .cards-grid { 
+                display: grid !important; 
+                grid-template-columns: repeat(3, var(--full-w)) !important; 
+                justify-content: center !important;
+                align-content: center !important;
+            }
+            .print-card-wrapper { 
+                border: 0.2mm solid #777 !important; 
+            }
+            .page-break { 
+                display: block !important; 
+                page-break-after: always; 
+                break-after: page; 
+                height: 0; 
+                width: 100%; 
+                grid-column: span 3; 
+            }
+            @page { 
+                size: A4; 
+                margin: 0mm; 
+            }
         }
     </style>
 </head>
@@ -380,9 +415,15 @@
                 <button class="tab-btn" id="tabBuilder" onclick="switchMode('builder')">🧙‍♂️ Mazo Personalizado</button>
             </div>
 
-            <div style="margin-bottom: 15px; display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;">
-                <button class="btn-secondary" onclick="imprimirSimplex()">🖨️ IMPRIMIR ANVERSOS (SIMPLEX)</button>
-                <button class="btn-secondary" onclick="imprimirDuplex()">🖨️ IMPRIMIR DÚPLEX (ANVERSO/REVERSO)</button>
+            <div style="margin-bottom: 15px; display: flex; gap: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                <div id="selectionStatus" style="font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--border-gold);">
+                    Mostrando todas las cartas visibles (Ninguna seleccionada individualmente)
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button type="button" onclick="clearManualSelection()" style="background: #333; font-size: 0.75rem;">Limpiar Selección</button>
+                    <button class="btn-secondary" onclick="imprimirSimplex()">🖨️ IMPRIMIR ANVERSOS (SIMPLEX)</button>
+                    <button class="btn-secondary" onclick="imprimirDuplex()">🖨️ IMPRIMIR DÚPLEX (ANVERSO/REVERSO)</button>
+                </div>
             </div>
 
             <div id="catalogSection">
@@ -424,6 +465,7 @@
         let allDisciplinesData = [];
         let currentMode = 'catalog';
         let selectedCharacterPowers = new Set();
+        let manuallySelectedCards = new Set(); // Almacena objetos de filas seleccionadas individualmente
 
         const ICONOS_MAP = {
             'animalismo': 'Animalism_symbol.png', 'auspex': 'Auspex_symbol.png', 'celeridad': 'Celerity_symbol.png',
@@ -499,9 +541,13 @@
             const levelImg = `<img src="./iconos/${level}_symbol.png" class="card-level-img" onerror="this.style.display='none'">`;
             const cornerIcon = ICONOS_MAP[discKey] ? `<img src="./iconos/${ICONOS_MAP[discKey]}" class="card-discipline-icon-img">` : '';
 
+            const isManualChecked = Array.from(manuallySelectedCards).some(r => (r['Nombre Poder'] || r['Nombre']) === name);
+
             const wrapper = document.createElement('div');
-            wrapper.className = 'print-card-wrapper';
+            wrapper.className = `print-card-wrapper ${isManualChecked ? 'selected' : ''}`;
+            
             wrapper.innerHTML = `
+                <input type="checkbox" class="card-select-checkbox" ${isManualChecked ? 'checked' : ''} title="Seleccionar para imprimir solo esta" onchange="toggleManualSelection(event, ${JSON.stringify(name).replace(/"/g, '&quot;')})">
                 <div class="vtm-card">
                     ${icon}
                     <div class="card-main-content">
@@ -520,6 +566,42 @@
                     </div>
                 </div>`;
             return wrapper;
+        }
+
+        function toggleManualSelection(event, cardName) {
+            const isChecked = event.target.checked;
+            const rowData = allDisciplinesData.find(r => (r['Nombre Poder'] || r['Nombre']) === cardName);
+            
+            if (rowData) {
+                if (isChecked) {
+                    manuallySelectedCards.add(rowData);
+                    event.target.closest('.print-card-wrapper').classList.add('selected');
+                } else {
+                    manuallySelectedCards.forEach(r => {
+                        if ((r['Nombre Poder'] || r['Nombre']) === cardName) manuallySelectedCards.delete(r);
+                    });
+                    event.target.closest('.print-card-wrapper').classList.remove('selected');
+                }
+            }
+            updateSelectionStatus();
+        }
+
+        function clearManualSelection() {
+            manuallySelectedCards.clear();
+            document.querySelectorAll('.card-select-checkbox').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.print-card-wrapper').forEach(w => w.classList.remove('selected'));
+            updateSelectionStatus();
+        }
+
+        function updateSelectionStatus() {
+            const statusEl = document.getElementById('selectionStatus');
+            if (manuallySelectedCards.size > 0) {
+                statusEl.textContent = `🎯 ${manuallySelectedCards.size} carta(s) seleccionada(s) manualmente para imprimir.`;
+                statusEl.style.color = '#ff6b6b';
+            } else {
+                statusEl.textContent = `Mostrando todas las cartas visibles (Ninguna seleccionada individualmente)`;
+                statusEl.style.color = 'var(--border-gold)';
+            }
         }
 
         function filterCatalogCards() {
@@ -549,21 +631,28 @@
         }
 
         function obtenerCartasActivas() {
+            // Prioridad 1: Si el usuario ha marcado cartas individualmente, imprimimos SOLO esas.
+            if (manuallySelectedCards.size > 0) {
+                return Array.from(manuallySelectedCards);
+            }
+
+            // Prioridad 2: Si está en modo Mazo Personalizado
             if (currentMode === 'builder') {
                 return allDisciplinesData.filter(row => selectedCharacterPowers.has(row['Nombre Poder'] || row['Nombre']));
-            } else {
-                const sDisc = document.getElementById('filterDiscipline').value;
-                const sLvl = document.getElementById('filterLevel').value;
-                const sSrc = document.getElementById('filterSource').value;
-                const sQuery = document.getElementById('searchCard').value.toLowerCase();
-                return allDisciplinesData.filter(row => {
-                    const d = (row['Disciplina'] || '').toLowerCase();
-                    const l = (row['Nivel'] || '1').trim();
-                    const src = (row['Fuente_Libro'] || row['Fuente'] || '').toLowerCase();
-                    const n = (row['Nombre Poder'] || row['Nombre'] || '').toLowerCase();
-                    return (sDisc === 'all' || d.includes(sDisc)) && (sLvl === 'all' || l === sLvl) && (sSrc === 'all' || src.includes(sSrc)) && (!sQuery || n.includes(sQuery));
-                });
-            }
+            } 
+            
+            // Prioridad 3: Catálogo General con filtros aplicados
+            const sDisc = document.getElementById('filterDiscipline').value;
+            const sLvl = document.getElementById('filterLevel').value;
+            const sSrc = document.getElementById('filterSource').value;
+            const sQuery = document.getElementById('searchCard').value.toLowerCase();
+            return allDisciplinesData.filter(row => {
+                const d = (row['Disciplina'] || '').toLowerCase();
+                const l = (row['Nivel'] || '1').trim();
+                const src = (row['Fuente_Libro'] || row['Fuente'] || '').toLowerCase();
+                const n = (row['Nombre Poder'] || row['Nombre'] || '').toLowerCase();
+                return (sDisc === 'all' || d.includes(sDisc)) && (sLvl === 'all' || l === sLvl) && (sSrc === 'all' || src.includes(sSrc)) && (!sQuery || n.includes(sQuery));
+            });
         }
 
         function imprimirSimplex() {
