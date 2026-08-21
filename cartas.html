@@ -210,7 +210,7 @@
             text-transform: small-caps;
         }
 
-        /* Caja de Tirada de Dados centrada estricta en 3 líneas */
+        /* Caja de Tirada de Dados centrada en 3 líneas */
         .card-roll-box {
             font-size: 0.56rem;
             background: rgba(139, 0, 0, 0.04);
@@ -286,35 +286,21 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5mm;
+            margin-bottom: 1mm;
         }
 
-        /* Rombo rojo con número blanco en negrita (6mm exactos) */
-        .card-level-diamond {
-            width: 6mm;
-            height: 6mm;
-            background-color: var(--accent-blood-vivid);
-            border: 1px solid var(--accent-gold);
-            transform: rotate(45deg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Imagen del rombo de nivel (Carga dinámicamente X_symbol.png) */
+        .card-level-img {
+            width: 6.5mm;
+            height: 6.5mm;
+            object-fit: contain;
             margin-left: 2mm;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
 
-        .card-level-diamond span {
-            transform: rotate(-45deg);
-            color: #ffffff;
-            font-family: 'Cinzel', serif;
-            font-size: 0.5rem;
-            font-weight: 900;
-        }
-
-        /* Icono de disciplina simétrico al rombo (6mm exactos) */
+        /* Icono de disciplina simétrico al rombo (6.5mm exactos) */
         .card-discipline-icon-img {
-            width: 6mm;
-            height: 6mm;
+            width: 6.5mm;
+            height: 6.5mm;
             object-fit: contain;
             opacity: 1;
             margin-right: 2mm;
@@ -486,7 +472,12 @@
             data.forEach(row => {
                 const name = row['Nombre Poder'] || row['Nombre'] || 'Sin Nombre';
                 const discipline = row['Disciplina'] || 'General';
-                const level = row['Nivel'] || '1';
+                let level = (row['Nivel'] || '1').trim();
+                
+                // Asegurar que el nivel esté entre 1 y 5 para la imagen del rombo
+                if (!['1', '2', '3', '4', '5'].includes(level)) {
+                    level = '1';
+                }
                 
                 const pool = (row['Reserva de Dados'] || row['Reserva de dados'] || row['Tirada'] || '').trim();
                 const opposition = (row['Reserva Oposición'] || row['Reserva Oposicion'] || row['Reserva oposicion'] || '').trim();
@@ -507,21 +498,22 @@
                     cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="card-discipline-icon-img" alt="${discipline}" onerror="this.style.display='none'">`;
                 }
 
-                // Generación limpia del bloque de 3 líneas centradas
+                // Carga de la imagen del rombo del nivel correspondiente (1_symbol.png, 2_symbol.png, etc.)
+                const levelImgHTML = `<img src="./iconos/${level}_symbol.png" class="card-level-img" alt="Nivel ${level}" onerror="this.style.display='none'">`;
+
+                // Bloque de tirada de 3 líneas estricto
                 let rollBoxHTML = '';
                 const oppositionLower = opposition.toLowerCase();
                 const isSinOposicion = !opposition || opposition === '-' || oppositionLower === 'sin oposición' || oppositionLower === 'sin oposicion';
 
                 if (pool && pool !== '-') {
                     if (isSinOposicion) {
-                        // Si es "Sin oposición", mostramos solo la reserva centrada sin el vs. ni la línea de abajo
                         rollBoxHTML = `
                             <div class="card-roll-box">
                                 <div class="card-roll-line-1">${pool}</div>
                             </div>
                         `;
                     } else {
-                        // Si hay oposición real, mostramos las 3 líneas centradas obligatoriamente
                         rollBoxHTML = `
                             <div class="card-roll-box">
                                 <div class="card-roll-line-1">${pool}</div>
@@ -569,8 +561,8 @@
                     </div>
                     <div class="card-footer-container">
                         <div class="card-footer-layout">
-                            <div class="card-level-diamond" title="Nivel ${level}">
-                                <span>${level}</span>
+                            <div>
+                                ${levelImgHTML}
                             </div>
                             <div>
                                 ${cornerIconHTML}
