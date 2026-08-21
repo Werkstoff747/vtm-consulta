@@ -170,11 +170,11 @@
             user-select: none;
         }
 
-        /* Cabecera de la disciplina (con menos peso visual) */
+        /* Cabecera de la disciplina con menos peso visual (estilo sutil) */
         .card-header {
             background: var(--accent-blood);
             color: white;
-            padding: 2.5px 6px;
+            padding: 2px 5px;
             border-radius: 3px;
             text-align: center;
             margin-bottom: 2mm;
@@ -184,14 +184,14 @@
 
         .card-discipline {
             font-family: 'Cinzel', serif;
-            font-size: 0.58rem; /* Tamaño reducido para quitarle protagonismo al título del poder */
+            font-size: 0.54rem;
             text-transform: uppercase;
             letter-spacing: 0.8px;
             color: var(--accent-gold);
             font-weight: 600;
         }
 
-        /* Contenedor del Título Principal del Poder */
+        /* Contenedor del Título Principal del Poder (Gran protagonismo) */
         .card-titles-container {
             text-align: center;
             margin-bottom: 2mm;
@@ -203,23 +203,25 @@
 
         .card-title {
             font-family: 'Cinzel', serif;
-            font-size: 0.82rem; /* Protagonismo claro */
+            font-size: 0.82rem;
             font-weight: 700;
             color: var(--accent-blood);
             line-height: 1.15;
+            text-transform: small-caps;
         }
 
-        /* Caja de Tirada de Dados en 3 líneas ordenadas */
+        /* Caja de Tirada de Dados centrada en tres líneas */
         .card-roll-box {
-            font-size: 0.58rem;
-            background: rgba(139, 0, 0, 0.05);
-            border-left: 2.5px solid var(--accent-blood-vivid);
+            font-size: 0.56rem;
+            background: rgba(139, 0, 0, 0.04);
+            border: 1px solid rgba(139, 0, 0, 0.2);
             padding: 3px 6px;
             border-radius: 3px;
             margin-bottom: 2mm;
             position: relative;
             z-index: 1;
-            line-height: 1.25;
+            text-align: center;
+            line-height: 1.2;
         }
 
         .card-roll-line-1 {
@@ -229,9 +231,8 @@
 
         .card-roll-line-2 {
             font-style: italic;
-            color: #555555;
-            text-align: center;
-            font-size: 0.52rem;
+            color: #666666;
+            font-size: 0.5rem;
             margin: 1px 0;
         }
 
@@ -240,7 +241,7 @@
             color: #222222;
         }
 
-        /* Cuerpo de la carta (Descripción más grande) */
+        /* Cuerpo de la carta (Descripción) */
         .card-body {
             font-size: 0.62rem;
             line-height: 1.25;
@@ -254,7 +255,7 @@
 
         /* Coste y Duración en línea */
         .card-costs {
-            font-size: 0.56rem;
+            font-size: 0.55rem;
             background: rgba(197, 160, 89, 0.12);
             border: 1px solid var(--accent-gold);
             padding: 3px 5px;
@@ -272,11 +273,8 @@
             font-weight: bold;
         }
 
-        /* Zona inferior: Rombo de nivel (izq) e Icono simétrico (der) */
-        .card-footer-layout {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Zona inferior: Línea transversal y elementos simétricos por encima */
+        .card-footer-container {
             border-top: 1px solid var(--accent-gold);
             padding-top: 2px;
             margin-top: 1mm;
@@ -284,10 +282,17 @@
             z-index: 1;
         }
 
-        /* Rombo rojo con número blanco en negrita */
+        .card-footer-layout {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5mm;
+        }
+
+        /* Rombo rojo con número blanco en negrita (Tamaño simétrico 7mm) */
         .card-level-diamond {
-            width: 7.5mm;
-            height: 7.5mm;
+            width: 7mm;
+            height: 7mm;
             background-color: var(--accent-blood-vivid);
             border: 1px solid var(--accent-gold);
             transform: rotate(45deg);
@@ -302,14 +307,14 @@
             transform: rotate(-45deg);
             color: #ffffff;
             font-family: 'Cinzel', serif;
-            font-size: 0.58rem;
+            font-size: 0.55rem;
             font-weight: 900;
         }
 
-        /* Icono de disciplina simétrico al rombo (esquina inferior derecha) */
+        /* Icono de disciplina simétrico al rombo (7mm exactos) */
         .card-discipline-icon-img {
-            width: 7.5mm;
-            height: 7.5mm;
+            width: 7mm;
+            height: 7mm;
             object-fit: contain;
             opacity: 1;
             margin-right: 2mm;
@@ -321,10 +326,7 @@
             color: #444;
             font-family: 'Cinzel', serif;
             text-align: center;
-            margin-top: 1.5mm;
             letter-spacing: 0.3px;
-            position: relative;
-            z-index: 1;
         }
 
         #loading {
@@ -504,13 +506,13 @@
                     cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="card-discipline-icon-img" alt="${discipline}" onerror="this.style.display='none'">`;
                 }
 
-                // Estructura de tirada en 3 líneas (Reserva, vs., Oposición)
+                // Estructura de tirada centrada en 3 líneas (Reserva, vs., Oposición)
                 let rollBoxHTML = '';
                 if (pool && pool.trim() !== '-' && pool.trim() !== '') {
                     let line3Content = opposition && opposition.trim() !== '-' && opposition.trim() !== '' ? opposition : 'Sin oposición';
                     rollBoxHTML = `
                         <div class="card-roll-box">
-                            <div class="card-roll-line-1">Tirada: ${pool}</div>
+                            <div class="card-roll-line-1">${pool}</div>
                             <div class="card-roll-line-2">vs.</div>
                             <div class="card-roll-line-3">${line3Content}</div>
                         </div>
@@ -546,7 +548,7 @@
                             <span>Duración: <span>${duration}</span></span>
                         </div>
                     </div>
-                    <div>
+                    <div class="card-footer-container">
                         <div class="card-footer-layout">
                             <div class="card-level-diamond" title="Nivel ${level}">
                                 <span>${level}</span>
