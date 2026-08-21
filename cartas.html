@@ -670,8 +670,8 @@
                 <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--accent-gold);">
                     <label for="printStyleSelect" style="font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--accent-gold); white-space: nowrap; margin-bottom: 0;">Estilo Impresión:</label>
                     <select id="printStyleSelect" onchange="togglePrintStyle(this.value)" style="padding: 6px 10px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--accent-gold); border-radius: 4px; cursor: pointer;">
-                        <option value="professional">Profesional (Oscuro)</option>
                         <option value="printfriendly">Print-Friendly (Claro / Ahorro de Tinta)</option>
+                        <option value="professional">Profesional (Oscuro)</option>
                     </select>
                 </div>
             </div>
@@ -810,7 +810,9 @@
         }
 
         function togglePrintStyle(style) {
-            if (style === 'printfriendly') {
+            if (style === 'professional') {
+                window.location.href = 'imprenta.html';
+            } else if (style === 'printfriendly') {
                 document.body.classList.add('print-friendly');
             } else {
                 document.body.classList.remove('print-friendly');
@@ -819,6 +821,7 @@
 
         window.onload = function() {
             initTheme();
+            togglePrintStyle('printfriendly'); // Por defecto en claro
 
             Papa.parse(CSV_URL, {
                 download: true,
