@@ -195,13 +195,13 @@
             justify-content: center;
         }
 
-        /* Contenedor de Sangrado (Bleed 3mm) con línea de corte visible en gris claro */
+        /* Contenedor de Sangrado (Bleed 3mm) con LÍNEA DE CORTE VISIBLE */
         .print-card-wrapper {
             width: var(--full-w);
             height: var(--full-h);
             background: #000 !important;
             position: relative;
-            border: 0.2mm solid #777; /* Línea gris de guía de corte */
+            border: 0.3mm solid #888; /* Línea gris visible para facilitar el recorte */
             page-break-inside: avoid;
             break-inside: avoid;
         }
@@ -376,7 +376,7 @@
         @media print {
             body { background: #000 !important; padding: 0 !important; }
             .no-print-controls, header { display: none !important; }
-            .card-select-checkbox { display: none !important; } /* Ocultar checkbox al imprimir */
+            .card-select-checkbox { display: none !important; } /* Ocultar checkboxes al imprimir */
             .cards-grid { 
                 display: grid !important; 
                 grid-template-columns: repeat(3, var(--full-w)) !important; 
@@ -384,7 +384,7 @@
                 align-content: center !important;
             }
             .print-card-wrapper { 
-                border: 0.2mm solid #777 !important; 
+                border: 0.3mm solid #888 !important; /* Mantiene la línea de corte visible en el PDF */
             }
             .page-break { 
                 display: block !important; 
@@ -396,7 +396,7 @@
             }
             @page { 
                 size: A4; 
-                margin: 0mm; 
+                margin: 0mm; /* Deja que el navegador gestione el margen mínimo (sin cabeceras ni pie de página) */
             }
         }
     </style>
@@ -465,7 +465,7 @@
         let allDisciplinesData = [];
         let currentMode = 'catalog';
         let selectedCharacterPowers = new Set();
-        let manuallySelectedCards = new Set(); // Almacena objetos de filas seleccionadas individualmente
+        let manuallySelectedCards = new Set(); 
 
         const ICONOS_MAP = {
             'animalismo': 'Animalism_symbol.png', 'auspex': 'Auspex_symbol.png', 'celeridad': 'Celerity_symbol.png',
@@ -631,7 +631,7 @@
         }
 
         function obtenerCartasActivas() {
-            // Prioridad 1: Si el usuario ha marcado cartas individualmente, imprimimos SOLO esas.
+            // Prioridad 1: Si el usuario ha marcado cartas individualmente
             if (manuallySelectedCards.size > 0) {
                 return Array.from(manuallySelectedCards);
             }
