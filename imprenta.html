@@ -317,7 +317,7 @@
         .card-roll-box { 
             background: rgba(0,0,0,0.4); 
             border: 1px solid var(--border-gold); 
-            padding: 3px 6px; 
+            padding: 3px 6mm; 
             margin-bottom: 1.5mm; 
             text-align: center; 
             font-size: 0.68rem; 
@@ -598,12 +598,15 @@
             const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
             
+            // 1. Renderizar los anversos activos
             cartas.forEach(row => container.appendChild(createCardElement(row)));
 
+            // 2. Salto de página para la impresión
             const pb = document.createElement('div');
             pb.className = 'page-break';
             container.appendChild(pb);
 
+            // 3. Generar reversos exactos rellenando hasta múltiplos de 9
             const total = Math.ceil(cartas.length / 9) * 9;
             for (let i = 0; i < total; i++) {
                 const wrap = document.createElement('div');
