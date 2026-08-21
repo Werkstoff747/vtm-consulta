@@ -359,7 +359,7 @@
             break-inside: avoid;
         }
 
-        /* TRASERA GENÉRICA (Filtro invert para hacer visibles los logos blancos sobre fondo blanco) */
+        /* TRASERA GENÉRICA */
         .vtm-card-back {
             width: var(--card-width);
             min-width: var(--card-width);
@@ -418,6 +418,7 @@
             pointer-events: none;
         }
 
+        /* MARCA DE AGUA CON OPACIDAD SUBIDA A 0.15 PARA MEJOR VISIBILIDAD */
         .discipline-watermark-img {
             position: absolute;
             top: 50%;
@@ -426,7 +427,7 @@
             width: 35mm;
             height: 35mm;
             object-fit: contain;
-            opacity: 0.06;
+            opacity: 0.15;
             pointer-events: none;
             z-index: 0;
             user-select: none;
@@ -443,17 +444,17 @@
         .card-header {
             background: var(--accent-red);
             color: white;
-            height: 5.5mm;
+            height: 6mm;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 3px;
-            margin-bottom: 2mm;
+            margin-bottom: 1.5mm;
         }
 
         .card-discipline {
             font-family: 'Cinzel', serif;
-            font-size: 0.54rem;
+            font-size: 0.62rem;
             text-transform: uppercase;
             letter-spacing: 0.8px;
             color: var(--accent-gold);
@@ -463,50 +464,54 @@
 
         .card-titles-container {
             text-align: center;
-            margin-bottom: 2mm;
+            margin-bottom: 1.5mm;
             border-bottom: 1px solid var(--accent-gold);
             padding-bottom: 2px;
         }
 
         .card-title {
             font-family: 'Cinzel', serif;
-            font-size: 0.82rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--text-main);
             line-height: 1.15;
             text-transform: small-caps;
         }
 
+        /* BLOQUE DE TIRADA AMPLIADO */
         .card-roll-box {
-            font-size: 0.56rem;
+            font-size: 0.65rem;
             background: rgba(197, 160, 89, 0.08);
             border: 1px solid rgba(197, 160, 89, 0.3);
-            padding: 3px 6px;
+            padding: 4px 6px;
             border-radius: 3px;
-            margin-bottom: 2mm;
+            margin-bottom: 1.5mm;
             text-align: center;
-            line-height: 1.2;
+            line-height: 1.25;
         }
 
         .card-roll-line-1 {
             font-weight: bold;
             color: var(--accent-crimson);
+            font-size: 0.68rem;
         }
 
         .card-roll-line-2 {
             font-style: italic;
             color: var(--text-muted);
-            font-size: 0.5rem;
+            font-size: 0.55rem;
             margin: 1px 0;
         }
 
         .card-roll-line-3 {
             font-weight: 600;
             color: var(--text-main);
+            font-size: 0.65rem;
         }
 
+        /* CUERPO DE CARTA AMPLIADO */
         .card-body {
-            font-size: 0.62rem;
+            font-size: 0.7rem;
             line-height: 1.25;
             overflow-y: hidden;
             padding: 1px 2px;
@@ -514,7 +519,7 @@
         }
 
         .card-costs {
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             background: rgba(197, 160, 89, 0.12);
             border: 1px solid var(--accent-gold);
             padding: 3px 5px;
@@ -552,7 +557,7 @@
         }
 
         .card-source-text {
-            font-size: 0.44rem;
+            font-size: 0.5rem;
             color: var(--text-muted);
             font-family: 'Cinzel', serif;
             text-align: center;
@@ -574,7 +579,12 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* Estilos de Impresión A4 compactos */
+        /* SALTO DE PÁGINA PARA INTERCALADO DÚPLEX */
+        .page-break {
+            display: none;
+        }
+
+        /* Estilos de Impresión A4 para intercalar anversos y reversos */
         @media print {
             body {
                 background: white !important;
@@ -615,6 +625,15 @@
                 color: #444 !important;
             }
 
+            .page-break {
+                display: block !important;
+                page-break-after: always;
+                break-after: page;
+                height: 0;
+                width: 100%;
+                grid-column: span 3;
+            }
+
             @page {
                 size: A4;
                 margin: 10mm;
@@ -645,9 +664,9 @@
                 <button class="tab-btn btn-secondary" id="tabBacks" onclick="switchMode('backs')" style="margin-left: auto;">🎴 Generar Trasera Genérica</button>
             </div>
 
-            <!-- BOTÓN EXCLUSIVO DE IMPRESIÓN DE TRASERAS -->
-            <div id="printBacksContainer" style="display: none; margin-bottom: 15px; text-align: right;">
-                <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Traseras de Cartas</button>
+            <!-- BOTÓN DE IMPRESIÓN INTERCALADA -->
+            <div id="printContainer" style="margin-bottom: 15px; text-align: right;">
+                <button class="btn-secondary" onclick="prepararE ImpresionIntercalada()">🖨️ Imprimir Cartas a Doble Cara (Intercaladas)</button>
             </div>
 
             <!-- MODO CATÁLOGO GENERAL -->
@@ -656,7 +675,6 @@
                     <div style="font-family: 'Cinzel', serif; color: var(--accent-gold); font-weight: 700;">🎴 Generador por Filtros</div>
                     <div class="btn-group">
                         <a href="index.html" style="text-decoration: none;"><button type="button">⬅️ Volver al Compendio</button></a>
-                        <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Cartas (A4)</button>
                     </div>
                 </div>
 
@@ -702,11 +720,9 @@
                 <div class="btn-group">
                     <button type="button" onclick="selectAllBuilder(true)">Seleccionar Visibles</button>
                     <button type="button" onclick="selectAllBuilder(false)" class="tab-btn" style="color:white;">Deseleccionar Visibles</button>
-                    <button class="btn-secondary" id="btnPrintBuilder" onclick="window.print()">🖨️ Imprimir Mazo (0)</button>
                 </div>
             </div>
 
-            <!-- Filtros específicos para el selector de mazo -->
             <div class="builder-filters">
                 <div class="filter-group">
                     <label for="builderFilterDisc">Filtrar Disciplina:</label>
@@ -737,9 +753,7 @@
                 </div>
             </div>
 
-            <div class="builder-list" id="builderListContainer">
-                <!-- Se rellena dinámicamente -->
-            </div>
+            <div class="builder-list" id="builderListContainer"></div>
         </div>
 
         <div id="loading">Cargando cartas desde Google Sheets...</div>
@@ -751,7 +765,7 @@
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
         let allDisciplinesData = [];
-        let currentMode = 'catalog'; // 'catalog', 'builder', 'backs'
+        let currentMode = 'catalog'; 
         let selectedCharacterPowers = new Set();
 
         const ICONOS_MAP = {
@@ -768,6 +782,8 @@
             'protean': 'Protean_symbol.png',
             'alquimia de sangre débil': 'Alchemy_symbol.png'
         };
+
+        const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo.png'; 
 
         function initTheme() {
             const savedTheme = localStorage.getItem('vtm-theme');
@@ -820,7 +836,6 @@
                     populateFilters(allDisciplinesData);
                     populateBuilderList(allDisciplinesData);
                     renderActiveMode();
-                    updateBuilderButtonCount();
                 },
                 error: function(err) {
                     console.error("Error al cargar Google Sheets:", err);
@@ -833,7 +848,6 @@
             currentMode = mode;
             const catalogSec = document.getElementById('catalogSection');
             const builderSec = document.getElementById('builderSection');
-            const printBacksSec = document.getElementById('printBacksContainer');
             const tabCat = document.getElementById('tabCatalog');
             const tabBld = document.getElementById('tabBuilder');
             const tabBck = document.getElementById('tabBacks');
@@ -845,17 +859,14 @@
             if (mode === 'catalog') {
                 catalogSec.style.display = 'block';
                 builderSec.style.display = 'none';
-                printBacksSec.style.display = 'none';
                 tabCat.classList.add('active');
             } else if (mode === 'builder') {
                 catalogSec.style.display = 'none';
                 builderSec.style.display = 'block';
-                printBacksSec.style.display = 'none';
                 tabBld.classList.add('active');
             } else if (mode === 'backs') {
                 catalogSec.style.display = 'none';
                 builderSec.style.display = 'none';
-                printBacksSec.style.display = 'block';
                 tabBck.classList.add('active');
             }
             renderActiveMode();
@@ -970,17 +981,8 @@
             } else {
                 selectedCharacterPowers.delete(name);
             }
-            updateBuilderButtonCount();
             if (currentMode === 'builder') {
                 renderActiveMode();
-            }
-        }
-
-        function updateBuilderButtonCount() {
-            const count = selectedCharacterPowers.size;
-            const btn = document.getElementById('btnPrintBuilder');
-            if (btn) {
-                btn.textContent = `🖨️ Imprimir Mazo (${count})`;
             }
         }
 
@@ -1000,7 +1002,6 @@
                     }
                 }
             });
-            updateBuilderButtonCount();
             if (currentMode === 'builder') {
                 renderActiveMode();
             }
@@ -1179,11 +1180,100 @@
                 const backCard = document.createElement('div');
                 backCard.className = 'vtm-card-back';
                 backCard.innerHTML = `
-                    <img src="./iconos/VTM-Logo-Largo.png" class="back-top-logo" alt="Logo">
-                    <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh">
+                    <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
+                    <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
                 `;
                 container.appendChild(backCard);
             }
+        }
+
+        /* FUNCIÓN DE IMPRESIÓN INTERCALADA AUTOMÁTICA (ANVERSO -> REVERSO POR BLOQUES DE 9) */
+        function prepararEImpresionIntercalada() {
+            const container = document.getElementById('cardsContainer');
+            
+            // Obtener las cartas activas según el modo actual (Catálogo visible o Mazo de personaje)
+            let cartasARenderizar = [];
+            
+            if (currentMode === 'builder') {
+                cartasARenderizar = allDisciplinesData.filter(row => {
+                    const name = row['Nombre Poder'] || row['Nombre'] || '';
+                    return selectedCharacterPowers.has(name);
+                });
+            } else {
+                // Si estamos en catálogo, cogemos las que están filtradas actualmente en pantalla
+                const selectedDisc = document.getElementById('filterDiscipline').value;
+                const selectedLevel = document.getElementById('filterLevel').value;
+                const selectedSource = document.getElementById('filterSource').value;
+                const searchQuery = document.getElementById('searchCard').value.toLowerCase();
+
+                cartasARenderizar = allDisciplinesData.filter(row => {
+                    const discipline = (row['Disciplina'] || 'General').toLowerCase().trim();
+                    let level = (row['Nivel'] || '1').trim();
+                    const source = (row['Fuente_Libro'] || row['Fuente'] || 'V5').toLowerCase().trim();
+                    const name = (row['Nombre Poder'] || row['Nombre'] || '').toLowerCase();
+                    const fullText = Object.values(row).join(' ').toLowerCase();
+
+                    const matchesDisc = (selectedDisc === 'all' || discipline.includes(selectedDisc));
+                    const matchesLevel = (selectedLevel === 'all' || level === selectedLevel);
+                    const matchesSource = (selectedSource === 'all' || source.includes(selectedSource));
+                    const matchesSearch = (!searchQuery || name.includes(searchQuery) || fullText.includes(searchQuery));
+
+                    return matchesDisc && matchesLevel && matchesSource && matchesSearch;
+                });
+            }
+
+            if (cartasARenderizar.length === 0) {
+                alert("No hay cartas seleccionadas o visibles para imprimir.");
+                return;
+            }
+
+            container.innerHTML = '';
+            const chunkSize = 9;
+
+            // Agrupar en bloques de 9 para intercalar anverso y reverso por página
+            for (let i = 0; i < cartasARenderizar.length; i += chunkSize) {
+                const chunk = cartasARenderizar.slice(i, i + chunkSize);
+
+                // 1. Renderizar los Anversos del bloque (máximo 9)
+                chunk.forEach(row => {
+                    container.appendChild(createCardElement(row));
+                });
+
+                // Rellenar espacios vacíos si el bloque tiene menos de 9 para mantener la estructura simétrica de la página
+                const resto = chunkSize - chunk.length;
+                for (let r = 0; r < resto; r++) {
+                    const emptyCard = document.createElement('div');
+                    emptyCard.className = 'vtm-card';
+                    emptyCard.style.visibility = 'hidden'; // Espacio invisible para mantener la retícula 3x3
+                    container.appendChild(emptyCard);
+                }
+
+                // Salto de página para forzar que los reversos vayan en la hoja posterior
+                const break1 = document.createElement('div');
+                break1.className = 'page-break';
+                container.appendChild(break1);
+
+                // 2. Renderizar las Traseras (Reversos) exactas para este bloque
+                for (let j = 0; j < chunkSize; j++) {
+                    const backCard = document.createElement('div');
+                    backCard.className = 'vtm-card-back';
+                    backCard.innerHTML = `
+                        <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
+                        <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
+                    `;
+                    container.appendChild(backCard);
+                }
+
+                // Salto de página para el siguiente bloque de cartas
+                const break2 = document.createElement('div');
+                break2.className = 'page-break';
+                container.appendChild(break2);
+            }
+
+            // Lanzar la ventana de impresión del navegador
+            setTimeout(() => {
+                window.print();
+            }, 300);
         }
     </script>
 </body>
