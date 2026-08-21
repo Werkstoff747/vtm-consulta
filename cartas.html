@@ -17,7 +17,7 @@
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
-            --card-border: #8b0000;
+            --card-border: #2a2a32;
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #c5a059;
@@ -30,12 +30,14 @@
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
             --card-width: 63mm;
             --card-height: 88mm;
+            /* Filtro para convertir blanco a rojo #8b0000 exacto */
+            --red-filter: invert(15%) sepia(93%) saturate(5833%) hue-rotate(357deg) brightness(88%) contrast(117%);
         }
 
         body.light-mode {
             --bg-color: #a8a7a4;
             --card-bg: #ffffff;
-            --card-border: #8b0000;
+            --card-border: #bcaba0;
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #8d6722;
@@ -327,7 +329,7 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* CUADRÍCULA ESTRICTA DE CARTAS (3x3 con gap: 0 para máxima optimización de espacio y líneas de corte claras) */
+        /* CUADRÍCULA ESTRICTA DE CARTAS (3x3 con gap: 0) */
         .cards-grid {
             max-width: 189mm;
             margin: 0 auto;
@@ -337,7 +339,7 @@
             justify-content: center;
         }
 
-        /* DISEÑO DE CARTA FÍSICA V5 (Borde de corte de 4px bien definido) */
+        /* CARTA FÍSICA V5 */
         .vtm-card {
             width: var(--card-width);
             min-width: var(--card-width);
@@ -359,7 +361,7 @@
             break-inside: avoid;
         }
 
-        /* DISEÑO DE LA TRASERA DE CARTA (Logo largo arriba, Ankh centrado abajo) */
+        /* TRASERA DE CARTA (Logo arriba, Ank centrado, texto plano sin sombras) */
         .vtm-card-back {
             width: var(--card-width);
             min-width: var(--card-width);
@@ -393,7 +395,7 @@
             width: 32mm;
             height: auto;
             object-fit: contain;
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));
+            filter: var(--red-filter);
             position: relative;
             z-index: 1;
         }
@@ -402,7 +404,7 @@
             width: 30mm;
             height: 30mm;
             object-fit: contain;
-            filter: drop-shadow(0px 2px 6px rgba(0,0,0,0.5));
+            filter: var(--red-filter);
             position: relative;
             z-index: 1;
         }
@@ -582,7 +584,7 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* Estilos de Impresión A4 compactos (gap: 0 para ajuste exacto) */
+        /* Estilos de Impresión A4 compactos */
         @media print {
             body {
                 background: white !important;
@@ -650,7 +652,12 @@
             <div class="mode-tabs">
                 <button class="tab-btn active" id="tabCatalog" onclick="switchMode('catalog')">📚 Catálogo General (Filtros)</button>
                 <button class="tab-btn" id="tabBuilder" onclick="switchMode('builder')">🧙‍♂️ Mazo Personalizado de Personaje</button>
-                <button class="tab-btn btn-secondary" id="tabBacks" onclick="switchMode('backs')" style="margin-left: auto;">🎴 Generar Traseras de Cartas</button>
+                <button class="tab-btn btn-secondary" id="tabBacks" onclick="switchMode('backs')" style="margin-left: auto;">🎴 Generar Traseras por Disciplina</button>
+            </div>
+
+            <!-- BOTÓN EXCLUSIVO DE IMPRESIÓN DE TRASERAS (Aparece solo en modo traseras) -->
+            <div id="printBacksContainer" style="display: none; margin-bottom: 15px; text-align: right;">
+                <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Traseras de Cartas</button>
             </div>
 
             <!-- MODO CATÁLOGO GENERAL -->
@@ -824,6 +831,7 @@
             currentMode = mode;
             const catalogSec = document.getElementById('catalogSection');
             const builderSec = document.getElementById('builderSection');
+            const printBacksSec = document.getElementById('printBacksContainer');
             const tabCat = document.getElementById('tabCatalog');
             const tabBld = document.getElementById('tabBuilder');
             const tabBck = document.getElementById('tabBacks');
@@ -835,14 +843,17 @@
             if (mode === 'catalog') {
                 catalogSec.style.display = 'block';
                 builderSec.style.display = 'none';
+                printBacksSec.style.display = 'none';
                 tabCat.classList.add('active');
             } else if (mode === 'builder') {
                 catalogSec.style.display = 'none';
                 builderSec.style.display = 'block';
+                printBacksSec.style.display = 'none';
                 tabBld.classList.add('active');
             } else if (mode === 'backs') {
                 catalogSec.style.display = 'none';
                 builderSec.style.display = 'none';
+                printBacksSec.style.display = 'block';
                 tabBck.classList.add('active');
             }
             renderActiveMode();
@@ -1144,7 +1155,7 @@
                 const backCard = document.createElement('div');
                 backCard.className = 'vtm-card-back';
                 backCard.innerHTML = `
-                    <img src="./iconos/VTM-Logo-Largo.png" class="back-top-logo" alt="Vampiro La Mascarada" onerror="this.style.display='none'">
+                    <img src="./iconos/VTM-Logo-Largo.png" class="back-top-logo" alt="Logo">
                     <img src="./iconos/${archivoIcono}" class="back-center-ank" alt="${discipline}" onerror="this.src='./iconos/VTM-Ank.png'">
                     <div class="back-bottom-discipline">${discipline}</div>
                 `;
