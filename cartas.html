@@ -11,15 +11,41 @@
     <!-- PapaParse para leer el CSV de tu Google Sheet -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
+        /* =========================================================
+            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
+           ========================================================= */
         :root {
-            --bg-color: #e3e0d8;
-            --card-bg: #ffffff;
-            --text-main: #111115;
-            --accent-blood: #5c101c;
-            --accent-blood-vivid: #8b0000;
+            --bg-color: #0f0f12;
+            --card-bg: #18181c;
+            --card-border: #2a2a32;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
             --accent-gold: #c5a059;
+            --text-main: #e1e1e6;
+            --text-muted: #a0a0b0;
+            --tag-bg: #25252e;
+            --input-bg: #0f0f12;
+            --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
+            --header-border: #8b0000;
+            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
             --card-width: 63mm;
             --card-height: 88mm;
+        }
+
+        body.light-mode {
+            --bg-color: #a8a7a4;
+            --card-bg: #ffffff;
+            --card-border: #bcaba0;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #8d6722;
+            --text-main: #1f1f22;
+            --text-muted: #555459;
+            --tag-bg: #f2f0eb;
+            --input-bg: #ffffff;
+            --header-bg: #2b0408;
+            --header-border: #7a0000;
+            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
         }
 
         * {
@@ -33,18 +59,102 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* CABECERA ESTILO INDEX */
+        header {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 20px 20px 20px;
+            border-bottom: 2px solid var(--header-border);
+            margin-bottom: 25px;
+            background: var(--header-bg);
+            border-radius: 8px;
+            text-align: center;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            max-width: 100%;
+        }
+
+        .header-ank-logo {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+            filter: var(--logo-filter);
+        }
+
+        .header-main-logo {
+            height: 95px;
+            max-width: 85vw;
+            width: auto;
+            object-fit: contain;
+            filter: var(--logo-filter);
+        }
+
+        h1.cabecera-principal {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--accent-gold);
+            font-variant: small-caps;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            line-height: 1.15;
+        }
+
+        .theme-btn-header {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+        }
+
+        .theme-btn-header:hover {
+            background-color: var(--accent-red);
+            color: #ffffff;
+            border-color: var(--accent-crimson);
+            transform: scale(1.08);
         }
 
         /* Panel de control superior (Oculto al imprimir) */
         .no-print-controls {
-            max-width: 1200px;
-            margin: 0 auto 30px auto;
-            background: #ffffff;
-            color: var(--text-main);
-            border: 2px solid var(--accent-blood);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             padding: 20px;
             border-radius: 8px;
+            margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .controls-header {
@@ -56,14 +166,6 @@
             gap: 15px;
         }
 
-        h1 {
-            font-family: 'Cinzel', serif;
-            color: var(--accent-blood);
-            font-size: 1.5rem;
-            letter-spacing: 1px;
-            font-variant: small-caps;
-        }
-
         .btn-group {
             display: flex;
             gap: 10px;
@@ -73,22 +175,26 @@
         button, select, input {
             font-family: 'Cinzel', serif;
             padding: 8px 14px;
-            background: var(--accent-blood);
+            background: var(--accent-red);
             color: white;
             border: 1px solid var(--accent-gold);
             border-radius: 4px;
             cursor: pointer;
             font-size: 0.85rem;
+            transition: background 0.2s;
         }
 
         button:hover, select:hover {
-            opacity: 0.9;
+            background: var(--accent-crimson);
         }
 
         .btn-secondary {
             background: var(--accent-gold);
             color: #111115;
             font-weight: 600;
+        }
+        .btn-secondary:hover {
+            opacity: 0.9;
         }
 
         .filters-row {
@@ -103,16 +209,16 @@
             font-family: 'Cinzel', serif;
             font-size: 0.8rem;
             margin-bottom: 5px;
-            color: var(--accent-blood);
+            color: var(--accent-gold);
             font-weight: 600;
         }
 
         .filter-group select, .filter-group input {
             width: 100%;
-            background: #fff;
-            color: #111115;
-            border: 1px solid var(--accent-blood);
-            padding: 6px;
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+            padding: 8px;
             font-family: inherit;
         }
 
@@ -132,7 +238,7 @@
             height: var(--card-height);
             background-color: var(--card-bg);
             color: var(--text-main);
-            border: 3px double var(--accent-blood);
+            border: 3px double var(--accent-red);
             border-radius: 8px;
             padding: 3.5mm;
             display: flex;
@@ -170,7 +276,6 @@
             user-select: none;
         }
 
-        /* Contenedor superior para empujar el coste hacia abajo */
         .card-main-content {
             display: flex;
             flex-direction: column;
@@ -179,9 +284,9 @@
             z-index: 1;
         }
 
-        /* Cabecera de la disciplina con menos peso visual */
+        /* Cabecera de la disciplina */
         .card-header {
-            background: var(--accent-blood);
+            background: var(--accent-red);
             color: white;
             padding: 2px 5px;
             border-radius: 3px;
@@ -198,7 +303,6 @@
             font-weight: 600;
         }
 
-        /* Contenedor del Título Principal del Poder */
         .card-titles-container {
             text-align: center;
             margin-bottom: 2mm;
@@ -210,7 +314,7 @@
             font-family: 'Cinzel', serif;
             font-size: 0.82rem;
             font-weight: 700;
-            color: var(--accent-blood);
+            color: var(--text-main);
             line-height: 1.15;
             text-transform: small-caps;
         }
@@ -218,8 +322,8 @@
         /* Caja de Tirada de Dados centrada en 3 líneas */
         .card-roll-box {
             font-size: 0.56rem;
-            background: rgba(139, 0, 0, 0.04);
-            border: 1px solid rgba(139, 0, 0, 0.2);
+            background: rgba(197, 160, 89, 0.08);
+            border: 1px solid rgba(197, 160, 89, 0.3);
             padding: 3px 6px;
             border-radius: 3px;
             margin-bottom: 2mm;
@@ -229,19 +333,19 @@
 
         .card-roll-line-1 {
             font-weight: bold;
-            color: var(--accent-blood-vivid);
+            color: var(--accent-crimson);
         }
 
         .card-roll-line-2 {
             font-style: italic;
-            color: #666666;
+            color: var(--text-muted);
             font-size: 0.5rem;
             margin: 1px 0;
         }
 
         .card-roll-line-3 {
             font-weight: 600;
-            color: #222222;
+            color: var(--text-main);
         }
 
         /* Cuerpo de la carta (Descripción) */
@@ -260,7 +364,7 @@
             border: 1px solid var(--accent-gold);
             padding: 3px 5px;
             border-radius: 3px;
-            margin-top: auto; /* Empuja el coste hacia la parte inferior del contenedor principal */
+            margin-top: auto;
             margin-bottom: 1.5mm;
             display: flex;
             justify-content: space-between;
@@ -268,7 +372,7 @@
         }
 
         .card-costs span span {
-            color: var(--accent-blood);
+            color: var(--accent-gold);
             font-weight: bold;
         }
 
@@ -287,23 +391,20 @@
             align-items: center;
         }
 
-        /* Bloque Izquierda: Imagen del rombo de nivel (6.5mm) */
         .card-level-img {
             width: 6.5mm;
             height: 6.5mm;
             object-fit: contain;
         }
 
-        /* Bloque Centro: Fuente y página */
         .card-source-text {
             font-size: 0.44rem;
-            color: #444;
+            color: var(--text-muted);
             font-family: 'Cinzel', serif;
             text-align: center;
             letter-spacing: 0.3px;
         }
 
-        /* Bloque Derecha: Icono de disciplina (6.5mm exactos) */
         .card-discipline-icon-img {
             width: 6.5mm;
             height: 6.5mm;
@@ -314,7 +415,7 @@
         #loading {
             text-align: center;
             font-size: 1.1rem;
-            color: var(--accent-blood);
+            color: var(--accent-gold);
             padding: 40px;
             font-family: 'Cinzel', serif;
         }
@@ -327,7 +428,7 @@
                 padding: 0 !important;
             }
 
-            .no-print-controls {
+            .no-print-controls, header {
                 display: none !important;
             }
 
@@ -345,6 +446,15 @@
                 border: 1px solid #222 !important;
                 page-break-inside: avoid;
                 break-inside: avoid;
+                color: #111115 !important;
+            }
+
+            .vtm-card .card-title {
+                color: #5c101c !important;
+            }
+
+            .vtm-card .card-source-text {
+                color: #444 !important;
             }
 
             @page {
@@ -354,47 +464,61 @@
         }
     </style>
 </head>
-<body>
+<body class="light-mode">
 
-    <!-- Panel de control de la aplicación (Se oculta al imprimir) -->
-    <div class="no-print-controls">
-        <div class="controls-header">
-            <h1>🎴 Generador de Cartas Imprimibles V5</h1>
-            <div class="btn-group">
-                <a href="index.html" style="text-decoration: none;"><button type="button">⬅️ Volver al Compendio</button></a>
-                <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Cartas (A4)</button>
+    <div class="container">
+        <!-- Cabecera unificada con el index -->
+        <header>
+            <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
+            <div class="header-logos">
+                <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
+                <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo.png';">
+            </div>
+            <div class="header-text">
+                <h1 class="cabecera-principal">Compendio de Cartas Imprimibles V5</h1>
+            </div>
+        </header>
+
+        <!-- Panel de control de la aplicación (Se oculta al imprimir) -->
+        <div class="no-print-controls">
+            <div class="controls-header">
+                <div style="font-family: 'Cinzel', serif; color: var(--accent-gold); font-weight: 700;">🎴 Generador de Cartas</div>
+                <div class="btn-group">
+                    <a href="index.html" style="text-decoration: none;"><button type="button">⬅️ Volver al Compendio</button></a>
+                    <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Cartas (A4)</button>
+                </div>
+            </div>
+
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label for="filterDiscipline">Filtrar Disciplina:</label>
+                    <select id="filterDiscipline" onchange="filterCards()">
+                        <option value="all">Todas las Disciplinas</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterLevel">Filtrar Nivel:</label>
+                    <select id="filterLevel" onchange="filterCards()">
+                        <option value="all">Todos los Niveles</option>
+                        <option value="1">Nivel 1</option>
+                        <option value="2">Nivel 2</option>
+                        <option value="3">Nivel 3</option>
+                        <option value="4">Nivel 4</option>
+                        <option value="5">Nivel 5</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="searchCard">Buscar Poder:</label>
+                    <input type="text" id="searchCard" placeholder="Nombre o palabra clave..." oninput="filterCards()">
+                </div>
             </div>
         </div>
 
-        <div class="filters-row">
-            <div class="filter-group">
-                <label for="filterDiscipline">Filtrar Disciplina:</label>
-                <select id="filterDiscipline" onchange="filterCards()">
-                    <option value="all">Todas las Disciplinas</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="filterLevel">Filtrar Nivel:</label>
-                <select id="filterLevel" onchange="filterCards()">
-                    <option value="all">Todos los Niveles</option>
-                    <option value="1">Nivel 1</option>
-                    <option value="2">Nivel 2</option>
-                    <option value="3">Nivel 3</option>
-                    <option value="4">Nivel 4</option>
-                    <option value="5">Nivel 5</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="searchCard">Buscar Poder:</label>
-                <input type="text" id="searchCard" placeholder="Nombre o palabra clave..." oninput="filterCards()">
-            </div>
-        </div>
+        <div id="loading">Cargando cartas desde Google Sheets...</div>
+
+        <!-- Contenedor donde se generan las cartas dinámicamente -->
+        <div id="cardsContainer" class="cards-grid"></div>
     </div>
-
-    <div id="loading">Cargando cartas desde Google Sheets...</div>
-
-    <!-- Contenedor donde se generan las cartas dinámicamente -->
-    <div id="cardsContainer" class="cards-grid"></div>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
@@ -415,7 +539,35 @@
             'alquimia de sangre débil': 'Alchemy_symbol.png'
         };
 
+        function initTheme() {
+            const savedTheme = localStorage.getItem('vtm-theme');
+            const themeBtn = document.getElementById('themeToggleBtn');
+            if (savedTheme === 'dark') {
+                document.body.classList.remove('light-mode');
+                if (themeBtn) themeBtn.textContent = '🌙';
+            } else {
+                document.body.classList.add('light-mode');
+                if (themeBtn) themeBtn.textContent = '☀️';
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeBtn = document.getElementById('themeToggleBtn');
+            body.classList.toggle('light-mode');
+
+            if (body.classList.contains('light-mode')) {
+                themeBtn.textContent = '☀️';
+                localStorage.setItem('vtm-theme', 'light');
+            } else {
+                themeBtn.textContent = '🌙';
+                localStorage.setItem('vtm-theme', 'dark');
+            }
+        }
+
         window.onload = function() {
+            initTheme();
+
             Papa.parse(CSV_URL, {
                 download: true,
                 header: true,
