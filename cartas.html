@@ -16,6 +16,7 @@
             --card-bg: #ffffff;
             --text-main: #111115;
             --accent-blood: #5c101c;
+            --accent-blood-vivid: #8b0000; /* Rojo más vivo para la disciplina */
             --accent-gold: #c5a059;
             --card-width: 63mm;
             --card-height: 88mm;
@@ -154,29 +155,11 @@
             pointer-events: none;
         }
 
-        /* Marca de agua translúcida del icono de la disciplina en el fondo */
-        .discipline-watermark-img {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40mm;
-            height: 40mm;
-            object-fit: contain;
-            opacity: 0.07;
-            pointer-events: none;
-            z-index: 0;
-            user-select: none;
-        }
-
+        /* Cabecera de la carta */
         .card-header {
-            background: var(--accent-blood);
-            color: white;
-            padding: 3px 6px;
-            border-radius: 3px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-align: center;
+            border-bottom: 1px solid var(--accent-gold);
+            padding-bottom: 2mm;
             margin-bottom: 2mm;
             position: relative;
             z-index: 1;
@@ -184,80 +167,59 @@
 
         .card-discipline {
             font-family: 'Cinzel', serif;
-            font-size: 0.58rem;
+            font-size: 0.72rem; /* Tamaño superior */
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--accent-gold);
-            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--accent-blood-vivid); /* Rojo más vivo */
+            font-weight: 900;
         }
 
+        /* Contenedor de Títulos */
         .card-titles-container {
             text-align: center;
-            margin-bottom: 2mm;
+            margin-bottom: 2.5mm;
             position: relative;
             z-index: 1;
-            border-bottom: 1px solid var(--accent-gold);
-            padding-bottom: 2px;
         }
 
         .card-title {
             font-family: 'Cinzel', serif;
-            font-size: 0.72rem;
+            font-size: 0.78rem;
             font-weight: 700;
             color: var(--accent-blood);
-            line-height: 1.1;
+            line-height: 1.15;
         }
 
         .card-subtitle-en {
-            font-size: 0.55rem;
-            color: #666666;
+            font-size: 0.58rem;
+            color: #555555;
             font-style: italic;
             opacity: 0.85;
             margin-top: 1px;
         }
 
-        /* Fila superior para nivel y atributos alineados */
-        .card-top-row {
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        /* Reserva de Dados destacada */
+        .card-roll-box {
+            font-size: 0.62rem;
+            background: rgba(139, 0, 0, 0.06);
+            border-left: 2.5px solid var(--accent-blood-vivid);
+            padding: 3px 5px;
+            border-radius: 3px;
             margin-bottom: 2mm;
             position: relative;
             z-index: 1;
+            font-weight: 600;
         }
 
-        .card-level-badge {
-            font-family: 'Cinzel', serif;
-            font-size: 0.58rem;
-            font-weight: 700;
-            background: var(--accent-blood);
-            color: #ffffff;
-            padding: 1.5px 5px;
-            border-radius: 3px;
-            border: 1px solid #8b0000;
-            flex-shrink: 0;
-        }
-
-        .card-attributes {
-            font-size: 0.52rem;
-            background: rgba(197, 160, 89, 0.12);
-            border: 1px solid var(--accent-gold);
-            padding: 2px 4px;
-            border-radius: 3px;
-            display: flex;
-            gap: 6px;
-            flex-grow: 1;
-            justify-content: space-around;
-        }
-
-        .card-attributes div span {
+        .card-roll-box span {
+            color: var(--accent-blood-vivid);
             font-weight: bold;
-            color: var(--accent-blood);
         }
 
+        /* Cuerpo de la carta (Descripción más grande) */
         .card-body {
-            font-size: 0.56rem;
-            line-height: 1.2;
+            font-size: 0.65rem; /* Letra más grande para evitar huecos vacíos */
+            line-height: 1.25;
             overflow-y: hidden;
             flex-grow: 1;
             padding: 1px 2px;
@@ -266,16 +228,76 @@
             text-align: justify;
         }
 
-        .card-footer {
-            border-top: 1px solid var(--accent-gold);
-            padding-top: 2px;
-            font-size: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            color: #444;
-            font-family: 'Cinzel', serif;
+        /* Zona inferior (Coste, Duración y Elementos de Esquina) */
+        .card-bottom-section {
             position: relative;
             z-index: 1;
+            margin-top: 2mm;
+        }
+
+        .card-costs {
+            font-size: 0.58rem;
+            background: rgba(197, 160, 89, 0.12);
+            border: 1px solid var(--accent-gold);
+            padding: 3px 5px;
+            border-radius: 3px;
+            margin-bottom: 2.5mm;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+        }
+
+        .card-costs span span {
+            color: var(--accent-blood);
+            font-weight: bold;
+        }
+
+        /* Pie de carta: Rombo de nivel (izq), Icono disciplina (der) y fuente abajo */
+        .card-footer-layout {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 1px solid var(--accent-gold);
+            padding-top: 2px;
+        }
+
+        /* Rombo rojo con número en blanco en negrita */
+        .card-level-diamond {
+            width: 14mm;
+            height: 14mm;
+            background-color: var(--accent-blood-vivid);
+            border: 1.5px solid var(--accent-gold);
+            transform: rotate(45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2mm 0 1mm 2mm;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .card-level-diamond span {
+            transform: rotate(-45deg);
+            color: #ffffff;
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            font-weight: 900;
+        }
+
+        /* Icono de disciplina a color completo sin opacidad en la esquina inferior derecha */
+        .card-discipline-icon-img {
+            width: 9mm;
+            height: 9mm;
+            object-fit: contain;
+            opacity: 1; /* Sin opacidad */
+        }
+
+        .card-source-text {
+            font-size: 0.48rem;
+            color: #444;
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            margin-top: 1px;
+            letter-spacing: 0.3px;
         }
 
         #loading {
@@ -438,21 +460,41 @@
                 const discipline = row['Disciplina'] || 'General';
                 const level = row['Nivel'] || '1';
                 
-                const pool = row['Reserva de Dados'] || row['Reserva de dados'] || row['Tirada'] || 'Especial';
+                const pool = row['Reserva de Dados'] || row['Reserva de dados'] || row['Tirada'] || '-';
+                const opposition = row['Reserva Oposicion'] || row['Reserva oposición'] || '';
                 const cost = row['Controles de Ansia'] || row['Coste'] || 'Ninguno';
+                const duration = row['Duracion'] || row['Duración'] || 'Escena';
                 const desc = row['Descripción'] || row['DESCRIPCION'] || 'Sin descripción disponible.';
-                const source = row['Fuente_Libro'] || row['Fuente'] || 'V5';
+                
+                const sourceBook = row['Fuente_Libro'] || row['Fuente'] || 'V5';
+                const sourcePage = row['Fuente_Pag'] || row['Página'] || '';
 
                 const discKey = discipline.toLowerCase().trim();
                 const archivoIcono = ICONOS_MAP[discKey];
                 let iconHTML = '';
                 if (archivoIcono) {
-                    iconHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="${discipline}" onerror="this.style.display='none'">`;
+                    iconHTML = `<img src="./iconos/${archivoIcono}" class="card-discipline-icon-img" alt="${discipline}" onerror="this.style.display='none'">`;
                 }
 
                 let subtitleHTML = '';
                 if (nameEn && nameEn.trim() !== '-' && nameEn.trim() !== '') {
                     subtitleHTML = `<div class="card-subtitle-en">(${nameEn})</div>`;
+                }
+
+                // Formatear Tirada vs Oposición
+                let rollContent = pool;
+                if (opposition && opposition.trim() !== '-' && opposition.trim() !== '') {
+                    rollContent += ` <em>vs</em> ${opposition}`;
+                }
+                let rollBoxHTML = '';
+                if (rollContent && rollContent !== '-') {
+                    rollBoxHTML = `<div class="card-roll-box"><span>Tirada:</span> ${rollContent}</div>`;
+                }
+
+                // Formatear fuente y página
+                let sourceDisplay = sourceBook;
+                if (sourcePage && sourcePage.trim() !== '-' && sourcePage.trim() !== '') {
+                    sourceDisplay += ` (pág. ${sourcePage})`;
                 }
 
                 const card = document.createElement('div');
@@ -462,7 +504,6 @@
                 card.setAttribute('data-name', name.toLowerCase());
 
                 card.innerHTML = `
-                    ${iconHTML}
                     <div class="card-header">
                         <span class="card-discipline">${discipline}</span>
                     </div>
@@ -470,19 +511,24 @@
                         <div class="card-title">${name}</div>
                         ${subtitleHTML}
                     </div>
-                    <div class="card-top-row">
-                        <div class="card-level-badge">Nivel ${level}</div>
-                        <div class="card-attributes">
-                            <div><span>Res:</span> ${pool}</div>
-                            <div><span>Coste:</span> ${cost}</div>
-                        </div>
-                    </div>
+                    ${rollBoxHTML}
                     <div class="card-body">
                         ${desc}
                     </div>
-                    <div class="card-footer">
-                        <span>V5 MDT</span>
-                        <span>${source}</span>
+                    <div class="card-bottom-section">
+                        <div class="card-costs">
+                            <span>Coste: <span>${cost}</span></span>
+                            <span>Duración: <span>${duration}</span></span>
+                        </div>
+                        <div class="card-footer-layout">
+                            <div class="card-level-diamond" title="Nivel ${level}">
+                                <span>${level}</span>
+                            </div>
+                            <div>
+                                ${iconHTML}
+                            </div>
+                        </div>
+                        <div class="card-source-text">${sourceDisplay}</div>
                     </div>
                 `;
                 container.appendChild(card);
