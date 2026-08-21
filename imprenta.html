@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Versión Imprenta - Disciplinas V5</title>
+    <style>
+        :root {
+            --card-width: 63mm;
+            --card-height: 88mm;
+            --bleed: 3mm;
+            --full-width: 69mm; /* 63 + 3 + 3 */
+            --full-height: 94mm; /* 88 + 3 + 3 */
+        }
+
+        body { background: #333; margin: 0; padding: 20px; display: flex; flex-wrap: wrap; justify-content: center; }
+
+        /* Contenedor de la carta con sangrado */
+        .print-card-wrapper {
+            width: var(--full-width);
+            height: var(--full-height);
+            position: relative;
+            background: black; /* Fondo negro profesional */
+            border: 0.1mm solid #444; /* Línea de guía de corte */
+        }
+
+        /* Contenido de la carta */
+        .vtm-card {
+            width: var(--card-width);
+            height: var(--card-height);
+            position: absolute;
+            top: var(--bleed);
+            left: var(--bleed);
+            background: #111; /* Negro profundo */
+            color: #e1e1e6;
+            padding: 3mm;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Marcas de corte en las esquinas */
+        .crop-mark {
+            position: absolute;
+            width: 5mm;
+            height: 0.1mm;
+            background: white;
+            z-index: 10;
+        }
+
+        /* Ajustes de color para fondo negro */
+        .card-title { color: #c5a059 !important; }
+        .card-body { color: #ccc !important; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .print-card-wrapper { border: none; }
+            .crop-mark { background: black; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Aquí iría el mismo script de carga de datos que en cartas.html -->
+    <!-- Simplemente renderizamos las cartas dentro de .print-card-wrapper -->
+    
+    <div id="printArea" style="display: grid; grid-template-columns: repeat(3, var(--full-width)); gap: 0;">
+        <!-- Las cartas se generarán aquí con el nuevo contenedor .print-card-wrapper -->
+    </div>
+
+    <script>
+        // Lógica simplificada:
+        // 1. Cargar datos.
+        // 2. Al generar cada carta, envolverla en:
+        //    <div class="print-card-wrapper">
+        //        <div class="vtm-card">...contenido...</div>
+        //    </div>
+    </script>
+</body>
+</html>
