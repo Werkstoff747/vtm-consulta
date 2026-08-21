@@ -488,6 +488,7 @@
                 const discipline = row['Disciplina'] || 'General';
                 const level = row['Nivel'] || '1';
                 
+                // Lectura independiente de las columnas del Excel
                 const pool = row['Reserva de Dados'] || row['Reserva de dados'] || row['Tirada'] || '';
                 const opposition = row['Reserva Oposicion'] || row['Reserva oposición'] || '';
                 const cost = row['Controles de Ansia'] || row['Coste'] || 'Ninguno';
@@ -506,15 +507,22 @@
                     cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="card-discipline-icon-img" alt="${discipline}" onerror="this.style.display='none'">`;
                 }
 
-                // Estructura de tirada centrada en 3 líneas (Reserva, vs., Oposición)
+                // Generación limpia del bloque de tirada en 3 líneas usando las dos columnas
                 let rollBoxHTML = '';
-                if (pool && pool.trim() !== '-' && pool.trim() !== '') {
-                    let line3Content = opposition && opposition.trim() !== '-' && opposition.trim() !== '' ? opposition : 'Sin oposición';
+                if (pool && pool.trim() !== '-' && pool.trim() !== '' && pool.trim().toLowerCase() !== 'sin tirada') {
+                    let oppositionText = (opposition && opposition.trim() !== '-' && opposition.trim() !== '') ? opposition : 'Sin oposición';
                     rollBoxHTML = `
                         <div class="card-roll-box">
                             <div class="card-roll-line-1">${pool}</div>
                             <div class="card-roll-line-2">vs.</div>
-                            <div class="card-roll-line-3">${line3Content}</div>
+                            <div class="card-roll-line-3">${oppositionText}</div>
+                        </div>
+                    `;
+                } else {
+                    // Si no hay tirada (ej. "Sin tirada"), podemos mostrarlo de forma limpia o compacta
+                    rollBoxHTML = `
+                        <div class="card-roll-box">
+                            <div class="card-roll-line-1">Sin tirada</div>
                         </div>
                     `;
                 }
