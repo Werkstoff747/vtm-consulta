@@ -13,23 +13,26 @@
             --full-h: 94mm;
         }
 
-        body { background: #333; margin: 0; padding: 10mm; display: flex; flex-wrap: wrap; justify-content: center; }
+        body { background: #222; margin: 0; padding: 10mm; display: flex; justify-content: center; }
+        
+        #printArea { display: grid; grid-template-columns: repeat(3, var(--full-w)); justify-content: center; }
 
         .print-card-wrapper {
             width: var(--full-w);
             height: var(--full-h);
             background: black;
             position: relative;
-            outline: 0.1mm solid #555; /* Guía de corte */
+            outline: 0.1mm solid #444; /* Guía visual */
         }
 
+        /* La carta negra */
         .vtm-card {
             width: var(--card-width);
             height: var(--card-height);
             position: absolute;
             top: var(--bleed);
             left: var(--bleed);
-            background: #000;
+            background: black;
             color: #ddd;
             padding: 3mm;
             display: flex;
@@ -37,8 +40,9 @@
             border: 1px solid #333;
         }
 
-        .card-title { color: #c5a059; font-weight: bold; text-align: center; margin-bottom: 2mm; }
-        .card-body { font-size: 0.7rem; text-align: justify; }
+        /* Ajustes de estilo para el fondo negro */
+        .card-title { color: #c5a059; font-weight: bold; text-align: center; font-size: 0.9rem; }
+        .card-body { font-size: 0.7rem; margin-top: 2mm; text-align: justify; color: #bbb; }
 
         @media print {
             body { background: white; padding: 0; }
@@ -48,17 +52,18 @@
 </head>
 <body>
 
-    <div id="printArea" style="display: grid; grid-template-columns: repeat(3, var(--full-w));"></div>
+    <div id="printArea"></div>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
 
         Papa.parse(CSV_URL, {
-            download: true, header: true, complete: function(results) {
+            download: true, header: true, skipEmptyLines: true,
+            complete: function(results) {
                 const container = document.getElementById('printArea');
                 results.data.forEach(row => {
                     if (!(row['Nombre Poder'] || row['Nombre'])) return;
-                    
+
                     const wrapper = document.createElement('div');
                     wrapper.className = 'print-card-wrapper';
                     
@@ -66,7 +71,7 @@
                     card.className = 'vtm-card';
                     card.innerHTML = `
                         <div class="card-title">${row['Nombre Poder'] || row['Nombre']}</div>
-                        <div class="card-body">${row['Descripción'] || ''}</div>
+                        <div class="card-body">${row['Descripción'] || row['Descripción'] || ''}</div>
                     `;
                     
                     wrapper.appendChild(card);
