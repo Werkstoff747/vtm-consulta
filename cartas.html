@@ -67,7 +67,7 @@
             margin: 0 auto;
         }
 
-        /* CABECERA ESTILO INDEX */
+        /* CABECERA */
         header {
             position: relative;
             display: flex;
@@ -80,7 +80,6 @@
             background: var(--header-bg);
             border-radius: 8px;
             text-align: center;
-            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .header-logos {
@@ -146,7 +145,7 @@
             transform: scale(1.08);
         }
 
-        /* Panel de control superior (Oculto al imprimir) */
+        /* PANEL DE CONTROL Y PESTAÑAS DE MODO */
         .no-print-controls {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -154,7 +153,32 @@
             border-radius: 8px;
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .mode-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 15px;
+        }
+
+        .tab-btn {
+            font-family: 'Cinzel', serif;
+            padding: 8px 16px;
+            background: var(--tag-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--card-border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-red);
+            color: white;
+            border-color: var(--accent-gold);
         }
 
         .controls-header {
@@ -193,9 +217,6 @@
             color: #111115;
             font-weight: 600;
         }
-        .btn-secondary:hover {
-            opacity: 0.9;
-        }
 
         .filters-row {
             display: grid;
@@ -222,7 +243,59 @@
             font-family: inherit;
         }
 
-        /* Cuadrícula de Cartas para Pantalla */
+        /* CONTENEDOR MODO PERSONAJE (LISTA DE SELECCIÓN) */
+        #builderSection {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .builder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .builder-list {
+            max-height: 350px;
+            overflow-y: auto;
+            border: 1px solid var(--card-border);
+            padding: 10px;
+            border-radius: 6px;
+            background: var(--input-bg);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .builder-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .builder-item:hover {
+            background: rgba(197, 160, 89, 0.1);
+        }
+
+        .builder-item input[type="checkbox"] {
+            cursor: pointer;
+            accent-color: var(--accent-red);
+            width: 16px;
+            height: 16px;
+        }
+
+        /* CUADRÍCULA DE CARTAS */
         .cards-grid {
             max-width: 1200px;
             margin: 0 auto;
@@ -251,7 +324,6 @@
             break-inside: avoid;
         }
 
-        /* Marco ornamentado interior dorado */
         .vtm-card::after {
             content: "";
             position: absolute;
@@ -261,7 +333,6 @@
             pointer-events: none;
         }
 
-        /* Marca de agua translúcida en el centro de la carta */
         .discipline-watermark-img {
             position: absolute;
             top: 50%;
@@ -284,7 +355,6 @@
             z-index: 1;
         }
 
-        /* Cabecera de la disciplina perfectamente centrada vertical y horizontalmente */
         .card-header {
             background: var(--accent-red);
             color: white;
@@ -322,7 +392,6 @@
             text-transform: small-caps;
         }
 
-        /* Caja de Tirada de Dados centrada en 3 líneas */
         .card-roll-box {
             font-size: 0.56rem;
             background: rgba(197, 160, 89, 0.08);
@@ -351,7 +420,6 @@
             color: var(--text-main);
         }
 
-        /* Cuerpo de la carta (Descripción) */
         .card-body {
             font-size: 0.62rem;
             line-height: 1.25;
@@ -360,7 +428,6 @@
             text-align: justify;
         }
 
-        /* Coste y Duración anclados justo encima de la línea divisoria */
         .card-costs {
             font-size: 0.55rem;
             background: rgba(197, 160, 89, 0.12);
@@ -379,7 +446,6 @@
             font-weight: bold;
         }
 
-        /* Zona inferior: Línea separadora dorada y pie en tres bloques */
         .card-footer-container {
             border-top: 1px solid var(--accent-gold);
             padding-top: 1.5mm;
@@ -423,7 +489,7 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* Estilos limpios y profesionales para Impresión A4 */
+        /* Estilos de Impresión A4 */
         @media print {
             body {
                 background: white !important;
@@ -431,19 +497,23 @@
                 padding: 0 !important;
             }
 
-            .no-print-controls, header {
+            .no-print-controls, header, #builderSection {
                 display: none !important;
             }
 
             .cards-grid {
-                display: block;
-                max-width: none;
-                margin: 0;
+                display: flex !important;
+                flex-wrap: wrap !important;
+                justify-content: center !important;
+                align-content: center !important;
+                gap: 4mm !important;
+                max-width: none !important;
+                margin: 0 auto !important;
             }
 
             .vtm-card {
-                margin: 0;
-                float: left;
+                margin: 0 !important;
+                float: none !important;
                 box-shadow: none !important;
                 background-color: #fff !important;
                 border: 1px solid #222 !important;
@@ -462,7 +532,7 @@
 
             @page {
                 size: A4;
-                margin: 8mm;
+                margin: 12mm;
             }
         }
     </style>
@@ -470,7 +540,7 @@
 <body class="light-mode">
 
     <div class="container">
-        <!-- Cabecera unificada con el index -->
+        <!-- Cabecera -->
         <header>
             <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
             <div class="header-logos">
@@ -482,38 +552,64 @@
             </div>
         </header>
 
-        <!-- Panel de control de la aplicación (Se oculta al imprimir) -->
+        <!-- Selector de Modo / Pestañas -->
         <div class="no-print-controls">
-            <div class="controls-header">
-                <div style="font-family: 'Cinzel', serif; color: var(--accent-gold); font-weight: 700;">🎴 Generador de Cartas</div>
-                <div class="btn-group">
-                    <a href="index.html" style="text-decoration: none;"><button type="button">⬅️ Volver al Compendio</button></a>
-                    <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Cartas (A4)</button>
-                </div>
+            <div class="mode-tabs">
+                <button class="tab-btn active" id="tabCatalog" onclick="switchMode('catalog')">📚 Catálogo General (Filtros)</button>
+                <button class="tab-btn" id="tabBuilder" onclick="switchMode('builder')">🧙‍♂️ Mazo Personalizado de Personaje</button>
             </div>
 
-            <div class="filters-row">
-                <div class="filter-group">
-                    <label for="filterDiscipline">Filtrar Disciplina:</label>
-                    <select id="filterDiscipline" onchange="filterCards()">
-                        <option value="all">Todas las Disciplinas</option>
-                    </select>
+            <!-- MODO CATÁLOGO GENERAL -->
+            <div id="catalogSection">
+                <div class="controls-header">
+                    <div style="font-family: 'Cinzel', serif; color: var(--accent-gold); font-weight: 700;">🎴 Generador por Filtros</div>
+                    <div class="btn-group">
+                        <a href="index.html" style="text-decoration: none;"><button type="button">⬅️ Volver al Compendio</button></a>
+                        <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Cartas (A4)</button>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label for="filterLevel">Filtrar Nivel:</label>
-                    <select id="filterLevel" onchange="filterCards()">
-                        <option value="all">Todos los Niveles</option>
-                        <option value="1">Nivel 1</option>
-                        <option value="2">Nivel 2</option>
-                        <option value="3">Nivel 3</option>
-                        <option value="4">Nivel 4</option>
-                        <option value="5">Nivel 5</option>
-                    </select>
+
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <label for="filterDiscipline">Filtrar Disciplina:</label>
+                        <select id="filterDiscipline" onchange="filterCards()">
+                            <option value="all">Todas las Disciplinas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filterLevel">Filtrar Nivel:</label>
+                        <select id="filterLevel" onchange="filterCards()">
+                            <option value="all">Todos los Niveles</option>
+                            <option value="1">Nivel 1</option>
+                            <option value="2">Nivel 2</option>
+                            <option value="3">Nivel 3</option>
+                            <option value="4">Nivel 4</option>
+                            <option value="5">Nivel 5</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="searchCard">Buscar Poder:</label>
+                        <input type="text" id="searchCard" placeholder="Nombre o palabra clave..." oninput="filterCards()">
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label for="searchCard">Buscar Poder:</label>
-                    <input type="text" id="searchCard" placeholder="Nombre o palabra clave..." oninput="filterCards()">
+            </div>
+        </div>
+
+        <!-- MODO MAZO DE PERSONAJE (SELECCIÓN MANUAL) -->
+        <div id="builderSection">
+            <div class="builder-header">
+                <div>
+                    <h3 style="font-family: 'Cinzel', serif; color: var(--accent-gold);">Selecciona los poderes de tu personaje</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Marca las casillas de los poderes que posees para imprimirlos en tu mazo personalizado.</p>
                 </div>
+                <div class="btn-group">
+                    <button type="button" onclick="selectAllBuilder(true)">Seleccionar Todos</button>
+                    <button type="button" onclick="selectAllBuilder(false)" class="tab-btn" style="color:white;">Deseleccionar</button>
+                    <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Mazo (${selectedCount})</button>
+                </div>
+            </div>
+            <div class="builder-list" id="builderListContainer">
+                <!-- Se rellena dinámicamente -->
             </div>
         </div>
 
@@ -526,6 +622,8 @@
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
         let allDisciplinesData = [];
+        let currentMode = 'catalog'; // 'catalog' o 'builder'
+        let selectedCharacterPowers = new Set(); // Almacena nombres de poderes seleccionados
 
         const ICONOS_MAP = {
             'animalismo': 'Animalism_symbol.png',
@@ -591,6 +689,7 @@
                     });
 
                     populateFilters(allDisciplinesData);
+                    populateBuilderList(allDisciplinesData);
                     renderCards(allDisciplinesData);
                 },
                 error: function(err) {
@@ -599,6 +698,28 @@
                 }
             });
         };
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const catalogSec = document.getElementById('catalogSection');
+            const builderSec = document.getElementById('builderSection');
+            const tabCat = document.getElementById('tabCatalog');
+            const tabBld = document.getElementById('tabBuilder');
+
+            if (mode === 'catalog') {
+                catalogSec.style.display = 'block';
+                builderSec.style.display = 'none';
+                tabCat.classList.add('active');
+                tabBld.classList.remove('active');
+                filterCards();
+            } else {
+                catalogSec.style.display = 'none';
+                builderSec.style.display = 'block';
+                tabBld.classList.add('active');
+                tabCat.classList.remove('active');
+                renderBuilderCards();
+            }
+        }
 
         function populateFilters(data) {
             const disciplinesSet = new Set();
@@ -614,6 +735,51 @@
                 opt.textContent = disc;
                 selectDisc.appendChild(opt);
             });
+        }
+
+        function populateBuilderList(data) {
+            const container = document.getElementById('builderListContainer');
+            container.innerHTML = '';
+
+            data.forEach((row, index) => {
+                const name = row['Nombre Poder'] || row['Nombre'] || 'Sin Nombre';
+                const discipline = row['Disciplina'] || 'General';
+                const level = row['Nivel'] || '1';
+                const uniqueId = `power_${index}`;
+
+                const item = document.createElement('label');
+                item.className = 'builder-item';
+                item.htmlFor = uniqueId;
+
+                item.innerHTML = `
+                    <input type="checkbox" id="${uniqueId}" value="${name}" onchange="toggleBuilderPower('${name}', this.checked)">
+                    <span><strong>[${discipline} - Nivel ${level}]</strong> ${name}</span>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function toggleBuilderPower(name, isChecked) {
+            if (isChecked) {
+                selectedCharacterPowers.add(name);
+            } else {
+                selectedCharacterPowers.delete(name);
+            }
+            renderBuilderCards();
+        }
+
+        function selectAllBuilder(select) {
+            const checkboxes = document.querySelectorAll('.builder-item input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                cb.checked = select;
+                const name = cb.value;
+                if (select) {
+                    selectedCharacterPowers.add(name);
+                } else {
+                    selectedCharacterPowers.delete(name);
+                }
+            });
+            renderBuilderCards();
         }
 
         function renderCards(data) {
@@ -720,6 +886,8 @@
         }
 
         function filterCards() {
+            if (currentMode !== 'catalog') return;
+
             const selectedDisc = document.getElementById('filterDiscipline').value;
             const selectedLevel = document.getElementById('filterLevel').value;
             const searchQuery = document.getElementById('searchCard').value.toLowerCase();
@@ -736,6 +904,22 @@
                 const matchesSearch = (!searchQuery || name.includes(searchQuery) || text.includes(searchQuery));
 
                 if (matchesDisc && matchesLevel && matchesSearch) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function renderBuilderCards() {
+            if (currentMode !== 'builder') return;
+
+            const cards = document.querySelectorAll('.vtm-card');
+            cards.forEach(card => {
+                const titleEl = card.querySelector('.card-title');
+                const powerName = titleEl ? titleEl.textContent.trim() : '';
+
+                if (selectedCharacterPowers.has(powerName)) {
                     card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';
