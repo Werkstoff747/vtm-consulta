@@ -221,8 +221,8 @@
 
         .filters-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
             margin-top: 15px;
         }
 
@@ -359,7 +359,7 @@
             break-inside: avoid;
         }
 
-        /* TRASERA GENÉRICA (Logo superior ocupando máximo ancho + Ank centrado, sin sombras) */
+        /* TRASERA GENÉRICA (Filtro invert para hacer visibles los logos blancos sobre fondo blanco) */
         .vtm-card-back {
             width: var(--card-width);
             min-width: var(--card-width);
@@ -389,23 +389,25 @@
         }
 
         .back-top-logo {
-            width: 52mm; /* Máximo ancho posible dentro de los márgenes de la carta */
+            width: 52mm;
             height: auto;
             object-fit: contain;
             position: absolute;
             top: 10mm;
             left: 50%;
             transform: translateX(-50%);
+            filter: invert(1);
         }
 
         .back-center-ank {
-            width: 32mm; /* Ank perfectamente centrado */
+            width: 32mm;
             height: 32mm;
             object-fit: contain;
             position: absolute;
             top: 52%;
             left: 50%;
             transform: translate(-50%, -50%);
+            filter: invert(1);
         }
 
         .vtm-card::after {
@@ -677,6 +679,12 @@
                         </select>
                     </div>
                     <div class="filter-group">
+                        <label for="filterSource">Filtrar Fuente:</label>
+                        <select id="filterSource" onchange="filterCatalogCards()">
+                            <option value="all">Todas las Fuentes</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
                         <label for="searchCard">Buscar Poder:</label>
                         <input type="text" id="searchCard" placeholder="Nombre o palabra clave..." oninput="filterCatalogCards()">
                     </div>
@@ -689,7 +697,7 @@
             <div class="builder-top-bar">
                 <div>
                     <h3 style="font-family: 'Cinzel', serif; color: var(--accent-gold);">Arma el mazo de tu personaje</h3>
-                    <p style="font-size: 0.85rem; color: var(--text-muted);">Filtra por disciplina o nivel para encontrar los poderes rápidamente y marcarlos.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Filtra por disciplina, nivel o fuente para encontrar los poderes rápidamente y marcarlos.</p>
                 </div>
                 <div class="btn-group">
                     <button type="button" onclick="selectAllBuilder(true)">Seleccionar Visibles</button>
@@ -715,6 +723,12 @@
                         <option value="3">Nivel 3</option>
                         <option value="4">Nivel 4</option>
                         <option value="5">Nivel 5</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="builderFilterSource">Filtrar Fuente:</label>
+                    <select id="builderFilterSource" onchange="filterBuilderList()">
+                        <option value="all">Todas las Fuentes</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -754,9 +768,6 @@
             'protean': 'Protean_symbol.png',
             'alquimia de sangre débil': 'Alchemy_symbol.png'
         };
-
-        // Cambia esto si tu archivo de logo rojo tiene otro nombre en /iconos/
-        const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo.png'; 
 
         function initTheme() {
             const savedTheme = localStorage.getItem('vtm-theme');
@@ -852,9 +863,14 @@
 
         function populateFilters(data) {
             const disciplinesSet = new Set();
+            const sourcesSet = new Set();
+
             data.forEach(row => {
                 const disc = row['Disciplina'] || row['DISCIPLINA'];
                 if (disc) disciplinesSet.add(disc.trim());
+
+                const source = row['Fuente_Libro'] || row['Fuente'];
+                if (source && source.trim() !== '-') sourcesSet.add(source.trim());
             });
 
             const selectDisc = document.getElementById('filterDiscipline');
@@ -871,6 +887,21 @@
                 opt2.textContent = disc;
                 builderDisc.appendChild(opt2);
             });
+
+            const selectSource = document.getElementById('filterSource');
+            const builderSource = document.getElementById('builderFilterSource');
+
+            Array.from(sourcesSet).sort().forEach(src => {
+                const opt1 = document.createElement('option');
+                opt1.value = src.toLowerCase();
+                opt1.textContent = src;
+                selectSource.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = src.toLowerCase();
+                opt2.textContent = src;
+                builderSource.appendChild(opt2);
+            });
         }
 
         function populateBuilderList(data) {
@@ -881,6 +912,7 @@
                 const name = row['Nombre Poder'] || row['Nombre'] || 'Sin Nombre';
                 const discipline = row['Disciplina'] || 'General';
                 const level = (row['Nivel'] || '1').trim();
+                const source = (row['Fuente_Libro'] || row['Fuente'] || 'V5').trim();
                 const uniqueId = `power_${index}`;
                 const isChecked = selectedCharacterPowers.has(name) ? 'checked' : '';
 
@@ -888,13 +920,14 @@
                 item.className = 'builder-row-item';
                 item.setAttribute('data-disc', discipline.toLowerCase());
                 item.setAttribute('data-level', level);
+                item.setAttribute('data-source', source.toLowerCase());
                 item.setAttribute('data-name', name.toLowerCase());
 
                 item.innerHTML = `
                     <label class="builder-item" for="${uniqueId}" style="width: 100%; margin: 0;">
                         <div class="builder-item-left">
                             <input type="checkbox" id="${uniqueId}" value="${name}" ${isChecked} onchange="toggleBuilderPower('${name}', this.checked)">
-                            <span><strong>${name}</strong></span>
+                            <span><strong>${name}</strong> <span style="font-size:0.75rem; color:var(--text-muted);">(${source})</span></span>
                         </div>
                         <div>
                             <span class="builder-badge-disc">${discipline} (Nivel ${level})</span>
@@ -908,19 +941,22 @@
         function filterBuilderList() {
             const discFilter = document.getElementById('builderFilterDisc').value;
             const lvlFilter = document.getElementById('builderFilterLvl').value;
+            const sourceFilter = document.getElementById('builderFilterSource').value;
             const searchFilter = document.getElementById('builderSearch').value.toLowerCase().trim();
 
             const rows = document.querySelectorAll('.builder-row-item');
             rows.forEach(row => {
                 const disc = row.getAttribute('data-disc');
                 const level = row.getAttribute('data-level');
+                const source = row.getAttribute('data-source');
                 const name = row.getAttribute('data-name');
 
                 const matchesDisc = (discFilter === 'all' || disc.includes(discFilter));
                 const matchesLvl = (lvlFilter === 'all' || level === lvlFilter);
+                const matchesSource = (sourceFilter === 'all' || source.includes(sourceFilter));
                 const matchesSearch = (!searchFilter || name.includes(searchFilter));
 
-                if (matchesDisc && matchesLvl && matchesSearch) {
+                if (matchesDisc && matchesLvl && matchesSource && matchesSearch) {
                     row.style.display = 'block';
                 } else {
                     row.style.display = 'none';
@@ -1047,6 +1083,7 @@
             card.className = 'vtm-card';
             card.setAttribute('data-discipline', discKey);
             card.setAttribute('data-level', level);
+            card.setAttribute('data-source', sourceBook.toLowerCase());
             card.setAttribute('data-name', name.toLowerCase());
 
             card.innerHTML = `
@@ -1083,6 +1120,7 @@
 
             const selectedDisc = document.getElementById('filterDiscipline').value;
             const selectedLevel = document.getElementById('filterLevel').value;
+            const selectedSource = document.getElementById('filterSource').value;
             const searchQuery = document.getElementById('searchCard').value.toLowerCase();
 
             const container = document.getElementById('cardsContainer');
@@ -1091,14 +1129,16 @@
             const filteredData = allDisciplinesData.filter(row => {
                 const discipline = (row['Disciplina'] || 'General').toLowerCase().trim();
                 let level = (row['Nivel'] || '1').trim();
+                const source = (row['Fuente_Libro'] || row['Fuente'] || 'V5').toLowerCase().trim();
                 const name = (row['Nombre Poder'] || row['Nombre'] || '').toLowerCase();
                 const fullText = Object.values(row).join(' ').toLowerCase();
 
                 const matchesDisc = (selectedDisc === 'all' || discipline.includes(selectedDisc));
                 const matchesLevel = (selectedLevel === 'all' || level === selectedLevel);
+                const matchesSource = (selectedSource === 'all' || source.includes(selectedSource));
                 const matchesSearch = (!searchQuery || name.includes(searchQuery) || fullText.includes(searchQuery));
 
-                return matchesDisc && matchesLevel && matchesSearch;
+                return matchesDisc && matchesLevel && matchesSource && matchesSearch;
             });
 
             filteredData.forEach(row => {
@@ -1139,8 +1179,8 @@
                 const backCard = document.createElement('div');
                 backCard.className = 'vtm-card-back';
                 backCard.innerHTML = `
-                    <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
-                    <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
+                    <img src="./iconos/VTM-Logo-Largo.png" class="back-top-logo" alt="Logo">
+                    <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh">
                 `;
                 container.appendChild(backCard);
             }
