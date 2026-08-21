@@ -418,7 +418,7 @@
             pointer-events: none;
         }
 
-        /* MARCA DE AGUA CON OPACIDAD SUBIDA A 0.15 PARA MEJOR VISIBILIDAD */
+        /* MARCA DE AGUA CON OPACIDAD 0.15 */
         .discipline-watermark-img {
             position: absolute;
             top: 50%;
@@ -584,7 +584,7 @@
             display: none;
         }
 
-        /* Estilos de Impresión A4 para intercalar anversos y reversos */
+        /* Estilos de Impresión A4 técnicos */
         @media print {
             body {
                 background: white !important;
@@ -656,17 +656,17 @@
             </div>
         </header>
 
-        <!-- Selector de Modo / Pestañas -->
+        <!-- Selector de Modo / Pestañas y Botones de Impresión Técnica -->
         <div class="no-print-controls">
             <div class="mode-tabs">
                 <button class="tab-btn active" id="tabCatalog" onclick="switchMode('catalog')">📚 Catálogo General (Filtros)</button>
                 <button class="tab-btn" id="tabBuilder" onclick="switchMode('builder')">🧙‍♂️ Mazo Personalizado de Personaje</button>
-                <button class="tab-btn btn-secondary" id="tabBacks" onclick="switchMode('backs')" style="margin-left: auto;">🎴 Generar Trasera Genérica</button>
             </div>
 
-            <!-- BOTÓN DE IMPRESIÓN INTERCALADA -->
-            <div id="printContainer" style="margin-bottom: 15px; text-align: right;">
-                <button class="btn-secondary" onclick="prepararE ImpresionIntercalada()">🖨️ Imprimir Cartas a Doble Cara (Intercaladas)</button>
+            <!-- BOTONES DE IMPRESIÓN TÉCNICOS -->
+            <div style="margin-bottom: 15px; display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;">
+                <button class="btn-secondary" onclick="imprimirSimplex()">🖨️ IMPRIMIR ANVERSOS (SIMPLEX)</button>
+                <button class="btn-secondary" onclick="imprimirDuplex()">🖨️ IMPRIMIR DÚPLEX (ANVERSO/REVERSO)</button>
             </div>
 
             <!-- MODO CATÁLOGO GENERAL -->
@@ -850,11 +850,9 @@
             const builderSec = document.getElementById('builderSection');
             const tabCat = document.getElementById('tabCatalog');
             const tabBld = document.getElementById('tabBuilder');
-            const tabBck = document.getElementById('tabBacks');
 
             tabCat.classList.remove('active');
             tabBld.classList.remove('active');
-            tabBck.classList.remove('active');
 
             if (mode === 'catalog') {
                 catalogSec.style.display = 'block';
@@ -864,10 +862,6 @@
                 catalogSec.style.display = 'none';
                 builderSec.style.display = 'block';
                 tabBld.classList.add('active');
-            } else if (mode === 'backs') {
-                catalogSec.style.display = 'none';
-                builderSec.style.display = 'none';
-                tabBck.classList.add('active');
             }
             renderActiveMode();
         }
@@ -1012,8 +1006,6 @@
                 filterCatalogCards();
             } else if (currentMode === 'builder') {
                 renderSelectedBuilderCards();
-            } else if (currentMode === 'backs') {
-                renderCardBacks();
             }
         }
 
@@ -1163,50 +1155,19 @@
             });
         }
 
-        function renderCardBacks() {
-            const container = document.getElementById('cardsContainer');
-            container.innerHTML = '';
-
-            let countToRender = allDisciplinesData.length;
-            if (currentMode === 'backs') {
-                if (selectedCharacterPowers.size > 0) {
-                    countToRender = selectedCharacterPowers.size;
-                } else if (document.querySelectorAll('.vtm-card').length > 0) {
-                    countToRender = document.querySelectorAll('.vtm-card').length;
-                }
-            }
-
-            for (let i = 0; i < countToRender; i++) {
-                const backCard = document.createElement('div');
-                backCard.className = 'vtm-card-back';
-                backCard.innerHTML = `
-                    <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
-                    <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
-                `;
-                container.appendChild(backCard);
-            }
-        }
-
-        /* FUNCIÓN DE IMPRESIÓN INTERCALADA AUTOMÁTICA (ANVERSO -> REVERSO POR BLOQUES DE 9) */
-        function prepararEImpresionIntercalada() {
-            const container = document.getElementById('cardsContainer');
-            
-            // Obtener las cartas activas según el modo actual (Catálogo visible o Mazo de personaje)
-            let cartasARenderizar = [];
-            
+        function obtenerCartasActivas() {
             if (currentMode === 'builder') {
-                cartasARenderizar = allDisciplinesData.filter(row => {
+                return allDisciplinesData.filter(row => {
                     const name = row['Nombre Poder'] || row['Nombre'] || '';
                     return selectedCharacterPowers.has(name);
                 });
             } else {
-                // Si estamos en catálogo, cogemos las que están filtradas actualmente en pantalla
                 const selectedDisc = document.getElementById('filterDiscipline').value;
                 const selectedLevel = document.getElementById('filterLevel').value;
                 const selectedSource = document.getElementById('filterSource').value;
                 const searchQuery = document.getElementById('searchCard').value.toLowerCase();
 
-                cartasARenderizar = allDisciplinesData.filter(row => {
+                return allDisciplinesData.filter(row => {
                     const discipline = (row['Disciplina'] || 'General').toLowerCase().trim();
                     let level = (row['Nivel'] || '1').trim();
                     const source = (row['Fuente_Libro'] || row['Fuente'] || 'V5').toLowerCase().trim();
@@ -1221,30 +1182,47 @@
                     return matchesDisc && matchesLevel && matchesSource && matchesSearch;
                 });
             }
+        }
 
-            if (cartasARenderizar.length === 0) {
+        /* FUNCIÓN TÉCNICA 1: IMPRESIÓN SIMPLEX (SOLO ANVERSOS) */
+        function imprimirSimplex() {
+            const cartas = obtenerCartasActivas();
+            if (cartas.length === 0) {
                 alert("No hay cartas seleccionadas o visibles para imprimir.");
                 return;
             }
 
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = '';
+            cartas.forEach(row => container.appendChild(createCardElement(row)));
+
+            setTimeout(() => { window.print(); }, 300);
+        }
+
+        /* FUNCIÓN TÉCNICA 2: IMPRESIÓN DÚPLEX (INTERCALADO ANVERSO / REVERSO) */
+        function imprimirDuplex() {
+            const cartas = obtenerCartasActivas();
+            if (cartas.length === 0) {
+                alert("No hay cartas seleccionadas o visibles para imprimir.");
+                return;
+            }
+
+            const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
             const chunkSize = 9;
 
-            // Agrupar en bloques de 9 para intercalar anverso y reverso por página
-            for (let i = 0; i < cartasARenderizar.length; i += chunkSize) {
-                const chunk = cartasARenderizar.slice(i, i + chunkSize);
+            for (let i = 0; i < cartas.length; i += chunkSize) {
+                const chunk = cartas.slice(i, i + chunkSize);
 
-                // 1. Renderizar los Anversos del bloque (máximo 9)
-                chunk.forEach(row => {
-                    container.appendChild(createCardElement(row));
-                });
+                // 1. Renderizar Anversos del bloque
+                chunk.forEach(row => container.appendChild(createCardElement(row)));
 
-                // Rellenar espacios vacíos si el bloque tiene menos de 9 para mantener la estructura simétrica de la página
+                // Rellenar espacios vacíos si el bloque tiene menos de 9 cartas
                 const resto = chunkSize - chunk.length;
                 for (let r = 0; r < resto; r++) {
                     const emptyCard = document.createElement('div');
                     emptyCard.className = 'vtm-card';
-                    emptyCard.style.visibility = 'hidden'; // Espacio invisible para mantener la retícula 3x3
+                    emptyCard.style.visibility = 'hidden';
                     container.appendChild(emptyCard);
                 }
 
@@ -1253,7 +1231,7 @@
                 break1.className = 'page-break';
                 container.appendChild(break1);
 
-                // 2. Renderizar las Traseras (Reversos) exactas para este bloque
+                // 2. Renderizar Reversos correspondientes al bloque
                 for (let j = 0; j < chunkSize; j++) {
                     const backCard = document.createElement('div');
                     backCard.className = 'vtm-card-back';
@@ -1270,10 +1248,7 @@
                 container.appendChild(break2);
             }
 
-            // Lanzar la ventana de impresión del navegador
-            setTimeout(() => {
-                window.print();
-            }, 300);
+            setTimeout(() => { window.print(); }, 300);
         }
     </script>
 </body>
