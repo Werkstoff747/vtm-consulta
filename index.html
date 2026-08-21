@@ -18,7 +18,7 @@
 
     <style>
         /* =========================================================
-           VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
+            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
            ========================================================= */
 
         /* MODO NOCHE / OSCURO (Predeterminado - "Medianoche Vampírica") */
@@ -60,7 +60,7 @@
             --text-main: #1f1f22;
             --text-muted: #555459;
             --tag-bg: #f2f0eb;
-            --input-bg: #ffffff;           
+            --input-bg: #ffffff;            
             
             --header-bg: #2b0408;
             --header-border: #7a0000;
@@ -225,8 +225,34 @@
 
         .source-select {
             flex: 1;
-            min-width: 200px;
+            min-width: 180px;
             cursor: pointer;
+        }
+
+        /* ESTILO PARA EL BOTÓN DE CARTAS EN LA BARRA SUPERIOR */
+        .btn-cartas-nav {
+            font-family: 'Cinzel', serif;
+            background-color: var(--accent-gold);
+            color: #111115;
+            border: 1px solid var(--accent-red);
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+
+        .btn-cartas-nav:hover {
+            background-color: var(--accent-red);
+            color: #ffffff;
+            transform: translateY(-2px);
         }
 
         .search-box input:focus, .source-select:focus {
@@ -638,7 +664,7 @@
         }
 
         .scroll-top-btn {
-            display: none; /* Se muestra con JS al hacer scroll */
+            display: none;
         }
 
         .scroll-top-btn:hover, .dice-float-btn:hover {
@@ -647,7 +673,7 @@
         }
 
         /* =========================================================
-           ESTILOS DEL POPUP (MODAL) DEL LANZADOR DE DADOS
+            ESTILOS DEL POPUP (MODAL) DEL LANZADOR DE DADOS
            ========================================================= */
         .dice-modal-overlay {
             display: none;
@@ -693,7 +719,6 @@
             color: var(--accent-crimson);
         }
 
-        /* Estilos internos del lanzador dentro del popup */
         .roller-header {
             display: flex;
             align-items: center;
@@ -856,6 +881,11 @@
                 <option value="all">📚 Todos los libros (Fuentes)</option>
             </select>
 
+            <!-- ENLACE AL GENERADOR DE CARTAS -->
+            <a href="cartas.html" class="btn-cartas-nav" title="Generador de Cartas Imprimibles">
+                🎴 Cartas V5
+            </a>
+
             <div class="level-filter-container">
                 <span class="level-label">Nivel:</span>
                 <button class="level-btn active" data-level="all" onclick="filterLevel('all')">∞</button>
@@ -993,7 +1023,6 @@
         }
     }
 
-    // Funciones del Popup del Lanzador de Dados
     function openDiceModal() {
         document.getElementById('diceModal').style.display = 'flex';
     }
@@ -1002,7 +1031,6 @@
         document.getElementById('diceModal').style.display = 'none';
     }
 
-    // Cerrar modal al hacer clic fuera del contenido
     window.addEventListener('click', (event) => {
         const modal = document.getElementById('diceModal');
         if (event.target === modal) {
@@ -1094,7 +1122,7 @@
         const disciplinas = [...new Set(datos.map(item => item.disciplina).filter(Boolean))].sort();
         const container = document.getElementById('filterContainer');
         
-        disciplinas.forEach(disc => {
+        disciplinesSet = disciplinas.forEach(disc => {
             if (!disc || disc.toLowerCase() === 'disciplina') return;
 
             const btn = document.createElement('button');
@@ -1264,7 +1292,6 @@
         applyFilters();
     }
 
-    // Lógica del Lanzador de Dados en el Popup
     function lanzarDadosV5() {
         let pool = parseInt(document.getElementById('dicePool').value) || 0;
         let hunger = parseInt(document.getElementById('hungerLevel').value) || 0;
