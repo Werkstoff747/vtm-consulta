@@ -30,8 +30,6 @@
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
             --card-width: 63mm;
             --card-height: 88mm;
-            /* Filtro para convertir blanco a rojo #8b0000 exacto */
-            --red-filter: invert(15%) sepia(93%) saturate(5833%) hue-rotate(357deg) brightness(88%) contrast(117%);
         }
 
         body.light-mode {
@@ -361,7 +359,7 @@
             break-inside: avoid;
         }
 
-        /* TRASERA DE CARTA (Logo arriba, Ank centrado, texto plano sin sombras) */
+        /* TRASERA DE CARTA OPTIMIZADA AL MÁXIMO ANCHO Y IMPACTO */
         .vtm-card-back {
             width: var(--card-width);
             min-width: var(--card-width);
@@ -369,13 +367,13 @@
             height: var(--card-height);
             min-height: var(--card-height);
             max-height: var(--card-height);
-            background-color: var(--card-bg);
+            background-color: white;
             border: 4px solid var(--accent-red);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            padding: 6mm 4mm;
+            padding: 7mm 3mm;
             position: relative;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
@@ -392,30 +390,29 @@
         }
 
         .back-top-logo {
-            width: 32mm;
+            width: 48mm; /* Ocupa el máximo ancho posible de la carta */
             height: auto;
             object-fit: contain;
-            filter: var(--red-filter);
             position: relative;
             z-index: 1;
         }
 
         .back-center-ank {
-            width: 30mm;
-            height: 30mm;
+            width: 36mm; /* Ankh de disciplina más grande y protagonista */
+            height: 36mm;
             object-fit: contain;
-            filter: var(--red-filter);
             position: relative;
             z-index: 1;
         }
 
         .back-bottom-discipline {
             font-family: 'Cinzel', serif;
-            font-size: 0.6rem;
+            font-size: 0.78rem; /* Letra más grande, clara e impactante */
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--accent-gold);
-            font-weight: 700;
+            letter-spacing: 1.2px;
+            color: var(--accent-red); /* Tonalidad corporativa fuerte para lectura perfecta */
+            font-weight: 950;
+            text-align: center;
             position: relative;
             z-index: 1;
         }
@@ -655,7 +652,7 @@
                 <button class="tab-btn btn-secondary" id="tabBacks" onclick="switchMode('backs')" style="margin-left: auto;">🎴 Generar Traseras por Disciplina</button>
             </div>
 
-            <!-- BOTÓN EXCLUSIVO DE IMPRESIÓN DE TRASERAS (Aparece solo en modo traseras) -->
+            <!-- BOTÓN EXCLUSIVO DE IMPRESIÓN DE TRASERAS -->
             <div id="printBacksContainer" style="display: none; margin-bottom: 15px; text-align: right;">
                 <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir Traseras de Cartas</button>
             </div>
@@ -766,6 +763,9 @@
             'protean': 'Protean_symbol.png',
             'alquimia de sangre débil': 'Alchemy_symbol.png'
         };
+
+        // Cambia esto por el nombre exacto de tu archivo de logo rojo cuando lo subas a /iconos/
+        const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo-Rojo.png'; 
 
         function initTheme() {
             const savedTheme = localStorage.getItem('vtm-theme');
@@ -1155,7 +1155,7 @@
                 const backCard = document.createElement('div');
                 backCard.className = 'vtm-card-back';
                 backCard.innerHTML = `
-                    <img src="./iconos/VTM-Logo-Largo.png" class="back-top-logo" alt="Logo">
+                    <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
                     <img src="./iconos/${archivoIcono}" class="back-center-ank" alt="${discipline}" onerror="this.src='./iconos/VTM-Ank.png'">
                     <div class="back-bottom-discipline">${discipline}</div>
                 `;
