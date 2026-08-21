@@ -63,7 +63,6 @@
             --text-muted: #555555;
         }
 
-        /* Refuerzo en Print-Friendly para la cabecera de carta: sin fondo, texto en rojo de acento y en negrita destacada */
         body.print-friendly .card-header {
             background: transparent !important;
             border-bottom: 1.5px solid var(--accent-red) !important;
@@ -583,14 +582,7 @@
             letter-spacing: 0.3px;
         }
 
-        .card-discipline-icon-img {
-            width: 6.5mm;
-            height: 6.5mm;
-            object-fit: contain;
-            opacity: 1;
-        }
-
-        /* BOTÓN FLOTANTE IDÉNTICO AL INDEX */
+        /* BOTÓN FLOTANTE DEFINITIVO (SVG) */
         .floating-nav-container {
             position: fixed;
             bottom: 25px;
@@ -602,23 +594,19 @@
         }
 
         .floating-btn {
-                width: 48px;
-                height: 48px;
-                border-radius: 50%;
-                background-color: var(--accent-red);
-                border: 1px solid var(--accent-crimson);
-                color: #ffffff;
-                font-size: 1.6rem; /* Tamaño ajustado */
-                font-family: sans-serif; /* Forzamos fuente neutra */
-                font-weight: 300; /* Trazo fino */
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-                transition: all 0.2s ease;
-                text-decoration: none;
-                line-height: 1;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: var(--accent-red);
+            border: 1px solid var(--accent-crimson);
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s ease;
+            text-decoration: none;
         }
 
         .floating-btn:hover {
@@ -708,7 +696,7 @@
                 <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--accent-gold);">
                     <label for="printStyleSelect" style="font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--accent-gold); white-space: nowrap; margin-bottom: 0;">Estilo Impresión:</label>
                     <select id="printStyleSelect" onchange="togglePrintStyle(this.value)" style="padding: 6px 10px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--accent-gold); border-radius: 4px; cursor: pointer;">
-                        <option value="printfriendly">Print-Friendly (Claro / Ahorro de Tinta)</option>
+                        <option value="printfriendly" selected>Print-Friendly (Claro / Ahorro de Tinta)</option>
                         <option value="professional">Profesional (Oscuro)</option>
                     </select>
                 </div>
@@ -806,10 +794,20 @@
         <div id="cardsContainer" class="cards-grid"></div>
     </div>
 
-    <!-- Botón flotante idéntico al del index -->
+    <!-- Botón flotante definitivo (SVG) -->
     <div class="floating-nav-container">
-        <a href="index.html" class="floating-btn" title="Volver al Compendio Principal">←</a>
-        <button class="floating-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Subir Arriba">↑</button>
+        <a href="index.html" class="floating-btn" title="Volver al Compendio Principal">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </a>
+        <button class="floating-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Subir Arriba">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5"></line>
+                <polyline points="5 12 12 5 19 12"></polyline>
+            </svg>
+        </button>
     </div>
 
     <script>
