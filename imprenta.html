@@ -231,19 +231,20 @@
             pointer-events: none;
         }
 
-        /* REVERSO DE CARTA */
+        /* REVERSO DE CARTA (Forzado a blanco sobre fondo negro) */
         .vtm-card-back {
             width: var(--card-w);
             height: var(--card-h);
             position: absolute;
             top: var(--bleed);
             left: var(--bleed);
-            background: #000 !important;
+            background: var(--bg-dark) !important;
             border: 3px solid var(--border-red);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
         .vtm-card-back::after {
             content: "";
@@ -252,7 +253,11 @@
             border: 1px solid var(--border-gold);
             pointer-events: none;
         }
-        .back-logo { width: 50mm; filter: invert(1); opacity: 0.8; }
+        .back-logo { 
+            width: 50mm; 
+            filter: invert(1) brightness(2); /* Forzamos que la imagen sea blanca nítida */
+            opacity: 0.9; 
+        }
 
         /* ELEMENTOS INTERNOS DE LA CARTA */
         .discipline-watermark-img {
