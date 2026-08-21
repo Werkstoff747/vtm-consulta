@@ -359,7 +359,7 @@
             break-inside: avoid;
         }
 
-        /* TRASERA DE CARTA OPTIMIZADA AL MÁXIMO ANCHO Y IMPACTO */
+        /* TRASERA GENÉRICA (Logo superior ocupando máximo ancho + Ank centrado, sin sombras) */
         .vtm-card-back {
             width: var(--card-width);
             min-width: var(--card-width);
@@ -372,8 +372,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            padding: 7mm 3mm;
+            justify-content: center;
             position: relative;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
@@ -390,31 +389,23 @@
         }
 
         .back-top-logo {
-            width: 48mm; /* Ocupa el máximo ancho posible de la carta */
+            width: 52mm; /* Máximo ancho posible dentro de los márgenes de la carta */
             height: auto;
             object-fit: contain;
-            position: relative;
-            z-index: 1;
+            position: absolute;
+            top: 10mm;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .back-center-ank {
-            width: 36mm; /* Ankh de disciplina más grande y protagonista */
-            height: 36mm;
+            width: 32mm; /* Ank perfectamente centrado */
+            height: 32mm;
             object-fit: contain;
-            position: relative;
-            z-index: 1;
-        }
-
-        .back-bottom-discipline {
-            font-family: 'Cinzel', serif;
-            font-size: 0.78rem; /* Letra más grande, clara e impactante */
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: var(--accent-red); /* Tonalidad corporativa fuerte para lectura perfecta */
-            font-weight: 950;
-            text-align: center;
-            position: relative;
-            z-index: 1;
+            position: absolute;
+            top: 52%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .vtm-card::after {
@@ -649,7 +640,7 @@
             <div class="mode-tabs">
                 <button class="tab-btn active" id="tabCatalog" onclick="switchMode('catalog')">📚 Catálogo General (Filtros)</button>
                 <button class="tab-btn" id="tabBuilder" onclick="switchMode('builder')">🧙‍♂️ Mazo Personalizado de Personaje</button>
-                <button class="tab-btn btn-secondary" id="tabBacks" onclick="switchMode('backs')" style="margin-left: auto;">🎴 Generar Traseras por Disciplina</button>
+                <button class="tab-btn btn-secondary" id="tabBacks" onclick="switchMode('backs')" style="margin-left: auto;">🎴 Generar Trasera Genérica</button>
             </div>
 
             <!-- BOTÓN EXCLUSIVO DE IMPRESIÓN DE TRASERAS -->
@@ -764,8 +755,8 @@
             'alquimia de sangre débil': 'Alchemy_symbol.png'
         };
 
-        // Cambia esto por el nombre exacto de tu archivo de logo rojo cuando lo subas a /iconos/
-        const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo-Rojo.png'; 
+        // Cambia esto si tu archivo de logo rojo tiene otro nombre en /iconos/
+        const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo.png'; 
 
         function initTheme() {
             const savedTheme = localStorage.getItem('vtm-theme');
@@ -1135,32 +1126,24 @@
             const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
 
-            let dataToRender = [];
+            let countToRender = allDisciplinesData.length;
             if (currentMode === 'backs') {
                 if (selectedCharacterPowers.size > 0) {
-                    dataToRender = allDisciplinesData.filter(row => {
-                        const name = row['Nombre Poder'] || row['Nombre'] || '';
-                        return selectedCharacterPowers.has(name);
-                    });
-                } else {
-                    dataToRender = allDisciplinesData;
+                    countToRender = selectedCharacterPowers.size;
+                } else if (document.querySelectorAll('.vtm-card').length > 0) {
+                    countToRender = document.querySelectorAll('.vtm-card').length;
                 }
             }
 
-            dataToRender.forEach(row => {
-                const discipline = row['Disciplina'] || 'General';
-                const discKey = discipline.toLowerCase().trim();
-                const archivoIcono = ICONOS_MAP[discKey] || 'VTM-Ank.png';
-
+            for (let i = 0; i < countToRender; i++) {
                 const backCard = document.createElement('div');
                 backCard.className = 'vtm-card-back';
                 backCard.innerHTML = `
                     <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
-                    <img src="./iconos/${archivoIcono}" class="back-center-ank" alt="${discipline}" onerror="this.src='./iconos/VTM-Ank.png'">
-                    <div class="back-bottom-discipline">${discipline}</div>
+                    <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
                 `;
                 container.appendChild(backCard);
-            });
+            }
         }
     </script>
 </body>
