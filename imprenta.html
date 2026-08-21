@@ -201,12 +201,12 @@
             height: var(--full-h);
             background: #000 !important;
             position: relative;
-            outline: 0.1mm solid #444; /* Guía de corte visual */
+            outline: 0.1mm solid #444;
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
-        /* CARTA DE LUJO */
+        /* CARTA DE LUJO (MEDIDAS ORIGINALES) */
         .vtm-card {
             width: var(--card-w);
             height: var(--card-h);
@@ -231,21 +231,23 @@
             pointer-events: none;
         }
 
-        /* REVERSO DE CARTA (Forzado a blanco sobre fondo negro) */
+        /* TRASERA ORIGINAL (MEDIDAS Y ESTRUCTURA PRECISAS) */
         .vtm-card-back {
             width: var(--card-w);
             height: var(--card-h);
             position: absolute;
             top: var(--bleed);
             left: var(--bleed);
-            background: var(--bg-dark) !important;
+            background-color: var(--bg-dark) !important;
             border: 3px solid var(--border-red);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
+            overflow: hidden;
         }
+
         .vtm-card-back::after {
             content: "";
             position: absolute;
@@ -253,10 +255,25 @@
             border: 1px solid var(--border-gold);
             pointer-events: none;
         }
-        .back-logo { 
-            width: 50mm; 
-            filter: invert(1) brightness(2); /* Forzamos que la imagen sea blanca nítida */
-            opacity: 0.9; 
+
+        .back-top-logo {
+            width: 52mm;
+            height: auto;
+            object-fit: contain;
+            position: absolute;
+            top: 10mm;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .back-center-ank {
+            width: 32mm;
+            height: 32mm;
+            object-fit: contain;
+            position: absolute;
+            top: 52%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         /* ELEMENTOS INTERNOS DE LA CARTA */
@@ -415,6 +432,8 @@
             'presencia': 'Presence_symbol.png', 'protean': 'Protean_symbol.png', 'alquimia de sangre débil': 'Alchemy_symbol.png'
         };
 
+        const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo.png';
+
         window.onload = function() {
             Papa.parse(CSV_URL, {
                 download: true, header: true, skipEmptyLines: true,
@@ -572,7 +591,11 @@
             for (let i = 0; i < total; i++) {
                 const wrap = document.createElement('div');
                 wrap.className = 'print-card-wrapper';
-                wrap.innerHTML = `<div class="vtm-card-back"><img src="./iconos/VTM-Logo-Largo.png" class="back-logo"></div>`;
+                wrap.innerHTML = `
+                    <div class="vtm-card-back">
+                        <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
+                        <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
+                    </div>`;
                 container.appendChild(wrap);
             }
             setTimeout(() => window.print(), 300);
