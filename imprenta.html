@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Edición Imprenta - Disciplinas V5</title>
+    <title>Versión Imprenta - Disciplinas V5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root {
@@ -13,19 +14,19 @@
             --full-h: 94mm;
         }
 
-        body { background: #222; margin: 0; padding: 10mm; display: flex; justify-content: center; }
-        
-        #printArea { display: grid; grid-template-columns: repeat(3, var(--full-w)); justify-content: center; }
+        body { background: #333; margin: 0; padding: 10mm; display: flex; flex-wrap: wrap; justify-content: center; }
 
+        /* Contenedor con Sangrado (Bleed) */
         .print-card-wrapper {
             width: var(--full-w);
             height: var(--full-h);
             background: black;
             position: relative;
-            outline: 0.1mm solid #444; /* Guía visual */
+            outline: 0.1mm solid #555;
+            page-break-inside: avoid;
         }
 
-        /* La carta negra */
+        /* Estilos de carta adaptados a negro */
         .vtm-card {
             width: var(--card-width);
             height: var(--card-height);
@@ -34,15 +35,16 @@
             left: var(--bleed);
             background: black;
             color: #ddd;
-            padding: 3mm;
+            padding: 3.5mm;
             display: flex;
             flex-direction: column;
-            border: 1px solid #333;
+            border: 1px solid #222;
         }
 
-        /* Ajustes de estilo para el fondo negro */
-        .card-title { color: #c5a059; font-weight: bold; text-align: center; font-size: 0.9rem; }
-        .card-body { font-size: 0.7rem; margin-top: 2mm; text-align: justify; color: #bbb; }
+        .card-title { color: #c5a059; font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; text-align: center; margin-bottom: 2mm; }
+        .card-body { font-family: 'EB Garamond', serif; font-size: 0.7rem; color: #ccc; text-align: justify; }
+        .card-costs { color: #c5a059; font-size: 0.6rem; margin-top: auto; border-top: 1px solid #333; padding-top: 2mm; }
+        .discipline-watermark-img { opacity: 0.08; width: 30mm; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 
         @media print {
             body { background: white; padding: 0; }
@@ -52,14 +54,19 @@
 </head>
 <body>
 
-    <div id="printArea"></div>
+    <div id="printArea" style="display: grid; grid-template-columns: repeat(3, var(--full-w)); gap: 0;"></div>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
+        const ICONOS_MAP = {
+            'animalismo': 'Animalism_symbol.png', 'auspex': 'Auspex_symbol.png', 'celeridad': 'Celerity_symbol.png',
+            'dominación': 'Dominate_symbol.png', 'fortaleza': 'Fortitude_symbol.png', 'hechicería de sangre': 'Blood_Sorcery_symbol.png',
+            'ofuscación': 'Obfuscate_symbol.png', 'olvido': 'Oblivion_symbol.png', 'potencia': 'Potence_symbol.png',
+            'presencia': 'Presence_symbol.png', 'protean': 'Protean_symbol.png', 'alquimia de sangre débil': 'Alchemy_symbol.png'
+        };
 
         Papa.parse(CSV_URL, {
-            download: true, header: true, skipEmptyLines: true,
-            complete: function(results) {
+            download: true, header: true, complete: function(results) {
                 const container = document.getElementById('printArea');
                 results.data.forEach(row => {
                     if (!(row['Nombre Poder'] || row['Nombre'])) return;
@@ -67,11 +74,16 @@
                     const wrapper = document.createElement('div');
                     wrapper.className = 'print-card-wrapper';
                     
+                    const disc = (row['Disciplina'] || 'General').toLowerCase().trim();
+                    const icon = ICONOS_MAP[disc] ? `<img src="./iconos/${ICONOS_MAP[disc]}" class="discipline-watermark-img">` : '';
+
                     const card = document.createElement('div');
                     card.className = 'vtm-card';
                     card.innerHTML = `
+                        ${icon}
                         <div class="card-title">${row['Nombre Poder'] || row['Nombre']}</div>
-                        <div class="card-body">${row['Descripción'] || row['Descripción'] || ''}</div>
+                        <div class="card-body">${row['Descripción'] || ''}</div>
+                        <div class="card-costs">Coste: ${row['Coste'] || 'Ninguno'} | Duración: ${row['Duración'] || 'Escena'}</div>
                     `;
                     
                     wrapper.appendChild(card);
