@@ -155,11 +155,26 @@
             pointer-events: none;
         }
 
-        /* Cabecera de la carta */
+        /* Marca de agua translúcida en el centro de la carta */
+        .discipline-watermark-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 35mm;
+            height: 35mm;
+            object-fit: contain;
+            opacity: 0.06;
+            pointer-events: none;
+            z-index: 0;
+            user-select: none;
+        }
+
+        /* Cabecera de la disciplina (con menos peso visual) */
         .card-header {
             background: var(--accent-blood);
             color: white;
-            padding: 3px 6px;
+            padding: 2.5px 6px;
             border-radius: 3px;
             text-align: center;
             margin-bottom: 2mm;
@@ -169,14 +184,14 @@
 
         .card-discipline {
             font-family: 'Cinzel', serif;
-            font-size: 0.65rem;
+            font-size: 0.58rem; /* Tamaño reducido para quitarle protagonismo al título del poder */
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
             color: var(--accent-gold);
-            font-weight: 900;
+            font-weight: 600;
         }
 
-        /* Contenedor de Títulos */
+        /* Contenedor del Título Principal del Poder */
         .card-titles-container {
             text-align: center;
             margin-bottom: 2mm;
@@ -188,41 +203,44 @@
 
         .card-title {
             font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
+            font-size: 0.82rem; /* Protagonismo claro */
             font-weight: 700;
             color: var(--accent-blood);
             line-height: 1.15;
         }
 
-        .card-subtitle-en {
-            font-size: 0.55rem;
-            color: #555555;
-            font-style: italic;
-            opacity: 0.85;
-            margin-top: 1px;
-        }
-
-        /* Atributos (Reserva y Coste) arriba */
-        .card-attributes {
-            font-size: 0.54rem;
-            background: rgba(197, 160, 89, 0.12);
-            border: 1px solid var(--accent-gold);
-            padding: 3px 5px;
+        /* Caja de Tirada de Dados en 3 líneas ordenadas */
+        .card-roll-box {
+            font-size: 0.58rem;
+            background: rgba(139, 0, 0, 0.05);
+            border-left: 2.5px solid var(--accent-blood-vivid);
+            padding: 3px 6px;
             border-radius: 3px;
             margin-bottom: 2mm;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2px;
             position: relative;
             z-index: 1;
+            line-height: 1.25;
         }
 
-        .card-attributes div span {
+        .card-roll-line-1 {
             font-weight: bold;
-            color: var(--accent-blood);
+            color: var(--accent-blood-vivid);
         }
 
-        /* Cuerpo de la carta (Descripción amplia) */
+        .card-roll-line-2 {
+            font-style: italic;
+            color: #555555;
+            text-align: center;
+            font-size: 0.52rem;
+            margin: 1px 0;
+        }
+
+        .card-roll-line-3 {
+            font-weight: 600;
+            color: #222222;
+        }
+
+        /* Cuerpo de la carta (Descripción más grande) */
         .card-body {
             font-size: 0.62rem;
             line-height: 1.25;
@@ -234,22 +252,42 @@
             text-align: justify;
         }
 
-        /* Zona inferior: Rombo de nivel (izq) e Icono (der) alineados sobre la línea de pie */
+        /* Coste y Duración en línea */
+        .card-costs {
+            font-size: 0.56rem;
+            background: rgba(197, 160, 89, 0.12);
+            border: 1px solid var(--accent-gold);
+            padding: 3px 5px;
+            border-radius: 3px;
+            margin-bottom: 2mm;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-costs span span {
+            color: var(--accent-blood);
+            font-weight: bold;
+        }
+
+        /* Zona inferior: Rombo de nivel (izq) e Icono simétrico (der) */
         .card-footer-layout {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid var(--accent-gold);
             padding-top: 2px;
-            margin-top: 2mm;
+            margin-top: 1mm;
             position: relative;
             z-index: 1;
         }
 
         /* Rombo rojo con número blanco en negrita */
         .card-level-diamond {
-            width: 8mm;
-            height: 8mm;
+            width: 7.5mm;
+            height: 7.5mm;
             background-color: var(--accent-blood-vivid);
             border: 1px solid var(--accent-gold);
             transform: rotate(45deg);
@@ -264,11 +302,11 @@
             transform: rotate(-45deg);
             color: #ffffff;
             font-family: 'Cinzel', serif;
-            font-size: 0.6rem;
+            font-size: 0.58rem;
             font-weight: 900;
         }
 
-        /* Icono de disciplina a color completo (sin transparencia) en la esquina derecha */
+        /* Icono de disciplina simétrico al rombo (esquina inferior derecha) */
         .card-discipline-icon-img {
             width: 7.5mm;
             height: 7.5mm;
@@ -279,7 +317,7 @@
 
         /* Texto de fuente y página en el pie absoluto */
         .card-source-text {
-            font-size: 0.48rem;
+            font-size: 0.46rem;
             color: #444;
             font-family: 'Cinzel', serif;
             text-align: center;
@@ -445,12 +483,13 @@
 
             data.forEach(row => {
                 const name = row['Nombre Poder'] || row['Nombre'] || 'Sin Nombre';
-                const nameEn = row['Name'] || row['Nombre Ingles'] || '';
                 const discipline = row['Disciplina'] || 'General';
                 const level = row['Nivel'] || '1';
                 
-                const pool = row['Reserva de Dados'] || row['Reserva de dados'] || row['Tirada'] || 'Especial';
+                const pool = row['Reserva de Dados'] || row['Reserva de dados'] || row['Tirada'] || '';
+                const opposition = row['Reserva Oposicion'] || row['Reserva oposición'] || '';
                 const cost = row['Controles de Ansia'] || row['Coste'] || 'Ninguno';
+                const duration = row['Duracion'] || row['Duración'] || 'Escena';
                 const desc = row['Descripción'] || row['DESCRIPCION'] || 'Sin descripción disponible.';
                 
                 const sourceBook = row['Fuente_Libro'] || row['Fuente'] || 'V5';
@@ -458,14 +497,24 @@
 
                 const discKey = discipline.toLowerCase().trim();
                 const archivoIcono = ICONOS_MAP[discKey];
-                let iconHTML = '';
+                let watermarkHTML = '';
+                let cornerIconHTML = '';
                 if (archivoIcono) {
-                    iconHTML = `<img src="./iconos/${archivoIcono}" class="card-discipline-icon-img" alt="${discipline}" onerror="this.style.display='none'">`;
+                    watermarkHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="" onerror="this.style.display='none'">`;
+                    cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="card-discipline-icon-img" alt="${discipline}" onerror="this.style.display='none'">`;
                 }
 
-                let subtitleHTML = '';
-                if (nameEn && nameEn.trim() !== '-' && nameEn.trim() !== '') {
-                    subtitleHTML = `<div class="card-subtitle-en">(${nameEn})</div>`;
+                // Estructura de tirada en 3 líneas (Reserva, vs., Oposición)
+                let rollBoxHTML = '';
+                if (pool && pool.trim() !== '-' && pool.trim() !== '') {
+                    let line3Content = opposition && opposition.trim() !== '-' && opposition.trim() !== '' ? opposition : 'Sin oposición';
+                    rollBoxHTML = `
+                        <div class="card-roll-box">
+                            <div class="card-roll-line-1">Tirada: ${pool}</div>
+                            <div class="card-roll-line-2">vs.</div>
+                            <div class="card-roll-line-3">${line3Content}</div>
+                        </div>
+                    `;
                 }
 
                 let sourceDisplay = sourceBook;
@@ -480,19 +529,22 @@
                 card.setAttribute('data-name', name.toLowerCase());
 
                 card.innerHTML = `
-                    <div class="card-header">
-                        <span class="card-discipline">${discipline}</span>
-                    </div>
-                    <div class="card-titles-container">
-                        <div class="card-title">${name}</div>
-                        ${subtitleHTML}
-                    </div>
-                    <div class="card-attributes">
-                        <div><span>Reserva:</span> ${pool}</div>
-                        <div><span>Coste:</span> ${cost}</div>
-                    </div>
-                    <div class="card-body">
-                        ${desc}
+                    ${watermarkHTML}
+                    <div>
+                        <div class="card-header">
+                            <span class="card-discipline">${discipline}</span>
+                        </div>
+                        <div class="card-titles-container">
+                            <div class="card-title">${name}</div>
+                        </div>
+                        ${rollBoxHTML}
+                        <div class="card-body">
+                            ${desc}
+                        </div>
+                        <div class="card-costs">
+                            <span>Coste: <span>${cost}</span></span>
+                            <span>Duración: <span>${duration}</span></span>
+                        </div>
                     </div>
                     <div>
                         <div class="card-footer-layout">
@@ -500,7 +552,7 @@
                                 <span>${level}</span>
                             </div>
                             <div>
-                                ${iconHTML}
+                                ${cornerIconHTML}
                             </div>
                         </div>
                         <div class="card-source-text">${sourceDisplay}</div>
