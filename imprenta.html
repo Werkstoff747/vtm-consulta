@@ -289,18 +289,20 @@
 
         .card-main-content { display: flex; flex-direction: column; flex-grow: 1; position: relative; z-index: 1; }
         
+        /* CABECERA DE DISCIPLINA SIN BLOQUE ROJO SÓLIDO (ESTILO MINIMALISTA ELEGANTE) */
         .card-header { 
-            background: transparent !important; /* Quitamos el rojo sólido */
-            color: var(--border-gold) !important; /* Letras en tono dorado oficial */
+            background: transparent !important; 
+            color: var(--border-gold) !important; 
             height: auto; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            border-bottom: 1px solid var(--border-red); /* Una línea sutil roja en lugar de bloque */
+            border-bottom: 1px solid var(--border-red); 
             margin-bottom: 2mm; 
             padding-bottom: 1mm;
             font-family: 'Cinzel', serif; 
             font-size: 0.68rem; 
+            font-weight: 700;
             letter-spacing: 1px;
             text-transform: uppercase; 
         }
@@ -610,11 +612,9 @@
             const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
             
-            // Agrupamos las cartas en bloques de 9 (páginas A4) para intercalar anversos y reversos página por página
             const totalPaginas = Math.ceil(cartas.length / 9);
 
             for (let p = 0; p < totalPaginas; p++) {
-                // 1. Renderizar la página de anversos (hasta 9 cartas)
                 const inicio = p * 9;
                 const fin = Math.min(inicio + 9, cartas.length);
                 
@@ -622,7 +622,6 @@
                     container.appendChild(createCardElement(cartas[i]));
                 }
 
-                // Rellenar con huecos invisibles si la última página tiene menos de 9 cartas
                 const resto = (fin - inicio) % 9;
                 if (resto !== 0) {
                     const huecosFaltantes = 9 - resto;
@@ -634,12 +633,10 @@
                     }
                 }
 
-                // 2. Salto de página para pasar al reverso de esta misma hoja
                 const pb1 = document.createElement('div');
                 pb1.className = 'page-break';
                 container.appendChild(pb1);
 
-                // 3. Renderizar exactamente 9 reversos para la parte trasera de esta página A4
                 for (let r = 0; r < 9; r++) {
                     const wrap = document.createElement('div');
                     wrap.className = 'print-card-wrapper';
@@ -651,7 +648,6 @@
                     container.appendChild(wrap);
                 }
 
-                // 4. Salto de página para pasar a la siguiente hoja A4 de anversos (si hay más páginas)
                 if (p < totalPaginas - 1) {
                     const pb2 = document.createElement('div');
                     pb2.className = 'page-break';
