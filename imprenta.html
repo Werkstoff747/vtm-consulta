@@ -317,7 +317,7 @@
         .card-roll-box { 
             background: rgba(0,0,0,0.4); 
             border: 1px solid var(--border-gold); 
-            padding: 3px 6mm; 
+            padding: 3px 6px; 
             margin-bottom: 1.5mm; 
             text-align: center; 
             font-size: 0.68rem; 
@@ -429,6 +429,9 @@
 
         <div id="builderSection">
             <h3 style="font-family: 'Cinzel', serif; color: var(--border-gold); margin-bottom: 10px;">Selecciona los poderes de tu mazo</h3>
+            <div style="margin-bottom: 10px;">
+                <input type="text" id="searchBuilder" placeholder="Buscar en lista..." oninput="populateBuilderList(allDisciplinesData)" style="width:100%; padding:8px; background:var(--input-bg); color:var(--text-main); border:1px solid #444; border-radius:4px;">
+            </div>
             <div class="builder-list" id="builderListContainer"></div>
         </div>
 
@@ -488,11 +491,17 @@
         function populateBuilderList(data) {
             const container = document.getElementById('builderListContainer');
             container.innerHTML = '';
-            data.forEach((row, idx) => {
+            const query = (document.getElementById('searchBuilder') ? document.getElementById('searchBuilder').value : '').toLowerCase();
+
+            data.forEach((row) => {
                 const name = row['Nombre Poder'] || row['Nombre'];
+                const disc = row['Disciplina'] || 'General';
+                if (query && !name.toLowerCase().includes(query) && !disc.toLowerCase().includes(query)) return;
+
+                const isChecked = selectedCharacterPowers.has(name) ? 'checked' : '';
                 container.innerHTML += `
                     <label class="builder-item">
-                        <div><input type="checkbox" value="${name}" onchange="togglePower('${name}', this.checked)"> <strong>${name}</strong> (${row['Disciplina'] || 'General'})</div>
+                        <div><input type="checkbox" value="${name}" ${isChecked} onchange="togglePower('${name.replace(/'/g, "\\'")}', this.checked)"> <strong>${name}</strong> (${disc})</div>
                     </label>`;
             });
         }
@@ -595,29 +604,59 @@
         function imprimirDuplex() {
             const cartas = obtenerCartasActivas();
             if (!cartas.length) return alert("No hay cartas seleccionadas.");
+            
             const container = document.getElementById('cardsContainer');
             container.innerHTML = '';
             
-            // 1. Renderizar los anversos activos
-            cartas.forEach(row => container.appendChild(createCardElement(row)));
+            // Agrupamos las cartas en bloques de 9 (páginas A4) para intercalar anversos y reversos página por página
+            const totalPaginas = Math.ceil(cartas.length / 9);
 
-            // 2. Salto de página para la impresión
-            const pb = document.createElement('div');
-            pb.className = 'page-break';
-            container.appendChild(pb);
+            for (let p = 0; p < totalPaginas; p++) {
+                // 1. Renderizar la página de anversos (hasta 9 cartas)
+                const inicio = p * 9;
+                const fin = Math.min(inicio + 9, cartas.length);
+                
+                for (let i = inicio; i < fin; i++) {
+                    container.appendChild(createCardElement(cartas[i]));
+                }
 
-            // 3. Generar reversos exactos rellenando hasta múltiplos de 9
-            const total = Math.ceil(cartas.length / 9) * 9;
-            for (let i = 0; i < total; i++) {
-                const wrap = document.createElement('div');
-                wrap.className = 'print-card-wrapper';
-                wrap.innerHTML = `
-                    <div class="vtm-card-back">
-                        <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
-                        <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
-                    </div>`;
-                container.appendChild(wrap);
+                // Rellenar con huecos invisibles si la última página tiene menos de 9 cartas
+                const resto = (fin - inicio) % 9;
+                if (resto !== 0) {
+                    const huecosFaltantes = 9 - resto;
+                    for (let h = 0; h < huecosFaltantes; h++) {
+                        const empty = document.createElement('div');
+                        empty.className = 'print-card-wrapper';
+                        empty.style.visibility = 'hidden';
+                        container.appendChild(empty);
+                    }
+                }
+
+                // 2. Salto de página para pasar al reverso de esta misma hoja
+                const pb1 = document.createElement('div');
+                pb1.className = 'page-break';
+                container.appendChild(pb1);
+
+                // 3. Renderizar exactamente 9 reversos para la parte trasera de esta página A4
+                for (let r = 0; r < 9; r++) {
+                    const wrap = document.createElement('div');
+                    wrap.className = 'print-card-wrapper';
+                    wrap.innerHTML = `
+                        <div class="vtm-card-back">
+                            <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
+                            <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
+                        </div>`;
+                    container.appendChild(wrap);
+                }
+
+                // 4. Salto de página para pasar a la siguiente hoja A4 de anversos (si hay más páginas)
+                if (p < totalPaginas - 1) {
+                    const pb2 = document.createElement('div');
+                    pb2.className = 'page-break';
+                    container.appendChild(pb2);
+                }
             }
+
             setTimeout(() => window.print(), 300);
         }
     </script>
