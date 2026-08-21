@@ -133,7 +133,7 @@
             color: var(--text-main);
             border: 3px double var(--accent-blood);
             border-radius: 8px;
-            padding: 4mm;
+            padding: 3.5mm;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -177,7 +177,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 3px;
+            margin-bottom: 2mm;
             position: relative;
             z-index: 1;
         }
@@ -191,46 +191,63 @@
             font-weight: 700;
         }
 
-        .card-level-badge {
-            font-family: 'Cinzel', serif;
-            font-size: 0.62rem;
-            font-weight: 700;
-            background: var(--accent-gold);
-            color: #111115;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .card-titles-container {
+            text-align: center;
+            margin-bottom: 2mm;
+            position: relative;
+            z-index: 1;
+            border-bottom: 1px solid var(--accent-gold);
+            padding-bottom: 2px;
         }
 
         .card-title {
             font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 700;
             color: var(--accent-blood);
-            text-align: center;
             line-height: 1.1;
-            margin: 2px 0;
-            border-bottom: 1px solid var(--accent-gold);
-            padding-bottom: 2px;
+        }
+
+        .card-subtitle-en {
+            font-size: 0.55rem;
+            color: #666666;
+            font-style: italic;
+            opacity: 0.85;
+            margin-top: 1px;
+        }
+
+        /* Fila superior para nivel y atributos alineados */
+        .card-top-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 2mm;
             position: relative;
             z-index: 1;
         }
 
+        .card-level-badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.58rem;
+            font-weight: 700;
+            background: var(--accent-blood);
+            color: #ffffff;
+            padding: 1.5px 5px;
+            border-radius: 3px;
+            border: 1px solid #8b0000;
+            flex-shrink: 0;
+        }
+
         .card-attributes {
-            font-size: 0.56rem;
+            font-size: 0.52rem;
             background: rgba(197, 160, 89, 0.12);
             border: 1px solid var(--accent-gold);
             padding: 2px 4px;
             border-radius: 3px;
-            margin-bottom: 3px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2px;
-            position: relative;
-            z-index: 1;
+            display: flex;
+            gap: 6px;
+            flex-grow: 1;
+            justify-content: space-around;
         }
 
         .card-attributes div span {
@@ -239,7 +256,7 @@
         }
 
         .card-body {
-            font-size: 0.58rem;
+            font-size: 0.56rem;
             line-height: 1.2;
             overflow-y: hidden;
             flex-grow: 1;
@@ -350,7 +367,6 @@
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
         let allDisciplinesData = [];
 
-        // Mapeo exacto de los nombres de tus iconos en la carpeta /iconos/
         const ICONOS_MAP = {
             'animalismo': 'Animalism_symbol.png',
             'auspex': 'Auspex_symbol.png',
@@ -379,7 +395,6 @@
 
                     document.getElementById('loading').style.display = 'none';
 
-                    // Ordenar por Nivel y luego por Nombre
                     allDisciplinesData.sort((a, b) => {
                         let lvlA = parseInt(a['Nivel'] || 1, 10);
                         let lvlB = parseInt(b['Nivel'] || 1, 10);
@@ -419,10 +434,10 @@
 
             data.forEach(row => {
                 const name = row['Nombre Poder'] || row['Nombre'] || 'Sin Nombre';
+                const nameEn = row['Name'] || row['Nombre Ingles'] || '';
                 const discipline = row['Disciplina'] || 'General';
                 const level = row['Nivel'] || '1';
                 
-                // Mapeo flexible de celdas de tu CSV para la reserva y el coste
                 const pool = row['Reserva de Dados'] || row['Reserva de dados'] || row['Tirada'] || 'Especial';
                 const cost = row['Controles de Ansia'] || row['Coste'] || 'Ninguno';
                 const desc = row['Descripción'] || row['DESCRIPCION'] || 'Sin descripción disponible.';
@@ -435,6 +450,11 @@
                     iconHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="${discipline}" onerror="this.style.display='none'">`;
                 }
 
+                let subtitleHTML = '';
+                if (nameEn && nameEn.trim() !== '-' && nameEn.trim() !== '') {
+                    subtitleHTML = `<div class="card-subtitle-en">(${nameEn})</div>`;
+                }
+
                 const card = document.createElement('div');
                 card.className = 'vtm-card';
                 card.setAttribute('data-discipline', discKey);
@@ -445,12 +465,17 @@
                     ${iconHTML}
                     <div class="card-header">
                         <span class="card-discipline">${discipline}</span>
-                        <span class="card-level-badge">${level}</span>
                     </div>
-                    <div class="card-title">${name}</div>
-                    <div class="card-attributes">
-                        <div><span>Reserva:</span> ${pool}</div>
-                        <div><span>Coste:</span> ${cost}</div>
+                    <div class="card-titles-container">
+                        <div class="card-title">${name}</div>
+                        ${subtitleHTML}
+                    </div>
+                    <div class="card-top-row">
+                        <div class="card-level-badge">Nivel ${level}</div>
+                        <div class="card-attributes">
+                            <div><span>Res:</span> ${pool}</div>
+                            <div><span>Coste:</span> ${cost}</div>
+                        </div>
                     </div>
                     <div class="card-body">
                         ${desc}
