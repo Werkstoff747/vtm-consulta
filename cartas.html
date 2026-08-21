@@ -170,7 +170,16 @@
             user-select: none;
         }
 
-        /* Cabecera de la disciplina con menos peso visual (estilo sutil) */
+        /* Contenedor superior para empujar el coste hacia abajo */
+        .card-main-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Cabecera de la disciplina con menos peso visual */
         .card-header {
             background: var(--accent-blood);
             color: white;
@@ -178,8 +187,6 @@
             border-radius: 3px;
             text-align: center;
             margin-bottom: 2mm;
-            position: relative;
-            z-index: 1;
         }
 
         .card-discipline {
@@ -195,8 +202,6 @@
         .card-titles-container {
             text-align: center;
             margin-bottom: 2mm;
-            position: relative;
-            z-index: 1;
             border-bottom: 1px solid var(--accent-gold);
             padding-bottom: 2px;
         }
@@ -218,8 +223,6 @@
             padding: 3px 6px;
             border-radius: 3px;
             margin-bottom: 2mm;
-            position: relative;
-            z-index: 1;
             text-align: center;
             line-height: 1.2;
         }
@@ -246,26 +249,22 @@
             font-size: 0.62rem;
             line-height: 1.25;
             overflow-y: hidden;
-            flex-grow: 1;
             padding: 1px 2px;
-            position: relative;
-            z-index: 1;
             text-align: justify;
         }
 
-        /* Coste y Duración justo encima de la línea separadora */
+        /* Coste y Duración anclados justo encima de la línea divisoria */
         .card-costs {
             font-size: 0.55rem;
             background: rgba(197, 160, 89, 0.12);
             border: 1px solid var(--accent-gold);
             padding: 3px 5px;
             border-radius: 3px;
+            margin-top: auto; /* Empuja el coste hacia la parte inferior del contenedor principal */
             margin-bottom: 1.5mm;
             display: flex;
             justify-content: space-between;
             font-weight: 600;
-            position: relative;
-            z-index: 1;
         }
 
         .card-costs span span {
@@ -277,7 +276,7 @@
         .card-footer-container {
             border-top: 1px solid var(--accent-gold);
             padding-top: 1.5mm;
-            margin-top: 1mm;
+            margin-top: 0;
             position: relative;
             z-index: 1;
         }
@@ -537,7 +536,7 @@
 
                 card.innerHTML = `
                     ${watermarkHTML}
-                    <div>
+                    <div class="card-main-content">
                         <div class="card-header">
                             <span class="card-discipline">${discipline}</span>
                         </div>
