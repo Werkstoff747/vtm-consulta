@@ -191,7 +191,7 @@
             font-weight: 600;
         }
 
-        /* Contenedor del Título Principal del Poder (Gran protagonismo) */
+        /* Contenedor del Título Principal del Poder */
         .card-titles-container {
             text-align: center;
             margin-bottom: 2mm;
@@ -253,14 +253,14 @@
             text-align: justify;
         }
 
-        /* Coste y Duración en línea */
+        /* Coste y Duración justo encima de la línea separadora */
         .card-costs {
             font-size: 0.55rem;
             background: rgba(197, 160, 89, 0.12);
             border: 1px solid var(--accent-gold);
             padding: 3px 5px;
             border-radius: 3px;
-            margin-bottom: 2mm;
+            margin-bottom: 1.5mm;
             display: flex;
             justify-content: space-between;
             font-weight: 600;
@@ -273,10 +273,10 @@
             font-weight: bold;
         }
 
-        /* Zona inferior: Línea transversal y elementos simétricos por encima */
+        /* Zona inferior: Línea separadora dorada y pie en tres bloques */
         .card-footer-container {
             border-top: 1px solid var(--accent-gold);
-            padding-top: 2px;
+            padding-top: 1.5mm;
             margin-top: 1mm;
             position: relative;
             z-index: 1;
@@ -286,33 +286,30 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1mm;
         }
 
-        /* Imagen del rombo de nivel (Carga dinámicamente X_symbol.png) */
+        /* Bloque Izquierda: Imagen del rombo de nivel (6.5mm) */
         .card-level-img {
             width: 6.5mm;
             height: 6.5mm;
             object-fit: contain;
-            margin-left: 2mm;
         }
 
-        /* Icono de disciplina simétrico al rombo (6.5mm exactos) */
+        /* Bloque Centro: Fuente y página */
+        .card-source-text {
+            font-size: 0.44rem;
+            color: #444;
+            font-family: 'Cinzel', serif;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        /* Bloque Derecha: Icono de disciplina (6.5mm exactos) */
         .card-discipline-icon-img {
             width: 6.5mm;
             height: 6.5mm;
             object-fit: contain;
             opacity: 1;
-            margin-right: 2mm;
-        }
-
-        /* Texto de fuente y página en el pie absoluto */
-        .card-source-text {
-            font-size: 0.46rem;
-            color: #444;
-            font-family: 'Cinzel', serif;
-            text-align: center;
-            letter-spacing: 0.3px;
         }
 
         #loading {
@@ -474,7 +471,6 @@
                 const discipline = row['Disciplina'] || 'General';
                 let level = (row['Nivel'] || '1').trim();
                 
-                // Asegurar que el nivel esté entre 1 y 5 para la imagen del rombo
                 if (!['1', '2', '3', '4', '5'].includes(level)) {
                     level = '1';
                 }
@@ -495,13 +491,11 @@
                 let cornerIconHTML = '';
                 if (archivoIcono) {
                     watermarkHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="" onerror="this.style.display='none'">`;
-                    cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="card-discipline-icon-img" alt="${discipline}" onerror="this.style.display='none'">`;
+                    cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="${discipline}" style="position:static; width:6.5mm; height:6.5mm; opacity:1; transform:none;" onerror="this.style.display='none'">`;
                 }
 
-                // Carga de la imagen del rombo del nivel correspondiente (1_symbol.png, 2_symbol.png, etc.)
                 const levelImgHTML = `<img src="./iconos/${level}_symbol.png" class="card-level-img" alt="Nivel ${level}" onerror="this.style.display='none'">`;
 
-                // Bloque de tirada de 3 líneas estricto
                 let rollBoxHTML = '';
                 const oppositionLower = opposition.toLowerCase();
                 const isSinOposicion = !opposition || opposition === '-' || oppositionLower === 'sin oposición' || oppositionLower === 'sin oposicion';
@@ -561,14 +555,10 @@
                     </div>
                     <div class="card-footer-container">
                         <div class="card-footer-layout">
-                            <div>
-                                ${levelImgHTML}
-                            </div>
-                            <div>
-                                ${cornerIconHTML}
-                            </div>
+                            <div>${levelImgHTML}</div>
+                            <div class="card-source-text">${sourceDisplay}</div>
+                            <div>${cornerIconHTML}</div>
                         </div>
-                        <div class="card-source-text">${sourceDisplay}</div>
                     </div>
                 `;
                 container.appendChild(card);
