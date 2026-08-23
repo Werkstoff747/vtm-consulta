@@ -163,7 +163,7 @@
         }
 
         /* =========================================================
-           HUB / TARJETAS DE ACCESO
+           HUB / TARJETAS DE ACCESO (LOGOS AMPLIADOS +300%)
            ========================================================= */
 
         .hub-grid {
@@ -215,12 +215,18 @@
             background-color: var(--accent-gold);
         }
 
+        /* Aumento del 300% de los iconos (de ~50px originales a 150px) */
         .hub-icon {
-            width: 50px;
-            height: 50px;
+            width: 150px;
+            height: 150px;
             object-fit: contain;
-            margin-bottom: 15px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            margin-bottom: 18px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+            transition: transform 0.25s ease;
+        }
+
+        .hub-card:hover .hub-icon {
+            transform: scale(1.05);
         }
 
         .hub-title {
@@ -258,6 +264,7 @@
             h1.cabecera-principal { font-size: 1.15rem; letter-spacing: 1.5px; }
             .hub-grid { grid-template-columns: 1fr; }
             .theme-btn-header { top: 10px; right: 10px; }
+            .hub-icon { width: 120px; height: 120px; } /* Ajuste proporcional para móviles */
         }
     </style>
 </head>
