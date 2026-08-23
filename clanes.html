@@ -39,13 +39,13 @@
             --card-notes-bg: rgba(255, 255, 255, 0.03);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
             
-            /* En Modo Noche, los logos negros originales se vuelven BLANCOS para destacar */
+            /* Logos de clanes en Modo Noche: Blancos para destacar */
             --clan-logo-filter: brightness(0) invert(1);
         }
 
         /* MODO DÍA / CLARO ("Pergamino Frío") */
         body.light-mode {
-            --bg-color: #a8a7a4;
+            --bg-color: #e3e0d8;
             --card-bg: #ffffff;
             --card-border: #bcaba0;
             --accent-red: #8b0000;
@@ -61,7 +61,7 @@
             --card-notes-bg: #f9f8f5;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
             
-            /* En Modo Día, los logos se quedan con su color original (NEGRO) sin inversión */
+            /* Logos de clanes en Modo Día: Color original (Negro) */
             --clan-logo-filter: none;
         }
 
@@ -257,10 +257,10 @@
         }
 
         .clan-symbol {
-            width: 64px;  /* Mucho más grande para tener protagonismo */
-            height: 64px; /* Mucho más grande para tener protagonismo */
+            width: 64px;  
+            height: 64px; 
             object-fit: contain;
-            filter: var(--clan-logo-filter); /* Dinámico: Blanco en noche, Negro en día */
+            filter: var(--clan-logo-filter);
             transition: filter 0.3s ease;
             flex-shrink: 0;
         }
@@ -381,7 +381,7 @@
 
     <div id="resultsCounter" class="results-counter"></div>
 
-    <div id="loading">Cargando clanes...</div>
+    <div id="loading">Cargando clanes desde Google Sheets...</div>
 
     <div id="clansWrapper" class="grid"></div>
 
@@ -401,7 +401,10 @@
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
 
 <script>
-    // Mapeo exacto de los iconos ubicados en tu carpeta /iconos/clanes/
+    // Enlace CSV publicado de la pestaña "Clanes" de tu Google Sheet
+    const CLANS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=590160707&single=true&output=csv';
+
+    // Mapeo exacto de los iconos ubicados en la carpeta /iconos/clanes/
     const CLAN_ICONS = {
         "banu haqim": "./iconos/clanes/Banu_Haqim_Symbol.png",
         "brujah": "./iconos/clanes/Brujah_symbol.png",
@@ -421,115 +424,6 @@
         "tzimisce": "./iconos/clanes/Tzimisce_symbol.png",
         "ventrue": "./iconos/clanes/Ventrue_symbol.png"
     };
-
-    // Datos iniciales de ejemplo
-    const CLANS_DATA = [
-        {
-            nombre: "Banu Haqim",
-            disciplinas: "Celeridad • Ofuscación • Hechicería de Sangre",
-            perdicion: "Insaciabilidad de Sangre: Al probar la sangre de otro Vástago, deben superar una prueba de Comura o desarrollar adicción.",
-            descripcion: "Jueces, asesinos y eruditos de la sangre que buscan la justicia a su propia manera letal.",
-            fuente: "Camarilla / Corebook"
-        },
-        {
-            nombre: "Brujah",
-            disciplinas: "Celeridad • Potencia • Presencia",
-            perdicion: "Temperamento Violento: Sufren penalizaciones al resistirse a los frenesíes de Furia debido a la rabia hirviente en su sangre.",
-            descripcion: "Rebeldes apasionados e iconoclastas que arden con fervor ideológico y furia incontrolable.",
-            fuente: "Corebook V5"
-        },
-        {
-            nombre: "Gangrel",
-            disciplinas: "Animalismo • Fortaleza • Protean",
-            perdicion: "Feralidad: Al entrar en frenesí adquieren rasgos animalescos permanentes que tardan en desvanecerse.",
-            descripcion: "Los solitarios de la noche, más cercanos a las bestias y la naturaleza que a la política de los príncipes.",
-            fuente: "Corebook V5"
-        },
-        {
-            nombre: "Hecata",
-            disciplinas: "Auspex • Fortaleza / Ofuscación • Olvido",
-            perdicion: "Toque Doloroso: Su mordisco causa un dolor agónico e insoportable en lugar de éxtasis en los mortales.",
-            descripcion: "Nekromantes y estudiosos de la muerte que desentierran los secretos del Más Allá.",
-            fuente: "Cultos de los S 혈dos"
-        },
-        {
-            nombre: "Lasombra",
-            disciplinas: "Dominación • Olvido • Potencia",
-            perdicion: "Reflejos Oscuros: Su reflejo se distorsiona o desaparece en espejos y dispositivos digitales.",
-            descripcion: "Señores de las sombras y manipuladores implacables que dominan la oscuridad.",
-            fuente: "Anarch / Corebook"
-        },
-        {
-            nombre: "Malkavian",
-            disciplinas: "Auspex • Dominación • Ofuscación",
-            perdicion: "Trastorno: Sufren una aflicción o trastorno mental crónico arraigado en su psique.",
-            descripcion: "Profetas y visionarios conectados a una red de mente colectiva (la Telaraña Mental).",
-            fuente: "Corebook V5"
-        },
-        {
-            nombre: "Ministry",
-            disciplinas: "Ofuscación • Presencia • Protean",
-            perdicion: "Aversión a la Luz: Experimentan malestar y penalizaciones ante luces artificiales intensas o la luz solar directa.",
-            descripcion: "Tentadores y libertadores que despiertan la fe y la perdición en los corazones mortales.",
-            fuente: "Anarch / Corebook"
-        },
-        {
-            nombre: "Nosferatu",
-            disciplinas: "Animalismo • Ofuscación • Potencia",
-            perdicion: "Repulsivos: Su deformidad física impide por completo que pasen por humanos ordinarios.",
-            descripcion: "Maestros del espionaje y la información oculta que sobreviven en las cloacas.",
-            fuente: "Corebook V5"
-        },
-        {
-            nombre: "Ravnos",
-            disciplinas: "Animalismo • Ofuscación • Presencia",
-            perdicion: "Fuga: Si se quedan demasiado tiempo en un mismo lugar, sufren una compulsión imperiosa por huir y cambiar de aires.",
-            descripcion: "Nómadas, embaucadores y maestros de las ilusiones que vagan sin ataduras.",
-            fuente: "Guía del Jugador"
-        },
-        {
-            nombre: "Salubri",
-            disciplinas: "Auspex • Fortaleza • Ofuscación",
-            perdicion: "El Tercer Ojo: Su tercer ojo físico se abre al gastar Fuerza de Voluntad, delatando su estirpe y atrayendo miradas.",
-            descripcion: "Sanadores y protectores marcados por el dolor de un linaje casi extinto.",
-            fuente: "Guía del Jugador"
-        },
-        {
-            nombre: "Thin-Blood",
-            disciplinas: "Alquimia de Sangre Débil",
-            perdicion: "Sangre Delgada: Su maldición les otorga debilidades variables pero carecen de disciplinas estables nativas.",
-            descripcion: "La última generación, despreciada por los antiguos pero dotada de una versatilidad única con la alquimia.",
-            fuente: "Corebook V5"
-        },
-        {
-            nombre: "Toreador",
-            disciplinas: "Auspex • Celeridad • Presencia",
-            perdicion: "Fascinación: Quedan cautivados e hipnotizados por la belleza artística o sensorial extrema.",
-            descripcion: "Estetas de la noche enamorados del arte, la belleza y la tragedia humana.",
-            fuente: "Corebook V5"
-        },
-        {
-            nombre: "Tremere",
-            disciplinas: "Auspex • Dominación • Hechicería de Sangre",
-            perdicion: "Sangre Estéril: Su vínculo de sangre está alterado; no pueden vincular fácilmente a otros vástagos.",
-            descripcion: "Brujos académicos e investigadores de los arcanos de la sangre.",
-            fuente: "Corebook V5"
-        },
-        {
-            nombre: "Tzimisce",
-            disciplinas: "Animalismo • Dominación • Protean",
-            perdicion: "Deseo Insaciable: Están atados a un dominio, objeto o posesión específica; alejarse de él les debilita el espíritu.",
-            descripcion: "Monstruos escultores de carne y hueso, señores de los dragones y la tierra natal.",
-            fuente: "Anarch / Corebook"
-        },
-        {
-            nombre: "Ventrue",
-            disciplinas: "Dominación • Fortaleza • Presencia",
-            perdicion: "Exquisitez Sangrienta: Su Bestia es selectiva y solo pueden alimentarse de un tipo muy específico de presa.",
-            descripcion: "Los señores y gobernantes natos de la Camarilla que cargan con el peso del liderazgo.",
-            fuente: "Corebook V5"
-        }
-    ];
 
     function initTheme() {
         const savedTheme = localStorage.getItem('vtm-theme');
@@ -559,8 +453,50 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
-        document.getElementById('loading').style.display = 'none';
-        renderizarClanes(CLANS_DATA);
+
+        Papa.parse(CLANS_CSV_URL, {
+            download: true,
+            header: false,
+            skipEmptyLines: true,
+            complete: function(results) {
+                document.getElementById('loading').style.display = 'none';
+                const filas = results.data;
+                
+                // Procesamiento por orden de columnas en tu Google Sheet de Clanes:
+                // Columna A: 0 (Nombre Clan)
+                // Columna B: 1 (Apodo / Arquetipo)
+                // Columna C: 2 (Disciplinas)
+                // Columna D: 3 (Perdición)
+                // Columna E: 4 (Variante de Prohibición)
+                // Columna F: 5 (Compulsión)
+                // Columna G: 6 (Descripción)
+                // Columna H: 7 (Arquetipos)
+                // Columna I: 8 (Personajes Notables)
+                // Columna J: 9 (Fuente_Libro)
+                // Columna K: 10 (Fuente_Pag)
+                const datos = filas.slice(1).map(row => {
+                    return {
+                        nombre: (row[0] || '').trim(),
+                        apodo: (row[1] || '').trim(),
+                        disciplinas: (row[2] || '').trim(),
+                        perdicion: (row[3] || '').trim(),
+                        variante: (row[4] || '').trim(),
+                        compulsion: (row[5] || '').trim(),
+                        descripcion: (row[6] || '').trim(),
+                        arquetipos: (row[7] || '').trim(),
+                        personajes: (row[8] || '').trim(),
+                        fuente: (row[9] || '').trim(),
+                        pagina: (row[10] || '').trim()
+                    };
+                }).filter(item => item.nombre && item.nombre.toLowerCase() !== 'nombre clan');
+
+                renderizarClanes(datos);
+            },
+            error: function(err) {
+                document.getElementById('loading').textContent = "Error al conectar con la base de datos de clanes.";
+                console.error(err);
+            }
+        });
 
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('scrollTopBtn');
@@ -583,20 +519,24 @@
             const nombreLower = item.nombre.toLowerCase().trim();
             const iconPath = CLAN_ICONS[nombreLower] || '';
 
-            card.setAttribute('data-search', `${item.nombre} ${item.disciplinas} ${item.perdicion} ${item.descripcion}`.toLowerCase());
+            card.setAttribute('data-search', `${item.nombre} ${item.apodo} ${item.disciplinas} ${item.perdicion} ${item.descripcion} ${item.arquetipos} ${item.personajes}`.toLowerCase());
 
             card.innerHTML = `
                 <div>
                     <div class="card-header">
                         ${iconPath ? `<img src="${iconPath}" class="clan-symbol" alt="${item.nombre}" onerror="this.style.display='none'">` : ''}
-                        <div class="card-title">${item.nombre}</div>
+                        <div class="card-title">
+                            ${item.nombre} 
+                            ${item.apodo ? `<span style="font-size:0.9rem; font-weight:400; color:var(--text-muted);">(${item.apodo})</span>` : ''}
+                        </div>
                     </div>
                     <div class="card-meta">⚡ ${item.disciplinas}</div>
                     <div class="card-desc">${item.descripcion}</div>
                     ${item.perdicion ? `<div class="card-notes">🦇 <strong>Perdición:</strong> ${item.perdicion}</div>` : ''}
+                    ${item.compulsion ? `<div class="card-notes">🌀 <strong>Compulsión:</strong> ${item.compulsion}</div>` : ''}
                 </div>
                 <div class="card-tags">
-                    <span class="badge">📖 ${item.fuente}</span>
+                    <span class="badge">📖 ${item.fuente} ${item.pagina ? `pág. ${item.pagina}` : ''}</span>
                     <span class="badge">Clan V5</span>
                 </div>
             `;
