@@ -61,7 +61,7 @@
             --card-notes-bg: #f9f8f5;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
             
-            /* Logos de clanes en Modo Día: Color original (Negro) */
+            /* Logos de clanes en Modo Día: Color original */
             --clan-logo-filter: none;
         }
 
@@ -208,12 +208,12 @@
         }
 
         /* =========================================================
-           TARJETAS DE CLANES
+           TARJETAS DE CLANES (NUEVA DISTRIBUCIÓN)
            ========================================================= */
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
             gap: 20px;
         }
 
@@ -246,8 +246,8 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
 
-        /* Cabecera de la tarjeta con el logo grande y protagonista */
-        .card-header {
+        /* Cabecera de la tarjeta: Logo del clan a la izquierda, Nombre y Apodo a la derecha */
+        .card-header-clan {
             display: flex;
             align-items: center;
             gap: 16px;
@@ -257,43 +257,83 @@
         }
 
         .clan-symbol {
-            width: 64px;  
-            height: 64px; 
+            width: 60px;  
+            height: 60px; 
             object-fit: contain;
             filter: var(--clan-logo-filter);
             transition: filter 0.3s ease;
             flex-shrink: 0;
         }
 
+        .clan-titles-box {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
         .card-title {
+            font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.55rem;
-            font-variant: small-caps;
+            font-size: 1.45rem;
             color: var(--card-title-color);
             line-height: 1.15;
-            flex-grow: 1;
             transition: color 0.3s ease;
         }
 
-        .card-meta {
-            font-size: 0.85rem;
+        .card-apodo {
+            font-size: 0.9rem;
             color: var(--accent-gold);
+            font-style: italic;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Bloque de Disciplinas con mini iconos limpios */
+        .clan-disciplines {
+            font-size: 0.9rem;
+            color: var(--text-main);
             margin-bottom: 12px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            background: var(--card-notes-bg);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+        }
+
+        .disc-item-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--tag-bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--card-border);
+            font-size: 0.8rem;
+        }
+
+        .disc-mini-icon {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
         }
 
         .card-desc {
-            font-size: 0.93rem;
+            font-size: 0.92rem;
             color: var(--text-main);
             flex-grow: 1;
             margin-bottom: 12px;
+            line-height: 1.5;
         }
 
         .card-notes {
             font-size: 0.85rem;
             color: var(--text-muted);
             font-style: italic;
-            margin-top: 10px;
+            margin-top: 8px;
             padding: 8px 10px;
             background-color: var(--card-notes-bg);
             border-radius: 6px;
@@ -401,10 +441,9 @@
 <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
 
 <script>
-    // Enlace CSV publicado de la pestaña "Clanes" de tu Google Sheet
     const CLANS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=590160707&single=true&output=csv';
 
-    // Mapeo exacto de los iconos ubicados en la carpeta /iconos/clanes/
+    // Mapeo de escudos de clanes
     const CLAN_ICONS = {
         "banu haqim": "./iconos/clanes/Banu_Haqim_Symbol.png",
         "brujah": "./iconos/clanes/Brujah_symbol.png",
@@ -423,6 +462,22 @@
         "tremere": "./iconos/clanes/Tremere_symbol.png",
         "tzimisce": "./iconos/clanes/Tzimisce_symbol.png",
         "ventrue": "./iconos/clanes/Ventrue_symbol.png"
+    };
+
+    // Mapeo de iconos para las disciplinas que aparecen en los clanes
+    const DISC_ICONS = {
+        'animalismo': 'Animalism_symbol.png',
+        'auspex': 'Auspex_symbol.png',
+        'celeridad': 'Celerity_symbol.png',
+        'dominación': 'Dominate_symbol.png',
+        'fortaleza': 'Fortitude_symbol.png',
+        'hechicería de sangre': 'Blood_Sorcery_symbol.png',
+        'ofuscación': 'Obfuscate_symbol.png',
+        'olvido': 'Oblivion_symbol.png',
+        'potencia': 'Potence_symbol.png',
+        'presencia': 'Presence_symbol.png',
+        'protean': 'Protean_symbol.png',
+        'alquimia de sangre débil': 'Alchemy_symbol.png'
     };
 
     function initTheme() {
@@ -462,18 +517,6 @@
                 document.getElementById('loading').style.display = 'none';
                 const filas = results.data;
                 
-                // Procesamiento por orden de columnas en tu Google Sheet de Clanes:
-                // Columna A: 0 (Nombre Clan)
-                // Columna B: 1 (Apodo / Arquetipo)
-                // Columna C: 2 (Disciplinas)
-                // Columna D: 3 (Perdición)
-                // Columna E: 4 (Variante de Prohibición)
-                // Columna F: 5 (Compulsión)
-                // Columna G: 6 (Descripción)
-                // Columna H: 7 (Arquetipos)
-                // Columna I: 8 (Personajes Notables)
-                // Columna J: 9 (Fuente_Libro)
-                // Columna K: 10 (Fuente_Pag)
                 const datos = filas.slice(1).map(row => {
                     return {
                         nombre: (row[0] || '').trim(),
@@ -521,16 +564,29 @@
 
             card.setAttribute('data-search', `${item.nombre} ${item.apodo} ${item.disciplinas} ${item.perdicion} ${item.descripcion} ${item.arquetipos} ${item.personajes}`.toLowerCase());
 
+            // Procesamos las disciplinas para meterles sus mini iconos limpios
+            let disciplinasHTML = '';
+            if (item.disciplinas && item.disciplinas !== '-') {
+                const listaDisc = item.disciplinas.split(',').map(d => d.trim());
+                let badgesDisc = listaDisc.map(dName => {
+                    const dKey = dName.toLowerCase();
+                    const iconFile = DISC_ICONS[dKey];
+                    let imgDiscHTML = iconFile ? `<img src="./iconos/${iconFile}" class="disc-mini-icon">` : '';
+                    return `<span class="disc-item-inline">${imgDiscHTML}${dName}</span>`;
+                }).join(' ');
+                disciplinasHTML = `<div class="clan-disciplines">⚡ ${badgesDisc}</div>`;
+            }
+
             card.innerHTML = `
                 <div>
-                    <div class="card-header">
+                    <div class="card-header-clan">
                         ${iconPath ? `<img src="${iconPath}" class="clan-symbol" alt="${item.nombre}" onerror="this.style.display='none'">` : ''}
-                        <div class="card-title">
-                            ${item.nombre} 
-                            ${item.apodo ? `<span style="font-size:0.9rem; font-weight:400; color:var(--text-muted);">(${item.apodo})</span>` : ''}
+                        <div class="clan-titles-box">
+                            <div class="card-title">${item.nombre}</div>
+                            ${item.apodo ? `<div class="card-apodo">"${item.apodo}"</div>` : ''}
                         </div>
                     </div>
-                    <div class="card-meta">⚡ ${item.disciplinas}</div>
+                    ${disciplinasHTML}
                     <div class="card-desc">${item.descripcion}</div>
                     ${item.perdicion ? `<div class="card-notes">🦇 <strong>Perdición:</strong> ${item.perdicion}</div>` : ''}
                     ${item.compulsion ? `<div class="card-notes">🌀 <strong>Compulsión:</strong> ${item.compulsion}</div>` : ''}
