@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         /* =========================================================
-            VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL
+            VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL (MODO OSCURO POR DEFECTO)
            ========================================================= */
         :root {
             --bg-color: #0f0f12;
@@ -24,8 +24,9 @@
             --text-main: #e1e1e6;
             --text-muted: #a0a0b0;
             --tag-bg: #25252e;
-            --input-bg: #0f0f12;
-            --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
+            --input-bg: #121215;
+            --input-text: #e1e1e6;
+            --header-bg: linear-gradient(180deg, rgba(139,0,0,0.4) 0%, rgba(15,15,18,0.8) 100%);
             --header-border: #8b0000;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
             
@@ -49,7 +50,8 @@
             --text-muted: #555459;
             --tag-bg: #f2f0eb;
             --input-bg: #ffffff;
-            --header-bg: #2b0408;
+            --input-text: #1f1f22;
+            --header-bg: linear-gradient(180deg, rgba(43,4,8,0.9) 0%, rgba(168,167,164,0.9) 100%);
             --header-border: #7a0000;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
             --wrapper-bg: #fff;
@@ -180,7 +182,7 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .mode-tabs {
@@ -196,7 +198,7 @@
             font-family: 'Cinzel', serif;
             padding: 8px 16px;
             background: var(--tag-bg);
-            color: var(--text-muted);
+            color: var(--text-main);
             border: 1px solid var(--card-border);
             border-radius: 4px;
             cursor: pointer;
@@ -225,7 +227,7 @@
             flex-wrap: wrap;
         }
 
-        button, select, input {
+        button {
             font-family: 'Cinzel', serif;
             padding: 8px 14px;
             background: var(--accent-red);
@@ -237,8 +239,24 @@
             transition: background 0.2s;
         }
 
-        button:hover, select:hover {
+        button:hover {
             background: var(--accent-crimson);
+        }
+
+        select, input {
+            font-family: 'Cinzel', serif;
+            padding: 8px 14px;
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border: 1px solid var(--card-border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        select option {
+            background-color: var(--card-bg);
+            color: var(--text-main);
         }
 
         .btn-secondary {
@@ -265,11 +283,6 @@
 
         .filter-group select, .filter-group input {
             width: 100%;
-            background: var(--input-bg);
-            color: var(--text-main);
-            border: 1px solid var(--card-border);
-            padding: 8px;
-            font-family: inherit;
         }
 
         /* CONTENEDOR MODO PERSONAJE */
@@ -280,7 +293,7 @@
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .builder-top-bar {
@@ -459,7 +472,6 @@
             z-index: 1;
         }
 
-        /* CABECERA TRANSPARENTE CON TEXTO EN ROJO ACENTO */
         .card-header {
             background: transparent !important;
             color: var(--accent-red) !important;
@@ -669,7 +681,7 @@
         }
     </style>
 </head>
-<body class="light-mode">
+<body>
 
     <div class="container">
         <!-- Cabecera -->
@@ -695,7 +707,7 @@
                 <!-- SELECTOR DE ESTILO DE IMPRESIÓN -->
                 <div style="display: flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.2); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--accent-gold);">
                     <label for="printStyleSelect" style="font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--accent-gold); white-space: nowrap; margin-bottom: 0;">Estilo Impresión:</label>
-                    <select id="printStyleSelect" onchange="togglePrintStyle(this.value)" style="padding: 6px 10px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--accent-gold); border-radius: 4px; cursor: pointer;">
+                    <select id="printStyleSelect" onchange="togglePrintStyle(this.value)" style="padding: 6px 10px; background: var(--input-bg); color: var(--input-text); border: 1px solid var(--accent-gold); border-radius: 4px; cursor: pointer;">
                         <option value="printfriendly" selected>Print-Friendly (Claro / Ahorro de Tinta)</option>
                         <option value="professional">Profesional (Oscuro)</option>
                     </select>
@@ -828,12 +840,12 @@
         function initTheme() {
             const savedTheme = localStorage.getItem('vtm-theme');
             const themeBtn = document.getElementById('themeToggleBtn');
-            if (savedTheme === 'dark') {
-                document.body.classList.remove('light-mode');
-                if (themeBtn) themeBtn.textContent = '🌙';
-            } else {
+            if (savedTheme === 'light') {
                 document.body.classList.add('light-mode');
                 if (themeBtn) themeBtn.textContent = '☀️';
+            } else {
+                document.body.classList.remove('light-mode');
+                if (themeBtn) themeBtn.textContent = '🌙';
             }
         }
 
@@ -863,7 +875,7 @@
 
         window.onload = function() {
             initTheme();
-            togglePrintStyle('printfriendly'); // Por defecto en claro
+            togglePrintStyle('printfriendly');
 
             Papa.parse(CSV_URL, {
                 download: true,
