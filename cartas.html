@@ -25,7 +25,7 @@
             --text-muted: #a0a0b0;
             --tag-bg: #25252e;
             --input-bg: #121215;
-            --input-text: #e1e1e6;
+            --input-text: #ffffff; /* Texto en blanco puro para inputs/selects */
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.4) 0%, rgba(15,15,18,0.8) 100%);
             --header-border: #8b0000;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
@@ -175,14 +175,14 @@
             transform: scale(1.08);
         }
 
-        /* PANEL DE CONTROL Y PESTAÑAS DE MODO */
+        /* PANEL DE CONTROL Y PESTAÑAS DE MODO (ESTILO OSCURO REFERENCIA) */
         .no-print-controls {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            background-color: #121215 !important;
+            border: 1px solid #23232a !important;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
         .mode-tabs {
@@ -198,7 +198,7 @@
             font-family: 'Cinzel', serif;
             padding: 8px 16px;
             background: var(--tag-bg);
-            color: var(--text-main);
+            color: #ffffff; /* Texto en blanco */
             border: 1px solid var(--card-border);
             border-radius: 4px;
             cursor: pointer;
@@ -256,7 +256,7 @@
 
         select option {
             background-color: var(--card-bg);
-            color: var(--text-main);
+            color: #ffffff;
         }
 
         .btn-secondary {
@@ -285,15 +285,20 @@
             width: 100%;
         }
 
-        /* CONTENEDOR MODO PERSONAJE */
+        /* CONTENEDOR MODO PERSONAJE (ESTILO OSCURO REFERENCIA) */
         #builderSection {
             display: none;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
+            background-color: #121215 !important;
+            border: 1px solid #23232a !important;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            color: #ffffff; /* Textos en blanco por defecto en el mazo */
+        }
+
+        #builderSection p {
+            color: var(--text-muted);
         }
 
         .builder-top-bar {
@@ -326,6 +331,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            color: #ffffff; /* Letras blancas en la lista del mazo */
         }
 
         .builder-item {
@@ -339,6 +345,7 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid transparent;
             transition: all 0.2s;
+            color: #ffffff; /* Forzar texto blanco en elementos del mazo */
         }
 
         .builder-item:hover {
@@ -350,6 +357,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            color: #ffffff;
         }
 
         .builder-item input[type="checkbox"] {
@@ -992,7 +1000,7 @@
                 item.setAttribute('data-name', name.toLowerCase());
 
                 item.innerHTML = `
-                    <label class="builder-item" for="${uniqueId}" style="width: 100%; margin: 0;">
+                    <label class="builder-item" for="${uniqueId}" style="width: 100%; margin: 0; color: #ffffff;">
                         <div class="builder-item-left">
                             <input type="checkbox" id="${uniqueId}" value="${name}" ${isChecked} onchange="toggleBuilderPower('${name.replace(/'/g, "\\'")}', this.checked)">
                             <span><strong>${name}</strong> <span style="font-size:0.75rem; color:var(--text-muted);">(${source})</span></span>
