@@ -249,23 +249,53 @@
            FOOTER
            ========================================================= */
 
-        footer {
-            text-align: center;
-            padding: 30px 20px;
-            color: var(--text-muted);
-            border-top: 1px solid var(--card-border);
-            margin-top: auto;
-        }
+    <footer>
+        <!-- LOGOTIPO DARK PACK -->
+        <div style="margin-bottom: 12px; display: flex; justify-content: center; align-items: center;">
+            <img src="./iconos/darkpack_logo1.webp" class="darkpack-logo" alt="Dark Pack Logo" style="max-height: 40px; width: auto; object-fit: contain;">
+        </div>
+    
+        <!-- Enlaces a sitios oficiales -->
+        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 6px;">
+            Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)
+        </div>
+        
+        <p style="margin-bottom: 12px; font-size: 0.85rem;">
+            Consigue los libros y suplementos oficiales en 
+            <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">Nosolorol</a> y 
+            <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
+        </p>
+    
+        <!-- Texto adaptado sobre la naturaleza no oficial -->
+        <p style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-main); opacity: 0.9;">
+            Esta aplicación es una herramienta/ayuda de juego no oficial para jugadores y Narradores, creada sin ánimo de lucro al amparo de la política Dark Pack de Paradox Interactive.
+        </p>
+    
+        <!-- Aviso de copyright legal obligatorio en inglés -->
+        <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.4; opacity: 0.85;">
+            Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com.
+        </div>
+    </footer>
 
-        @media (max-width: 600px) {
-            header { padding-top: 45px; }
-            .header-ank-logo { height: 45px; }
-            .header-main-logo { height: 70px; }
-            h1.cabecera-principal { font-size: 1.15rem; letter-spacing: 1.5px; }
-            .hub-grid { grid-template-columns: 1fr; }
-            .theme-btn-header { top: 10px; right: 10px; }
-            .hub-icon { width: 120px; height: 120px; } /* Ajuste proporcional para móviles */
+<script>
+    // Script rápido para alternar dinámicamente el logo del Dark Pack según el tema activo
+    function updateDarkPackLogo() {
+        const logoImg = document.querySelector('.darkpack-logo');
+        if (!logoImg) return;
+        
+        const isLightMode = document.body.classList.contains('light-mode');
+        if (isLightMode) {
+            logoImg.src = './iconos/darkpack_logo1.webp'; // Totalmente negro para vista clara
+        } else {
+            logoImg.src = './iconos/darkpack_logo2.webp'; // Con borde rojo para vista oscura
         }
+    }
+
+    // Ejecutar al cargar y cada vez que cambie el tema
+    window.addEventListener('DOMContentLoaded', updateDarkPackLogo);
+    
+    // Si usas tu función toggleTheme existente, puedes llamar a updateDarkPackLogo() dentro de ella para que cambie al instante.
+</script>
     </style>
 </head>
 <body>
