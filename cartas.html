@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         /* =========================================================
-            VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL (MODO OSCURO POR DEFECTO)
+           VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL (MODO OSCURO POR DEFECTO)
            ========================================================= */
         :root {
             --bg-color: #0f0f12;
@@ -63,6 +63,8 @@
             --card-bg: #fcfbfa;
             --text-main: #1a1a1a;
             --text-muted: #555555;
+            --input-bg: #ffffff;
+            --input-text: #1a1a1a;
         }
 
         body.print-friendly .card-header {
@@ -175,10 +177,10 @@
             transform: scale(1.08);
         }
 
-        /* PANEL DE CONTROL Y PESTAÑAS DE MODO (ESTILO OSCURO REFERENCIA) */
+        /* PANEL DE CONTROL Y PESTAÑAS DE MODO */
         .no-print-controls {
-            background-color: #121215 !important;
-            border: 1px solid #23232a !important;
+            background-color: var(--card-bg) !important;
+            border: 1px solid var(--card-border) !important;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
@@ -198,7 +200,7 @@
             font-family: 'Cinzel', serif;
             padding: 8px 16px;
             background: var(--tag-bg);
-            color: #ffffff; /* Texto en blanco */
+            color: #ffffff;
             border: 1px solid var(--card-border);
             border-radius: 4px;
             cursor: pointer;
@@ -256,7 +258,7 @@
 
         select option {
             background-color: var(--card-bg);
-            color: #ffffff;
+            color: var(--text-main);
         }
 
         .btn-secondary {
@@ -285,16 +287,16 @@
             width: 100%;
         }
 
-        /* CONTENEDOR MODO PERSONAJE (ESTILO OSCURO REFERENCIA) */
+        /* CONTENEDOR MODO PERSONAJE */
         #builderSection {
             display: none;
-            background-color: #121215 !important;
-            border: 1px solid #23232a !important;
+            background-color: var(--card-bg) !important;
+            border: 1px solid var(--card-border) !important;
             padding: 20px;
             border-radius: 8px;
             margin-bottom: 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            color: #ffffff; /* Textos en blanco por defecto en el mazo */
+            color: var(--text-main);
         }
 
         #builderSection p {
@@ -331,7 +333,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            color: #ffffff; /* Letras blancas en la lista del mazo */
+            color: var(--text-main);
         }
 
         .builder-item {
@@ -345,7 +347,7 @@
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid transparent;
             transition: all 0.2s;
-            color: #ffffff; /* Forzar texto blanco en elementos del mazo */
+            color: var(--text-main);
         }
 
         .builder-item:hover {
@@ -357,7 +359,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            color: #ffffff;
+            color: var(--text-main);
         }
 
         .builder-item input[type="checkbox"] {
@@ -602,38 +604,43 @@
             letter-spacing: 0.3px;
         }
 
-        /* BOTÓN FLOTANTE DEFINITIVO (SVG) */
-        .floating-nav-container {
+        /* =========================================================
+           BOTONES FLOTANTES INFERIORES
+           ========================================================= */
+        .floating-btn-container {
             position: fixed;
             bottom: 25px;
             right: 25px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            z-index: 999;
+            gap: 10px;
+            z-index: 100;
         }
 
-        .floating-btn {
-            width: 48px;
-            height: 48px;
+        .floating-action-btn, .scroll-top-btn {
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background-color: var(--accent-red);
+            color: #fff;
             border: 1px solid var(--accent-crimson);
-            color: #ffffff;
+            font-size: 1.1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            transition: all 0.2s;
             text-decoration: none;
         }
 
-        .floating-btn:hover {
+        .scroll-top-btn {
+            display: none; /* Se muestra con JS al hacer scroll */
+        }
+
+        .floating-action-btn:hover, .scroll-top-btn:hover {
+            transform: translateY(-3px);
             background-color: var(--accent-crimson);
-            border-color: var(--accent-gold);
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(139, 0, 0, 0.6);
         }
 
         #loading {
@@ -655,7 +662,7 @@
                 padding: 0 !important;
             }
 
-            .no-print-controls, header, #builderSection, .floating-nav-container {
+            .no-print-controls, header, #builderSection, .floating-btn-container {
                 display: none !important;
             }
 
@@ -814,20 +821,11 @@
         <div id="cardsContainer" class="cards-grid"></div>
     </div>
 
-    <!-- Botón flotante definitivo (SVG) -->
-    <div class="floating-nav-container">
-        <a href="index.html" class="floating-btn" title="Volver al Compendio Principal">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12"></line>
-                <polyline points="12 19 5 12 12 5"></polyline>
-            </svg>
-        </a>
-        <button class="floating-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Subir Arriba">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="19" x2="12" y2="5"></line>
-                <polyline points="5 12 12 5 19 12"></polyline>
-            </svg>
-        </button>
+    <!-- BOTONES FLOTANTES INFERIORES -->
+    <div class="floating-btn-container">
+        <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">🏠</a>
+        <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
+        <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
     </div>
 
     <script>
@@ -881,9 +879,22 @@
             }
         }
 
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         window.onload = function() {
             initTheme();
             togglePrintStyle('printfriendly');
+
+            window.addEventListener('scroll', () => {
+                const btn = document.getElementById('scrollTopBtn');
+                if (window.scrollY > 300) {
+                    btn.style.display = 'flex';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
 
             Papa.parse(CSV_URL, {
                 download: true,
@@ -1000,7 +1011,7 @@
                 item.setAttribute('data-name', name.toLowerCase());
 
                 item.innerHTML = `
-                    <label class="builder-item" for="${uniqueId}" style="width: 100%; margin: 0; color: #ffffff;">
+                    <label class="builder-item" for="${uniqueId}" style="width: 100%; margin: 0;">
                         <div class="builder-item-left">
                             <input type="checkbox" id="${uniqueId}" value="${name}" ${isChecked} onchange="toggleBuilderPower('${name.replace(/'/g, "\\'")}', this.checked)">
                             <span><strong>${name}</strong> <span style="font-size:0.75rem; color:var(--text-muted);">(${source})</span></span>
@@ -1253,7 +1264,6 @@
             }
         }
 
-        /* FUNCIÓN 1: IMPRESIÓN SIMPLEX */
         function imprimirSimplex() {
             const cartas = obtenerCartasActivas();
             if (cartas.length === 0) {
@@ -1268,7 +1278,6 @@
             setTimeout(() => { window.print(); }, 300);
         }
 
-        /* FUNCIÓN 2: IMPRESIÓN DÚPLEX INTERCALADA POR PÁGINAS (BLOQUES DE 9) */
         function imprimirDuplex() {
             const cartas = obtenerCartasActivas();
             if (cartas.length === 0) {
@@ -1286,10 +1295,8 @@
                 const fin = Math.min(inicio + chunkSize, cartas.length);
                 const chunk = cartas.slice(inicio, fin);
 
-                // 1. Renderizar Anversos de la página
                 chunk.forEach(row => container.appendChild(createCardElement(row)));
 
-                // Rellenar espacios vacíos si la página tiene menos de 9 cartas
                 const resto = chunkSize - chunk.length;
                 if (resto !== 0) {
                     for (let r = 0; r < resto; r++) {
@@ -1300,12 +1307,10 @@
                     }
                 }
 
-                // Salto de página para forzar que los reversos vayan en la hoja posterior
                 const break1 = document.createElement('div');
                 break1.className = 'page-break';
                 container.appendChild(break1);
 
-                // 2. Renderizar exactamente 9 Reversos para el reverso de la página A4
                 for (let j = 0; j < chunkSize; j++) {
                     const wrapBack = document.createElement('div');
                     wrapBack.className = 'print-card-wrapper';
@@ -1318,7 +1323,6 @@
                     container.appendChild(wrapBack);
                 }
 
-                // Salto de página para el siguiente bloque de anversos (si lo hay)
                 if (p < totalPaginas - 1) {
                     const break2 = document.createElement('div');
                     break2.className = 'page-break';
