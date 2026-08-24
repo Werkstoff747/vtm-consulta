@@ -21,31 +21,30 @@
            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
            ========================================================= */
 
-        /* MODO NOCHE / OSCURO (Predeterminado) */
+        /* MODO NOCHE / OSCURO (Predeterminado - "Medianoche Vampírica") */
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
             --card-border: #2a2a32;
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
-            --accent-gold: #c5a059;
+            --accent-gold: #c5a059; /* Dorado Oficial V5 */
             --text-main: #e1e1e6;
             --text-muted: #a0a0b0;
             --tag-bg: #25252e;
             --input-bg: #0f0f12;
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
+            --header-title-color: #c5a059;
             --card-title-color: #ffffff;
             --card-notes-bg: rgba(255, 255, 255, 0.03);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
-            
-            /* Logos de clanes en Modo Noche: Blancos para destacar */
-            --clan-logo-filter: brightness(0) invert(1);
+            --section-title-color: #c5a059;
         }
 
-        /* MODO DÍA / CLARO ("Pergamino Frío") */
+        /* MODO DÍA / CLARO ("Gris Pizarra / Pergamino Neutro") */
         body.light-mode {
-            --bg-color: #e3e0d8;
+            --bg-color: #a8a7a4;
             --card-bg: #ffffff;
             --card-border: #bcaba0;
             --accent-red: #8b0000;
@@ -55,15 +54,21 @@
             --text-muted: #555459;
             --tag-bg: #f2f0eb;
             --input-bg: #ffffff;           
+            
+            /* Cabecera Rojo Sangre Oscuro */
             --header-bg: #2b0408;
             --header-border: #7a0000;
+            --header-title-color: #c5a059; 
             --card-title-color: #111115;
+            
             --card-notes-bg: #f9f8f5;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
-            
-            /* Logos de clanes en Modo Día: Color original */
-            --clan-logo-filter: none;
+            --section-title-color: #8b0000;
         }
+
+        /* =========================================================
+           ESTILOS GENERALES Y ESTRUCTURA
+           ========================================================= */
 
         * {
             box-sizing: border-box;
@@ -128,6 +133,12 @@
             filter: var(--logo-filter);
         }
 
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
@@ -139,6 +150,7 @@
             margin-bottom: 0px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             line-height: 1.15;
+            transition: color 0.3s ease;
         }
 
         .theme-btn-header {
@@ -169,7 +181,7 @@
         }
 
         /* =========================================================
-           CONTROLES Y BUSCADOR
+           CONTROLES Y FILTROS
            ========================================================= */
 
         .controls {
@@ -182,6 +194,24 @@
             flex-direction: column;
             gap: 15px;
             transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.light-mode .controls {
+            background-color: #ffffff;
+            border-color: #bcaba0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .controls-row-top {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 2;
+            min-width: 240px;
         }
 
         .search-box input {
@@ -208,12 +238,12 @@
         }
 
         /* =========================================================
-           TARJETAS DE CLANES (NUEVA DISTRIBUCIÓN)
+           TARJETAS DE CLANES
            ========================================================= */
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 20px;
         }
 
@@ -228,6 +258,10 @@
             transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background-color 0.3s ease;
             position: relative;
             overflow: hidden;
+        }
+
+        body.light-mode .card {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .card::before {
@@ -246,98 +280,50 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
 
-        /* Cabecera de la tarjeta: Logo del clan a la izquierda, Nombre y Apodo a la derecha */
-        .card-header-clan {
+        .card-header {
             display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed var(--card-border);
-            padding-bottom: 12px;
-        }
-
-        .clan-symbol {
-            width: 60px;  
-            height: 60px; 
-            object-fit: contain;
-            filter: var(--clan-logo-filter);
-            transition: filter 0.3s ease;
-            flex-shrink: 0;
-        }
-
-        .clan-titles-box {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            gap: 10px;
         }
 
         .card-title {
-            font-family: 'Cinzel', serif;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             font-weight: 700;
             font-size: 1.45rem;
+            font-variant: small-caps;
+            letter-spacing: 0.5px;
             color: var(--card-title-color);
             line-height: 1.15;
+            flex-grow: 1;
             transition: color 0.3s ease;
         }
 
-        .card-apodo {
-            font-size: 0.9rem;
+        .card-meta {
+            font-size: 0.85rem;
             color: var(--accent-gold);
-            font-style: italic;
-            font-weight: 600;
-            margin-top: 2px;
-        }
-
-        /* Bloque de Disciplinas con mini iconos limpios */
-        .clan-disciplines {
-            font-size: 0.9rem;
-            color: var(--text-main);
             margin-bottom: 12px;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            background: var(--card-notes-bg);
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--card-border);
-        }
-
-        .disc-item-inline {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: var(--tag-bg);
-            padding: 2px 8px;
-            border-radius: 4px;
-            border: 1px solid var(--card-border);
-            font-size: 0.8rem;
-        }
-
-        .disc-mini-icon {
-            width: 14px;
-            height: 14px;
-            object-fit: contain;
         }
 
         .card-desc {
-            font-size: 0.92rem;
+            font-size: 0.93rem;
             color: var(--text-main);
             flex-grow: 1;
             margin-bottom: 12px;
-            line-height: 1.5;
         }
 
         .card-notes {
             font-size: 0.85rem;
             color: var(--text-muted);
             font-style: italic;
-            margin-top: 8px;
+            margin-top: 10px;
             padding: 8px 10px;
             background-color: var(--card-notes-bg);
             border-radius: 6px;
             border-top: 1px dashed var(--card-border);
+            transition: background-color 0.3s ease;
         }
 
         .card-tags {
@@ -357,35 +343,53 @@
             border: 1px solid var(--card-border);
         }
 
+        body.light-mode .badge {
+            border-color: #b8b5ae;
+            color: #333236;
+        }
+
         #loading {
             text-align: center;
             font-size: 1.1rem;
             color: var(--accent-gold);
             padding: 40px;
-            font-family: 'Cinzel', serif;
         }
 
-        .scroll-top-btn {
+        /* =========================================================
+           BOTONES FLOTANTES INFERIORES
+           ========================================================= */
+        .floating-btn-container {
             position: fixed;
             bottom: 25px;
             right: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .floating-action-btn, .scroll-top-btn {
             width: 45px;
             height: 45px;
             border-radius: 50%;
             background-color: var(--accent-red);
             color: #fff;
             border: 1px solid var(--accent-crimson);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
-            display: none;
+            display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             transition: all 0.2s;
-            z-index: 100;
+            text-decoration: none;
         }
 
-        .scroll-top-btn:hover {
+        .scroll-top-btn {
+            display: none; /* Se muestra con JS al hacer scroll */
+        }
+
+        .floating-action-btn:hover, .scroll-top-btn:hover {
             transform: translateY(-3px);
             background-color: var(--accent-crimson);
         }
@@ -397,6 +401,15 @@
             border-top: 1px solid var(--card-border);
             margin-top: 50px;
         }
+
+        @media (max-width: 600px) {
+            header { padding-top: 45px; }
+            .header-ank-logo { height: 44px; }
+            .header-main-logo { height: 65px; }
+            h1.cabecera-principal { font-size: 1.15rem; }
+            .grid { grid-template-columns: 1fr; }
+            .theme-btn-header { top: 10px; right: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -405,8 +418,8 @@
     <header>
         <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
         <div class="header-logos">
-            <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM">
-            <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada">
+            <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
+            <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo.png';">
         </div>
         <div class="header-text">
             <h1 class="cabecera-principal">Compendio de Clanes</h1>
@@ -414,14 +427,16 @@
     </header>
 
     <div class="controls">
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Buscar clan, disciplina, perdición..." oninput="applyFilters()">
+        <div class="controls-row-top">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar clan, disciplina, perdición..." oninput="applyFilters()">
+            </div>
         </div>
     </div>
 
     <div id="resultsCounter" class="results-counter"></div>
 
-    <div id="loading">Cargando clanes desde Google Sheets...</div>
+    <div id="loading">Cargando clanes...</div>
 
     <div id="clansWrapper" class="grid"></div>
 
@@ -429,56 +444,81 @@
         <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 6px;">
             Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)
         </div>
+        
         <p style="margin-bottom: 12px; font-size: 0.85rem;">
-            Consigue los libros oficiales en <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold);">Nosolorol</a> y <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold);">World of Darkness</a>.
+            Consigue los libros y suplementos oficiales en 
+            <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">Nosolorol</a> y 
+            <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
         </p>
-        <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; opacity: 0.85;">
-            Herramienta no oficial sin ánimo de lucro. Vampiro: La Mascarada y sus marcas pertenecen a Paradox Interactive AB.
+
+        <!-- DISCLAIMER LEGAL -->
+        <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.4; opacity: 0.85;">
+            Esta aplicación es una herramienta/ayuda de juego no oficial para jugadores y Narradores, creada sin ánimo de lucro. 
+            <em>Vampiro: La Mascarada</em>, <em>Mundo de Tinieblas</em> y sus logotipos son marcas registradas de Paradox Interactive AB. 
+            El material original y sus traducciones oficiales pertenecen a Paradox Interactive, White Wolf y Nosolorol Ediciones.
         </div>
     </footer>
 </div>
 
-<button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()">▲</button>
+<!-- BOTONES FLOTANTES INFERIORES -->
+<div class="floating-btn-container">
+    <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">🏠</a>
+    <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
+</div>
 
 <script>
-    const CLANS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=590160707&single=true&output=csv';
-
-    // Mapeo de escudos de clanes
-    const CLAN_ICONS = {
-        "banu haqim": "./iconos/clanes/Banu_Haqim_Symbol.png",
-        "brujah": "./iconos/clanes/Brujah_symbol.png",
-        "caitiff": "./iconos/clanes/Caitiff_symbol.png",
-        "gangrel": "./iconos/clanes/Gangrel_symbol.png",
-        "hecata": "./iconos/clanes/Hecata_symbol.png",
-        "lasombra": "./iconos/clanes/Lasombra_symbol.png",
-        "malkavian": "./iconos/clanes/Malkavian_symbol.png",
-        "ministry": "./iconos/clanes/Ministry_symbol.png",
-        "nosferatu": "./iconos/clanes/Nosferatu_symbol.png",
-        "ravnos": "./iconos/clanes/Ravnos_symbol.png",
-        "salubri": "./iconos/clanes/Salubri_symbol.png",
-        "thin-blood": "./iconos/clanes/Thinblood_symbol.png",
-        "sangre débil": "./iconos/clanes/Thinblood_symbol.png",
-        "toreador": "./iconos/clanes/Toreador_symbol.png",
-        "tremere": "./iconos/clanes/Tremere_symbol.png",
-        "tzimisce": "./iconos/clanes/Tzimisce_symbol.png",
-        "ventrue": "./iconos/clanes/Ventrue_symbol.png"
-    };
-
-    // Mapeo de iconos para las disciplinas que aparecen en los clanes
-    const DISC_ICONS = {
-        'animalismo': 'Animalism_symbol.png',
-        'auspex': 'Auspex_symbol.png',
-        'celeridad': 'Celerity_symbol.png',
-        'dominación': 'Dominate_symbol.png',
-        'fortaleza': 'Fortitude_symbol.png',
-        'hechicería de sangre': 'Blood_Sorcery_symbol.png',
-        'ofuscación': 'Obfuscate_symbol.png',
-        'olvido': 'Oblivion_symbol.png',
-        'potencia': 'Potence_symbol.png',
-        'presencia': 'Presence_symbol.png',
-        'protean': 'Protean_symbol.png',
-        'alquimia de sangre débil': 'Alchemy_symbol.png'
-    };
+    const CLANS_DATA = [
+        {
+            nombre: "Brujah",
+            disciplinas: "Celeridad • Potencia • Presencia",
+            perdicion: "Tensión Violenta: Sufren un dado de penalización a las reservas de tiradas basadas en Comura/Autocontrol al resistirse al Furia/Frenesí.",
+            descripcion: "Antiguos filósofos y revolucionarios reconvertidos en rebeldes apasionados. Los Brujah arden con un fervor ideológico y una furia incontrolable.",
+            fuente: "Corebook V5"
+        },
+        {
+            nombre: "Gangrel",
+            disciplinas: "Animalismo • Fortaleza • Protean",
+            perdicion: "Feralidad: Al entrar en frenesí, adquieren rasgos animalescos permanentes que tardan en desvanecerse.",
+            descripcion: "Los proscritos de la Mascarada, solitarios que prefieren la compañía de la naturaleza y las bestias a la fría política de los príncipes.",
+            fuente: "Corebook V5"
+        },
+        {
+            nombre: "Malkavian",
+            disciplinas: "Auspex • Dominación • Ofuscación",
+            perdicion: "Trastorno: Todos los Malkavian sufren una Aflicción o Trastorno mental crónico que influye en sus crónicas.",
+            descripcion: "Profetas marcados por la locura y la red de sangre compartida (la Telaraña Mental). Ven verdades ocultas tras el velo de la cordura.",
+            fuente: "Corebook V5"
+        },
+        {
+            nombre: "Nosferatu",
+            disciplinas: "Animalismo • Ofuscación • Potencia",
+            perdicion: "Repulsivos: Su deformidad física hace imposible que pasen por humanos ordinarios.",
+            descripcion: "Monstruos obligados a vivir en las sombras de las alcantarillas, pero maestros absolutos del espionaje, la información y los secretos.",
+            fuente: "Corebook V5"
+        },
+        {
+            nombre: "Toreador",
+            disciplinas: "Auspex • Celeridad • Presencia",
+            perdicion: "Fascinación: Quedan cautivados e hipnotizados por la belleza artística o sensorial extrema, perdiendo turnos o concentración.",
+            descripcion: "Los estetas de la noche, enamorados del arte, la pasión, la belleza y la tragedia humana en todas sus formas.",
+            fuente: "Corebook V5"
+        },
+        {
+            nombre: "Tremere",
+            disciplinas: "Auspex • Dominación • Hechicería de Sangre",
+            perdicion: "Sangre Estéril: Su vínculo de sangre está alterado; no pueden vincular a otros vástagos tan fácilmente y su sangre guarda secretos arcanos.",
+            descripcion: "Brujos académicos, antaño una poderosa Casa de hechiceros herméticos que hoy intenta sobrevivir tras la caída de su pirámide.",
+            fuente: "Corebook V5"
+        },
+        {
+            nombre: "Ventrue",
+            disciplinas: "Dominación • Fortaleza • Presencia",
+            perdicion: "Exquisitez Sangrienta: Su Bestia es selectiva; solo pueden alimentarse de un tipo muy específico de presa.",
+            descripcion: "Los señores de la Camarilla, gobernantes natos y aristócratas corporativos que cargan con el peso del liderazgo y la disciplina.",
+            fuente: "Corebook V5"
+        }
+    ];
 
     function initTheme() {
         const savedTheme = localStorage.getItem('vtm-theme');
@@ -508,38 +548,8 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
-
-        Papa.parse(CLANS_CSV_URL, {
-            download: true,
-            header: false,
-            skipEmptyLines: true,
-            complete: function(results) {
-                document.getElementById('loading').style.display = 'none';
-                const filas = results.data;
-                
-                const datos = filas.slice(1).map(row => {
-                    return {
-                        nombre: (row[0] || '').trim(),
-                        apodo: (row[1] || '').trim(),
-                        disciplinas: (row[2] || '').trim(),
-                        perdicion: (row[3] || '').trim(),
-                        variante: (row[4] || '').trim(),
-                        compulsion: (row[5] || '').trim(),
-                        descripcion: (row[6] || '').trim(),
-                        arquetipos: (row[7] || '').trim(),
-                        personajes: (row[8] || '').trim(),
-                        fuente: (row[9] || '').trim(),
-                        pagina: (row[10] || '').trim()
-                    };
-                }).filter(item => item.nombre && item.nombre.toLowerCase() !== 'nombre clan');
-
-                renderizarClanes(datos);
-            },
-            error: function(err) {
-                document.getElementById('loading').textContent = "Error al conectar con la base de datos de clanes.";
-                console.error(err);
-            }
-        });
+        document.getElementById('loading').style.display = 'none';
+        renderizarClanes(CLANS_DATA);
 
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('scrollTopBtn');
@@ -559,40 +569,22 @@
             const card = document.createElement('div');
             card.className = 'card';
             
-            const nombreLower = item.nombre.toLowerCase().trim();
-            const iconPath = CLAN_ICONS[nombreLower] || '';
-
-            card.setAttribute('data-search', `${item.nombre} ${item.apodo} ${item.disciplinas} ${item.perdicion} ${item.descripcion} ${item.arquetipos} ${item.personajes}`.toLowerCase());
-
-            // Procesamos las disciplinas para meterles sus mini iconos limpios
-            let disciplinasHTML = '';
-            if (item.disciplinas && item.disciplinas !== '-') {
-                const listaDisc = item.disciplinas.split(',').map(d => d.trim());
-                let badgesDisc = listaDisc.map(dName => {
-                    const dKey = dName.toLowerCase();
-                    const iconFile = DISC_ICONS[dKey];
-                    let imgDiscHTML = iconFile ? `<img src="./iconos/${iconFile}" class="disc-mini-icon">` : '';
-                    return `<span class="disc-item-inline">${imgDiscHTML}${dName}</span>`;
-                }).join(' ');
-                disciplinasHTML = `<div class="clan-disciplines">⚡ ${badgesDisc}</div>`;
-            }
+            card.setAttribute('data-name', item.nombre.toLowerCase());
+            card.setAttribute('data-desc', item.descripcion.toLowerCase());
+            card.setAttribute('data-disciplinas', item.disciplinas.toLowerCase());
+            card.setAttribute('data-perdicion', item.perdicion.toLowerCase());
 
             card.innerHTML = `
                 <div>
-                    <div class="card-header-clan">
-                        ${iconPath ? `<img src="${iconPath}" class="clan-symbol" alt="${item.nombre}" onerror="this.style.display='none'">` : ''}
-                        <div class="clan-titles-box">
-                            <div class="card-title">${item.nombre}</div>
-                            ${item.apodo ? `<div class="card-apodo">"${item.apodo}"</div>` : ''}
-                        </div>
+                    <div class="card-header">
+                        <div class="card-title">${item.nombre}</div>
                     </div>
-                    ${disciplinasHTML}
+                    <div class="card-meta">⚡ ${item.disciplinas}</div>
                     <div class="card-desc">${item.descripcion}</div>
-                    ${item.perdicion ? `<div class="card-notes">🦇 <strong>Perdición:</strong> ${item.perdicion}</div>` : ''}
-                    ${item.compulsion ? `<div class="card-notes">🌀 <strong>Compulsión:</strong> ${item.compulsion}</div>` : ''}
+                    <div class="card-notes">🦇 <strong>Perdición:</strong> ${item.perdicion}</div>
                 </div>
                 <div class="card-tags">
-                    <span class="badge">📖 ${item.fuente} ${item.pagina ? `pág. ${item.pagina}` : ''}</span>
+                    <span class="badge">📖 ${item.fuente}</span>
                     <span class="badge">Clan V5</span>
                 </div>
             `;
@@ -609,8 +601,15 @@
         let visibleCount = 0;
 
         cards.forEach(card => {
-            const text = card.getAttribute('data-search');
-            if (!query || text.includes(query)) {
+            const name = card.getAttribute('data-name');
+            const desc = card.getAttribute('data-desc');
+            const disciplinas = card.getAttribute('data-disciplinas');
+            const perdicion = card.getAttribute('data-perdicion');
+            const text = card.textContent.toLowerCase();
+
+            const matches = !query || name.includes(query) || desc.includes(query) || disciplinas.includes(query) || perdicion.includes(query) || text.includes(query);
+
+            if (matches) {
                 card.style.display = 'flex';
                 visibleCount++;
             } else {
@@ -618,7 +617,10 @@
             }
         });
 
-        document.getElementById('resultsCounter').textContent = `Mostrando ${visibleCount} clan${visibleCount === 1 ? '' : 'es'}`;
+        const counterEl = document.getElementById('resultsCounter');
+        if (counterEl) {
+            counterEl.textContent = `Mostrando ${visibleCount} clan${visibleCount === 1 ? '' : 'es'}`;
+        }
     }
 
     function scrollToTop() {
