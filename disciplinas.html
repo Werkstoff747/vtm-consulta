@@ -18,7 +18,7 @@
 
     <style>
         /* =========================================================
-            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
+           VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
            ========================================================= */
 
         /* MODO NOCHE / OSCURO (Predeterminado - "Medianoche Vampírica") */
@@ -60,7 +60,7 @@
             --text-main: #1f1f22;
             --text-muted: #555459;
             --tag-bg: #f2f0eb;
-            --input-bg: #ffffff;            
+            --input-bg: #ffffff;           
             
             --header-bg: #2b0408;
             --header-border: #7a0000;
@@ -610,7 +610,7 @@
             padding: 40px;
         }
 
-        /* BOTONES FLOTANTES (DADOS, CARTAS Y SCROLL) */
+        /* BOTONES FLOTANTES INFERIORES (HOME, BACK, SCROLL) */
         .floating-btn-container {
             position: fixed;
             bottom: 25px;
@@ -621,7 +621,7 @@
             z-index: 100;
         }
 
-        .scroll-top-btn, .dice-float-btn, .cards-float-btn {
+        .floating-action-btn, .scroll-top-btn {
             width: 45px;
             height: 45px;
             border-radius: 50%;
@@ -642,176 +642,9 @@
             display: none;
         }
 
-        .scroll-top-btn:hover, .dice-float-btn:hover, .cards-float-btn:hover {
+        .floating-action-btn:hover, .scroll-top-btn:hover {
             transform: translateY(-3px);
             background-color: var(--accent-crimson);
-        }
-
-        /* =========================================================
-            ESTILOS DEL POPUP (MODAL) DEL LANZADOR DE DADOS
-           ========================================================= */
-        .dice-modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.75);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-        }
-
-        .dice-modal-content {
-            width: 100%;
-            max-width: 520px;
-            background: var(--card-bg);
-            border: 2px solid var(--accent-red);
-            border-radius: 8px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-            padding: 25px;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .close-modal-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: var(--text-main);
-            font-size: 1.4rem;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .close-modal-btn:hover {
-            color: var(--accent-crimson);
-        }
-
-        .roller-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px dashed var(--card-border);
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-            padding-right: 30px;
-        }
-
-        .roller-header h2 {
-            font-family: 'Cinzel', serif;
-            color: var(--accent-gold);
-            font-size: 1.15rem;
-            margin: 0;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .roller-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: var(--text-main);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .input-group input {
-            padding: 8px 10px;
-            font-size: 1rem;
-            border: 1px solid var(--card-border);
-            border-radius: 6px;
-            background: var(--input-bg);
-            color: var(--text-main);
-            outline: none;
-        }
-
-        #rollButton {
-            background-color: var(--accent-red);
-            color: white;
-            border: none;
-            padding: 10px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 5px;
-        }
-
-        #rollButton:hover {
-            background-color: var(--accent-crimson);
-        }
-
-        .roller-results {
-            margin-top: 15px;
-            border-top: 1px dashed var(--card-border);
-            padding-top: 12px;
-        }
-
-        .roller-results h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            color: var(--text-main);
-            margin: 0 0 10px 0;
-        }
-
-        .dice-output-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: flex-start;
-            margin: 12px 0;
-        }
-        
-        .die-box {
-            width: 40px;
-            height: 40px;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            flex-shrink: 0;
-        }
-
-        .bg-normal-empty { background-color: #3a3a3a; border: 1px solid #222; }
-        .bg-normal-dice { background-color: #3a3a3a; border: 1px solid #222; }
-        .bg-hunger-empty { background-color: #5c101c; border: 1px solid #3c0a12; }
-        .bg-hunger-dice { background-color: #8b0000; border: 1px solid #5c101c; }
-
-        .die-icon {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-            filter: brightness(0) invert(1);
-        }
-
-        .roll-summary {
-            background: var(--summary-bg);
-            padding: 10px;
-            border-left: 4px solid var(--accent-red);
-            border-radius: 4px;
-            font-size: 0.85rem;
-            line-height: 1.4;
-            color: var(--text-main);
         }
 
         footer {
@@ -905,42 +738,9 @@
 
 <!-- BOTONES FLOTANTES INFERIORES -->
 <div class="floating-btn-container">
-    <a href="cartas.html" class="cards-float-btn" title="Generador de Cartas Imprimibles">🎴</a>
-    <button class="dice-float-btn" onclick="openDiceModal()" title="Abrir Lanzador de Dados">🎲</button>
+    <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">🏠</a>
+    <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
     <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
-</div>
-
-<!-- VENTANA POPUP (MODAL) DEL LANZADOR DE DADOS -->
-<div id="diceModal" class="dice-modal-overlay">
-    <div class="dice-modal-content">
-        <button class="close-modal-btn" onclick="closeDiceModal()">&times;</button>
-        <div class="roller-header">
-            <span>🎲</span>
-            <h2>Lanzador de Dados V5</h2>
-        </div>
-        
-        <div class="roller-inputs">
-            <div class="input-group">
-                <label for="dicePool">Reserva de Dados (Atributo + Habilidad):</label>
-                <input type="number" id="dicePool" min="1" max="20" value="4">
-            </div>
-            <div class="input-group">
-                <label for="hungerLevel">Nivel de Ansia (Hambre 0-5):</label>
-                <input type="number" id="hungerLevel" min="0" max="5" value="2">
-            </div>
-            <div class="input-group">
-                <label for="difficulty">Dificultad (Éxitos necesarios - Opcional):</label>
-                <input type="number" id="difficulty" min="0" max="20" value="3">
-            </div>
-            <button id="rollButton" onclick="lanzarDadosV5()">Lanzar Tirada</button>
-        </div>
-
-        <div id="rollerResults" class="roller-results" style="display: none;">
-            <h3>Resultado de la Tirada</h3>
-            <div id="diceOutput" class="dice-output-grid"></div>
-            <div id="rollSummary" class="roll-summary"></div>
-        </div>
-    </div>
 </div>
 
 <script>
@@ -993,21 +793,6 @@
             localStorage.setItem('vtm-theme', 'dark');
         }
     }
-
-    function openDiceModal() {
-        document.getElementById('diceModal').style.display = 'flex';
-    }
-
-    function closeDiceModal() {
-        document.getElementById('diceModal').style.display = 'none';
-    }
-
-    window.addEventListener('click', (event) => {
-        const modal = document.getElementById('diceModal');
-        if (event.target === modal) {
-            closeDiceModal();
-        }
-    });
 
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
@@ -1093,7 +878,7 @@
         const disciplinas = [...new Set(datos.map(item => item.disciplina).filter(Boolean))].sort();
         const container = document.getElementById('filterContainer');
         
-        disciplinesSet = disciplinas.forEach(disc => {
+        disciplinas.forEach(disc => {
             if (!disc || disc.toLowerCase() === 'disciplina') return;
 
             const btn = document.createElement('button');
@@ -1261,125 +1046,6 @@
         });
 
         applyFilters();
-    }
-
-    function lanzarDadosV5() {
-        let pool = parseInt(document.getElementById('dicePool').value) || 0;
-        let hunger = parseInt(document.getElementById('hungerLevel').value) || 0;
-        let difficulty = parseInt(document.getElementById('difficulty').value) || 0;
-
-        if (pool < 1) return;
-
-        let hungerDiceCount = Math.min(hunger, pool);
-        let normalDiceCount = pool - hungerDiceCount;
-
-        let totalSuccesses = 0;
-        let normalTens = 0;
-        let hungerTens = 0;
-        let hungerOnes = 0;
-        let todosFallos = true;
-        let resultadosVisuales = [];
-
-        for (let i = 0; i < normalDiceCount; i++) {
-            let val = Math.floor(Math.random() * 10) + 1;
-            if (val >= 6) {
-                totalSuccesses++;
-                todosFallos = false;
-                if (val === 10) { normalTens++; }
-            }
-            resultadosVisuales.push({ val, isHunger: false });
-        }
-
-        for (let i = 0; i < hungerDiceCount; i++) {
-            let val = Math.floor(Math.random() * 10) + 1;
-            if (val >= 6) {
-                totalSuccesses++;
-                todosFallos = false;
-                if (val === 10) { hungerTens++; }
-            } else {
-                if (val === 1) { hungerOnes++; }
-            }
-            resultadosVisuales.push({ val, isHunger: true });
-        }
-
-        let totalTens = normalTens + hungerTens;
-        let paresCriticos = Math.floor(totalTens / 2);
-        let exitosFinales = totalSuccesses + (paresCriticos * 2);
-
-        const container = document.getElementById('diceOutput');
-        container.innerHTML = '';
-        
-        resultadosVisuales.forEach(d => {
-            const dieEl = document.createElement('div');
-            dieEl.className = 'die-box';
-            
-            let iconoSrc = '';
-            
-            if (!d.isHunger) {
-                if (d.val >= 6 && d.val <= 9) {
-                    dieEl.classList.add('bg-normal-dice');
-                    iconoSrc = './iconos/VtMDiceSymbols-01.svg';
-                } else if (d.val === 10) {
-                    dieEl.classList.add('bg-normal-dice');
-                    iconoSrc = './iconos/VtMDiceSymbols-02.svg';
-                } else {
-                    dieEl.classList.add('bg-normal-empty');
-                }
-            } else {
-                if (d.val === 1) {
-                    dieEl.classList.add('bg-hunger-dice');
-                    iconoSrc = './iconos/VtMDiceSymbols-04.svg';
-                } else if (d.val >= 2 && d.val <= 5) {
-                    dieEl.classList.add('bg-hunger-empty');
-                } else if (d.val >= 6 && d.val <= 9) {
-                    dieEl.classList.add('bg-hunger-dice');
-                    iconoSrc = './iconos/VtMDiceSymbols-01.svg';
-                } else if (d.val === 10) {
-                    dieEl.classList.add('bg-hunger-dice');
-                    iconoSrc = './iconos/VtMDiceSymbols-03.svg';
-                }
-            }
-
-            if (iconoSrc) {
-                const img = document.createElement('img');
-                img.src = iconoSrc;
-                img.className = 'die-icon';
-                dieEl.appendChild(img);
-            }
-
-            container.appendChild(dieEl);
-        });
-
-        document.getElementById('rollerResults').style.display = 'block';
-
-        let cumpleDificultad = difficulty > 0 ? (exitosFinales >= difficulty) : null;
-        let resumenHTML = `<strong>Éxitos Totales: ${exitosFinales}</strong>`;
-        
-        if (difficulty > 0) {
-            if (cumpleDificultad) {
-                resumenHTML += ` <span style="color: #2e7d32; font-weight: bold;">(¡Supera la Dificultad ${difficulty}!)</span><br>`;
-            } else {
-                resumenHTML += ` <span style="color: #c62828; font-weight: bold;">(No alcanza la Dificultad ${difficulty})</span><br>`;
-            }
-        } else {
-            resumenHTML += `<br>`;
-        }
-        
-        if (paresCriticos > 0) {
-            resumenHTML += `✨ <strong>¡Éxito Crítico!</strong> (${paresCriticos} pareja${paresCriticos > 1 ? 's' : ''} de 10)<br>`;
-            if (hungerTens > 0) {
-                resumenHTML += `<span style="color: #b30000; font-weight: bold;">⚠️ ¡Crítico Conflictivo (Messy Critical)! La Bestia toma el control.</span><br>`;
-            }
-        }
-        
-        let esFalloPrueba = (difficulty > 0 ? !cumpleDificultad : todosFallos);
-        if (esFalloPrueba && hungerOnes > 0) {
-            resumenHTML += `<span style="color: #b30000; font-weight: bold;">💀 ¡Fallo Bestial (Bestial Failure)! Consecuencias graves del Ansia.</span>`;
-        } else if (todosFallos) {
-            resumenHTML += `<span style="color: #666;">Fallo total.</span>`;
-        }
-
-        document.getElementById('rollSummary').innerHTML = resumenHTML;
     }
 
     function filterDiscipline(discipline) {
