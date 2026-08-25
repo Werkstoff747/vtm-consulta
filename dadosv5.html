@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lanzador de Dados — Vampiro: La Mascarada V5</title>
@@ -12,7 +11,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
       gtag('config', 'G-0REGNEJC1G');
     </script>
     <!-- End Google Tag Manager -->
@@ -812,7 +810,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    import { getDatabase, ref, push, update, onChildAdded } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAtZTf5ggJx6z2_ZHBQNqD48neZehUPIEU",
@@ -1016,7 +1014,7 @@
         const horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const salaRef = ref(db, `salas/${currentRoom}/tiradas`);
         
-        push(salaRef, {
+        const nuevaTiradaRef = push(salaRef, {
             nombre: nombreUsuario,
             resumenTexto: resumenHTML,
             pool: pool,
@@ -1024,11 +1022,23 @@
             difficulty: difficulty,
             resultadosVisuales: resultadosVisuales,
             isFdv: false,
+            fdvGastada: false,
             tiempo: horaActual
         });
+
+        // Guardamos su propio ID en el nodo raíz de la tirada para referenciarla al gastar FdV
+        update(nuevaTiradaRef, { id: nuevaTiradaRef.key });
     };
 
-    window.gastarFuerzaVoluntad = function(pool, hunger, difficulty, resultadosActuales) {
+    window.gastarFuerzaVoluntad = function(snapshotKey, pool, hunger, difficulty, resultadosActuales, btnElement) {
+        // Protección contra múltiples clics
+        if (btnElement && btnElement.disabled) return;
+        if (btnElement) {
+            btnElement.disabled = true;
+            btnElement.style.opacity = '0.5';
+            btnElement.style.cursor = 'not-allowed';
+        }
+
         let dadosRepetidosCount = 0;
 
         let nuevosResultados = resultadosActuales.map(d => {
@@ -1045,7 +1055,18 @@
 
         if (dadosRepetidosCount === 0) {
             alert("No tienes dados elegibles para repetir (recuerda que los 1 de Ansia no se pueden repetir y solo se repiten dados que no sean éxitos).");
+            if (btnElement) {
+                btnElement.disabled = false;
+                btnElement.style.opacity = '1';
+                btnElement.style.cursor = 'pointer';
+            }
             return;
+        }
+
+        // Marcar la tirada original como gastada instantáneamente en la BD
+        if (snapshotKey) {
+            const tiradaOriginalRef = ref(db, `salas/${currentRoom}/tiradas/${snapshotKey}`);
+            update(tiradaOriginalRef, { fdvGastada: true });
         }
 
         let totalSuccesses = 0;
@@ -1106,6 +1127,7 @@
             difficulty: difficulty,
             resultadosVisuales: nuevosResultados,
             isFdv: true,
+            fdvGastada: true,
             dadosRepetidos: dadosRepetidosCount,
             tiempo: horaActual
         });
@@ -1157,10 +1179,11 @@
         }
 
         let botonFdVHTML = '';
-        if (data.nombre === nombreUsuario && !data.isFdv) {
+        if (data.nombre === nombreUsuario && !data.isFdv && !data.fdvGastada) {
             let jsonResultados = JSON.stringify(data.resultadosVisuales).replace(/"/g, '&quot;');
             let diff = data.difficulty || 0;
-            botonFdVHTML = `<button class="willpower-btn" onclick="gastarFuerzaVoluntad(${data.pool}, ${data.hunger}, ${diff}, ${jsonResultados})">⚡ Gastar FdV</button>`;
+            let snapshotKey = data.id || '';
+            botonFdVHTML = `<button class="willpower-btn" onclick="gastarFuerzaVoluntad('${snapshotKey}', ${data.pool}, ${data.hunger}, ${diff}, ${jsonResultados}, this)">⚡ Gastar FdV</button>`;
         }
 
         let cardClass = "chat-card";
