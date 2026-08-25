@@ -18,7 +18,6 @@
             VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
             ========================================================= */
 
-        /* MODO NOCHE / OSCURO ("Medianoche Vampírica") */
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
@@ -35,7 +34,6 @@
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
         }
 
-        /* MODO DÍA / CLARO ("Pergamino Frío / Camarilla") */
         body.light-mode {
             --bg-color: #a8a7a4;
             --card-bg: #ffffff;
@@ -78,9 +76,6 @@
             flex: 1;
         }
 
-        /* =========================================================
-            CABECERA ESTILO V5
-            ========================================================= */
         header {
             position: relative;
             display: flex;
@@ -158,9 +153,6 @@
             transform: scale(1.08);
         }
 
-        /* =========================================================
-            LAYOUT PRINCIPAL: LANZADOR + CHAT LATERAL
-            ========================================================= */
         .main-layout {
             display: grid;
             grid-template-columns: 1fr 380px;
@@ -286,9 +278,7 @@
             color: var(--text-main);
         }
 
-        /* =========================================================
-            BARRA LATERAL DE CHAT / REGISTRO
-            ========================================================= */
+        /* BARRA LATERAL DE CHAT / REGISTRO */
         .chat-sidebar {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -305,12 +295,43 @@
             border-bottom: 1px solid var(--card-border);
             font-family: 'Cinzel', serif;
             color: var(--accent-gold);
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
             text-align: center;
             font-weight: 700;
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .room-selector {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 4px;
+        }
+
+        .room-selector input {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            border: 1px solid var(--card-border);
+            background: var(--input-bg);
+            color: var(--text-main);
+            outline: none;
+            width: 140px;
+        }
+
+        .room-selector button {
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
 
         .chat-messages {
@@ -349,9 +370,6 @@
             color: var(--text-main);
         }
 
-        /* =========================================================
-            BOTONES FLOTANTES Y FOOTER
-            ========================================================= */
         .floating-btn-container {
             position: fixed;
             bottom: 25px;
@@ -396,7 +414,6 @@
             margin-top: 40px;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 900px) {
             .main-layout {
                 grid-template-columns: 1fr;
@@ -410,7 +427,6 @@
 <body>
 
 <div class="container">
-    <!-- CABECERA OFICIAL V5 -->
     <header>
         <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
         <div class="header-logos">
@@ -422,7 +438,6 @@
         </div>
     </header>
 
-    <!-- CUERPO PRINCIPAL (DADOS + CHAT) -->
     <div class="main-layout">
         <!-- Lanzador de dados -->
         <div class="dice-roller-v5">
@@ -449,11 +464,17 @@
             </div>
         </div>
 
-        <!-- Barra lateral de chat en tiempo real -->
+        <!-- Barra lateral con selector de sala -->
         <div class="chat-sidebar">
-            <div class="chat-header">Registro de Partida</div>
+            <div class="chat-header">
+                <span id="roomTitle">Sala: General</span>
+                <div class="room-selector">
+                    <input type="text" id="roomInput" placeholder="Nombre de sala...">
+                    <button onclick="cambiarSala()">Entrar</button>
+                </div>
+            </div>
             <div id="chatMessages" class="chat-messages">
-                <!-- Las tiradas aparecerán aquí automáticamente -->
+                <!-- Las tiradas aparecerán aquí -->
             </div>
         </div>
     </div>
@@ -474,17 +495,15 @@
     </footer>
 </div>
 
-<!-- BOTONES FLOTANTES INFERIORES -->
 <div class="floating-btn-container">
     <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">🏠</a>
     <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
     <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
 </div>
 
-<!-- LÓGICA Y FIREBASE -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    import { getDatabase, ref, push, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDKcCuaT_-4uPihheHG6fwphiZp3qyqdI4",
@@ -499,12 +518,27 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // Obtener la sala actual desde la URL (ej: dadosv5.html?sala=mi_grupo) o usar 'general' por defecto
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentRoom = urlParams.get('sala') ? urlParams.get('sala').toLowerCase().trim() : 'general';
+    
+    document.getElementById('roomTitle').textContent = `Sala: ${currentRoom}`;
+    document.getElementById('roomInput').value = currentRoom;
+
     // Nombre de usuario en sesión
     let nombreUsuario = sessionStorage.getItem('drrol_user');
     if (!nombreUsuario) {
         nombreUsuario = prompt("¿Cómo te llamas, Kindred?") || "Vampiro Anónimo";
         sessionStorage.setItem('drrol_user', nombreUsuario);
     }
+
+    // Función para cambiar de sala recargando la página con el parámetro nuevo
+    window.cambiarSala = function() {
+        const nuevaSala = document.getElementById('roomInput').value.toLowerCase().trim();
+        if (nuevaSala) {
+            window.location.href = `dadosv5.html?sala=${encodeURIComponent(nuevaSala)}`;
+        }
+    };
 
     // Tema Día / Noche
     function initTheme() {
@@ -549,7 +583,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Tirar dados y enviar a Firebase
+    // Lanzar dados y enviar a Firebase dentro de la sala actual
     window.lanzarDadosV5 = function() {
         let pool = parseInt(document.getElementById('dicePool').value) || 0;
         let hunger = parseInt(document.getElementById('hungerLevel').value) || 0;
@@ -666,11 +700,11 @@
 
         document.getElementById('rollSummary').innerHTML = resumenHTML;
 
-        // Enviar a Firebase
+        // Enviar a la ruta específica de la sala en Firebase
         const horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const tiradasRef = ref(db, 'tiradas_v5');
+        const salaRef = ref(db, `salas/${currentRoom}/tiradas`);
         
-        push(tiradasRef, {
+        push(salaRef, {
             nombre: nombreUsuario,
             resumenTexto: resumenHTML,
             pool: pool,
@@ -679,11 +713,11 @@
         });
     };
 
-    // Escuchar en tiempo real
+    // Escuchar solo las tiradas de la sala actual en tiempo real
     const chatContainer = document.getElementById('chatMessages');
-    const tiradasRef = ref(db, 'tiradas_v5');
+    const salaRef = ref(db, `salas/${currentRoom}/tiradas`);
 
-    onChildAdded(tiradasRef, (snapshot) => {
+    onChildAdded(salaRef, (snapshot) => {
         const data = snapshot.val();
         
         const card = document.createElement('div');
