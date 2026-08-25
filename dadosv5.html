@@ -32,6 +32,14 @@
             --header-border: #8b0000;
             --summary-bg: rgba(139, 0, 0, 0.1);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
+            
+            /* Colores específicos FdV Modo Oscuro */
+            --fdv-card-bg: #0d1b2a;
+            --fdv-card-border: #1d3557;
+            --fdv-card-left: #457b9d;
+            --fdv-btn-bg: #1d3557;
+            --fdv-btn-hover: #457b9d;
+            --fdv-btn-text: #ffffff;
         }
 
         body.light-mode {
@@ -48,6 +56,14 @@
             --header-border: #7a0000;
             --summary-bg: #fdf8f8;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
+            
+            /* Colores específicos FdV Modo Claro (Efecto brillo azul translúcido) */
+            --fdv-card-bg: rgba(29, 53, 87, 0.06);
+            --fdv-card-border: rgba(29, 53, 87, 0.2);
+            --fdv-card-left: #1d3557;
+            --fdv-btn-bg: #1d3557;
+            --fdv-btn-hover: #457b9d;
+            --fdv-btn-text: #ffffff;
         }
 
         * {
@@ -433,24 +449,23 @@
             gap: 12px;
         }
 
-        /* SCROLLBAR OSCURO */
+        /* SCROLLBAR */
         .chat-messages::-webkit-scrollbar {
             width: 8px;
         }
         .chat-messages::-webkit-scrollbar-track {
-            background: #0f0f12;
+            background: var(--input-bg);
             border-radius: 4px;
         }
         .chat-messages::-webkit-scrollbar-thumb {
-            background: #2a2a32;
+            background: var(--card-border);
             border-radius: 4px;
-            border: 1px solid #18181c;
         }
         .chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #8b0000;
+            background: var(--accent-red);
         }
 
-        /* NUEVA ESTRUCTURA DE 4 COLUMNAS PARA LAS TARJETAS */
+        /* ESTRUCTURA DE 4 COLUMNAS PARA LAS TARJETAS */
         .chat-card {
             background: var(--input-bg);
             border: 1px solid var(--card-border);
@@ -459,16 +474,17 @@
             font-size: 0.85rem;
             border-left: 4px solid var(--accent-red);
             display: grid;
-            grid-template-columns: 150px 1fr 140px 170px; /* 4 Columnas: Usuario | Detalles | Botón FdV | Dados */
+            grid-template-columns: 150px 1fr 140px 170px;
             gap: 12px;
             align-items: center;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        /* Tarjeta especial FdV (Azul Oscuro) */
+        /* Tarjeta especial FdV usando variables de tema */
         .chat-card.fdv-card {
-            background: #0d1b2a;
-            border-color: #1d3557;
-            border-left: 4px solid #457b9d;
+            background: var(--fdv-card-bg);
+            border-color: var(--fdv-card-border);
+            border-left: 4px solid var(--fdv-card-left);
         }
 
         .chat-col-user {
@@ -504,7 +520,6 @@
             line-height: 1.3;
         }
 
-        /* Columna 3: Botón de Fuerza de Voluntad estilizado (Horizontal y compacto) */
         .chat-col-action {
             display: flex;
             justify-content: center;
@@ -512,9 +527,9 @@
         }
 
         .willpower-btn {
-            background-color: #1d3557;
-            color: #ffffff;
-            border: 1px solid #457b9d;
+            background-color: var(--fdv-btn-bg);
+            color: var(--fdv-btn-text);
+            border: 1px solid var(--fdv-card-left);
             padding: 6px 10px;
             font-size: 0.7rem;
             font-weight: bold;
@@ -526,11 +541,10 @@
             transition: background-color 0.2s, transform 0.1s;
         }
         .willpower-btn:hover {
-            background-color: #457b9d;
+            background-color: var(--fdv-btn-hover);
             transform: scale(1.03);
         }
 
-        /* Columna 4: Dados a la derecha */
         .chat-col-dice {
             display: flex;
             flex-wrap: wrap;
@@ -705,7 +719,7 @@
             </div>
         </div>
 
-        <!-- Barra lateral de chat con scroll oscuro y formato de 4 columnas -->
+        <!-- Barra lateral de chat con scroll adaptativo -->
         <div class="chat-sidebar">
             <div class="chat-header">
                 <span id="roomTitle">Sala: General</span>
@@ -753,15 +767,15 @@
 </div>
 
 <!-- BOTONES FLOTANTES INFERIORES -->
-    <div class="floating-btn-container">
-        <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" style="vertical-align: middle;">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-        </a>
-        <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
-        <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
-    </div>
+<div class="floating-btn-container">
+    <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" style="vertical-align: middle;">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+    </a>
+    <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
@@ -1109,7 +1123,6 @@
             });
         }
 
-        // Botón compacto en su propia columna si es tu tirada y no es FdV
         let botonFdVHTML = '';
         if (data.nombre === nombreUsuario && !data.isFdv) {
             let jsonResultados = JSON.stringify(data.resultadosVisuales).replace(/"/g, '&quot;');
