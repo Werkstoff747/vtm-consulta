@@ -161,6 +161,12 @@
             align-items: start;
         }
 
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
         .dice-roller-v5 {
             width: 100%;
             background: var(--card-bg);
@@ -278,6 +284,58 @@
             color: var(--text-main);
         }
 
+        /* LEYENDA V5 */
+        .legend-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .legend-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed var(--card-border);
+            padding-bottom: 8px;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            font-size: 0.85rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--input-bg);
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+        }
+
+        .legend-icon-box {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .legend-text strong {
+            color: var(--accent-gold);
+            display: block;
+            font-size: 0.8rem;
+        }
+
         /* BARRA LATERAL DE CHAT / REGISTRO */
         .chat-sidebar {
             background: var(--card-bg);
@@ -285,7 +343,8 @@
             border-radius: 8px;
             display: flex;
             flex-direction: column;
-            height: 660px;
+            height: 100%;
+            min-height: 600px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
 
@@ -454,7 +513,7 @@
                 grid-template-columns: 1fr;
             }
             .chat-sidebar {
-                height: 480px;
+                height: 500px;
             }
         }
     </style>
@@ -474,32 +533,78 @@
     </header>
 
     <div class="main-layout">
-        <!-- Lanzador de dados -->
-        <div class="dice-roller-v5">
-            <div class="roller-inputs">
-                <div class="input-group">
-                    <label for="dicePool">Reserva de Dados (Atributo + Habilidad):</label>
-                    <input type="number" id="dicePool" min="1" max="20" value="4">
+        <!-- Columna Izquierda: Lanzador + Leyenda -->
+        <div class="left-column">
+            <!-- Lanzador de dados -->
+            <div class="dice-roller-v5">
+                <div class="roller-inputs">
+                    <div class="input-group">
+                        <label for="dicePool">Reserva de Dados (Atributo + Habilidad):</label>
+                        <input type="number" id="dicePool" min="1" max="20" value="4">
+                    </div>
+                    <div class="input-group">
+                        <label for="hungerLevel">Nivel de Ansia (Hambre 0-5):</label>
+                        <input type="number" id="hungerLevel" min="0" max="5" value="2">
+                    </div>
+                    <div class="input-group">
+                        <label for="difficulty">Dificultad (Éxitos necesarios - Opcional):</label>
+                        <input type="number" id="difficulty" min="0" max="20" value="3">
+                    </div>
+                    <button id="rollButton" onclick="lanzarDadosV5()">Lanzar Tirada</button>
                 </div>
-                <div class="input-group">
-                    <label for="hungerLevel">Nivel de Ansia (Hambre 0-5):</label>
-                    <input type="number" id="hungerLevel" min="0" max="5" value="2">
+
+                <div id="rollerResults" class="roller-results" style="display: none;">
+                    <h3>Resultado de la Tirada</h3>
+                    <div id="diceOutput" class="dice-output-grid"></div>
+                    <div id="rollSummary" class="roll-summary"></div>
                 </div>
-                <div class="input-group">
-                    <label for="difficulty">Dificultad (Éxitos necesarios - Opcional):</label>
-                    <input type="number" id="difficulty" min="0" max="20" value="3">
-                </div>
-                <button id="rollButton" onclick="lanzarDadosV5()">Lanzar Tirada</button>
             </div>
 
-            <div id="rollerResults" class="roller-results" style="display: none;">
-                <h3>Resultado de la Tirada</h3>
-                <div id="diceOutput" class="dice-output-grid"></div>
-                <div id="rollSummary" class="roll-summary"></div>
+            <!-- Leyenda de Iconos V5 -->
+            <div class="legend-card">
+                <h3>Leyenda de Símbolos V5</h3>
+                <div class="legend-grid">
+                    <div class="legend-item">
+                        <div class="legend-icon-box bg-normal-dice">
+                            <img src="./iconos/VtMDiceSymbols-01.svg" class="die-icon" alt="Éxito">
+                        </div>
+                        <div class="legend-text">
+                            <strong>Éxito Normal (6-9)</strong>
+                            <span>Suma 1 éxito a la reserva.</span>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon-box bg-normal-dice">
+                            <img src="./iconos/VtMDiceSymbols-02.svg" class="die-icon" alt="Crítico Normal">
+                        </div>
+                        <div class="legend-text">
+                            <strong>Crítico Normal (10)</strong>
+                            <span>Pares de 10 suman 4 éxitos.</span>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon-box bg-hunger-dice">
+                            <img src="./iconos/VtMDiceSymbols-03.svg" class="die-icon" alt="Crítico Ansia">
+                        </div>
+                        <div class="legend-text">
+                            <strong>Crítico Bestial (10 Ansia)</strong>
+                            <span>¡Cuidado! Posible Crítico Conflictivo.</span>
+                        </div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-icon-box bg-hunger-dice">
+                            <img src="./iconos/VtMDiceSymbols-04.svg" class="die-icon" alt="Fallo Ansia">
+                        </div>
+                        <div class="legend-text">
+                            <strong>Fallo Bestial (1 Ansia)</strong>
+                            <span>Si fallas la tirada, la Bestia toma el control.</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Barra lateral con Perfil y Salas Explicativo -->
+        <!-- Barra lateral de chat en tiempo real -->
         <div class="chat-sidebar">
             <div class="chat-header">
                 <span id="roomTitle">Sala: General</span>
@@ -513,7 +618,7 @@
                     </div>
                 </div>
 
-                <!-- Cambiar Sala con texto de ayuda -->
+                <!-- Cambiar Sala -->
                 <div class="config-section">
                     <span>Cambiar de Sala:</span>
                     <span class="config-instruction">Escribe el nombre de una sala para entrar en un chat con amigos.</span>
