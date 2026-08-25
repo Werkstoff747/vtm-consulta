@@ -336,7 +336,7 @@
             font-size: 0.75rem;
         }
 
-        /* BARRA LATERAL DE CHAT / REGISTRO */
+        /* BARRA LATERAL DE CHAT CON SCROLL OSCURO */
         .chat-sidebar {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -433,6 +433,24 @@
             gap: 12px;
         }
 
+        /* SCROLLBAR OSCURO ACORDE AL TEMA */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: #0f0f12;
+            border-radius: 4px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #2a2a32;
+            border-radius: 4px;
+            border: 1px solid #18181c;
+        }
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #8b0000;
+        }
+
+        /* Tarjeta base del chat */
         .chat-card {
             background: var(--input-bg);
             border: 1px solid var(--card-border);
@@ -444,6 +462,13 @@
             grid-template-columns: 180px 1fr 180px;
             gap: 10px;
             align-items: center;
+        }
+
+        /* Tarjeta especial para gasto de FdV (Azul Oscuro) */
+        .chat-card.fdv-card {
+            background: #0d1b2a;
+            border-color: #1d3557;
+            border-left: 4px solid #457b9d;
         }
 
         .chat-col-user {
@@ -475,26 +500,30 @@
         .chat-col-details {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
             line-height: 1.3;
         }
 
-        /* Botón de gastar Fuerza de Voluntad */
+        /* Botón de Fuerza de Voluntad (Azul oscuro, rectangular, dos líneas) */
         .willpower-btn {
-            background-color: var(--accent-gold);
-            color: #0f0f12;
-            border: none;
-            padding: 4px 8px;
-            font-size: 0.7rem;
+            background-color: #1d3557;
+            color: #ffffff;
+            border: 1px solid #457b9d;
+            padding: 6px 12px;
+            font-size: 0.75rem;
             font-weight: bold;
             border-radius: 4px;
             cursor: pointer;
             text-transform: uppercase;
-            width: fit-content;
-            transition: opacity 0.2s;
+            width: 100%;
+            max-width: 130px;
+            text-align: center;
+            line-height: 1.2;
+            transition: background-color 0.2s;
+            margin-top: 4px;
         }
         .willpower-btn:hover {
-            opacity: 0.85;
+            background-color: #457b9d;
         }
 
         .chat-col-dice {
@@ -671,7 +700,7 @@
             </div>
         </div>
 
-        <!-- Barra lateral de chat -->
+        <!-- Barra lateral de chat con scroll oscuro -->
         <div class="chat-sidebar">
             <div class="chat-header">
                 <span id="roomTitle">Sala: General</span>
@@ -726,7 +755,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded, set, update } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDKcCuaT_-4uPihheHG6fwphiZp3qyqdI4",
@@ -937,23 +966,21 @@
             hunger: hunger,
             difficulty: difficulty,
             resultadosVisuales: resultadosVisuales,
+            isFdv: false,
             tiempo: horaActual
         });
     };
 
-    // FUNCIÓN PARA GASTAR FUERZA DE VOLUNTAD (REPETIR HASTA 3 DADOS FALLIDOS)
-    window.gastarFuerzaVoluntad = function(firebaseKey, pool, hunger, difficulty, resultadosActuales) {
+    // FUNCIÓN PARA GASTAR FUERZA DE VOLUNTAD Y LANZAR UNA NUEVA TARJETA AZUL
+    window.gastarFuerzaVoluntad = function(pool, hunger, difficulty, resultadosActuales) {
         let dadosRepetidosCount = 0;
 
         let nuevosResultados = resultadosActuales.map(d => {
-            // Condición V5: Solo se pueden repetir dados que NO sean éxito (valor < 6)
-            // Y los dados de Ansia con valor 1 NO se pueden repetir (problemas/fallo bestial)
             let esFallo = d.val < 6;
             let esAnsiaPeligrosa = d.isHunger && d.val === 1;
 
             if (esFallo && !esAnsiaPeligrosa && dadosRepetidosCount < 3) {
                 dadosRepetidosCount++;
-                // Tiramos un nuevo dado del mismo tipo (normal o ansia)
                 let nuevoVal = Math.floor(Math.random() * 10) + 1;
                 return { val: nuevoVal, isHunger: d.isHunger };
             }
@@ -965,7 +992,6 @@
             return;
         }
 
-        // Recalcular éxitos con los nuevos valores
         let totalSuccesses = 0;
         let normalTens = 0;
         let hungerTens = 0;
@@ -989,7 +1015,7 @@
         let exitosFinales = totalSuccesses + (paresCriticos * 2);
 
         let cumpleDificultad = difficulty > 0 ? (exitosFinales >= difficulty) : null;
-        let resumenHTML = `⚡ <strong>¡FdV Gastada! (${dadosRepetidosCount} dados repetidos)</strong><br><strong>Éxitos Totales: ${exitosFinales}</strong>`;
+        let resumenHTML = `<strong>Éxitos Totales: ${exitosFinales}</strong>`;
         
         if (difficulty > 0) {
             if (cumpleDificultad) {
@@ -1014,13 +1040,19 @@
         }
 
         const horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const targetRef = ref(db, `salas/${currentRoom}/tiradas/${firebaseKey}`);
-
-        // Actualizamos el registro en Firebase
-        update(targetRef, {
+        const salaRef = ref(db, `salas/${currentRoom}/tiradas`);
+        
+        // Publica una nueva tirada específica indicando el gasto de FdV
+        push(salaRef, {
+            nombre: nombreUsuario,
             resumenTexto: resumenHTML,
+            pool: pool,
+            hunger: hunger,
+            difficulty: difficulty,
             resultadosVisuales: nuevosResultados,
-            tiempo: horaActual + " (FdV)"
+            isFdv: true,
+            dadosRepetidos: dadosRepetidosCount,
+            tiempo: horaActual
         });
     };
 
@@ -1029,7 +1061,6 @@
 
     onChildAdded(salaRef, (snapshot) => {
         const data = snapshot.val();
-        const firebaseKey = snapshot.key;
         
         let miniDadosHTML = '';
         if (data.resultadosVisuales) {
@@ -1070,17 +1101,24 @@
             });
         }
 
-        // Mostrar el botón de FdV solo si la tirada es del usuario actual
+        // Si es tu tirada original (y no es ya una tirada de FdV), le añadimos el botón al final
         let botonFdVHTML = '';
-        if (data.nombre === nombreUsuario && !data.resumenTexto.includes('⚡')) {
-            // Pasamos los datos serializados para que el botón pueda recalcular
+        if (data.nombre === nombreUsuario && !data.isFdv) {
             let jsonResultados = JSON.stringify(data.resultadosVisuales).replace(/"/g, '&quot;');
-            botonFdVHTML = `<button class="willpower-btn" onclick="gastarFuerzaVoluntad('${firebaseKey}', ${data.pool}, ${data.hunger}, ${data.difficulty || 0}, ${jsonResultados})">⚡ Gastar FdV (Repetir)</button>`;
+            let diff = data.difficulty || 0;
+            botonFdVHTML = `<button class="willpower-btn" onclick="gastarFuerzaVoluntad(${data.pool}, ${data.hunger}, ${diff}, ${jsonResultados})">Voluntad<br>(Reroll)</button>`;
+        }
+
+        // Definir clases y cabecera según si es una tirada normal o un gasto de FdV
+        let cardClass = "chat-card";
+        let subTextoTipo = `Reserva: ${data.pool} dados (Ansia: ${data.hunger})`;
+        if (data.isFdv) {
+            cardClass += " fdv-card";
+            subTextoTipo = `⚡ Gasto de FdV (${data.dadosRepetidos} dados repetidos) — Reserva: ${data.pool} dados (Ansia: ${data.hunger})`;
         }
 
         const card = document.createElement('div');
-        card.className = 'chat-card';
-        card.setAttribute('data-id', firebaseKey);
+        card.className = cardClass;
         card.innerHTML = `
             <div class="chat-col-user">
                 <div class="chat-user-info">
@@ -1090,7 +1128,7 @@
                 <span class="chat-card-time">${data.tiempo}</span>
             </div>
             <div class="chat-col-details">
-                <span style="font-size: 0.8rem; color: var(--text-muted);">Reserva: ${data.pool} dados (Ansia: ${data.hunger})</span>
+                <span style="font-size: 0.8rem; color: var(--text-muted);">${subTextoTipo}</span>
                 <div>${data.resumenTexto}</div>
                 ${botonFdVHTML}
             </div>
