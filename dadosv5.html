@@ -67,7 +67,7 @@
             --summary-bg: #fdf8f8;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
             
-            /* Colores específicos FdV Modo Claro (Efecto brillo azul translúcido) */
+            /* Colores específicos FdV Modo Claro */
             --fdv-card-bg: rgba(29, 53, 87, 0.06);
             --fdv-card-border: rgba(29, 53, 87, 0.2);
             --fdv-card-left: #1d3557;
@@ -450,6 +450,26 @@
             font-weight: bold;
         }
 
+        /* Botón cuadrado de limpiar sala */
+        .clear-room-btn {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            flex-shrink: 0;
+        }
+        .clear-room-btn:hover {
+            background: var(--accent-crimson);
+            transform: scale(1.05);
+        }
+
         .chat-messages {
             flex: 1;
             padding: 15px;
@@ -490,7 +510,6 @@
             transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        /* Tarjeta especial FdV usando variables de tema */
         .chat-card.fdv-card {
             background: var(--fdv-card-bg);
             border-color: var(--fdv-card-border);
@@ -749,6 +768,8 @@
                         <div class="config-row">
                             <input type="text" id="roomInput" placeholder="Sala...">
                             <button onclick="cambiarSala()">Entrar</button>
+                            <!-- Botón cuadrado para limpiar sala -->
+                            <button class="clear-room-btn" onclick="limpiarSala()" title="Limpiar Sala">🧹</button>
                         </div>
                     </div>
                 </div>
@@ -761,35 +782,25 @@
     </div>
 
     <footer>
-        <!-- BLOQUE SUPERIOR: LOGO Y TEXTOS PRINCIPALES (TODO CENTRADO) -->
         <div style="max-width: 850px; margin: 0 auto; display: flex; align-items: center; gap: 20px; text-align: left; justify-content: center; flex-wrap: wrap;">
-            
-            <!-- LOGOTIPO DARK PACK -->
             <div style="flex-shrink: 0;">
                 <img src="./iconos/darkpack_logo2.webp" alt="Dark Pack Logo" style="max-height: 65px; width: auto; object-fit: contain;">
             </div>
-
-            <!-- TEXTOS PRINCIPALES -->
             <div>
                 <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">
                     Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)
                 </div>
-                
                 <p style="margin-bottom: 0; font-size: 0.85rem;">
                     Consigue los libros y suplementos oficiales en 
                     <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">Nosolorol</a> y 
                     <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
                 </p>
             </div>
-
         </div>
-
-        <!-- TEXTOS LEGALES INFERIORES (CENTRADO) -->
         <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; text-align: center;">
             <p style="margin-bottom: 8px; font-size: 0.82rem; color: var(--text-main); opacity: 0.9; max-width: 900px; margin-left: auto; margin-right: auto;">
                 Esta aplicación es una herramienta/ayuda de juego no oficial para jugadores y Narradores, creada sin ánimo de lucro al amparo de la política Dark Pack de Paradox Interactive.
             </p>
-
             <div style="font-size: 0.73rem; color: var(--text-muted); max-width: 850px; margin: 0 auto; line-height: 1.4; opacity: 0.85;">
                 Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com.
             </div>
@@ -810,7 +821,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-    import { getDatabase, ref, push, update, onChildAdded } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    import { getDatabase, ref, push, update, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAtZTf5ggJx6z2_ZHBQNqD48neZehUPIEU",
@@ -852,6 +863,18 @@
         const nuevaSala = document.getElementById('roomInput').value.toLowerCase().trim();
         if (nuevaSala) {
             window.location.href = `dadosv5.html?sala=${encodeURIComponent(nuevaSala)}`;
+        }
+    };
+
+    // Función para limpiar la sala con confirmación popup
+    window.limpiarSala = function() {
+        if (confirm("¿Estás seguro de que deseas limpiar todas las tiradas de esta sala para todos los jugadores?")) {
+            const salaRef = ref(db, `salas/${currentRoom}/tiradas`);
+            remove(salaRef).then(() => {
+                document.getElementById('chatMessages').innerHTML = '';
+            }).catch((error) => {
+                alert("Error al limpiar la sala: " + error.message);
+            });
         }
     };
 
@@ -1026,12 +1049,10 @@
             tiempo: horaActual
         });
 
-        // Guardamos su propio ID en el nodo raíz de la tirada para referenciarla al gastar FdV
         update(nuevaTiradaRef, { id: nuevaTiradaRef.key });
     };
 
     window.gastarFuerzaVoluntad = function(snapshotKey, pool, hunger, difficulty, resultadosActuales, btnElement) {
-        // Protección contra múltiples clics
         if (btnElement && btnElement.disabled) return;
         if (btnElement) {
             btnElement.disabled = true;
@@ -1063,7 +1084,6 @@
             return;
         }
 
-        // Marcar la tirada original como gastada instantáneamente en la BD
         if (snapshotKey) {
             const tiradaOriginalRef = ref(db, `salas/${currentRoom}/tiradas/${snapshotKey}`);
             update(tiradaOriginalRef, { fdvGastada: true });
