@@ -433,7 +433,7 @@
             gap: 12px;
         }
 
-        /* SCROLLBAR OSCURO ACORDE AL TEMA */
+        /* SCROLLBAR OSCURO */
         .chat-messages::-webkit-scrollbar {
             width: 8px;
         }
@@ -450,21 +450,21 @@
             background: #8b0000;
         }
 
-        /* Tarjeta base del chat */
+        /* NUEVA ESTRUCTURA DE 4 COLUMNAS PARA LAS TARJETAS */
         .chat-card {
             background: var(--input-bg);
             border: 1px solid var(--card-border);
-            padding: 12px;
+            padding: 10px 14px;
             border-radius: 6px;
             font-size: 0.85rem;
             border-left: 4px solid var(--accent-red);
             display: grid;
-            grid-template-columns: 180px 1fr 180px;
-            gap: 10px;
+            grid-template-columns: 150px 1fr 140px 170px; /* 4 Columnas: Usuario | Detalles | Botón FdV | Dados */
+            gap: 12px;
             align-items: center;
         }
 
-        /* Tarjeta especial para gasto de FdV (Azul Oscuro) */
+        /* Tarjeta especial FdV (Azul Oscuro) */
         .chat-card.fdv-card {
             background: #0d1b2a;
             border-color: #1d3557;
@@ -483,49 +483,54 @@
             gap: 6px;
             font-weight: bold;
             color: var(--accent-gold);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         .chat-user-icon {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             object-fit: contain;
         }
 
         .chat-card-time {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
         }
 
         .chat-col-details {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 2px;
             line-height: 1.3;
         }
 
-        /* Botón de Fuerza de Voluntad (Azul oscuro, rectangular, dos líneas) */
+        /* Columna 3: Botón de Fuerza de Voluntad estilizado (Horizontal y compacto) */
+        .chat-col-action {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         .willpower-btn {
             background-color: #1d3557;
             color: #ffffff;
             border: 1px solid #457b9d;
-            padding: 6px 12px;
-            font-size: 0.75rem;
+            padding: 6px 10px;
+            font-size: 0.7rem;
             font-weight: bold;
             border-radius: 4px;
             cursor: pointer;
             text-transform: uppercase;
-            width: 100%;
-            max-width: 130px;
             text-align: center;
-            line-height: 1.2;
-            transition: background-color 0.2s;
-            margin-top: 4px;
+            white-space: nowrap;
+            transition: background-color 0.2s, transform 0.1s;
         }
         .willpower-btn:hover {
             background-color: #457b9d;
+            transform: scale(1.03);
         }
 
+        /* Columna 4: Dados a la derecha */
         .chat-col-dice {
             display: flex;
             flex-wrap: wrap;
@@ -535,8 +540,8 @@
         }
 
         .chat-mini-die {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 4px;
             display: flex;
             align-items: center;
@@ -545,8 +550,8 @@
         }
 
         .chat-mini-icon {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             object-fit: contain;
             filter: brightness(0) invert(1);
         }
@@ -595,7 +600,7 @@
             margin-top: 40px;
         }
 
-        @media (max-width: 1100px) {
+        @media (max-width: 1200px) {
             .main-layout {
                 grid-template-columns: 1fr;
             }
@@ -606,7 +611,7 @@
                 grid-template-columns: 1fr;
                 gap: 8px;
             }
-            .chat-col-dice {
+            .chat-col-dice, .chat-col-action {
                 justify-content: flex-start;
             }
             .header-top-row {
@@ -700,7 +705,7 @@
             </div>
         </div>
 
-        <!-- Barra lateral de chat con scroll oscuro -->
+        <!-- Barra lateral de chat con scroll oscuro y formato de 4 columnas -->
         <div class="chat-sidebar">
             <div class="chat-header">
                 <span id="roomTitle">Sala: General</span>
@@ -971,7 +976,6 @@
         });
     };
 
-    // FUNCIÓN PARA GASTAR FUERZA DE VOLUNTAD Y LANZAR UNA NUEVA TARJETA AZUL
     window.gastarFuerzaVoluntad = function(pool, hunger, difficulty, resultadosActuales) {
         let dadosRepetidosCount = 0;
 
@@ -1042,7 +1046,6 @@
         const horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const salaRef = ref(db, `salas/${currentRoom}/tiradas`);
         
-        // Publica una nueva tirada específica indicando el gasto de FdV
         push(salaRef, {
             nombre: nombreUsuario,
             resumenTexto: resumenHTML,
@@ -1101,20 +1104,19 @@
             });
         }
 
-        // Si es tu tirada original (y no es ya una tirada de FdV), le añadimos el botón al final
+        // Botón compacto en su propia columna si es tu tirada y no es FdV
         let botonFdVHTML = '';
         if (data.nombre === nombreUsuario && !data.isFdv) {
             let jsonResultados = JSON.stringify(data.resultadosVisuales).replace(/"/g, '&quot;');
             let diff = data.difficulty || 0;
-            botonFdVHTML = `<button class="willpower-btn" onclick="gastarFuerzaVoluntad(${data.pool}, ${data.hunger}, ${diff}, ${jsonResultados})">Voluntad<br>(Reroll)</button>`;
+            botonFdVHTML = `<button class="willpower-btn" onclick="gastarFuerzaVoluntad(${data.pool}, ${data.hunger}, ${diff}, ${jsonResultados})">⚡ Gastar FdV</button>`;
         }
 
-        // Definir clases y cabecera según si es una tirada normal o un gasto de FdV
         let cardClass = "chat-card";
         let subTextoTipo = `Reserva: ${data.pool} dados (Ansia: ${data.hunger})`;
         if (data.isFdv) {
             cardClass += " fdv-card";
-            subTextoTipo = `⚡ Gasto de FdV (${data.dadosRepetidos} dados repetidos) — Reserva: ${data.pool} dados (Ansia: ${data.hunger})`;
+            subTextoTipo = `⚡ FdV Gastada (${data.dadosRepetidos} repetidos) — Reserva: ${data.pool} dados (Ansia: ${data.hunger})`;
         }
 
         const card = document.createElement('div');
@@ -1128,8 +1130,10 @@
                 <span class="chat-card-time">${data.tiempo}</span>
             </div>
             <div class="chat-col-details">
-                <span style="font-size: 0.8rem; color: var(--text-muted);">${subTextoTipo}</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">${subTextoTipo}</span>
                 <div>${data.resumenTexto}</div>
+            </div>
+            <div class="chat-col-action">
                 ${botonFdVHTML}
             </div>
             <div class="chat-col-dice">
