@@ -68,7 +68,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1450px;
             margin: 0 auto;
             width: 100%;
             display: flex;
@@ -153,10 +153,10 @@
             transform: scale(1.08);
         }
 
-        /* LAYOUT MODIFICADO: Columna izquierda estrecha (400px), Chat ancho flexible (1fr) */
+        /* LAYOUT PRINCIPAL */
         .main-layout {
             display: grid;
-            grid-template-columns: 400px 1fr;
+            grid-template-columns: 380px 1fr;
             gap: 20px;
             flex: 1;
             align-items: start;
@@ -175,7 +175,6 @@
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .roller-inputs {
@@ -285,7 +284,7 @@
             color: var(--text-main);
         }
 
-        /* LEYENDA V5 REAJUSTADA */
+        /* LEYENDA V5 */
         .legend-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -337,15 +336,14 @@
             font-size: 0.75rem;
         }
 
-        /* BARRA LATERAL DE CHAT / REGISTRO ANCHA */
+        /* BARRA LATERAL DE CHAT / REGISTRO CON SCROLL INTERNO Y 3 COLUMNAS */
         .chat-sidebar {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 8px;
             display: flex;
             flex-direction: column;
-            height: 100%;
-            min-height: 650px;
+            height: 750px; /* Altura fija para encorsetar y añadir scroll */
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
 
@@ -366,37 +364,44 @@
             gap: 12px;
         }
 
+        /* Fila superior para Nombre y Sala alineados */
+        .header-top-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
         .config-section {
             display: flex;
             flex-direction: column;
             gap: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             background: rgba(0,0,0,0.2);
-            padding: 10px;
+            padding: 8px;
             border-radius: 6px;
             border: 1px solid var(--card-border);
             text-align: left;
         }
 
         .config-instruction {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             text-transform: none;
-            line-height: 1.3;
+            line-height: 1.2;
             font-style: italic;
         }
 
         .config-row {
             display: flex;
-            gap: 8px;
+            gap: 5px;
             justify-content: center;
             align-items: center;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         .config-row input {
-            padding: 6px 10px;
-            font-size: 0.9rem;
+            padding: 4px 8px;
+            font-size: 0.8rem;
             border-radius: 4px;
             border: 1px solid var(--card-border);
             background: var(--input-bg);
@@ -406,8 +411,8 @@
         }
 
         .config-row button {
-            padding: 6px 14px;
-            font-size: 0.85rem;
+            padding: 4px 10px;
+            font-size: 0.8rem;
             background: var(--accent-red);
             color: white;
             border: none;
@@ -416,53 +421,89 @@
             font-weight: bold;
         }
 
+        /* Contenedor de mensajes con scroll interno */
         .chat-messages {
             flex: 1;
             padding: 15px;
-            overflow-y: auto;
+            overflow-y: auto; /* Scroll vertical activado */
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
+        /* Tarjeta del chat estructurada en 3 columnas */
         .chat-card {
             background: var(--input-bg);
             border: 1px solid var(--card-border);
-            padding: 12px 15px;
+            padding: 12px;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border-left: 4px solid var(--accent-red);
+            display: grid;
+            grid-template-columns: 180px 1fr 180px; /* 3 Columnas */
+            gap: 10px;
+            align-items: center;
         }
 
-        .chat-card-header {
+        /* Columna 1: Personaje y Hora */
+        .chat-col-user {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-            font-weight: bold;
-            color: var(--accent-gold);
+            flex-direction: column;
+            gap: 4px;
         }
 
         .chat-user-info {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            font-weight: bold;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
         }
 
         .chat-user-icon {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             object-fit: contain;
         }
 
         .chat-card-time {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
 
-        .chat-card-body {
-            line-height: 1.5;
-            color: var(--text-main);
+        /* Columna 2: Reserva y Éxitos Totales / Resumen */
+        .chat-col-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            line-height: 1.3;
+        }
+
+        /* Columna 3: Iconos pequeños de los dados de la tirada */
+        .chat-col-dice {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            justify-content: flex-end;
+            align-content: center;
+        }
+
+        .chat-mini-die {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .chat-mini-icon {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
         }
 
         .floating-btn-container {
@@ -509,12 +550,22 @@
             margin-top: 40px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .main-layout {
                 grid-template-columns: 1fr;
             }
             .chat-sidebar {
-                height: 550px;
+                height: 600px;
+            }
+            .chat-card {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .chat-col-dice {
+                justify-content: flex-start;
+            }
+            .header-top-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -536,7 +587,6 @@
     <div class="main-layout">
         <!-- Columna Izquierda: Lanzador compacto + Leyenda -->
         <div class="left-column">
-            <!-- Lanzador de dados -->
             <div class="dice-roller-v5">
                 <div class="roller-inputs">
                     <div class="input-group">
@@ -605,32 +655,37 @@
             </div>
         </div>
 
-        <!-- Barra lateral de chat / registro ancha y espaciosa -->
+        <!-- Barra lateral de chat con scroll y configuraciones alineadas -->
         <div class="chat-sidebar">
             <div class="chat-header">
                 <span id="roomTitle">Sala: General</span>
                 
-                <!-- Cambiar Nombre -->
-                <div class="config-section">
-                    <span>Tu Personaje / Nombre:</span>
-                    <div class="config-row">
-                        <input type="text" id="nombreInput" placeholder="Tu nombre...">
-                        <button onclick="guardarNombre()">OK</button>
+                <!-- Fila superior unificada para Personaje y Sala -->
+                <div class="header-top-row">
+                    <!-- Cambiar Nombre -->
+                    <div class="config-section">
+                        <span>Tu Personaje / Nombre:</span>
+                        <div class="config-row">
+                            <input type="text" id="nombreInput" placeholder="Tu nombre...">
+                            <button onclick="guardarNombre()">OK</button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Cambiar Sala -->
-                <div class="config-section">
-                    <span>Cambiar de Sala:</span>
-                    <span class="config-instruction">Escribe el nombre de una sala para entrar en un chat con amigos.</span>
-                    <div class="config-row">
-                        <input type="text" id="roomInput" placeholder="Nombre de sala...">
-                        <button onclick="cambiarSala()">Entrar</button>
+                    <!-- Cambiar Sala -->
+                    <div class="config-section">
+                        <span>Cambiar de Sala:</span>
+                        <span class="config-instruction">Escribe una sala para jugar con amigos.</span>
+                        <div class="config-row">
+                            <input type="text" id="roomInput" placeholder="Sala...">
+                            <button onclick="cambiarSala()">Entrar</button>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Contenedor con Scroll interno -->
             <div id="chatMessages" class="chat-messages">
-                <!-- Las tiradas aparecerán aquí -->
+                <!-- Las tiradas aparecerán aquí formateadas en 3 columnas -->
             </div>
         </div>
     </div>
@@ -838,26 +893,24 @@
         
         if (difficulty > 0) {
             if (cumpleDificultad) {
-                resumenHTML += ` <span style="color: #2e7d32; font-weight: bold;">(¡Supera la Dificultad ${difficulty}!)</span><br>`;
+                resumenHTML += ` <span style="color: #2e7d32; font-weight: bold;">(¡Supera la Dificultad ${difficulty}!)</span>`;
             } else {
-                resumenHTML += ` <span style="color: #c62828; font-weight: bold;">(No alcanza la Dificultad ${difficulty})</span><br>`;
+                resumenHTML += ` <span style="color: #c62828; font-weight: bold;">(No alcanza la Dificultad ${difficulty})</span>`;
             }
-        } else {
-            resumenHTML += `<br>`;
         }
         
         if (paresCriticos > 0) {
-            resumenHTML += `✨ <strong>¡Éxito Crítico!</strong> (${paresCriticos} pareja${paresCriticos > 1 ? 's' : ''} de 10)<br>`;
+            resumenHTML += `<br>✨ <strong>¡Éxito Crítico!</strong> (${paresCriticos} pareja${paresCriticos > 1 ? 's' : ''} de 10)`;
             if (hungerTens > 0) {
-                resumenHTML += `<span style="color: #b30000; font-weight: bold;">⚠️ ¡Crítico Conflictivo (Messy Critical)! La Bestia toma el control.</span><br>`;
+                resumenHTML += `<br><span style="color: #b30000; font-weight: bold;">⚠️ ¡Crítico Conflictivo (Messy Critical)!</span>`;
             }
         }
         
         let esFalloPrueba = (difficulty > 0 ? !cumpleDificultad : todosFallos);
         if (esFalloPrueba && hungerOnes > 0) {
-            resumenHTML += `<span style="color: #b30000; font-weight: bold;">💀 ¡Fallo Bestial (Bestial Failure)! Consecuencias graves del Ansia.</span>`;
+            resumenHTML += `<br><span style="color: #b30000; font-weight: bold;">💀 ¡Fallo Bestial (Bestial Failure)!</span>`;
         } else if (todosFallos) {
-            resumenHTML += `<span style="color: #666;">Fallo total.</span>`;
+            resumenHTML += `<br><span style="color: #666;">Fallo total.</span>`;
         }
 
         document.getElementById('rollSummary').innerHTML = resumenHTML;
@@ -865,11 +918,13 @@
         const horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const salaRef = ref(db, `salas/${currentRoom}/tiradas`);
         
+        // Guardamos también el array de resultados visuales para dibujarlos en el chat
         push(salaRef, {
             nombre: nombreUsuario,
             resumenTexto: resumenHTML,
             pool: pool,
             hunger: hunger,
+            resultadosVisuales: resultadosVisuales,
             tiempo: horaActual
         });
     };
@@ -880,19 +935,62 @@
     onChildAdded(salaRef, (snapshot) => {
         const data = snapshot.val();
         
+        // Generar los iconos de dados para la tercera columna
+        let miniDadosHTML = '';
+        if (data.resultadosVisuales) {
+            data.resultadosVisuales.forEach(d => {
+                let boxClass = 'bg-normal-empty';
+                let iconSrc = '';
+                
+                if (!d.isHunger) {
+                    if (d.val >= 6 && d.val <= 9) {
+                        boxClass = 'bg-normal-dice';
+                        iconSrc = './iconos/VtMDiceSymbols-01.svg';
+                    } else if (d.val === 10) {
+                        boxClass = 'bg-normal-dice';
+                        iconSrc = './iconos/VtMDiceSymbols-02.svg';
+                    } else {
+                        boxClass = 'bg-normal-empty';
+                    }
+                } else {
+                    if (d.val === 1) {
+                        boxClass = 'bg-hunger-dice';
+                        iconSrc = './iconos/VtMDiceSymbols-04.svg';
+                    } else if (d.val >= 2 && d.val <= 5) {
+                        boxClass = 'bg-hunger-empty';
+                    } else if (d.val >= 6 && d.val <= 9) {
+                        boxClass = 'bg-hunger-dice';
+                        iconSrc = './iconos/VtMDiceSymbols-01.svg';
+                    } else if (d.val === 10) {
+                        boxClass = 'bg-hunger-dice';
+                        iconSrc = './iconos/VtMDiceSymbols-03.svg';
+                    }
+                }
+
+                miniDadosHTML += `<div class="chat-mini-die ${boxClass}">`;
+                if (iconSrc) {
+                    miniDadosHTML += `<img src="${iconSrc}" class="chat-mini-icon">`;
+                }
+                miniDadosHTML += `</div>`;
+            });
+        }
+
         const card = document.createElement('div');
         card.className = 'chat-card';
         card.innerHTML = `
-            <div class="chat-card-header">
+            <div class="chat-col-user">
                 <div class="chat-user-info">
                     <img src="./iconos/redfangs.png" class="chat-user-icon" alt="Colmillos">
                     <span>${data.nombre}</span>
                 </div>
                 <span class="chat-card-time">${data.tiempo}</span>
             </div>
-            <div class="chat-card-body">
-                Reserva: ${data.pool} dados (Ansia: ${data.hunger})<br>
-                ${data.resumenTexto}
+            <div class="chat-col-details">
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Reserva: ${data.pool} dados (Ansia: ${data.hunger})</span>
+                <div>${data.resumenTexto}</div>
+            </div>
+            <div class="chat-col-dice">
+                ${miniDadosHTML}
             </div>
         `;
         
