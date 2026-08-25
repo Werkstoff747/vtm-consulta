@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lanzador de Dados — Vampiro V5</title>
+    <title>Lanzador de Dados — Vampiro: La Mascarada V5</title>
     
     <!-- FAVICON -->
     <link rel="icon" type="image/png" href="./iconos/drRol.png">
-
+    
     <!-- FUENTE OFICIAL V5 (Cinzel) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,10 +15,10 @@
     
     <style>
         /* =========================================================
-           VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
-           ========================================================= */
+            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
+            ========================================================= */
 
-        /* MODO NOCHE / OSCURO (Predeterminado - "Medianoche Vampírica") */
+        /* MODO NOCHE / OSCURO ("Medianoche Vampírica") */
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
@@ -32,11 +32,12 @@
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
             --summary-bg: rgba(139, 0, 0, 0.1);
+            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
         }
 
         /* MODO DÍA / CLARO ("Pergamino Frío / Camarilla") */
         body.light-mode {
-            --bg-color: #e3e0d8;
+            --bg-color: #a8a7a4;
             --card-bg: #ffffff;
             --card-border: #bcaba0;
             --accent-red: #8b0000;
@@ -48,6 +49,7 @@
             --header-bg: #2b0408;
             --header-border: #7a0000;
             --summary-bg: #fdf8f8;
+            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
         }
 
         * {
@@ -60,27 +62,75 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             padding: 20px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .dice-roller-v5 {
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
             width: 100%;
-            max-width: 520px;
-            padding: 25px;
-            background: var(--card-bg);
-            border: 2px solid var(--card-border);
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-            position: relative;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
-        /* BOTÓN DE TEMA EN LA ESQUINA SUPERIOR DERECHA */
+        /* =========================================================
+            CABECERA ESTILO V5
+            ========================================================= */
+        header {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 20px 20px 20px;
+            border-bottom: 2px solid var(--header-border);
+            margin-bottom: 25px;
+            background: var(--header-bg);
+            border-radius: 8px;
+            text-align: center;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            max-width: 100%;
+        }
+
+        .header-ank-logo {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+            filter: var(--logo-filter);
+        }
+
+        .header-main-logo {
+            height: 95px;
+            max-width: 85vw;
+            width: auto;
+            object-fit: contain;
+            filter: var(--logo-filter);
+        }
+
+        h1.cabecera-principal {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--accent-gold);
+            font-variant: small-caps;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
         .theme-btn-header {
             position: absolute;
             top: 15px;
@@ -108,23 +158,25 @@
             transform: scale(1.08);
         }
 
-        .roller-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px dashed var(--card-border);
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-            padding-right: 40px; /* Espacio para que no choque con el botón de tema */
+        /* =========================================================
+            LAYOUT PRINCIPAL: LANZADOR + CHAT LATERAL
+            ========================================================= */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+            flex: 1;
+            align-items: start;
         }
 
-        .roller-header h2 {
-            font-family: 'Cinzel', serif;
-            color: var(--accent-gold);
-            font-size: 1.25rem;
-            margin: 0;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+        .dice-roller-v5 {
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .roller-inputs {
@@ -201,7 +253,6 @@
             margin: 15px 0;
         }
         
-        /* Contenedor individual del dado */
         .die-box {
             width: 44px;
             height: 44px;
@@ -213,13 +264,11 @@
             flex-shrink: 0;
         }
 
-        /* Colores de fondo de los dados */
         .bg-normal-empty { background-color: #3a3a3a; border: 1px solid #222; }
         .bg-normal-dice { background-color: #3a3a3a; border: 1px solid #222; }
         .bg-hunger-empty { background-color: #5c101c; border: 1px solid #3c0a12; }
         .bg-hunger-dice { background-color: #8b0000; border: 1px solid #5c101c; }
 
-        /* Tamaño y filtro blanco para las imágenes de los iconos */
         .die-icon {
             width: 28px;
             height: 28px;
@@ -238,8 +287,71 @@
         }
 
         /* =========================================================
-           BOTONES FLOTANTES INFERIORES
-           ========================================================= */
+            BARRA LATERAL DE CHAT / REGISTRO
+            ========================================================= */
+        .chat-sidebar {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .chat-header {
+            padding: 15px;
+            background: rgba(139, 0, 0, 0.15);
+            border-bottom: 1px solid var(--card-border);
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            font-size: 1rem;
+            text-transform: uppercase;
+            text-align: center;
+            font-weight: 700;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-card {
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .chat-card-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-weight: bold;
+            color: var(--accent-gold);
+        }
+
+        .chat-card-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .chat-card-body {
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        /* =========================================================
+            BOTONES FLOTANTES Y FOOTER
+            ========================================================= */
         .floating-btn-container {
             position: fixed;
             bottom: 25px;
@@ -268,46 +380,98 @@
         }
 
         .scroll-top-btn {
-            display: none; /* Se muestra con JS al hacer scroll */
+            display: none;
         }
 
         .floating-action-btn:hover, .scroll-top-btn:hover {
             transform: translateY(-3px);
             background-color: var(--accent-crimson);
         }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--card-border);
+            margin-top: 40px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .chat-sidebar {
+                height: 400px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="dice-roller-v5">
-    <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
-    
-    <div class="roller-header">
-        <span>🎲</span>
-        <h2>Lanzador de Dados</h2>
-    </div>
-    
-    <div class="roller-inputs">
-        <div class="input-group">
-            <label for="dicePool">Reserva de Dados (Atributo + Habilidad):</label>
-            <input type="number" id="dicePool" min="1" max="20" value="4">
+<div class="container">
+    <!-- CABECERA OFICIAL V5 -->
+    <header>
+        <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
+        <div class="header-logos">
+            <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
+            <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo.png';">
         </div>
-        <div class="input-group">
-            <label for="hungerLevel">Nivel de Ansia (Hambre 0-5):</label>
-            <input type="number" id="hungerLevel" min="0" max="5" value="2">
+        <div class="header-text">
+            <h1 class="cabecera-principal">Lanzador de Dados V5</h1>
         </div>
-        <div class="input-group">
-            <label for="difficulty">Dificultad (Éxitos necesarios - Opcional):</label>
-            <input type="number" id="difficulty" min="0" max="20" value="3">
+    </header>
+
+    <!-- CUERPO PRINCIPAL (DADOS + CHAT) -->
+    <div class="main-layout">
+        <!-- Lanzador de dados -->
+        <div class="dice-roller-v5">
+            <div class="roller-inputs">
+                <div class="input-group">
+                    <label for="dicePool">Reserva de Dados (Atributo + Habilidad):</label>
+                    <input type="number" id="dicePool" min="1" max="20" value="4">
+                </div>
+                <div class="input-group">
+                    <label for="hungerLevel">Nivel de Ansia (Hambre 0-5):</label>
+                    <input type="number" id="hungerLevel" min="0" max="5" value="2">
+                </div>
+                <div class="input-group">
+                    <label for="difficulty">Dificultad (Éxitos necesarios - Opcional):</label>
+                    <input type="number" id="difficulty" min="0" max="20" value="3">
+                </div>
+                <button id="rollButton" onclick="lanzarDadosV5()">Lanzar Tirada</button>
+            </div>
+
+            <div id="rollerResults" class="roller-results" style="display: none;">
+                <h3>Resultado de la Tirada</h3>
+                <div id="diceOutput" class="dice-output-grid"></div>
+                <div id="rollSummary" class="roll-summary"></div>
+            </div>
         </div>
-        <button id="rollButton" onclick="lanzarDadosV5()">Lanzar Tirada</button>
+
+        <!-- Barra lateral de chat en tiempo real -->
+        <div class="chat-sidebar">
+            <div class="chat-header">Registro de Partida</div>
+            <div id="chatMessages" class="chat-messages">
+                <!-- Las tiradas aparecerán aquí automáticamente -->
+            </div>
+        </div>
     </div>
 
-    <div id="rollerResults" class="roller-results" style="display: none;">
-        <h3>Resultado de la Tirada</h3>
-        <div id="diceOutput" class="dice-output-grid"></div>
-        <div id="rollSummary" class="roll-summary"></div>
-    </div>
+    <footer>
+        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 6px;">
+            Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)
+        </div>
+        <p style="margin-bottom: 12px; font-size: 0.85rem;">
+            Consigue los libros y suplementos oficiales en 
+            <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">Nosolorol</a> y 
+            <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
+        </p>
+        <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.4; opacity: 0.85;">
+            Esta aplicación es una herramienta/ayuda de juego no oficial para jugadores y Narradores, creada sin ánimo de lucro. 
+            <em>Vampiro: La Mascarada</em>, <em>Mundo de Tinieblas</em> y sus logotipos son marcas registradas de Paradox Interactive AB.
+        </div>
+    </footer>
 </div>
 
 <!-- BOTONES FLOTANTES INFERIORES -->
@@ -317,8 +481,32 @@
     <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
 </div>
 
-<script>
-    // Gestión del Tema Día/Noche sincronizada con localStorage
+<!-- LÓGICA Y FIREBASE -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDKcCuaT_-4uPihheHG6fwphiZp3qyqdI4",
+        authDomain: "drrol-chat.firebaseapp.com",
+        projectId: "drrol-chat",
+        storageBucket: "drrol-chat.firebasestorage.app",
+        messagingSenderId: "946325258598",
+        appId: "1:946325258598:web:ae69835cff355707fd88a7",
+        measurementId: "G-0REGNEJC1G"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Nombre de usuario en sesión
+    let nombreUsuario = sessionStorage.getItem('drrol_user');
+    if (!nombreUsuario) {
+        nombreUsuario = prompt("¿Cómo te llamas, Kindred?") || "Vampiro Anónimo";
+        sessionStorage.setItem('drrol_user', nombreUsuario);
+    }
+
+    // Tema Día / Noche
     function initTheme() {
         const savedTheme = localStorage.getItem('vtm-theme');
         const themeBtn = document.getElementById('themeToggleBtn');
@@ -331,7 +519,7 @@
         }
     }
 
-    function toggleTheme() {
+    window.toggleTheme = function() {
         const body = document.body;
         const themeBtn = document.getElementById('themeToggleBtn');
         body.classList.toggle('light-mode');
@@ -347,8 +535,6 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
-
-        // Control de visibilidad del botón de scroll superior
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('scrollTopBtn');
             if (window.scrollY > 200) {
@@ -359,11 +545,12 @@
         });
     });
 
-    function scrollToTop() {
+    window.scrollToTop = function() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function lanzarDadosV5() {
+    // Tirar dados y enviar a Firebase
+    window.lanzarDadosV5 = function() {
         let pool = parseInt(document.getElementById('dicePool').value) || 0;
         let hunger = parseInt(document.getElementById('hungerLevel').value) || 0;
         let difficulty = parseInt(document.getElementById('difficulty').value) || 0;
@@ -380,7 +567,6 @@
         let todosFallos = true;
         let resultadosVisuales = [];
 
-        // 1. Tirar dados normales
         for (let i = 0; i < normalDiceCount; i++) {
             let val = Math.floor(Math.random() * 10) + 1;
             if (val >= 6) {
@@ -391,7 +577,6 @@
             resultadosVisuales.push({ val, isHunger: false });
         }
 
-        // 2. Tirar dados de Ansia (Sangre)
         for (let i = 0; i < hungerDiceCount; i++) {
             let val = Math.floor(Math.random() * 10) + 1;
             if (val >= 6) {
@@ -414,7 +599,6 @@
         resultadosVisuales.forEach(d => {
             const dieEl = document.createElement('div');
             dieEl.className = 'die-box';
-            
             let iconoSrc = '';
             
             if (!d.isHunger) {
@@ -448,7 +632,6 @@
                 img.className = 'die-icon';
                 dieEl.appendChild(img);
             }
-
             container.appendChild(dieEl);
         });
 
@@ -482,7 +665,43 @@
         }
 
         document.getElementById('rollSummary').innerHTML = resumenHTML;
-    }
+
+        // Enviar a Firebase
+        const horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const tiradasRef = ref(db, 'tiradas_v5');
+        
+        push(tiradasRef, {
+            nombre: nombreUsuario,
+            resumenTexto: resumenHTML,
+            pool: pool,
+            hunger: hunger,
+            tiempo: horaActual
+        });
+    };
+
+    // Escuchar en tiempo real
+    const chatContainer = document.getElementById('chatMessages');
+    const tiradasRef = ref(db, 'tiradas_v5');
+
+    onChildAdded(tiradasRef, (snapshot) => {
+        const data = snapshot.val();
+        
+        const card = document.createElement('div');
+        card.className = 'chat-card';
+        card.innerHTML = `
+            <div class="chat-card-header">
+                <span>🧛‍♂️ ${data.nombre}</span>
+                <span class="chat-card-time">${data.tiempo}</span>
+            </div>
+            <div class="chat-card-body">
+                Reserva: ${data.pool} dados (Ansia: ${data.hunger})<br>
+                ${data.resumenTexto}
+            </div>
+        `;
+        
+        chatContainer.appendChild(card);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    });
 </script>
 
 </body>
