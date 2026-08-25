@@ -336,14 +336,14 @@
             font-size: 0.75rem;
         }
 
-        /* BARRA LATERAL DE CHAT / REGISTRO CON SCROLL INTERNO Y 3 COLUMNAS */
+        /* BARRA LATERAL DE CHAT / REGISTRO */
         .chat-sidebar {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 8px;
             display: flex;
             flex-direction: column;
-            height: 750px; /* Altura fija para encorsetar y añadir scroll */
+            height: 750px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
 
@@ -364,11 +364,11 @@
             gap: 12px;
         }
 
-        /* Fila superior para Nombre y Sala alineados */
         .header-top-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
+            align-items: start;
         }
 
         .config-section {
@@ -381,6 +381,8 @@
             border-radius: 6px;
             border: 1px solid var(--card-border);
             text-align: left;
+            height: 100%;
+            justify-content: flex-start;
         }
 
         .config-instruction {
@@ -389,6 +391,7 @@
             text-transform: none;
             line-height: 1.2;
             font-style: italic;
+            margin-top: 2px;
         }
 
         .config-row {
@@ -396,7 +399,7 @@
             gap: 5px;
             justify-content: center;
             align-items: center;
-            margin-top: 2px;
+            margin-top: auto; /* Empuja la fila del input abajo para alinearlos perfectamente */
         }
 
         .config-row input {
@@ -421,17 +424,15 @@
             font-weight: bold;
         }
 
-        /* Contenedor de mensajes con scroll interno */
         .chat-messages {
             flex: 1;
             padding: 15px;
-            overflow-y: auto; /* Scroll vertical activado */
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        /* Tarjeta del chat estructurada en 3 columnas */
         .chat-card {
             background: var(--input-bg);
             border: 1px solid var(--card-border);
@@ -440,12 +441,11 @@
             font-size: 0.85rem;
             border-left: 4px solid var(--accent-red);
             display: grid;
-            grid-template-columns: 180px 1fr 180px; /* 3 Columnas */
+            grid-template-columns: 180px 1fr 180px;
             gap: 10px;
             align-items: center;
         }
 
-        /* Columna 1: Personaje y Hora */
         .chat-col-user {
             display: flex;
             flex-direction: column;
@@ -472,7 +472,6 @@
             color: var(--text-muted);
         }
 
-        /* Columna 2: Reserva y Éxitos Totales / Resumen */
         .chat-col-details {
             display: flex;
             flex-direction: column;
@@ -480,7 +479,6 @@
             line-height: 1.3;
         }
 
-        /* Columna 3: Iconos pequeños de los dados de la tirada */
         .chat-col-dice {
             display: flex;
             flex-wrap: wrap;
@@ -655,12 +653,11 @@
             </div>
         </div>
 
-        <!-- Barra lateral de chat con scroll y configuraciones alineadas -->
+        <!-- Barra lateral de chat con campos alineados -->
         <div class="chat-sidebar">
             <div class="chat-header">
                 <span id="roomTitle">Sala: General</span>
                 
-                <!-- Fila superior unificada para Personaje y Sala -->
                 <div class="header-top-row">
                     <!-- Cambiar Nombre -->
                     <div class="config-section">
@@ -671,7 +668,7 @@
                         </div>
                     </div>
 
-                    <!-- Cambiar Sala -->
+                    <!-- Cambiar Sala (Con texto de ayuda debajo de la etiqueta) -->
                     <div class="config-section">
                         <span>Cambiar de Sala:</span>
                         <span class="config-instruction">Escribe una sala para jugar con amigos.</span>
@@ -683,34 +680,48 @@
                 </div>
             </div>
 
-            <!-- Contenedor con Scroll interno -->
+            <!-- Contenedor de mensajes -->
             <div id="chatMessages" class="chat-messages">
-                <!-- Las tiradas aparecerán aquí formateadas en 3 columnas -->
+                <!-- Las tiradas se insertarán arriba automáticamente -->
             </div>
         </div>
     </div>
 
-    <footer>
-        <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 6px;">
-            Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)
+<footer>
+        <!-- BLOQUE SUPERIOR: LOGO Y TEXTOS PRINCIPALES (TODO CENTRADO) -->
+        <div style="max-width: 850px; margin: 0 auto; display: flex; align-items: center; gap: 20px; text-align: left; justify-content: center; flex-wrap: wrap;">
+            
+            <!-- LOGOTIPO DARK PACK -->
+            <div style="flex-shrink: 0;">
+                <img src="./iconos/darkpack_logo2.webp" alt="Dark Pack Logo" style="max-height: 65px; width: auto; object-fit: contain;">
+            </div>
+
+            <!-- TEXTOS PRINCIPALES -->
+            <div>
+                <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">
+                    Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)
+                </div>
+                
+                <p style="margin-bottom: 0; font-size: 0.85rem;">
+                    Consigue los libros y suplementos oficiales en 
+                    <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">Nosolorol</a> y 
+                    <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
+                </p>
+            </div>
+
         </div>
-        <p style="margin-bottom: 12px; font-size: 0.85rem;">
-            Consigue los libros y suplementos oficiales en 
-            <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">Nosolorol</a> y 
-            <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
-        </p>
-        <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.4; opacity: 0.85;">
-            Esta aplicación es una herramienta/ayuda de juego no oficial para jugadores y Narradores, creada sin ánimo de lucro. 
-            <em>Vampiro: La Mascarada</em>, <em>Mundo de Tinieblas</em> y sus logotipos son marcas registradas de Paradox Interactive AB.
-        </div>
-    </footer>
 </div>
 
-<div class="floating-btn-container">
-    <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">🏠</a>
-    <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
-    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
-</div>
+<!-- BOTONES FLOTANTES INFERIORES -->
+    <div class="floating-btn-container">
+        <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" style="vertical-align: middle;">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+        </a>
+        <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
+        <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
+    </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
@@ -918,7 +929,6 @@
         const horaActual = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const salaRef = ref(db, `salas/${currentRoom}/tiradas`);
         
-        // Guardamos también el array de resultados visuales para dibujarlos en el chat
         push(salaRef, {
             nombre: nombreUsuario,
             resumenTexto: resumenHTML,
@@ -935,7 +945,6 @@
     onChildAdded(salaRef, (snapshot) => {
         const data = snapshot.val();
         
-        // Generar los iconos de dados para la tercera columna
         let miniDadosHTML = '';
         if (data.resultadosVisuales) {
             data.resultadosVisuales.forEach(d => {
@@ -994,8 +1003,7 @@
             </div>
         `;
         
-        chatContainer.appendChild(card);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+        chatContainer.insertBefore(card, chatContainer.firstChild);
     });
 </script>
 
