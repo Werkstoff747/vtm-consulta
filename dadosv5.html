@@ -526,10 +526,11 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
     import { getDatabase, ref, push, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
-    const firebaseConfig = {
+const firebaseConfig = {
         apiKey: "AIzaSyDKcCuaT_-4uPihheHG6fwphiZp3qyqdI4",
         authDomain: "drrol-chat.firebaseapp.com",
         projectId: "drrol-chat",
+        databaseURL: "https://drrol-chat-default-rtdb.europe-west1.firebasedatabase.app", // <--- ¡Añade esta línea!
         storageBucket: "drrol-chat.firebasestorage.app",
         messagingSenderId: "946325258598",
         appId: "1:946325258598:web:ae69835cff355707fd88a7",
