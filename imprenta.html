@@ -12,8 +12,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         /* =========================================================
-            VARIABLES DE TEMA Y MEDIDAS FINALES EXACTAS (63x88mm)
-            La línea de corte gris exterior marca exactamente los 63x88mm de Magic.
+            VARIABLES DE TEMA Y MEDIDAS CON MARGEN DE CORTE (GUILLOTINA)
+            Carta final real: 63x88mm | Margen/Sangrado: 1mm por lado | Contenedor total: 65x90mm
            ========================================================= */
         :root {
             --bg-color: #0f0f12;
@@ -31,12 +31,12 @@
             --header-border: #8b0000;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
             
-            /* Medidas finales exactas de la carta estándar de Magic */
+            /* Medidas con marco de corte: Carta 63x88mm + 1mm de margen de corte por lado = 65x90mm totales */
             --card-width: 63mm;
             --card-height: 88mm;
-            --bleed: 0mm;
-            --full-width: 63mm;
-            --full-height: 88mm;
+            --bleed: 1mm;
+            --full-width: 65mm;
+            --full-height: 90mm;
             
             --wrapper-bg: #000;
         }
@@ -378,7 +378,7 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* CUADRÍCULA ESTRICTA DE CARTAS (63x88mm exactos en la línea de corte) */
+        /* CUADRÍCULA ESTRICTA DE CARTAS (65x90mm total con 1mm de margen gris de corte) */
         .cards-grid {
             max-width: calc(var(--full-width) * 3);
             margin: 0 auto;
@@ -393,17 +393,17 @@
             height: var(--full-height);
             background: var(--wrapper-bg) !important;
             position: relative;
-            border: 0.3mm solid #888; /* Línea gris exacta de corte a 63x88mm */
+            border: 0.3mm solid #888; /* Línea gris de corte exterior a 65x90mm */
             page-break-inside: avoid;
             break-inside: avoid;
         }
 
         .vtm-card {
-            width: var(--card-width);
-            height: var(--card-height);
+            width: var(--card-width); /* 63mm exactos de carta final */
+            height: var(--card-height); /* 88mm exactos de carta final */
             position: absolute;
-            top: 0;
-            left: 0;
+            top: var(--bleed); /* 1mm de margen/sangrado superior */
+            left: var(--bleed); /* 1mm de margen/sangrado izquierdo */
             background-color: var(--card-bg);
             color: var(--text-main);
             border: 3px solid var(--accent-red);
@@ -416,11 +416,11 @@
         }
 
         .vtm-card-back {
-            width: var(--card-width);
-            height: var(--card-height);
+            width: var(--card-width); /* 63mm exactos de carta final */
+            height: var(--card-height); /* 88mm exactos de carta final */
             position: absolute;
-            top: 0;
-            left: 0;
+            top: var(--bleed); /* 1mm de margen superior */
+            left: var(--bleed); /* 1mm de margen izquierdo */
             background-color: var(--card-bg);
             border: 3px solid var(--accent-red);
             display: flex;
@@ -1034,7 +1034,7 @@
                 const matchesDisc = (discFilter === 'all' || disc.includes(discFilter));
                 const matchesLvl = (lvlFilter === 'all' || level === lvlFilter);
                 const matchesSource = (sourceFilter === 'all' || source.includes(sourceFilter));
-                const matchesSearch = (!searchFilter || name.includes(searchFilter));
+                const matchesSearch = (!searchQuery || name.includes(searchQuery) || fullText.includes(searchQuery));
 
                 if (matchesDisc && matchesLvl && matchesSource && matchesSearch) {
                     row.style.display = 'block';
