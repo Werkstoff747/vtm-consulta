@@ -12,8 +12,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         /* =========================================================
-            VARIABLES DE TEMA Y MEDIDAS AJUSTADAS PARA FUNDAS ESTÁNDAR
-            Carta real: 62x87mm | Sangrado: 1.5mm | Total con líneas de corte: 65x90mm
+            VARIABLES DE TEMA Y MEDIDAS FINALES EXACTAS (63x88mm)
+            La línea de corte gris exterior marca exactamente los 63x88mm de Magic.
            ========================================================= */
         :root {
             --bg-color: #0f0f12;
@@ -31,12 +31,12 @@
             --header-border: #8b0000;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
             
-            /* Medidas ajustadas con holgura para fundas estándar */
-            --card-width: 62mm;
-            --card-height: 87mm;
-            --bleed: 1.5mm;
-            --full-width: 65mm;
-            --full-height: 90mm;
+            /* Medidas finales exactas de la carta estándar de Magic */
+            --card-width: 63mm;
+            --card-height: 88mm;
+            --bleed: 0mm;
+            --full-width: 63mm;
+            --full-height: 88mm;
             
             --wrapper-bg: #000;
         }
@@ -378,7 +378,7 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* CUADRÍCULA ESTRICTA DE CARTAS (65x90mm total por carta) */
+        /* CUADRÍCULA ESTRICTA DE CARTAS (63x88mm exactos en la línea de corte) */
         .cards-grid {
             max-width: calc(var(--full-width) * 3);
             margin: 0 auto;
@@ -393,7 +393,7 @@
             height: var(--full-height);
             background: var(--wrapper-bg) !important;
             position: relative;
-            border: 0.3mm solid #888;
+            border: 0.3mm solid #888; /* Línea gris exacta de corte a 63x88mm */
             page-break-inside: avoid;
             break-inside: avoid;
         }
@@ -402,8 +402,8 @@
             width: var(--card-width);
             height: var(--card-height);
             position: absolute;
-            top: var(--bleed);
-            left: var(--bleed);
+            top: 0;
+            left: 0;
             background-color: var(--card-bg);
             color: var(--text-main);
             border: 3px solid var(--accent-red);
@@ -419,8 +419,8 @@
             width: var(--card-width);
             height: var(--card-height);
             position: absolute;
-            top: var(--bleed);
-            left: var(--bleed);
+            top: 0;
+            left: 0;
             background-color: var(--card-bg);
             border: 3px solid var(--accent-red);
             display: flex;
@@ -441,18 +441,18 @@
         }
 
         .back-top-logo {
-            width: 48mm;
+            width: 45mm;
             height: auto;
             object-fit: contain;
             position: absolute;
-            top: 9mm;
+            top: 8mm;
             left: 50%;
             transform: translateX(-50%);
         }
 
         .back-center-ank {
-            width: 28mm;
-            height: 28mm;
+            width: 25mm;
+            height: 25mm;
             object-fit: contain;
             position: absolute;
             top: 52%;
@@ -465,8 +465,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 32mm;
-            height: 32mm;
+            width: 30mm;
+            height: 30mm;
             object-fit: contain;
             opacity: 0.15;
             pointer-events: none;
@@ -490,13 +490,13 @@
             align-items: center;
             justify-content: center;
             border-bottom: 1px solid var(--accent-red);
-            margin-bottom: 1.5mm;
-            padding-bottom: 1mm;
+            margin-bottom: 1.2mm;
+            padding-bottom: 0.8mm;
         }
 
         .card-discipline {
             font-family: 'Cinzel', serif;
-            font-size: 0.65rem;
+            font-size: 0.62rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--accent-red);
@@ -508,61 +508,61 @@
             text-align: center;
             margin-bottom: 1mm;
             border-bottom: 1px solid var(--accent-gold);
-            padding-bottom: 2px;
+            padding-bottom: 1px;
         }
 
         .card-title {
             font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
             color: var(--text-main);
-            line-height: 1.15;
+            line-height: 1.1;
             text-transform: small-caps;
         }
 
         .card-roll-box {
-            font-size: 0.6rem;
+            font-size: 0.58rem;
             background: rgba(197, 160, 89, 0.08);
             border: 1px solid rgba(197, 160, 89, 0.3);
-            padding: 3px 5px;
+            padding: 3px 4px;
             border-radius: 3px;
             margin-bottom: 1mm;
             text-align: center;
-            line-height: 1.2;
+            line-height: 1.15;
         }
 
         .card-roll-line-1 {
             font-weight: bold;
             color: var(--accent-crimson);
-            font-size: 0.62rem;
+            font-size: 0.6rem;
         }
 
         .card-roll-line-2 {
             font-style: italic;
             color: var(--text-muted);
-            font-size: 0.5rem;
+            font-size: 0.48rem;
             margin: 1px 0;
         }
 
         .card-roll-line-3 {
             font-weight: 600;
             color: var(--text-main);
-            font-size: 0.6rem;
+            font-size: 0.58rem;
         }
 
         .card-body {
-            font-size: 0.65rem;
-            line-height: 1.2;
+            font-size: 0.62rem;
+            line-height: 1.18;
             overflow-y: hidden;
             padding: 1px 2px;
             text-align: justify;
         }
 
         .card-costs {
-            font-size: 0.55rem;
+            font-size: 0.52rem;
             background: rgba(197, 160, 89, 0.12);
             border: 1px solid var(--accent-gold);
-            padding: 2.5px 4px;
+            padding: 2px 4px;
             border-radius: 3px;
             margin-top: auto;
             margin-bottom: 1mm;
@@ -578,7 +578,7 @@
 
         .card-footer-container {
             border-top: 1px solid var(--accent-gold);
-            padding-top: 1mm;
+            padding-top: 0.8mm;
             margin-top: 0;
             position: relative;
             z-index: 1;
@@ -591,13 +591,13 @@
         }
 
         .card-level-img {
-            width: 6mm;
-            height: 6mm;
+            width: 5.5mm;
+            height: 5.5mm;
             object-fit: contain;
         }
 
         .card-source-text {
-            font-size: 0.45rem;
+            font-size: 0.42rem;
             color: var(--text-muted);
             font-family: 'Cinzel', serif;
             text-align: center;
@@ -1109,7 +1109,7 @@
             let cornerIconHTML = '';
             if (archivoIcono) {
                 watermarkHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="" onerror="this.style.display='none'">`;
-                cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="${discipline}" style="position:static; width:6mm; height:6mm; opacity:1; transform:none;" onerror="this.style.display='none'">`;
+                cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="${discipline}" style="position:static; width:5.5mm; height:5.5mm; opacity:1; transform:none;" onerror="this.style.display='none'">`;
             }
 
             const levelImgHTML = `<img src="./iconos/${level}_symbol.png" class="card-level-img" alt="Nivel ${level}" onerror="this.style.display='none'">`;
