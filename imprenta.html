@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         /* =========================================================
-            VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL (MODO OSCURO POR DEFECTO)
+            VARIABLES DE TEMA Y MEDIDAS (63x88mm carta + 1.5mm sangrado = 66x91mm total)
            ========================================================= */
         :root {
             --bg-color: #0f0f12;
@@ -30,12 +30,12 @@
             --header-border: #8b0000;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
             
-            /* Medidas oficiales de cartas de Magic / CCG: 63x88mm de carta real + 3mm de sangrado */
+            /* Medidas ajustadas: 63x88mm de carta real + 1.5mm de sangrado = 66x91mm total */
             --card-width: 63mm;
             --card-height: 88mm;
-            --bleed: 3mm;
-            --full-width: 69mm;
-            --full-height: 94mm;
+            --bleed: 1.5mm;
+            --full-width: 66mm;
+            --full-height: 91mm;
             
             --wrapper-bg: #000;
         }
@@ -377,7 +377,7 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* CUADRÍCULA ESTRICTA DE CARTAS Y LÍNEAS DE CORTE */
+        /* CUADRÍCULA ESTRICTA DE CARTAS (66x91mm total por carta) */
         .cards-grid {
             max-width: calc(var(--full-width) * 3);
             margin: 0 auto;
@@ -881,7 +881,6 @@
             } else {
                 document.body.classList.remove('print-friendly');
             }
-            // Re-renderizar las cartas para actualizar los logos de la trasera según el modo
             renderActiveMode();
         }
 
@@ -1285,7 +1284,6 @@
             const chunkSize = 9;
             const totalPaginas = Math.ceil(cartas.length / chunkSize);
 
-            // Detectar si estamos en modo print-friendly (claro) para usar los logos negros (-N.png)
             const isPrintFriendly = document.body.classList.contains('print-friendly');
             const logoLargoFile = isPrintFriendly ? 'VTM-Logo-Largo-N.png' : 'VTM-Logo-Largo.png';
             const logoAnkFile = isPrintFriendly ? 'VTM-Ank-N.png' : 'VTM-Ank.png';
