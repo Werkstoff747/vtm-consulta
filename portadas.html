@@ -131,11 +131,11 @@
             background-color: var(--card-bg);
             color: var(--text-main);
             border: 3px solid var(--accent-red);
-            padding: 5mm;
+            padding: 4mm;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between; /* Distribución simétrica fija */
+            justify-content: space-between;
             text-align: center;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
@@ -149,16 +149,17 @@
             pointer-events: none;
         }
 
-        /* ELEMENTOS INTERNOS CON ALTURAS CONTROLADAS PARA EVITAR DESMONTAJES */
+        /* TÍTULO SUPERIOR MÁS GRANDE Y MULTILÍNEA CONTROLADA */
         .cover-title-top {
-            font-size: 0.98rem;
-            font-weight: 700;
+            font-size: 1.25rem; /* Letra considerablemente más grande y protagonista */
+            font-weight: 900;
             color: var(--text-main);
             text-transform: none;
-            letter-spacing: 1px;
-            line-height: 1.25;
-            height: 2.8rem; /* Espacio fijo reservado para títulos de 1 o 2 líneas */
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            height: 3.2rem; /* Espacio dedicado exacto para 2 líneas generosas */
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             width: 100%;
@@ -169,7 +170,7 @@
             align-items: center;
             justify-content: center;
             flex-grow: 1;
-            margin: 4mm 0;
+            margin: 2mm 0;
         }
 
         .cover-discipline-icon {
@@ -179,14 +180,15 @@
             filter: drop-shadow(0px 2px 6px rgba(0,0,0,0.25));
         }
 
+        /* SUBTÍTULO INFERIOR (RITUAL / CEREMONIA) */
         .cover-subtitle-bottom {
-            font-size: 0.95rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: var(--accent-gold);
             text-transform: none;
             letter-spacing: 1.5px;
             line-height: 1.2;
-            height: 1.5rem; /* Espacio fijo reservado para el subtítulo o espacio en blanco */
+            height: 2rem; /* Altura fija para garantizar que el texto dorada se pinte siempre */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -264,21 +266,22 @@
     </div>
 
     <script>
+        // Array con saltos de línea explícitos (<br>) en los títulos largos para permitir fuentes enormes
         const PORTADAS = [
             { nombre: "Animalismo", archivo: "Animalism_symbol.png", subtitulo: "" },
             { nombre: "Auspex", archivo: "Auspex_symbol.png", subtitulo: "" },
             { nombre: "Celeridad", archivo: "Celerity_symbol.png", subtitulo: "" },
             { nombre: "Dominación", archivo: "Dominate_symbol.png", subtitulo: "" },
             { nombre: "Fortaleza", archivo: "Fortitude_symbol.png", subtitulo: "" },
-            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "" },
-            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "Ritual" },
+            { nombre: "Hechicería<br>de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "" },
+            { nombre: "Hechicería<br>de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "Ritual" },
             { nombre: "Ofuscación", archivo: "Obfuscate_symbol.png", subtitulo: "" },
             { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "" },
             { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "Ceremonia" },
             { nombre: "Potencia", archivo: "Potence_symbol.png", subtitulo: "" },
             { nombre: "Presencia", archivo: "Presence_symbol.png", subtitulo: "" },
             { nombre: "Protean", archivo: "Protean_symbol.png", subtitulo: "" },
-            { nombre: "Alquimia de Sangre Débil", archivo: "Alchemy_symbol.png", subtitulo: "" }
+            { nombre: "Alquimia<br>de Sangre Débil", archivo: "Alchemy_symbol.png", subtitulo: "" }
         ];
 
         function changeTheme(theme) {
@@ -314,7 +317,7 @@
                         <div class="vtm-cover-card">
                             <div class="cover-title-top">${item.nombre}</div>
                             <div class="cover-logo-container">
-                                <img src="./iconos/${item.archivo}" class="cover-discipline-icon" alt="${item.nombre}" onerror="this.style.display='none'">
+                                <img src="./iconos/${item.archivo}" class="cover-discipline-icon" alt="" onerror="this.style.display='none'">
                             </div>
                             <div class="cover-subtitle-bottom">${subHTML}</div>
                         </div>
