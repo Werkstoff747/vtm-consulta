@@ -22,15 +22,21 @@
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #c5a059;
-            --text-main: #ffffff; /* Letras en blanco puro para que destaquen en oscuro */
+            --text-main: #ffffff; /* Letras en blanco puro para modo oscuro */
             --wrapper-bg: #000;
+            
+            --full-width: 63mm;
+            --full-height: 88mm;
+            --bleed: 1.5mm;
+            --card-width: 60mm;
+            --card-height: 85mm;
         }
 
         body.print-friendly {
             --bg-color: #a8a7a4;
             --card-bg: #fcfbfa;
             --card-border: #bcaba0;
-            --text-main: #1a1a1a; /* Texto oscuro para el modo claro */
+            --text-main: #1a1a1a; /* Texto oscuro para modo claro */
             --wrapper-bg: #fff;
         }
 
@@ -115,7 +121,7 @@
             border: 0.3mm solid #888;
         }
 
-        /* DISEÑO DE LA CARTA DE PORTADA (CENTRADO EXACTO) */
+        /* DISEÑO DE LA CARTA DE PORTADA (PROPORCIÓN EXACTA 60x85mm) */
         .vtm-cover-card {
             width: var(--card-width);
             height: var(--card-height);
@@ -125,11 +131,11 @@
             background-color: var(--card-bg);
             color: var(--text-main);
             border: 3px solid var(--accent-red);
-            padding: 4mm;
+            padding: 5mm;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between; /* Distribución simétrica fija */
             text-align: center;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
@@ -143,25 +149,27 @@
             pointer-events: none;
         }
 
-        /* ELEMENTOS INTERNOS DE LA PORTADA */
+        /* ELEMENTOS INTERNOS CON ALTURAS CONTROLADAS PARA EVITAR DESMONTAJES */
         .cover-title-top {
-            font-size: 1.15rem;
-            font-weight: 900;
-            color: var(--text-main); /* Hereda el blanco puro en oscuro y negro en claro */
-            text-transform: none; /* Quitamos uppercase forzado para respetar las mayúsculas/minúsculas exactas */
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: none;
             letter-spacing: 1px;
-            line-height: 1.15;
-            margin-bottom: auto;
-            padding-top: 2mm;
+            line-height: 1.25;
+            height: 2.8rem; /* Espacio fijo reservado para títulos de 1 o 2 líneas */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 100%;
-            word-break: break-word;
         }
 
         .cover-logo-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: auto 0;
+            flex-grow: 1;
+            margin: 4mm 0;
         }
 
         .cover-discipline-icon {
@@ -172,15 +180,16 @@
         }
 
         .cover-subtitle-bottom {
-            font-size: 1.1rem;
-            font-weight: 900;
+            font-size: 0.95rem;
+            font-weight: 700;
             color: var(--accent-gold);
-            text-transform: none; /* Coherencia visual sin forzar mayúsculas absolutas */
+            text-transform: none;
             letter-spacing: 1.5px;
-            line-height: 1.15;
-            margin-top: auto;
-            padding-bottom: 2mm;
-            min-height: 1.4rem;
+            line-height: 1.2;
+            height: 1.5rem; /* Espacio fijo reservado para el subtítulo o espacio en blanco */
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 100%;
         }
 
@@ -255,7 +264,6 @@
     </div>
 
     <script>
-        // Listado actualizado con la capitalización exacta deseada ("Ritual" y "Ceremonia")
         const PORTADAS = [
             { nombre: "Animalismo", archivo: "Animalism_symbol.png", subtitulo: "" },
             { nombre: "Auspex", archivo: "Auspex_symbol.png", subtitulo: "" },
