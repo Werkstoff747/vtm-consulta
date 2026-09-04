@@ -671,7 +671,7 @@
             font-family: 'Cinzel', serif;
         }
 
-        @media print {
+       @media print {
             body {
                 background: var(--wrapper-bg) !important;
                 color: black !important;
@@ -710,47 +710,27 @@
                 break-after: avoid;
             }
 
-            /* 4 LÍNEAS VERTICALES Y 4 HORIZONTALES CRUZANDO TODA LA RETÍCULA */
-            .page-sheet::before,
-            .page-sheet::after {
+            /* CONTENEDOR DE LÍNEAS DE CORTE DE EXTREMO A EXTREMO */
+            .page-sheet::before {
                 content: "";
                 position: absolute;
+                top: 0;
+                left: 0;
+                width: 189mm;
+                height: 264mm;
                 pointer-events: none;
                 z-index: 9999;
-            }
-
-            .page-sheet::before {
-                top: 0;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                background: linear-gradient(
-                    to right,
-                    #777 0.2mm, transparent 0.2mm,
-                    transparent calc(var(--full-width) - 0.1mm),
-                    #777 calc(var(--full-width) - 0.1mm), #777 calc(var(--full-width) + 0.1mm), transparent calc(var(--full-width) + 0.1mm),
-                    transparent calc((var(--full-width) * 2) - 0.1mm),
-                    #777 calc((var(--full-width) * 2) - 0.1mm), #777 calc((var(--full-width) * 2) + 0.1mm), transparent calc((var(--full-width) * 2) + 0.1mm),
-                    transparent calc((var(--full-width) * 3) - 0.2mm),
-                    #777 calc((var(--full-width) * 3) - 0.2mm), #777 calc(var(--full-width) * 3), transparent calc(var(--full-width) * 3)
-                );
-            }
-
-            .page-sheet::after {
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: linear-gradient(
-                    to bottom,
-                    #777 0.2mm, transparent 0.2mm,
-                    transparent calc(var(--full-height) - 0.1mm),
-                    #777 calc(var(--full-height) - 0.1mm), #777 calc(var(--full-height) + 0.1mm), transparent calc(var(--full-height) + 0.1mm),
-                    transparent calc((var(--full-height) * 2) - 0.1mm),
-                    #777 calc((var(--full-height) * 2) - 0.1mm), #777 calc((var(--full-height) * 2) + 0.1mm), transparent calc((var(--full-height) * 2) + 0.1mm),
-                    transparent calc((var(--full-height) * 3) - 0.2mm),
-                    #777 calc((var(--full-height) * 3) - 0.2mm), #777 calc(var(--full-height) * 3), transparent calc(var(--full-height) * 3)
-                );
+                /* 4 Líneas Verticales (0mm, 63mm, 126mm, 189mm) */
+                box-shadow: 
+                    0.2mm 0 0 0 #666,
+                    63mm 0 0 0 #666,
+                    126mm 0 0 0 #666,
+                    189mm 0 0 0 #666,
+                    /* 4 Líneas Horizontales (0mm, 88mm, 176mm, 264mm) */
+                    0 0.2mm 0 0 #666,
+                    0 88mm 0 0 #666,
+                    0 176mm 0 0 #666,
+                    0 264mm 0 0 #666;
             }
 
             .print-card-wrapper {
