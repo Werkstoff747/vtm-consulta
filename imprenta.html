@@ -13,9 +13,9 @@
     <style>
         /* =========================================================
             VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL (OSCURO)
-            Corte final exterior (Línea gris): 63 x 88 mm
-            Margen/Sangrado interior: 1.5 mm por cada lado
-            Carta interior (Cuadro rojo): 60 x 85 mm
+            Corte exterior final: 63 x 88 mm
+            Sangrado hacia dentro: 1.5 mm por cada lado
+            Cuadro rojo interior: 60 x 85 mm
            ========================================================= */
         :root {
             --bg-color: #0f0f12;
@@ -312,7 +312,6 @@
             z-index: 1;
         }
 
-        /* CABECERA TRANSPARENTE CON TEXTO EN ROJO ACENTO */
         .card-header {
             background: transparent !important;
             color: var(--accent-red) !important;
@@ -442,7 +441,7 @@
             opacity: 1;
         }
 
-        /* BOTÓN FLOTANTE IDÉNTICO AL INDEX */
+        /* BOTÓN FLOTANTE */
         .floating-nav-container {
             position: fixed;
             bottom: 25px;
@@ -514,7 +513,7 @@
                 width: 189mm !important; /* 63mm * 3 columnas exactas */
                 margin: 0 auto !important;
                 justify-content: center !important;
-                align-content: center !important; /* Centra perfectamente de arriba a abajo en el A4 */
+                align-content: center !important; /* Centra perfectamente los bloques de 3x3 en la hoja A4 */
                 height: 297mm !important;
                 gap: 0 !important;
             }
@@ -524,6 +523,7 @@
                 height: var(--full-height) !important;
                 border: 0.3mm solid #888 !important;
                 box-sizing: border-box !important;
+                background: #000 !important;
             }
 
             .page-break {
@@ -614,7 +614,7 @@
         <div id="cardsContainer" class="cards-grid"></div>
     </div>
 
-    <!-- Botón flotante idéntico al del index -->
+    <!-- Botón flotante -->
     <div class="floating-nav-container">
         <a href="index.html" class="floating-btn" title="Volver al Compendio Principal">◀</a>
         <button class="floating-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" title="Subir Arriba">▲</button>
@@ -879,7 +879,7 @@
                 const fin = Math.min(inicio + chunkSize, cartas.length);
                 const chunk = cartas.slice(inicio, fin);
 
-                chunk.forEach(row => container.cards-grid ? container.appendChild(createCardElement(row)) : container.appendChild(createCardElement(row)));
+                chunk.forEach(row => container.appendChild(createCardElement(row)));
 
                 const resto = chunkSize - chunk.length;
                 if (resto !== 0) {
