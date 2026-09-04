@@ -690,11 +690,11 @@
                 margin: 0mm;
             }
 
-            /* CADA PÁGINA A4 CON 10MM DE MARGEN SUPERIOR DE SEGURIDAD */
+            /* CADA PÁGINA A4 CON 10MM DE MARGEN SUPERIOR Y GUÍAS DE CORTE TOTALES */
             .page-sheet {
                 width: 189mm !important;
                 height: 264mm !important;
-                margin: 10mm auto 0 auto !important; /* Desplaza el bloque 10mm hacia abajo en cada página impresa */
+                margin: 10mm auto 0 auto !important;
                 page-break-after: always;
                 break-after: page;
                 display: grid !important;
@@ -702,6 +702,7 @@
                 grid-template-rows: repeat(3, var(--full-height)) !important;
                 justify-content: center !important;
                 box-shadow: none !important;
+                position: relative;
             }
 
             .page-sheet:last-child {
@@ -709,10 +710,53 @@
                 break-after: avoid;
             }
 
+            /* 4 LÍNEAS VERTICALES Y 4 HORIZONTALES CRUZANDO TODA LA RETÍCULA */
+            .page-sheet::before,
+            .page-sheet::after {
+                content: "";
+                position: absolute;
+                pointer-events: none;
+                z-index: 9999;
+            }
+
+            .page-sheet::before {
+                top: 0;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(
+                    to right,
+                    #777 0.2mm, transparent 0.2mm,
+                    transparent calc(var(--full-width) - 0.1mm),
+                    #777 calc(var(--full-width) - 0.1mm), #777 calc(var(--full-width) + 0.1mm), transparent calc(var(--full-width) + 0.1mm),
+                    transparent calc((var(--full-width) * 2) - 0.1mm),
+                    #777 calc((var(--full-width) * 2) - 0.1mm), #777 calc((var(--full-width) * 2) + 0.1mm), transparent calc((var(--full-width) * 2) + 0.1mm),
+                    transparent calc((var(--full-width) * 3) - 0.2mm),
+                    #777 calc((var(--full-width) * 3) - 0.2mm), #777 calc(var(--full-width) * 3), transparent calc(var(--full-width) * 3)
+                );
+            }
+
+            .page-sheet::after {
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: linear-gradient(
+                    to bottom,
+                    #777 0.2mm, transparent 0.2mm,
+                    transparent calc(var(--full-height) - 0.1mm),
+                    #777 calc(var(--full-height) - 0.1mm), #777 calc(var(--full-height) + 0.1mm), transparent calc(var(--full-height) + 0.1mm),
+                    transparent calc((var(--full-height) * 2) - 0.1mm),
+                    #777 calc((var(--full-height) * 2) - 0.1mm), #777 calc((var(--full-height) * 2) + 0.1mm), transparent calc((var(--full-height) * 2) + 0.1mm),
+                    transparent calc((var(--full-height) * 3) - 0.2mm),
+                    #777 calc((var(--full-height) * 3) - 0.2mm), #777 calc(var(--full-height) * 3), transparent calc(var(--full-height) * 3)
+                );
+            }
+
             .print-card-wrapper {
                 width: var(--full-width) !important;
                 height: var(--full-height) !important;
-                border: 0.3mm solid #888 !important;
+                border: 0.3mm solid #666 !important;
                 box-sizing: border-box !important;
             }
         }
@@ -1067,7 +1111,7 @@
                 const matchesDisc = (discFilter === 'all' || disc.includes(discFilter));
                 const matchesLvl = (lvlFilter === 'all' || level === lvlFilter);
                 const matchesSource = (sourceFilter === 'all' || source.includes(sourceFilter));
-                const matchesSearch = (!searchQuery || name.includes(searchQuery));
+                const matchesSearch = (!searchFilter || name.includes(searchFilter));
 
                 if (matchesDisc && matchesLvl && matchesSource && matchesSearch) {
                     row.style.display = 'block';
