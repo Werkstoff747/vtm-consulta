@@ -671,7 +671,7 @@
             font-family: 'Cinzel', serif;
         }
 
-       @media print {
+        @media print {
             body {
                 background: var(--wrapper-bg) !important;
                 color: black !important;
@@ -690,7 +690,7 @@
                 margin: 0mm;
             }
 
-            /* CADA PÁGINA A4 CON 10MM DE MARGEN SUPERIOR Y GUÍAS DE CORTE TOTALES */
+            /* CADA PÁGINA A4 CON 10MM DE MARGEN SUPERIOR DE SEGURIDAD */
             .page-sheet {
                 width: 189mm !important;
                 height: 264mm !important;
@@ -702,7 +702,6 @@
                 grid-template-rows: repeat(3, var(--full-height)) !important;
                 justify-content: center !important;
                 box-shadow: none !important;
-                position: relative;
             }
 
             .page-sheet:last-child {
@@ -710,33 +709,10 @@
                 break-after: avoid;
             }
 
-            /* CONTENEDOR DE LÍNEAS DE CORTE DE EXTREMO A EXTREMO */
-            .page-sheet::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 189mm;
-                height: 264mm;
-                pointer-events: none;
-                z-index: 9999;
-                /* 4 Líneas Verticales (0mm, 63mm, 126mm, 189mm) */
-                box-shadow: 
-                    0.2mm 0 0 0 #666,
-                    63mm 0 0 0 #666,
-                    126mm 0 0 0 #666,
-                    189mm 0 0 0 #666,
-                    /* 4 Líneas Horizontales (0mm, 88mm, 176mm, 264mm) */
-                    0 0.2mm 0 0 #666,
-                    0 88mm 0 0 #666,
-                    0 176mm 0 0 #666,
-                    0 264mm 0 0 #666;
-            }
-
             .print-card-wrapper {
                 width: var(--full-width) !important;
                 height: var(--full-height) !important;
-                border: 0.3mm solid #666 !important;
+                border: 0.3mm solid #888 !important;
                 box-sizing: border-box !important;
             }
         }
