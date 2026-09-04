@@ -725,8 +725,8 @@
         <header>
             <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
             <div class="header-logos">
-                <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
-                <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo.png';">
+                <img src="./iconos/VTM-Ank-N.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank-N.png';">
+                <img src="./iconos/VTM-Logo-Largo-N.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo-N.png';">
             </div>
             <div class="header-text">
                 <h1 class="cabecera-principal">Compendio de Cartas Imprimibles V5</h1>
@@ -867,7 +867,7 @@
             'presencia': 'Presence_symbol.png', 'protean': 'Protean_symbol.png', 'alquimia de sangre débil': 'Alchemy_symbol.png'
         };
 
-        const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo.png'; 
+        const LOGO_ROJO_FILENAME = 'VTM-Logo-Largo-N.png'; 
 
         function initTheme() {
             const savedTheme = localStorage.getItem('vtm-theme');
@@ -1253,8 +1253,8 @@
                         wrapBack.className = 'print-card-wrapper';
                         wrapBack.innerHTML = `
                             <div class="vtm-card-back">
-                                <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
-                                <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
+                                <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo-N.png'">
+                                <img src="./iconos/VTM-Ank-N.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
                             </div>
                         `;
                         sheetReverso.appendChild(wrapBack);
