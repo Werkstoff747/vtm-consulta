@@ -13,9 +13,9 @@
     <style>
         /* =========================================================
             VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL (OSCURO)
-            Corte exterior final (Línea gris): 63 x 88 mm
-            Sangrado hacia dentro: 1.5 mm por cada lado
-            Cuadro rojo interior de la carta: 60 x 85 mm
+            - Exterior (Línea gris / Corte final): 63 x 88 mm
+            - Margen interior simétrico (Sangrado): 1.5 mm por cada lado
+            - Interior visible (Cuadro rojo): 60 x 85 mm (centrado exacto)
            ========================================================= */
         :root {
             --bg-color: #0f0f12;
@@ -208,15 +208,16 @@
             font-family: inherit;
         }
 
-        /* CUADRÍCULA ESTRICTA DE CARTAS (Exactamente 189mm de ancho = 3 columnas de 63mm) */
+        /* CUADRÍCULA ESTRICTA DE CARTAS (189mm ancho = 3 columnas de 63mm exactos) */
         .cards-grid {
             width: 189mm;
             max-width: 189mm;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(3, var(--full-width));
-            gap: 0;
+            align-content: center;
             justify-content: center;
+            gap: 0;
         }
 
         .print-card-wrapper {
@@ -229,6 +230,7 @@
             break-inside: avoid;
         }
 
+        /* CUADRO ROJO INTERIOR CENTRADO (60x85 mm dentro de 63x88 mm, margen de 1.5mm) */
         .vtm-card {
             width: var(--card-width);
             height: var(--card-height);
@@ -514,10 +516,12 @@
                 margin: 0mm;
             }
 
+            /* CENTRADO ABSOLUTO EN LA HOJA A4 PARA IMPRESIÓN */
             .cards-grid {
                 display: grid !important;
                 grid-template-columns: repeat(3, var(--full-width)) !important;
                 width: 189mm !important;
+                height: 297mm !important;
                 margin: 0 auto !important;
                 justify-content: center !important;
                 align-content: center !important;
