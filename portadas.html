@@ -151,11 +151,11 @@
 
         /* ELEMENTOS INTERNOS DE LA PORTADA */
         .cover-title-top {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--accent-red);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             line-height: 1.2;
             margin-bottom: auto;
             padding-top: 2mm;
@@ -171,21 +171,22 @@
         }
 
         .cover-discipline-icon {
-            width: 34mm;
-            height: 34mm;
+            width: 32mm;
+            height: 32mm;
             object-fit: contain;
             filter: drop-shadow(0px 2px 6px rgba(0,0,0,0.25));
         }
 
         .cover-subtitle-bottom {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--accent-gold);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             line-height: 1.2;
             margin-top: auto;
             padding-bottom: 2mm;
+            min-height: 1.2rem;
         }
 
         @media print {
@@ -259,18 +260,18 @@
     </div>
 
     <script>
-        // Listado completo de disciplinas y variantes de portadas solicitadas
+        // Listado ordenado: 1 de cada disciplina + los extras específicos solicitados
         const PORTADAS = [
             { nombre: "Animalismo", archivo: "Animalism_symbol.png", subtitulo: "" },
             { nombre: "Auspex", archivo: "Auspex_symbol.png", subtitulo: "" },
             { nombre: "Celeridad", archivo: "Celerity_symbol.png", subtitulo: "" },
             { nombre: "Dominación", archivo: "Dominate_symbol.png", subtitulo: "" },
             { nombre: "Fortaleza", archivo: "Fortitude_symbol.png", subtitulo: "" },
-            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "" }, // Versión Poderes
-            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "RITUAL" }, // Versión Ritual
+            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "" }, // Base de Poderes
+            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "RITUAL" }, // Extra de Ritual
             { nombre: "Ofuscación", archivo: "Obfuscate_symbol.png", subtitulo: "" },
-            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "" }, // Versión Poderes
-            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "Ceremonia" }, // Versión Ceremonia
+            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "" }, // Base de Poderes
+            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "Ceremonia" }, // Extra de Ceremonia
             { nombre: "Potencia", archivo: "Potence_symbol.png", subtitulo: "" },
             { nombre: "Presencia", archivo: "Presence_symbol.png", subtitulo: "" },
             { nombre: "Protean", archivo: "Protean_symbol.png", subtitulo: "" },
@@ -304,19 +305,20 @@
                     const wrapper = document.createElement('div');
                     wrapper.className = 'print-card-wrapper';
 
+                    const subHTML = item.subitulo ? item.subitulo : '&nbsp;';
+
                     wrapper.innerHTML = `
                         <div class="vtm-cover-card">
                             <div class="cover-title-top">${item.nombre}</div>
                             <div class="cover-logo-container">
                                 <img src="./iconos/${item.archivo}" class="cover-discipline-icon" alt="${item.nombre}" onerror="this.style.display='none'">
                             </div>
-                            <div class="cover-subtitle-bottom">${item.subitulo}</div>
+                            <div class="cover-subtitle-bottom">${subHTML}</div>
                         </div>
                     `;
                     sheet.appendChild(wrapper);
                 });
 
-                // Rellenar espacios vacíos de la última página si es necesario
                 const resto = chunkSize - chunk.length;
                 if (resto > 0) {
                     for (let r = 0; r < resto; r++) {
