@@ -149,19 +149,15 @@
             pointer-events: none;
         }
 
-        /* TÍTULO SUPERIOR MÁS GRANDE Y MULTILÍNEA CONTROLADA */
+        /* TÍTULO SUPERIOR GIGANTE Y IMPACTANTE */
         .cover-title-top {
-            font-size: 1.25rem; /* Letra considerablemente más grande y protagonista */
+            font-size: 1.5rem; /* Tamaño optimizado al máximo aprovechando el espacio blanco */
             font-weight: 900;
             color: var(--text-main);
             text-transform: none;
             letter-spacing: 0.5px;
-            line-height: 1.2;
-            height: 3.2rem; /* Espacio dedicado exacto para 2 líneas generosas */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            line-height: 1.15;
+            padding-top: 1mm;
             width: 100%;
         }
 
@@ -170,28 +166,26 @@
             align-items: center;
             justify-content: center;
             flex-grow: 1;
-            margin: 2mm 0;
+            margin: 1mm 0;
         }
 
         .cover-discipline-icon {
-            width: 32mm;
-            height: 32mm;
+            width: 36mm; /* Logo ligeramente ampliado para compensar */
+            height: 36mm;
             object-fit: contain;
             filter: drop-shadow(0px 2px 6px rgba(0,0,0,0.25));
         }
 
-        /* SUBTÍTULO INFERIOR (RITUAL / CEREMONIA) */
+        /* SUBTÍTULO INFERIOR (RITUAL / CEREMONIA) VISIBLE Y DESTACADO */
         .cover-subtitle-bottom {
-            font-size: 1.15rem;
-            font-weight: 700;
+            font-size: 1.3rem; /* Subtítulo agrandado a juego */
+            font-weight: 900;
             color: var(--accent-gold);
             text-transform: none;
             letter-spacing: 1.5px;
-            line-height: 1.2;
-            height: 2rem; /* Altura fija para garantizar que el texto dorada se pinte siempre */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            line-height: 1.15;
+            padding-bottom: 1mm;
+            min-height: 1.5rem;
             width: 100%;
         }
 
@@ -266,7 +260,6 @@
     </div>
 
     <script>
-        // Array con saltos de línea explícitos (<br>) en los títulos largos para permitir fuentes enormes
         const PORTADAS = [
             { nombre: "Animalismo", archivo: "Animalism_symbol.png", subtitulo: "" },
             { nombre: "Auspex", archivo: "Auspex_symbol.png", subtitulo: "" },
@@ -311,6 +304,7 @@
                     const wrapper = document.createElement('div');
                     wrapper.className = 'print-card-wrapper';
 
+                    // Si hay subtítulo se muestra, si no hay se deja un espacio en blanco seguro
                     const subHTML = item.subitulo ? item.subitulo : '&nbsp;';
 
                     wrapper.innerHTML = `
