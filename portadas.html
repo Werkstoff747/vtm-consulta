@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portadas de Disciplinas - V5</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./iconos/drRol.png">
+    <!-- Fuentes oficiales V5 -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* =========================================================
+            MEDIDAS DE IMPRESIÓN PROFESIONAL (3x3 CARTAS POR PÁGINA)
+            - Exterior (Línea de corte): 63 x 88 mm
+            - Sangrado: 1.5 mm
+            - Cuadro útil: 60 x 85 mm
+           ========================================================= */
+        :root {
+            --bg-color: #0f0f12;
+            --card-bg: #18181c;
+            --card-border: #2a2a32;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #c5a059;
+            --text-main: #e1e1e6;
+            --wrapper-bg: #000;
+            
+            --full-width: 63mm;
+            --full-height: 88mm;
+            --bleed: 1.5mm;
+            --card-width: 60mm;
+            --card-height: 85mm;
+        }
+
+        body.print-friendly {
+            --bg-color: #a8a7a4;
+            --card-bg: #fcfbfa;
+            --card-border: #bcaba0;
+            --text-main: #1a1a1a;
+            --wrapper-bg: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            font-family: 'Cinzel', serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* PANEL DE CONTROL (NO SE IMPRIME) */
+        .no-print-controls {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        button, select {
+            font-family: 'Cinzel', serif;
+            padding: 10px 18px;
+            background: var(--accent-red);
+            color: white;
+            border: 1px solid var(--accent-gold);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: var(--accent-crimson);
+        }
+
+        .controls-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* ESTRUCTURA DE PÁGINA A4 (3x3) */
+        .page-sheet {
+            width: 189mm;
+            height: 264mm;
+            margin: 0 auto 20px auto;
+            display: grid;
+            grid-template-columns: repeat(3, var(--full-width));
+            grid-template-rows: repeat(3, var(--full-height));
+            gap: 0;
+            background: transparent;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .print-card-wrapper {
+            width: var(--full-width);
+            height: var(--full-height);
+            background: var(--wrapper-bg) !important;
+            position: relative;
+            border: 0.3mm solid #888;
+        }
+
+        /* DISEÑO DE LA CARTA DE PORTADA (CENTRADO EXACTO) */
+        .vtm-cover-card {
+            width: var(--card-width);
+            height: var(--card-height);
+            position: absolute;
+            top: var(--bleed);
+            left: var(--bleed);
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 3px solid var(--accent-red);
+            padding: 5mm;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .vtm-cover-card::after {
+            content: "";
+            position: absolute;
+            top: 2px; left: 2px; right: 2px; bottom: 2px;
+            border: 1px solid var(--accent-gold);
+            pointer-events: none;
+        }
+
+        /* ELEMENTOS INTERNOS DE LA PORTADA */
+        .cover-title-top {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            line-height: 1.2;
+            margin-bottom: auto;
+            padding-top: 2mm;
+            max-width: 100%;
+            word-break: break-word;
+        }
+
+        .cover-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto 0;
+        }
+
+        .cover-discipline-icon {
+            width: 34mm;
+            height: 34mm;
+            object-fit: contain;
+            filter: drop-shadow(0px 2px 6px rgba(0,0,0,0.25));
+        }
+
+        .cover-subtitle-bottom {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.2;
+            margin-top: auto;
+            padding-bottom: 2mm;
+        }
+
+        @media print {
+            body {
+                background: var(--wrapper-bg) !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 210mm;
+                height: 297mm;
+            }
+
+            .no-print-controls {
+                display: none !important;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 0mm;
+            }
+
+            .page-sheet {
+                width: 189mm !important;
+                height: 264mm !important;
+                margin: 10mm auto 0 auto !important;
+                page-break-after: always;
+                break-after: page;
+                display: grid !important;
+                grid-template-columns: repeat(3, var(--full-width)) !important;
+                grid-template-rows: repeat(3, var(--full-height)) !important;
+                justify-content: center !important;
+                box-shadow: none !important;
+            }
+
+            .page-sheet:last-child {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+
+            .print-card-wrapper {
+                width: var(--full-width) !important;
+                height: var(--full-height) !important;
+                border: 0.3mm solid #888 !important;
+                box-sizing: border-box !important;
+                background: var(--wrapper-bg) !important;
+            }
+        }
+    </style>
+</head>
+<body class="print-friendly">
+
+    <div class="container">
+        <!-- PANEL DE CONTROL -->
+        <div class="no-print-controls">
+            <div class="controls-group">
+                <a href="cartas.html" style="text-decoration: none;"><button type="button">◀ Volver a Cartas</button></a>
+                <h2 style="font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--accent-gold);">Generador de Portadas V5</h2>
+            </div>
+            <div class="controls-group">
+                <label for="themeSelect" style="font-size: 0.85rem; font-weight: 600; color: var(--accent-gold);">Estilo:</label>
+                <select id="themeSelect" onchange="changeTheme(this.value)">
+                    <option value="printfriendly" selected>Print-Friendly (Claro)</option>
+                    <option value="professional">Profesional (Oscuro)</option>
+                </select>
+                <button onclick="window.print()" style="background: var(--accent-gold); color: #111;">🖨️ IMPRIMIR PORTADAS</button>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR DE PÁGINAS DE PORTADAS -->
+        <div id="coversContainer"></div>
+    </div>
+
+    <script>
+        // Listado completo de disciplinas y variantes de portadas solicitadas
+        const PORTADAS = [
+            { nombre: "Animalismo", archivo: "Animalism_symbol.png", subtitulo: "" },
+            { nombre: "Auspex", archivo: "Auspex_symbol.png", subtitulo: "" },
+            { nombre: "Celeridad", archivo: "Celerity_symbol.png", subtitulo: "" },
+            { nombre: "Dominación", archivo: "Dominate_symbol.png", subtitulo: "" },
+            { nombre: "Fortaleza", archivo: "Fortitude_symbol.png", subtitulo: "" },
+            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "" }, // Versión Poderes
+            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "RITUAL" }, // Versión Ritual
+            { nombre: "Ofuscación", archivo: "Obfuscate_symbol.png", subtitulo: "" },
+            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "" }, // Versión Poderes
+            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "Ceremonia" }, // Versión Ceremonia
+            { nombre: "Potencia", archivo: "Potence_symbol.png", subtitulo: "" },
+            { nombre: "Presencia", archivo: "Presence_symbol.png", subtitulo: "" },
+            { nombre: "Protean", archivo: "Protean_symbol.png", subtitulo: "" },
+            { nombre: "Alquimia de Sangre Débil", archivo: "Alchemy_symbol.png", subtitulo: "" }
+        ];
+
+        function changeTheme(theme) {
+            if (theme === 'professional') {
+                document.body.classList.remove('print-friendly');
+            } else {
+                document.body.classList.add('print-friendly');
+            }
+        }
+
+        function renderCovers() {
+            const container = document.getElementById('coversContainer');
+            container.innerHTML = '';
+
+            const chunkSize = 9;
+            const totalPaginas = Math.ceil(PORTADAS.length / chunkSize);
+
+            for (let p = 0; p < totalPaginas; p++) {
+                const inicio = p * chunkSize;
+                const fin = Math.min(inicio + chunkSize, PORTADAS.length);
+                const chunk = PORTADAS.slice(inicio, fin);
+
+                const sheet = document.createElement('div');
+                sheet.className = 'page-sheet';
+
+                chunk.forEach(item => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'print-card-wrapper';
+
+                    wrapper.innerHTML = `
+                        <div class="vtm-cover-card">
+                            <div class="cover-title-top">${item.nombre}</div>
+                            <div class="cover-logo-container">
+                                <img src="./iconos/${item.archivo}" class="cover-discipline-icon" alt="${item.nombre}" onerror="this.style.display='none'">
+                            </div>
+                            <div class="cover-subtitle-bottom">${item.subitulo}</div>
+                        </div>
+                    `;
+                    sheet.appendChild(wrapper);
+                });
+
+                // Rellenar espacios vacíos de la última página si es necesario
+                const resto = chunkSize - chunk.length;
+                if (resto > 0) {
+                    for (let r = 0; r < resto; r++) {
+                        const emptyWrapper = document.createElement('div');
+                        emptyWrapper.className = 'print-card-wrapper';
+                        emptyWrapper.style.visibility = 'hidden';
+                        sheet.appendChild(emptyWrapper);
+                    }
+                }
+
+                container.appendChild(sheet);
+            }
+        }
+
+        window.onload = function() {
+            renderCovers();
+        };
+    </script>
+</body>
+</html>
