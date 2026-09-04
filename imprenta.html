@@ -208,9 +208,10 @@
             font-family: inherit;
         }
 
-        /* CUADRÍCULA ESTRICTA DE CARTAS Y LÍNEAS DE CORTE */
+        /* CUADRÍCULA ESTRICTA DE CARTAS (Exactamente 189mm de ancho = 3 columnas de 63mm) */
         .cards-grid {
-            max-width: calc(var(--full-width) * 3);
+            width: 189mm;
+            max-width: 189mm;
             margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(3, var(--full-width));
@@ -485,7 +486,13 @@
         }
 
         .page-break {
-            display: none;
+            display: block;
+            clear: both;
+            height: 0;
+            width: 100%;
+            grid-column: span 3;
+            margin: 0;
+            border: none;
         }
 
         @media print {
@@ -510,11 +517,10 @@
             .cards-grid {
                 display: grid !important;
                 grid-template-columns: repeat(3, var(--full-width)) !important;
-                width: 189mm !important; /* 63mm * 3 columnas exactas */
+                width: 189mm !important;
                 margin: 0 auto !important;
                 justify-content: center !important;
-                align-content: center !important; /* Centra perfectamente los bloques de 3x3 en la hoja A4 */
-                height: 297mm !important;
+                align-content: center !important;
                 gap: 0 !important;
             }
 
@@ -861,7 +867,7 @@
             setTimeout(() => { window.print(); }, 300);
         }
 
-        /* IMPRESIÓN DÚPLEX (BLOQUES DE 9) CORREGIDA */
+        /* IMPRESIÓN DÚPLEX (BLOQUES DE 9) */
         function imprimirDuplex() {
             const cartas = obtenerCartasActivas();
             if (cartas.length === 0) {
@@ -879,12 +885,10 @@
                 const fin = Math.min(inicio + chunkSize, cartas.length);
                 const chunk = cartas.slice(inicio, fin);
 
-                // 1. Pintar anversos del bloque actual
                 chunk.forEach(row => {
                     container.appendChild(createCardElement(row));
                 });
 
-                // Rellenar huecos vacíos si el último bloque tiene menos de 9 cartas
                 const resto = chunkSize - chunk.length;
                 if (resto > 0) {
                     for (let r = 0; r < resto; r++) {
@@ -895,12 +899,10 @@
                     }
                 }
 
-                // Salto de página para colocar los reversos en la siguiente hoja
                 const break1 = document.createElement('div');
                 break1.className = 'page-break';
                 container.appendChild(break1);
 
-                // 2. Pintar los 9 reversos correspondientes a este bloque
                 for (let j = 0; j < chunkSize; j++) {
                     const wrapBack = document.createElement('div');
                     wrapBack.className = 'print-card-wrapper';
@@ -913,7 +915,6 @@
                     container.appendChild(wrapBack);
                 }
 
-                // Salto de página si hay más bloques de cartas pendientes
                 if (p < totalPaginas - 1) {
                     const break2 = document.createElement('div');
                     break2.className = 'page-break';
