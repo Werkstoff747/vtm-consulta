@@ -24,9 +24,9 @@
     <style>
         /* =========================================================
             VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL
-            Corte final exterior (Línea gris): 63 x 88 mm
-            Sangrado interior: 1.5 mm por cada lado
-            Carta interior (Cuadro rojo): 60 x 85 mm
+            Corte exterior final (Línea gris): 63 x 88 mm
+            Sangrado hacia dentro: 1.5 mm por cada lado
+            Cuadro rojo interior de la carta: 60 x 85 mm
            ========================================================= */
         :root {
             --bg-color: #0f0f12;
@@ -50,7 +50,7 @@
             --card-width: 60mm;
             --card-height: 85mm;
             
-            --wrapper-bg: #000;
+            --wrapper-bg: #fff;
         }
 
         body.light-mode {
@@ -398,7 +398,7 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* CUADRÍCULA DE CARTAS (63 x 88 mm total con sangrado de 1.5mm hacia adentro) */
+        /* CUADRÍCULA DE CARTAS (63 x 88 mm exactos con sangrado hacia dentro) */
         .cards-grid {
             max-width: calc(var(--full-width) * 3);
             margin: 0 auto;
@@ -624,13 +624,6 @@
             letter-spacing: 0.3px;
         }
 
-        .card-discipline-icon-img {
-            width: 5mm;
-            height: 5mm;
-            object-fit: contain;
-            opacity: 1;
-        }
-
         /* BOTONES FLOTANTES */
         .floating-btn-container {
             position: fixed;
@@ -685,6 +678,9 @@
                 background: var(--wrapper-bg) !important;
                 color: black !important;
                 padding: 0 !important;
+                margin: 0 !important;
+                width: 210mm;
+                height: 297mm;
             }
 
             .no-print-controls, header, #builderSection, .floating-btn-container {
@@ -694,16 +690,19 @@
             .cards-grid {
                 display: grid !important;
                 grid-template-columns: repeat(3, var(--full-width)) !important;
-                width: 189mm !important;
+                width: 189mm !important; /* 63mm x 3 columnas exactas */
                 margin: 0 auto !important;
                 justify-content: center !important;
-                align-content: center !important;
+                align-content: center !important; /* Centra perfectamente los bloques 3x3 en la hoja A4 */
                 height: 297mm !important;
                 gap: 0 !important;
             }
 
             .print-card-wrapper {
+                width: var(--full-width) !important;
+                height: var(--full-height) !important;
                 border: 0.3mm solid #888 !important;
+                box-sizing: border-box !important;
             }
 
             .page-break {
