@@ -149,9 +149,9 @@
             pointer-events: none;
         }
 
-        /* TÍTULO SUPERIOR GIGANTE Y IMPACTANTE */
+        /* TÍTULO SUPERIOR AMPLIADO */
         .cover-title-top {
-            font-size: 1.5rem; /* Tamaño optimizado al máximo aprovechando el espacio blanco */
+            font-size: 1.5rem;
             font-weight: 900;
             color: var(--text-main);
             text-transform: none;
@@ -170,22 +170,27 @@
         }
 
         .cover-discipline-icon {
-            width: 36mm; /* Logo ligeramente ampliado para compensar */
+            width: 36mm;
             height: 36mm;
             object-fit: contain;
             filter: drop-shadow(0px 2px 6px rgba(0,0,0,0.25));
         }
 
-        /* SUBTÍTULO INFERIOR (RITUAL / CEREMONIA) VISIBLE Y DESTACADO */
+        /* SUBTÍTULO INFERIOR (RITUAL / CEREMONIA) */
         .cover-subtitle-bottom {
-            font-size: 1.3rem; /* Subtítulo agrandado a juego */
+            font-size: 1.3rem;
             font-weight: 900;
             color: var(--accent-gold);
             text-transform: none;
             letter-spacing: 1.5px;
             line-height: 1.15;
             padding-bottom: 1mm;
-            min-height: 1.5rem;
+            width: 100%;
+        }
+
+        /* ESPACIADOR VACÍO PARA CARTAS SIN SUBTÍTULO (MANTIENE LA SIMETRÍA) */
+        .cover-subtitle-spacer {
+            height: 1.5rem;
             width: 100%;
         }
 
@@ -304,8 +309,10 @@
                     const wrapper = document.createElement('div');
                     wrapper.className = 'print-card-wrapper';
 
-                    // Si hay subtítulo se muestra, si no hay se deja un espacio en blanco seguro
-                    const subHTML = item.subitulo ? item.subitulo : '&nbsp;';
+                    // Inyección condicional limpia para el subtítulo o el espaciador simétrico
+                    const footerHTML = item.subitulo 
+                        ? `<div class="cover-subtitle-bottom">${item.subitulo}</div>` 
+                        : `<div class="cover-subtitle-spacer"></div>`;
 
                     wrapper.innerHTML = `
                         <div class="vtm-cover-card">
@@ -313,7 +320,7 @@
                             <div class="cover-logo-container">
                                 <img src="./iconos/${item.archivo}" class="cover-discipline-icon" alt="" onerror="this.style.display='none'">
                             </div>
-                            <div class="cover-subtitle-bottom">${subHTML}</div>
+                            ${footerHTML}
                         </div>
                     `;
                     sheet.appendChild(wrapper);
