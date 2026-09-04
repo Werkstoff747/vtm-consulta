@@ -13,9 +13,9 @@
     <style>
         /* =========================================================
             VARIABLES DE TEMA Y MEDIDAS DE IMPRESIÓN PROFESIONAL (OSCURO)
-            Corte exterior final: 63 x 88 mm
+            Corte exterior final (Línea gris): 63 x 88 mm
             Sangrado hacia dentro: 1.5 mm por cada lado
-            Cuadro rojo interior: 60 x 85 mm
+            Cuadro rojo interior de la carta: 60 x 85 mm
            ========================================================= */
         :root {
             --bg-color: #0f0f12;
@@ -861,7 +861,7 @@
             setTimeout(() => { window.print(); }, 300);
         }
 
-        /* IMPRESIÓN DÚPLEX (BLOQUES DE 9) */
+        /* IMPRESIÓN DÚPLEX (BLOQUES DE 9) CORREGIDA */
         function imprimirDuplex() {
             const cartas = obtenerCartasActivas();
             if (cartas.length === 0) {
@@ -879,10 +879,14 @@
                 const fin = Math.min(inicio + chunkSize, cartas.length);
                 const chunk = cartas.slice(inicio, fin);
 
-                chunk.forEach(row => container.appendChild(createCardElement(row)));
+                // 1. Pintar anversos del bloque actual
+                chunk.forEach(row => {
+                    container.appendChild(createCardElement(row));
+                });
 
+                // Rellenar huecos vacíos si el último bloque tiene menos de 9 cartas
                 const resto = chunkSize - chunk.length;
-                if (resto !== 0) {
+                if (resto > 0) {
                     for (let r = 0; r < resto; r++) {
                         const emptyWrapper = document.createElement('div');
                         emptyWrapper.className = 'print-card-wrapper';
@@ -891,10 +895,12 @@
                     }
                 }
 
+                // Salto de página para colocar los reversos en la siguiente hoja
                 const break1 = document.createElement('div');
                 break1.className = 'page-break';
                 container.appendChild(break1);
 
+                // 2. Pintar los 9 reversos correspondientes a este bloque
                 for (let j = 0; j < chunkSize; j++) {
                     const wrapBack = document.createElement('div');
                     wrapBack.className = 'print-card-wrapper';
@@ -907,6 +913,7 @@
                     container.appendChild(wrapBack);
                 }
 
+                // Salto de página si hay más bloques de cartas pendientes
                 if (p < totalPaginas - 1) {
                     const break2 = document.createElement('div');
                     break2.className = 'page-break';
