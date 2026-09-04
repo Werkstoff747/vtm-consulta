@@ -486,53 +486,53 @@
             font-family: 'Cinzel', serif;
         }
 
-        @media print {
-            body {
-                background: var(--wrapper-bg) !important;
-                color: black !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                width: 210mm;
-                height: 297mm;
-            }
+@media print {
+    body {
+        background: var(--wrapper-bg) !important;
+        color: black !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 210mm;
+        height: 297mm;
+    }
 
-            .no-print-controls, header, .floating-nav-container {
-                display: none !important;
-            }
+    .no-print-controls, header, .floating-nav-container {
+        display: none !important;
+    }
 
-            @page {
-                size: A4 portrait;
-                margin: 0mm;
-            }
+    @page {
+        size: A4 portrait;
+        margin: 0mm;
+    }
 
-            /* CADA PÁGINA A4 CENTRADA GEOMÉTRICAMENTE */
-            .page-sheet {
-                width: 189mm !important;
-                height: 264mm !important;
-                margin: 0 auto !important;
-                page-break-after: always;
-                break-after: page;
-                display: grid !important;
-                grid-template-columns: repeat(3, var(--full-width)) !important;
-                grid-template-rows: repeat(3, var(--full-height)) !important;
-                align-content: center !important;
-                justify-content: center !important;
-                box-shadow: none !important;
-            }
+    /* PÁGINAS DE IMPRESIÓN CON DESPLAZAMIENTO DE SEGURIDAD SUPERIOR */
+    .page-sheet {
+        width: 189mm !important;
+        height: 264mm !important;
+        margin: 0 auto !important;
+        padding-top: 3mm !important; /* Desplaza el bloque 3mm hacia abajo para evitar que la impresora corte el borde */
+        page-break-after: always;
+        break-after: page;
+        display: grid !important;
+        grid-template-columns: repeat(3, var(--full-width)) !important;
+        grid-template-rows: repeat(3, var(--full-height)) !important;
+        justify-content: center !important;
+        box-shadow: none !important;
+    }
 
-            .page-sheet:last-child {
-                page-break-after: avoid;
-                break-after: avoid;
-            }
+    .page-sheet:last-child {
+        page-break-after: avoid;
+        break-after: avoid;
+    }
 
-            .print-card-wrapper {
-                width: var(--full-width) !important;
-                height: var(--full-height) !important;
-                border: 0.3mm solid #888 !important;
-                box-sizing: border-box !important;
-                background: #000 !important;
-            }
-        }
+    .print-card-wrapper {
+        width: var(--full-width) !important;
+        height: var(--full-height) !important;
+        border: 0.3mm solid #888 !important;
+        box-sizing: border-box !important;
+        background: #000 !important;
+    }
+}
     </style>
 </head>
 <body>
