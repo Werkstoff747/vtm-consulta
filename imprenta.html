@@ -211,7 +211,7 @@
         /* CONTENEDOR DE PÁGINAS A4 INDEPENDIENTES (3x3 cartas por página) */
         .page-sheet {
             width: 189mm;
-            height: 264mm; /* 3 filas de 88mm */
+            height: 264mm;
             margin: 0 auto 20px auto;
             display: grid;
             grid-template-columns: repeat(3, var(--full-width));
@@ -486,53 +486,52 @@
             font-family: 'Cinzel', serif;
         }
 
-@media print {
-    body {
-        background: var(--wrapper-bg) !important;
-        color: black !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        width: 210mm;
-        height: 297mm;
-    }
+        @media print {
+            body {
+                background: var(--wrapper-bg) !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 210mm;
+                height: 297mm;
+            }
 
-    .no-print-controls, header, .floating-nav-container {
-        display: none !important;
-    }
+            .no-print-controls, header, .floating-nav-container {
+                display: none !important;
+            }
 
-    @page {
-        size: A4 portrait;
-        margin: 0mm;
-    }
+            @page {
+                size: A4 portrait;
+                margin: 0mm;
+            }
 
-    /* PÁGINAS DE IMPRESIÓN CON DESPLAZAMIENTO DE SEGURIDAD SUPERIOR */
-    .page-sheet {
-        width: 189mm !important;
-        height: 264mm !important;
-        margin: 0 auto !important;
-        padding-top: 3mm !important; /* Desplaza el bloque 3mm hacia abajo para evitar que la impresora corte el borde */
-        page-break-after: always;
-        break-after: page;
-        display: grid !important;
-        grid-template-columns: repeat(3, var(--full-width)) !important;
-        grid-template-rows: repeat(3, var(--full-height)) !important;
-        justify-content: center !important;
-        box-shadow: none !important;
-    }
+            /* CADA PÁGINA A4 CON 10MM DE MARGEN SUPERIOR DE SEGURIDAD */
+            .page-sheet {
+                width: 189mm !important;
+                height: 264mm !important;
+                margin: 10mm auto 0 auto !important; /* Desplaza el bloque 10mm hacia abajo en cada página impresa */
+                page-break-after: always;
+                break-after: page;
+                display: grid !important;
+                grid-template-columns: repeat(3, var(--full-width)) !important;
+                grid-template-rows: repeat(3, var(--full-height)) !important;
+                justify-content: center !important;
+                box-shadow: none !important;
+            }
 
-    .page-sheet:last-child {
-        page-break-after: avoid;
-        break-after: avoid;
-    }
+            .page-sheet:last-child {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
 
-    .print-card-wrapper {
-        width: var(--full-width) !important;
-        height: var(--full-height) !important;
-        border: 0.3mm solid #888 !important;
-        box-sizing: border-box !important;
-        background: #000 !important;
-    }
-}
+            .print-card-wrapper {
+                width: var(--full-width) !important;
+                height: var(--full-height) !important;
+                border: 0.3mm solid #888 !important;
+                box-sizing: border-box !important;
+                background: #000 !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -805,7 +804,6 @@
                 const fin = Math.min(inicio + chunkSize, cartas.length);
                 const chunk = cartas.slice(inicio, fin);
 
-                // Página de Anversos
                 const sheetAnverso = document.createElement('div');
                 sheetAnverso.className = 'page-sheet';
 
@@ -813,7 +811,6 @@
                     sheetAnverso.appendChild(createCardElement(row));
                 });
 
-                // Rellenar huecos vacíos si el bloque tiene menos de 9 cartas
                 const resto = chunkSize - chunk.length;
                 if (resto > 0) {
                     for (let r = 0; r < resto; r++) {
@@ -825,7 +822,6 @@
                 }
                 container.appendChild(sheetAnverso);
 
-                // Si estamos en modo Dúplex, añadimos la página de Reversos correspondiente inmediatamente después
                 if (isDuplexMode) {
                     const sheetReverso = document.createElement('div');
                     sheetReverso.className = 'page-sheet';
