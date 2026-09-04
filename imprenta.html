@@ -328,7 +328,7 @@
 
         .card-discipline {
             font-family: 'Cinzel', serif;
-            font-size: 0.58rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--accent-red);
@@ -345,7 +345,7 @@
 
         .card-title {
             font-family: 'Cinzel', serif;
-            font-size: 0.78rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--text-main);
             line-height: 1.1;
@@ -353,48 +353,48 @@
         }
 
         .card-roll-box {
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             background: rgba(197, 160, 89, 0.08);
             border: 1px solid rgba(197, 160, 89, 0.3);
-            padding: 2.5px 3.5px;
+            padding: 3px 4px;
             border-radius: 3px;
             margin-bottom: 0.8mm;
             text-align: center;
-            line-height: 1.1;
+            line-height: 1.15;
         }
 
         .card-roll-line-1 {
             font-weight: bold;
             color: var(--accent-crimson);
-            font-size: 0.58rem;
+            font-size: 0.63rem;
         }
 
         .card-roll-line-2 {
             font-style: italic;
             color: var(--text-muted);
-            font-size: 0.45rem;
+            font-size: 0.5rem;
             margin: 1px 0;
         }
 
         .card-roll-line-3 {
             font-weight: 600;
             color: var(--text-main);
-            font-size: 0.55rem;
+            font-size: 0.6rem;
         }
 
         .card-body {
-            font-size: 0.58rem;
-            line-height: 1.15;
+            font-size: 0.67rem;
+            line-height: 1.18;
             overflow-y: hidden;
             padding: 1px 2px;
             text-align: justify;
         }
 
         .card-costs {
-            font-size: 0.5rem;
+            font-size: 0.6rem;
             background: rgba(197, 160, 89, 0.12);
             border: 1px solid var(--accent-gold);
-            padding: 2px 3.5px;
+            padding: 3px 4px;
             border-radius: 3px;
             margin-top: auto;
             margin-bottom: 0.8mm;
@@ -410,7 +410,7 @@
 
         .card-footer-container {
             border-top: 1px solid var(--accent-gold);
-            padding-top: 0.6mm;
+            padding-top: 0.8mm;
             margin-top: 0;
             position: relative;
             z-index: 1;
@@ -423,13 +423,13 @@
         }
 
         .card-level-img {
-            width: 5mm;
-            height: 5mm;
+            width: 6mm;
+            height: 6mm;
             object-fit: contain;
         }
 
         .card-source-text {
-            font-size: 0.4rem;
+            font-size: 0.52rem;
             color: var(--text-muted);
             font-family: 'Cinzel', serif;
             text-align: center;
@@ -437,8 +437,8 @@
         }
 
         .card-discipline-icon-img {
-            width: 5mm;
-            height: 5mm;
+            width: 6mm;
+            height: 6mm;
             object-fit: contain;
             opacity: 1;
         }
@@ -720,7 +720,7 @@
             let cornerIconHTML = '';
             if (archivoIcono) {
                 watermarkHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="" onerror="this.style.display='none'">`;
-                cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="card-discipline-icon-img" alt="${discipline}" onerror="this.style.display='none'">`;
+                cornerIconHTML = `<img src="./iconos/${archivoIcono}" class="discipline-watermark-img" alt="${discipline}" style="position:static; width:6mm; height:6mm; opacity:1; transform:none;" onerror="this.style.display='none'">`;
             }
 
             const levelImgHTML = `<img src="./iconos/${level}_symbol.png" class="card-level-img" alt="Nivel ${level}" onerror="this.style.display='none'">`;
