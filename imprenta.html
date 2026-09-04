@@ -208,16 +208,17 @@
             font-family: inherit;
         }
 
-        /* CUADRÍCULA ESTRICTA DE CARTAS (189mm ancho = 3 columnas de 63mm exactos) */
-        .cards-grid {
+        /* CONTENEDOR DE PÁGINAS A4 INDEPENDIENTES (3x3 cartas por página) */
+        .page-sheet {
             width: 189mm;
-            max-width: 189mm;
-            margin: 0 auto;
+            height: 264mm; /* 3 filas de 88mm */
+            margin: 0 auto 20px auto;
             display: grid;
             grid-template-columns: repeat(3, var(--full-width));
-            align-content: center;
-            justify-content: center;
+            grid-template-rows: repeat(3, var(--full-height));
             gap: 0;
+            background: transparent;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
         .print-card-wrapper {
@@ -226,8 +227,6 @@
             background: var(--wrapper-bg) !important;
             position: relative;
             border: 0.3mm solid #888;
-            page-break-inside: avoid;
-            break-inside: avoid;
         }
 
         /* CUADRO ROJO INTERIOR CENTRADO (60x85 mm dentro de 63x88 mm, margen de 1.5mm) */
@@ -487,16 +486,6 @@
             font-family: 'Cinzel', serif;
         }
 
-        .page-break {
-            display: block;
-            clear: both;
-            height: 0;
-            width: 100%;
-            grid-column: span 3;
-            margin: 0;
-            border: none;
-        }
-
         @media print {
             body {
                 background: var(--wrapper-bg) !important;
@@ -516,16 +505,24 @@
                 margin: 0mm;
             }
 
-            /* CENTRADO PERFECTO DE 3X3 EN LA PÁGINA A4 (189x264 mm centrado en 210x297 mm) */
-            .cards-grid {
+            /* CADA PÁGINA A4 CENTRADA GEOMÉTRICAMENTE */
+            .page-sheet {
+                width: 189mm !important;
+                height: 264mm !important;
+                margin: 0 auto !important;
+                page-break-after: always;
+                break-after: page;
                 display: grid !important;
                 grid-template-columns: repeat(3, var(--full-width)) !important;
-                width: 189mm !important;
-                height: 297mm !important;
-                margin: 0 auto !important;
-                justify-content: center !important;
+                grid-template-rows: repeat(3, var(--full-height)) !important;
                 align-content: center !important;
-                gap: 0 !important;
+                justify-content: center !important;
+                box-shadow: none !important;
+            }
+
+            .page-sheet:last-child {
+                page-break-after: avoid;
+                break-after: avoid;
             }
 
             .print-card-wrapper {
@@ -534,15 +531,6 @@
                 border: 0.3mm solid #888 !important;
                 box-sizing: border-box !important;
                 background: #000 !important;
-            }
-
-            .page-break {
-                display: block !important;
-                page-break-after: always;
-                break-after: page;
-                height: 0;
-                width: 100%;
-                grid-column: span 3;
             }
         }
     </style>
@@ -620,8 +608,8 @@
 
         <div id="loading">Cargando cartas desde Google Sheets...</div>
 
-        <!-- Contenedor donde se generan las cartas dinámicamente -->
-        <div id="cardsContainer" class="cards-grid"></div>
+        <!-- Contenedor donde se generan las páginas de cartas dinámicamente -->
+        <div id="cardsContainer"></div>
     </div>
 
     <!-- Botón flotante -->
@@ -805,14 +793,64 @@
             return wrapper;
         }
 
+        function renderPages(cartas, isDuplexMode = false) {
+            const container = document.getElementById('cardsContainer');
+            container.innerHTML = '';
+
+            const chunkSize = 9;
+            const totalPaginas = Math.ceil(cartas.length / chunkSize);
+
+            for (let p = 0; p < totalPaginas; p++) {
+                const inicio = p * chunkSize;
+                const fin = Math.min(inicio + chunkSize, cartas.length);
+                const chunk = cartas.slice(inicio, fin);
+
+                // Página de Anversos
+                const sheetAnverso = document.createElement('div');
+                sheetAnverso.className = 'page-sheet';
+
+                chunk.forEach(row => {
+                    sheetAnverso.appendChild(createCardElement(row));
+                });
+
+                // Rellenar huecos vacíos si el bloque tiene menos de 9 cartas
+                const resto = chunkSize - chunk.length;
+                if (resto > 0) {
+                    for (let r = 0; r < resto; r++) {
+                        const emptyWrapper = document.createElement('div');
+                        emptyWrapper.className = 'print-card-wrapper';
+                        emptyWrapper.style.visibility = 'hidden';
+                        sheetAnverso.appendChild(emptyWrapper);
+                    }
+                }
+                container.appendChild(sheetAnverso);
+
+                // Si estamos en modo Dúplex, añadimos la página de Reversos correspondiente inmediatamente después
+                if (isDuplexMode) {
+                    const sheetReverso = document.createElement('div');
+                    sheetReverso.className = 'page-sheet';
+
+                    for (let j = 0; j < chunkSize; j++) {
+                        const wrapBack = document.createElement('div');
+                        wrapBack.className = 'print-card-wrapper';
+                        wrapBack.innerHTML = `
+                            <div class="vtm-card-back">
+                                <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
+                                <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
+                            </div>
+                        `;
+                        sheetReverso.appendChild(wrapBack);
+                    }
+                    container.appendChild(sheetReverso);
+                }
+            }
+        }
+
         function filterCatalogCards() {
             const selectedDisc = document.getElementById('filterDiscipline').value;
             const selectedLevel = document.getElementById('filterLevel').value;
             const selectedSource = document.getElementById('filterSource').value;
             const searchQuery = document.getElementById('searchCard').value.toLowerCase();
-
-            const container = document.getElementById('cardsContainer');
-            container.innerHTML = '';
 
             const filteredData = allDisciplinesData.filter(row => {
                 const discipline = (row['Disciplina'] || 'General').toLowerCase().trim();
@@ -829,9 +867,7 @@
                 return matchesDisc && matchesLevel && matchesSource && matchesSearch;
             });
 
-            filteredData.forEach(row => {
-                container.appendChild(createCardElement(row));
-            });
+            renderPages(filteredData, false);
         }
 
         function obtenerCartasActivas() {
@@ -863,69 +899,18 @@
                 alert("No hay cartas visibles para imprimir.");
                 return;
             }
-
-            const container = document.getElementById('cardsContainer');
-            container.innerHTML = '';
-            cartas.forEach(row => container.appendChild(createCardElement(row)));
-
+            renderPages(cartas, false);
             setTimeout(() => { window.print(); }, 300);
         }
 
-        /* IMPRESIÓN DÚPLEX (BLOQUES DE 9) */
+        /* IMPRESIÓN DÚPLEX */
         function imprimirDuplex() {
             const cartas = obtenerCartasActivas();
             if (cartas.length === 0) {
                 alert("No hay cartas visibles para imprimir.");
                 return;
             }
-
-            const container = document.getElementById('cardsContainer');
-            container.innerHTML = '';
-            const chunkSize = 9;
-            const totalPaginas = Math.ceil(cartas.length / chunkSize);
-
-            for (let p = 0; p < totalPaginas; p++) {
-                const inicio = p * chunkSize;
-                const fin = Math.min(inicio + chunkSize, cartas.length);
-                const chunk = cartas.slice(inicio, fin);
-
-                chunk.forEach(row => {
-                    container.appendChild(createCardElement(row));
-                });
-
-                const resto = chunkSize - chunk.length;
-                if (resto > 0) {
-                    for (let r = 0; r < resto; r++) {
-                        const emptyWrapper = document.createElement('div');
-                        emptyWrapper.className = 'print-card-wrapper';
-                        emptyWrapper.style.visibility = 'hidden';
-                        container.appendChild(emptyWrapper);
-                    }
-                }
-
-                const break1 = document.createElement('div');
-                break1.className = 'page-break';
-                container.appendChild(break1);
-
-                for (let j = 0; j < chunkSize; j++) {
-                    const wrapBack = document.createElement('div');
-                    wrapBack.className = 'print-card-wrapper';
-                    wrapBack.innerHTML = `
-                        <div class="vtm-card-back">
-                            <img src="./iconos/${LOGO_ROJO_FILENAME}" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
-                            <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
-                        </div>
-                    `;
-                    container.appendChild(wrapBack);
-                }
-
-                if (p < totalPaginas - 1) {
-                    const break2 = document.createElement('div');
-                    break2.className = 'page-break';
-                    container.appendChild(break2);
-                }
-            }
-
+            renderPages(cartas, true);
             setTimeout(() => { window.print(); }, 300);
         }
     </script>
