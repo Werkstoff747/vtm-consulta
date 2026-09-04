@@ -22,21 +22,15 @@
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
             --accent-gold: #c5a059;
-            --text-main: #e1e1e6;
+            --text-main: #ffffff; /* Letras en blanco puro para que destaquen en oscuro */
             --wrapper-bg: #000;
-            
-            --full-width: 63mm;
-            --full-height: 88mm;
-            --bleed: 1.5mm;
-            --card-width: 60mm;
-            --card-height: 85mm;
         }
 
         body.print-friendly {
             --bg-color: #a8a7a4;
             --card-bg: #fcfbfa;
             --card-border: #bcaba0;
-            --text-main: #1a1a1a;
+            --text-main: #1a1a1a; /* Texto oscuro para el modo claro */
             --wrapper-bg: #fff;
         }
 
@@ -131,7 +125,7 @@
             background-color: var(--card-bg);
             color: var(--text-main);
             border: 3px solid var(--accent-red);
-            padding: 5mm;
+            padding: 4mm;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -151,15 +145,15 @@
 
         /* ELEMENTOS INTERNOS DE LA PORTADA */
         .cover-title-top {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--accent-red);
-            text-transform: uppercase;
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: var(--text-main); /* Hereda el blanco puro en oscuro y negro en claro */
+            text-transform: none; /* Quitamos uppercase forzado para respetar las mayúsculas/minúsculas exactas */
             letter-spacing: 1px;
-            line-height: 1.2;
+            line-height: 1.15;
             margin-bottom: auto;
             padding-top: 2mm;
-            max-width: 100%;
+            width: 100%;
             word-break: break-word;
         }
 
@@ -178,21 +172,22 @@
         }
 
         .cover-subtitle-bottom {
-            font-size: 0.9rem;
-            font-weight: 700;
+            font-size: 1.1rem;
+            font-weight: 900;
             color: var(--accent-gold);
-            text-transform: uppercase;
+            text-transform: none; /* Coherencia visual sin forzar mayúsculas absolutas */
             letter-spacing: 1.5px;
-            line-height: 1.2;
+            line-height: 1.15;
             margin-top: auto;
             padding-bottom: 2mm;
-            min-height: 1.2rem;
+            min-height: 1.4rem;
+            width: 100%;
         }
 
         @media print {
             body {
                 background: var(--wrapper-bg) !important;
-                color: black !important;
+                color: var(--text-main) !important;
                 padding: 0 !important;
                 margin: 0 !important;
                 width: 210mm;
@@ -260,18 +255,18 @@
     </div>
 
     <script>
-        // Listado ordenado: 1 de cada disciplina + los extras específicos solicitados
+        // Listado actualizado con la capitalización exacta deseada ("Ritual" y "Ceremonia")
         const PORTADAS = [
             { nombre: "Animalismo", archivo: "Animalism_symbol.png", subtitulo: "" },
             { nombre: "Auspex", archivo: "Auspex_symbol.png", subtitulo: "" },
             { nombre: "Celeridad", archivo: "Celerity_symbol.png", subtitulo: "" },
             { nombre: "Dominación", archivo: "Dominate_symbol.png", subtitulo: "" },
             { nombre: "Fortaleza", archivo: "Fortitude_symbol.png", subtitulo: "" },
-            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "" }, // Base de Poderes
-            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "RITUAL" }, // Extra de Ritual
+            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "" },
+            { nombre: "Hechicería de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "Ritual" },
             { nombre: "Ofuscación", archivo: "Obfuscate_symbol.png", subtitulo: "" },
-            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "" }, // Base de Poderes
-            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "Ceremonia" }, // Extra de Ceremonia
+            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "" },
+            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "Ceremonia" },
             { nombre: "Potencia", archivo: "Potence_symbol.png", subtitulo: "" },
             { nombre: "Presencia", archivo: "Presence_symbol.png", subtitulo: "" },
             { nombre: "Protean", archivo: "Protean_symbol.png", subtitulo: "" },
