@@ -141,7 +141,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        .vtm-cover-card::after {
+        .vtm-cover-card::after, .vtm-card-back::after {
             content: "";
             position: absolute;
             top: 2px; left: 2px; right: 2px; bottom: 2px;
@@ -149,9 +149,47 @@
             pointer-events: none;
         }
 
+        /* ESTILO PARA LOS DORSOS DE RELLENO */
+        .vtm-card-back {
+            width: var(--card-width);
+            height: var(--card-height);
+            position: absolute;
+            top: var(--bleed);
+            left: var(--bleed);
+            background-color: var(--card-bg);
+            border: 3px solid var(--accent-red);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .back-top-logo {
+            width: 42mm;
+            height: auto;
+            object-fit: contain;
+            position: absolute;
+            top: 7mm;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .back-center-ank {
+            width: 24mm;
+            height: 24mm;
+            object-fit: contain;
+            position: absolute;
+            top: 52%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
         /* TÍTULO SUPERIOR GIGANTE */
         .cover-title-top {
-            font-size: 1.65rem; /* Letra imponente y de gran tamaño */
+            font-size: 1.65rem;
             font-weight: 900;
             color: var(--text-main);
             text-transform: none;
@@ -176,7 +214,7 @@
             filter: drop-shadow(0px 2px 6px rgba(0,0,0,0.25));
         }
 
-        /* SUBTÍTULO INFERIOR FORZADO (GARANTIZADO AL 100%) */
+        /* SUBTÍTULO INFERIOR FORZADO */
         .cover-subtitle-bottom {
             font-size: 1.4rem;
             font-weight: 900;
@@ -264,7 +302,6 @@
     </div>
 
     <script>
-        // Array estricto y explícito donde cada tarjeta define directamente su estructura
         const PORTADAS = [
             { nombre: "Animalismo", archivo: "Animalism_symbol.png", subtitulo: null },
             { nombre: "Auspex", archivo: "Auspex_symbol.png", subtitulo: null },
@@ -272,10 +309,10 @@
             { nombre: "Dominación", archivo: "Dominate_symbol.png", subtitulo: null },
             { nombre: "Fortaleza", archivo: "Fortitude_symbol.png", subtitulo: null },
             { nombre: "Hechicería<br>de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: null },
-            { nombre: "Hechicería<br>de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "Ritual" }, // Grabado a fuego
+            { nombre: "Hechicería<br>de Sangre", archivo: "Blood_Sorcery_symbol.png", subtitulo: "Ritual" },
             { nombre: "Ofuscación", archivo: "Obfuscate_symbol.png", subtitulo: null },
             { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: null },
-            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "Ceremonia" }, // Grabado a fuego
+            { nombre: "Olvido", archivo: "Oblivion_symbol.png", subtitulo: "Ceremonia" },
             { nombre: "Potencia", archivo: "Potence_symbol.png", subtitulo: null },
             { nombre: "Presencia", archivo: "Presence_symbol.png", subtitulo: null },
             { nombre: "Protean", archivo: "Protean_symbol.png", subtitulo: null },
@@ -309,7 +346,6 @@
                     const wrapper = document.createElement('div');
                     wrapper.className = 'print-card-wrapper';
 
-                    // Generación directa y blindada del HTML inferior
                     let bottomHTML = '';
                     if (item.subitulo) {
                         bottomHTML = `<div class="cover-subtitle-bottom">${item.subitulo}</div>`;
@@ -329,13 +365,19 @@
                     sheet.appendChild(wrapper);
                 });
 
+                // Rellenar los huecos restantes de la última página con dorsos de cartas
                 const resto = chunkSize - chunk.length;
                 if (resto > 0) {
                     for (let r = 0; r < resto; r++) {
-                        const emptyWrapper = document.createElement('div');
-                        emptyWrapper.className = 'print-card-wrapper';
-                        emptyWrapper.style.visibility = 'hidden';
-                        sheet.appendChild(emptyWrapper);
+                        const backWrapper = document.createElement('div');
+                        backWrapper.className = 'print-card-wrapper';
+                        backWrapper.innerHTML = `
+                            <div class="vtm-card-back">
+                                <img src="./iconos/VTM-Logo-Largo-N.png" class="back-top-logo" alt="Logo" onerror="this.src='./iconos/VTM-Logo-Largo.png'">
+                                <img src="./iconos/VTM-Ank.png" class="back-center-ank" alt="Ankh" onerror="this.style.display='none'">
+                            </div>
+                        `;
+                        sheet.appendChild(backWrapper);
                     }
                 }
 
