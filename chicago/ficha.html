@@ -373,12 +373,16 @@
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
                 
-                // Búsqueda robusta basada estrictamente en la primera columna (ID exacto)
+                // Búsqueda infalible: busca en CUALQUIER propiedad que contenga 'id' o 'ID' 
+                // y compara convirtiéndolo estrictamente a número entero para evitar fallos de espacios o texto.
                 const v = results.data.find(row => {
-                    const keys = Object.keys(row);
-                    if (keys.length > 0) {
-                        const idValue = String(row[keys[0]] || "").trim();
-                        return idValue === String(targetId).trim();
+                    for (let key in row) {
+                        if (key.toLowerCase().includes('id')) {
+                            const val = parseInt(row[key]);
+                            if (!isNaN(val) && val === parseInt(targetId)) {
+                                return true;
+                            }
+                        }
                     }
                     return false;
                 });
@@ -437,14 +441,14 @@
         document.getElementById('fVoluntad').textContent = getVal(v, ["Fuerza_de_Voluntad"]) || "-";
 
         // Carga de imagen por nombre formateado (ej: Bennet_Steadman.jpg)
-        const nombreArchivoSeguro = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_") + ".jpg";
+        const nombreLimpioImg = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_");
+        const imagenLimpia = `${nombreLimpioImg}.jpg`;
+        
         const imgElement = document.getElementById('fImage');
-        imgElement.src = `./retratos/${nombreArchivoSeguro}`;
+        imgElement.src = `./retratos/${imagenLimpia}`;
         imgElement.onerror = function() {
-            this.onerror = function() {
-                this.src = 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';
-            };
-            this.src = `./retratos/${nombreArchivoSeguro}`;
+            this.onerror = null;
+            this.src = 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';
         };
 
         // Mapeo dinámico de Atributos
@@ -481,6 +485,5 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
-
 </body>
 </html>
