@@ -412,8 +412,8 @@
 </div>
 
 <script>
-    /* Enlace CSV apuntando correctamente a la pestaña "Index" de tu Google Sheet (gid=0) */
-    const CSV_INDEX_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
+    /* Enlace CSV correcto apuntando a la pestaña "Index" de tu Google Sheet (gid=260159114) */
+    const CSV_INDEX_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=260159114&single=true&output=csv';
 
     function initTheme() {
         const savedTheme = localStorage.getItem('vtm-theme');
@@ -444,7 +444,7 @@
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
 
-        // Lectura de la pestaña Index desde Google Sheets con PapaParse por posiciones numéricas (Columna A=0, B=1, C=2, D=3, E=4)
+        // Lectura de la pestaña Index desde Google Sheets con PapaParse usando el gid exacto
         Papa.parse(CSV_INDEX_URL, {
             download: true,
             header: false,
@@ -477,10 +477,12 @@
 
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('scrollTopBtn');
-            if (window.scrollY > 300) {
-                btn.style.display = 'flex';
-            } else {
-                btn.style.display = 'none';
+            if (btn) {
+                if (window.scrollY > 300) {
+                    btn.style.display = 'flex';
+                } else {
+                    btn.style.display = 'none';
+                }
             }
         });
     });
