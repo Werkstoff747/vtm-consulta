@@ -356,7 +356,7 @@
 </div>
 
 <script>
-    // URL de tu hoja de Google Sheets exportada como CSV limpio
+    // URL de tu hoja oficial publicada en Google Sheets con anti-caché robusto
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=530703739&single=true&output=csv&_t=' + Date.now();
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -375,8 +375,15 @@
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
                 
-                // Búsqueda directa, limpia y exacta por la columna ID
-                const v = results.data.find(row => String(row["ID"]).trim() === String(targetId).trim());
+                // Limpieza numérica estricta para evitar desfases de cadenas
+                const idBuscado = parseInt(targetId, 10);
+
+                // Buscamos la fila cuyo ID coincida exactamente de forma numérica
+                const v = results.data.find(row => {
+                    if (!row["ID"]) return false;
+                    const idFila = parseInt(String(row["ID"]).trim(), 10);
+                    return idFila === idBuscado;
+                });
 
                 if (v) {
                     renderFicha(v);
@@ -386,7 +393,7 @@
             },
             error: function(err) {
                 document.getElementById('loading').style.display = 'none';
-                mostrarError("Error al conectar con la base de datos de Google Sheets.");
+                mostrarError("Error al conectar con la base de datos de Google Sheets en vivo.");
             }
         });
 
@@ -398,8 +405,8 @@
     function renderFicha(v) {
         document.getElementById('fichaContent').style.display = 'block';
 
-        const nombre = v["Nombre_Personaje"] || "Desconocido";
-        const clan = v["Clan"] || "Desconocido";
+        const nombre = v["Nombre_Personaje"] ? v["Nombre_Personaje"].trim() : "Desconocido";
+        const clan = v["Clan"] ? v["Clan"].trim() : "Desconocido";
         
         // Datos básicos
         document.getElementById('fName').textContent = nombre;
@@ -418,15 +425,15 @@
         document.getElementById('fSalud').textContent = v["Salud"] || "-";
         document.getElementById('fVoluntad').textContent = v["Fuerza_de_Voluntad"] || "-";
 
-        // Carga de imagen: usa prioritariamente la columna "Archivo de Imagen" o recurre al nombre formateado
-        let nombreImagen = v["Archivo de Imagen"] ? v["Archivo de Imagen"].trim() : "";
-        if (!nombreImagen) {
+        // Carga de imagen: usa la columna o recurre al nombre formateado con espacios reemplazados por guiones bajos
+        let nombreImagen = v["Archivo de Imagen"] ? String(v["Archivo de Imagen"]).trim() : "";
+        if (!nombreImagen || nombreImagen === "") {
             const nombreLimpioImg = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_");
             nombreImagen = `${nombreLimpioImg}.jpg`;
         }
 
         const imgElement = document.getElementById('fImage');
-        // Anti-caché con timestamp para que recargue la foto al instante
+        // Anti-caché con timestamp para forzar actualización de imagen
         imgElement.src = `./retratos/${nombreImagen}?t=` + new Date().getTime();
         imgElement.onerror = function() {
             this.onerror = null;
