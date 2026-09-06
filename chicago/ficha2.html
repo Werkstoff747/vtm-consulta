@@ -500,8 +500,11 @@
         document.getElementById('themeToggleBtn').innerHTML = isLight ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
     }
 
+    // Limpiador automático a prueba de fallos para extraer números limpios
     function renderDots(value, max = 5) {
-        let val = parseInt(value) || 0;
+        const match = String(value || "").trim().match(/\d/);
+        let val = match ? parseInt(match[0]) : 0;
+        
         let html = '<div class="dots-container">';
         for (let i = 1; i <= max; i++) {
             html += `<div class="dot ${i <= val ? 'filled' : ''}"></div>`;
@@ -511,7 +514,9 @@
     }
 
     function renderBoxes(value, max = 10) {
-        let val = parseInt(value) || 0;
+        const match = String(value || "").trim().match(/\d+/);
+        let val = match ? parseInt(match[0]) : 0;
+        
         let html = '';
         for (let i = 1; i <= max; i++) {
             html += `<div class="t-box ${i <= val ? 'filled' : ''}"></div>`;
@@ -542,7 +547,10 @@
                 document.getElementById('loading').style.display = 'none';
                 const filas = results.data;
 
-                const personaje = filas.find(row => String(row["ID"] || row["id"]).trim() === String(targetId).trim());
+                const personaje = filas.find(row => {
+                    const rowId = row["ID"] || row["id"] || "";
+                    return String(rowId).trim() === String(targetId).trim();
+                });
 
                 if (!personaje) {
                     document.getElementById('loading').style.display = 'block';
@@ -612,10 +620,15 @@
         const container = document.getElementById(containerId);
         container.innerHTML = '';
         keysArray.forEach(key => {
-            let valor = dataObj[key];
-            if (valor === undefined) {
-                const altKey = Object.keys(dataObj).find(k => k.toLowerCase().includes(key.toLowerCase().replace(/_/g, ' ')));
-                valor = altKey ? dataObj[altKey] : 0;
+            const cleanKeySearch = key.replace(/^(Atributo_|Hab_)/, '').toLowerCase().replace(/[_]/g, ' ').trim();
+            let valor = 0;
+            
+            for (let colName in dataObj) {
+                const cleanCol = colName.toLowerCase().replace(/^(atributo_|hab_|habilidad_)/, '').replace(/[_]/g, ' ').trim();
+                if (cleanCol === cleanKeySearch || cleanCol.includes(cleanKeySearch) || cleanKeySearch.includes(cleanCol)) {
+                    valor = dataObj[colName];
+                    break;
+                }
             }
 
             const row = document.createElement('div');
