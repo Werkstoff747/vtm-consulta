@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 
-    <!-- Librería PapaParse para leer la pestaña Index del Google Sheet -->
+    <!-- Librería PapaParse para leer el Google Sheet -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
@@ -412,8 +412,8 @@
 </div>
 
 <script>
-    // URL apuntando a tu Pestaña "Index" en Google Sheets (Cámbiala si tu gid de la pestaña Index es distinto)
-    const CSV_INDEX_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=TU_GID_DE_INDEX&single=true&output=csv';
+    /* Enlace CSV apuntando a tu pestaña "Index" en Google Sheets */
+    const CSV_INDEX_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
 
     function initTheme() {
         const savedTheme = localStorage.getItem('vtm-theme');
@@ -444,16 +444,18 @@
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
 
-        // Lectura de la pestaña Index desde Google Sheets con PapaParse
+        // Lectura de la pestaña Index desde Google Sheets con PapaParse por posiciones (Columna A=0, B=1, C=2, D=3, E=4)
         Papa.parse(CSV_INDEX_URL, {
             download: true,
             header: false,
             skipEmptyLines: true,
             complete: function(results) {
-                document.getElementById('loading').style.display = 'none';
+                const loadingEl = document.getElementById('loading');
+                if (loadingEl) loadingEl.style.display = 'none';
+
                 const filas = results.data;
                 
-                // Mapeo según tus columnas: Logo | TITULO | Descripción | NOTA | Enlace
+                // Mapeo adaptado exactamente a tus columnas: Logo | TITULO | Descripción | NOTA | Enlace
                 const datosIndex = filas.slice(1).map(row => {
                     return {
                         logo: (row[0] || '').trim(),
@@ -467,7 +469,8 @@
                 renderizarHub(datosIndex);
             },
             error: function(err) {
-                document.getElementById('loading').textContent = "Error al cargar el índice desde Google Sheets.";
+                const loadingEl = document.getElementById('loading');
+                if (loadingEl) loadingEl.textContent = "Error al cargar el índice desde Google Sheets.";
                 console.error(err);
             }
         });
@@ -484,6 +487,7 @@
 
     function renderizarHub(datos) {
         const grid = document.getElementById('hubGrid');
+        if (!grid) return;
         grid.innerHTML = '';
 
         datos.forEach(item => {
