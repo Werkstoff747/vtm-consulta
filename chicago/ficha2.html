@@ -467,8 +467,8 @@
 </div>
 
 <script>
-    // URL completa para extraer los datos de la hoja de Google Sheets con anti-caché
-    const SHEET_FULL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?output=csv&_t=' + Date.now();
+    // URL limpia de todo el documento para capturar de forma global las pestañas de Censo y Ficha
+        const SHEET_FULL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?output=csv&_t=' + Date.now();
 
     const ATTR_LIST = {
         fisicos: ['Atributo_Fuerza', 'Atributo_Destreza', 'Atributo_Resistencia'],
