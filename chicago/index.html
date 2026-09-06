@@ -486,7 +486,8 @@
 </script>
 
 <script>
-    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=530703739&single=true&output=csv';
+    // URL de tu hoja de Google Sheets principal (asegúrate de que apunta a tu CSV)
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?output=csv';
 
     const CLAN_ICONS = {
         "banu haqim": "./iconos/clanes/Banu_Haqim_Symbol.png",
@@ -588,19 +589,21 @@
         datos.forEach(v => {
             const id = v["ID"] || "";
             const formattedId = id ? String(id).padStart(2, '0') : "00";
-            const imagen = v["Archivo de Imagen"] || "";
-            const nombre = v["Nombre del Personaje"] || "Desconocido";
+            const nombre = v["Nombre_Personaje"] || v["Nombre del Personaje"] || "Desconocido";
             const clan = v["Clan"] || "Desconocido";
-            const rango = v["Rango / Título"] || "Sin Rango";
+            const apodoRango = v["Apodo_o_Rango"] || v["Rango / Título"] || "Sin Rango";
             const ubicacion = v["Ubicación / Dominio habitual"] || "Desconocida";
             const faccion = v["Facción"] || "";
-            const sire = v["Sire / Creador"] || "";
-            const menciones = v["Menciones"] || "";
-            const secret = v["Secretos"] || ""; // Columna simplificada a "Secretos"
+            const sire = v["Sire"] || "";
+            const secret = v["Secretos"] || "";
+            
+            // Generamos el nombre del archivo de imagen basado en el ID o en el nombre limpio si lo usas
+            // (puedes ajustar esta línea si prefieres usar otra columna de imagen)
+            const imagenLimpia = nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
 
             const card = document.createElement('div');
             card.className = 'card';
-            card.setAttribute('data-search', `${formattedId} ${nombre} ${clan} ${rango} ${ubicacion} ${faccion} ${sire} ${menciones} ${secret}`.toLowerCase());
+            card.setAttribute('data-search', `${formattedId} ${nombre} ${clan} ${apodoRango} ${ubicacion} ${faccion} ${sire} ${secret}`.toLowerCase());
             card.setAttribute('data-faccion', faccion.toLowerCase());
 
             const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
@@ -608,7 +611,7 @@
             card.innerHTML = `
                 <div class="id-badge">#${formattedId}</div>
                 <div class="card-img-container">
-                    <img src="./retratos/${imagen}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
+                    <img src="./retratos/${imagenLimpia}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
                 </div>
                 <div class="card-body-content">
                     <div class="card-header-vamp">
@@ -619,14 +622,13 @@
                         </div>
                     </div>
                     
-                    <div class="info-block"><span class="info-label">Rango:</span><span class="info-value">${rango}</span></div>
+                    <div class="info-block"><span class="info-label">Rango:</span><span class="info-value">${apodoRango}</span></div>
                     <div class="info-block"><span class="info-label">Ubicación:</span><span class="info-value">${ubicacion}</span></div>
                     ${faccion ? `<div class="info-block"><span class="info-label">Facción:</span><span class="info-value"><span class="badge">${faccion}</span></span></div>` : ''}
 
                     <!-- CAMPOS PRIVADOS NARRADOR (Enlace actualizado a usar ID limpio) -->
                     ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire:</span><span class="info-value">${sire}</span></div>` : ''}
-                    ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?id=${formattedId}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
-                    ${menciones ? `<div class="info-block narrator-only"><span class="info-label">Menciones:</span><span class="info-value">${menciones}</span></div>` : ''}
+                    ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
                     ${secret ? `<div class="card-notes narrator-only">🦇 <strong>Secretos:</strong> ${secret}</div>` : ''}
                 </div>
             `;
