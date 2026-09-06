@@ -356,7 +356,7 @@
 </div>
 
 <script>
-    // URL de tu hoja de Google Sheets (pestaña Ficha) con anti-caché
+    // URL de tu hoja de Google Sheets exportada como CSV limpio
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=530703739&single=true&output=csv&_t=' + Date.now();
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -369,23 +369,14 @@
         }
 
         Papa.parse(SHEET_CSV_URL, {
-            download: true, header: true, skipEmptyLines: true,
+            download: true,
+            header: true,
+            skipEmptyLines: true,
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
                 
-                // Búsqueda infalible: busca en CUALQUIER propiedad que contenga 'id' o 'ID' 
-                // y compara convirtiéndolo estrictamente a número entero para evitar fallos de espacios o texto.
-                const v = results.data.find(row => {
-                    for (let key in row) {
-                        if (key.toLowerCase().includes('id')) {
-                            const val = parseInt(row[key]);
-                            if (!isNaN(val) && val === parseInt(targetId)) {
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                });
+                // Búsqueda directa, limpia y exacta por la columna ID
+                const v = results.data.find(row => String(row["ID"]).trim() === String(targetId).trim());
 
                 if (v) {
                     renderFicha(v);
@@ -404,48 +395,39 @@
         });
     });
 
-    // Función auxiliar tolerante para encontrar valores en columnas fusionadas del CSV
-    function getVal(v, possibleKeys) {
-        for (let prop in v) {
-            const cleanProp = prop.toLowerCase().replace(/[^a-z0-9]/g, '');
-            for (let pk of possibleKeys) {
-                if (cleanProp.includes(pk.toLowerCase().replace(/[^a-z0-9]/g, ''))) {
-                    return v[prop];
-                }
-            }
-        }
-        return "";
-    }
-
     function renderFicha(v) {
         document.getElementById('fichaContent').style.display = 'block';
 
-        const nombre = getVal(v, ["Nombre_Personaje", "Nombre del Personaje", "Nombre"]) || "Desconocido";
-        const clan = getVal(v, ["Clan"]) || "Desconocido";
+        const nombre = v["Nombre_Personaje"] || "Desconocido";
+        const clan = v["Clan"] || "Desconocido";
         
         // Datos básicos
         document.getElementById('fName').textContent = nombre;
         document.getElementById('fClan').textContent = clan;
-        document.getElementById('fApodo').textContent = getVal(v, ["Apodo_o_Rango", "Rango", "Título"]) || "-";
-        document.getElementById('fSire').textContent = getVal(v, ["Sire"]) || "-";
-        document.getElementById('fAbrazo').textContent = getVal(v, ["Abrazo"]) || "-";
-        document.getElementById('fGeneracion').textContent = getVal(v, ["Generacion"]) || "-";
-        document.getElementById('fAmbicion').textContent = getVal(v, ["Ambicion"]) || "-";
-        document.getElementById('fConvicciones').textContent = getVal(v, ["Convicciones"]) || "-";
-        document.getElementById('fPiedras').textContent = getVal(v, ["Piedras_de_Toque"]) || "-";
+        document.getElementById('fApodo').textContent = v["Apodo_o_Rango"] || "-";
+        document.getElementById('fSire').textContent = v["Sire"] || "-";
+        document.getElementById('fAbrazo').textContent = v["Abrazo"] || "-";
+        document.getElementById('fGeneracion').textContent = v["Generacion"] || "-";
+        document.getElementById('fAmbicion').textContent = v["Ambicion"] || "-";
+        document.getElementById('fConvicciones').textContent = v["Convicciones"] || "-";
+        document.getElementById('fPiedras').textContent = v["Piedras_de_Toque"] || "-";
 
         // Estadísticas vitales
-        document.getElementById('fHumanidad').textContent = getVal(v, ["Humanidad"]) || "-";
-        document.getElementById('fPotencia').textContent = getVal(v, ["Potencia_de_Sangre"]) || "-";
-        document.getElementById('fSalud').textContent = getVal(v, ["Salud"]) || "-";
-        document.getElementById('fVoluntad').textContent = getVal(v, ["Fuerza_de_Voluntad"]) || "-";
+        document.getElementById('fHumanidad').textContent = v["Humanidad"] || "-";
+        document.getElementById('fPotencia').textContent = v["Potencia_de_Sangre"] || "-";
+        document.getElementById('fSalud').textContent = v["Salud"] || "-";
+        document.getElementById('fVoluntad').textContent = v["Fuerza_de_Voluntad"] || "-";
 
-        // Carga de imagen por nombre formateado (ej: Bennet_Steadman.jpg)
-        const nombreLimpioImg = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_");
-        const imagenLimpia = `${nombreLimpioImg}.jpg`;
-        
+        // Carga de imagen: usa prioritariamente la columna "Archivo de Imagen" o recurre al nombre formateado
+        let nombreImagen = v["Archivo de Imagen"] ? v["Archivo de Imagen"].trim() : "";
+        if (!nombreImagen) {
+            const nombreLimpioImg = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_");
+            nombreImagen = `${nombreLimpioImg}.jpg`;
+        }
+
         const imgElement = document.getElementById('fImage');
-        imgElement.src = `./retratos/${imagenLimpia}`;
+        // Anti-caché con timestamp para que recargue la foto al instante
+        imgElement.src = `./retratos/${nombreImagen}?t=` + new Date().getTime();
         imgElement.onerror = function() {
             this.onerror = null;
             this.src = 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';
@@ -455,7 +437,7 @@
         const attrKeys = ["Fuerza", "Destreza", "Resistencia", "Carisma", "Manipulacion", "Compostura", "Inteligencia", "Astucia", "Resolucion"];
         attrKeys.forEach(key => {
             const el = document.getElementById(`attr_${key}`);
-            if (el) el.textContent = getVal(v, [`Atributo_${key}`, key]) || "0";
+            if (el) el.textContent = v[`Atributo_${key}`] || "0";
         });
 
         // Mapeo dinámico de Habilidades
@@ -466,13 +448,13 @@
         ];
         habKeys.forEach(key => {
             const el = document.getElementById(`hab_${key}`);
-            if (el) el.textContent = getVal(v, [`Hab_${key}`, key]) || "0";
+            if (el) el.textContent = v[`Hab_${key}`] || "0";
         });
 
         // Extras y Secretos
-        document.getElementById('fDisciplinas').textContent = getVal(v, ["Disciplinas"]) || "Ninguna registrada.";
-        document.getElementById('fVentajas').textContent = getVal(v, ["Ventajas_y_Defectos"]) || "Ninguna registrada.";
-        document.getElementById('fSecretos').textContent = getVal(v, ["Secretos"]) || "No hay secretos registrados.";
+        document.getElementById('fDisciplinas').textContent = v["Disciplinas"] || "Ninguna registrada.";
+        document.getElementById('fVentajas').textContent = v["Ventajas_y_Defectos"] || "Ninguna registrada.";
+        document.getElementById('fSecretos').textContent = v["Secretos"] || "No hay secretos registrados.";
     }
 
     function mostrarError(mensaje) {
