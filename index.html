@@ -23,7 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 
-    <!-- Librería PapaParse para leer el Google Sheet -->
+    <!-- Librería PapaParse para leer la pestaña Index del Google Sheet -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
@@ -412,7 +412,7 @@
 </div>
 
 <script>
-    /* Enlace CSV apuntando a tu pestaña "Index" en Google Sheets */
+    /* Enlace CSV apuntando correctamente a la pestaña "Index" de tu Google Sheet (gid=0) */
     const CSV_INDEX_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
 
     function initTheme() {
@@ -444,7 +444,7 @@
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
 
-        // Lectura de la pestaña Index desde Google Sheets con PapaParse por posiciones (Columna A=0, B=1, C=2, D=3, E=4)
+        // Lectura de la pestaña Index desde Google Sheets con PapaParse por posiciones numéricas (Columna A=0, B=1, C=2, D=3, E=4)
         Papa.parse(CSV_INDEX_URL, {
             download: true,
             header: false,
