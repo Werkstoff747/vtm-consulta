@@ -131,7 +131,7 @@
             text-transform: uppercase;
         }
 
-        /* NUEVA DISTRIBUCIÓN DE CONTROLES (3/4 y Botones) */
+        /* BARRA DE CONTROLES (3/4 Y BOTONES) */
         .controls {
             background: var(--card-bg);
             padding: 15px 20px;
@@ -148,7 +148,7 @@
         .controls-main-group {
             display: flex;
             gap: 15px;
-            flex: 3; /* Ocupa la mayor parte (3/4 aprox) */
+            flex: 3;
             min-width: 280px;
             flex-wrap: wrap;
         }
@@ -156,7 +156,7 @@
         .controls-actions-group {
             display: flex;
             gap: 10px;
-            flex: 1; /* Ocupa el resto para los dos botones */
+            flex: 1;
             min-width: 220px;
             justify-content: flex-end;
         }
@@ -432,13 +432,74 @@
         .modal-btn-confirm { background: var(--accent-red); color: #fff; border: 1px solid var(--accent-crimson); }
         .modal-btn-cancel { background: var(--tag-bg); color: var(--text-muted); border: 1px solid var(--card-border); }
 
-        /* ESTILOS ESPECÍFICOS PARA EL ORGANIGRAMA Y EL README MODAL */
+        /* ESTILOS DEL ORGANIGRAMA PIRAMIDAL DE TEXTO */
         .modal-large { max-width: 700px; text-align: left; max-height: 85vh; overflow-y: auto; }
-        .org-chart { display: flex; flex-direction: column; gap: 15px; align-items: center; padding: 10px 0; }
-        .org-level { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; }
-        .org-node { background: var(--tag-bg); border: 1px solid var(--accent-gold); padding: 8px 12px; border-radius: 6px; text-align: center; font-size: 0.85rem; font-family: 'Cinzel', serif; color: var(--text-main); min-width: 140px; }
-        .org-node.prince { background: rgba(197, 160, 89, 0.2); border-width: 2px; }
-        .org-node.primogen { background: rgba(139, 0, 0, 0.2); border-color: var(--accent-crimson); }
+        .pyramid-text-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 0;
+            font-family: 'Cinzel', serif;
+        }
+        .pyramid-node {
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 10px 15px;
+            text-align: center;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .prince-node {
+            background: rgba(197, 160, 89, 0.15);
+            border: 2px solid var(--accent-gold);
+            max-width: 360px;
+        }
+        .branch-node { max-width: 220px; }
+        .base-node {
+            max-width: 420px;
+            background: rgba(139, 0, 0, 0.1);
+            border-color: rgba(139, 0, 0, 0.4);
+        }
+        .pyramid-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+        .p-title {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+        .p-desc {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'Segoe UI', sans-serif;
+            margin-top: 2px;
+        }
+        .p-label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--accent-crimson);
+            margin-bottom: 2px;
+            font-weight: bold;
+        }
+        .p-line-vertical, .p-line-split, .p-line-converge {
+            color: var(--accent-gold);
+            font-weight: bold;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .p-line-split, .p-line-converge {
+            display: flex;
+            gap: 120px;
+        }
         .markdown-viewer { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
         .markdown-viewer h4 { color: var(--accent-gold); font-family: 'Cinzel', serif; margin: 12px 0 6px 0; }
         .markdown-viewer ul { padding-left: 20px; margin-bottom: 10px; }
@@ -459,7 +520,7 @@
         </div>
     </header>
 
-    <!-- BARRA DE CONTROLES REDUCIDA CON 3/4 Y BOTONES -->
+    <!-- BARRA DE CONTROLES REDUCIDA -->
     <div class="controls">
         <div class="controls-main-group">
             <div class="search-box">
@@ -511,25 +572,53 @@
     </div>
 </div>
 
-<!-- MODAL ESTRUCTURA DE PODER (ORGANIGRAMA) -->
+<!-- MODAL ESTRUCTURA DE PODER (ORGANIGRAMA ESQUEMÁTICO) -->
 <div id="powerModal" class="modal-overlay">
     <div class="modal-content modal-large">
-        <h3>Estructura de Poder de Chicago</h3>
-        <div class="org-chart">
-            <!-- Nivel Supremo -->
-            <div class="org-node prince">👑 Príncipe de Chicago</div>
-            <div style="color: var(--accent-gold); font-size: 0.8rem;">↓</div>
-            <!-- Nivel Ejecutivo -->
-            <div class="org-level">
-                <div class="org-node">📜 Senescal</div>
-                <div class="org-node">⚔️ Sheriff</div>
-                <div class="org-node">⚖️ Primogenitura / Jueces</div>
+        <h3>Estructura de Poder — La Camarilla de Chicago</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; text-align: center;">Jerarquía oficial y líneas de autoridad en la Jyhad local.</p>
+        
+        <div class="pyramid-text-chart">
+            <div class="pyramid-node prince-node">
+                <span class="p-title">Príncipe de Chicago</span>
+                <span class="p-desc">Autoridad Suprema de la Camarilla</span>
             </div>
-            <div style="color: var(--accent-gold); font-size: 0.8rem;">↓</div>
-            <!-- Nivel Primogénitos -->
-            <div class="org-node primogen">🏛️ Primogénitos de Clanes (Brujah, Malkavian, Toreador, Ventrue, etc.)</div>
+
+            <div class="p-line-vertical">│</div>
+
+            <div class="pyramid-node">
+                <span class="p-title">Senescal</span>
+                <span class="p-desc">Mano derecha y administración de la ciudad</span>
+            </div>
+
+            <div class="p-line-split">
+                <span>↙</span><span>↘</span>
+            </div>
+
+            <div class="pyramid-row">
+                <div class="pyramid-node branch-node">
+                    <span class="p-label">[ Poder Político ]</span>
+                    <span class="p-title">Primogenitura</span>
+                    <span class="p-desc">Líderes de Clan (Ventrue, Toreador, etc.)</span>
+                </div>
+                <div class="pyramid-node branch-node">
+                    <span class="p-label">[ Poder Ejecutivo ]</span>
+                    <span class="p-title">Sheriff</span>
+                    <span class="p-desc">Brazo armado y ejecución de la Mascarada</span>
+                </div>
+            </div>
+
+            <div class="p-line-converge">
+                <span>↘</span><span>↙</span>
+            </div>
+
+            <div class="pyramid-node base-node">
+                <span class="p-title">Vástagos de la Ciudad</span>
+                <span class="p-desc">Ancillae, Neonatos y población sujeta al Censo</span>
+            </div>
         </div>
-        <div class="modal-buttons">
+
+        <div class="modal-buttons" style="margin-top: 25px;">
             <button class="modal-btn modal-btn-cancel" onclick="cerrarModalPoder()">Cerrar</button>
         </div>
     </div>
@@ -545,7 +634,7 @@
             <h4>Niveles de Estatus y Visibilidad</h4>
             <ul>
                 <li><strong>Interactuado:</strong> Ficha completa disponible, retrato real y ubicación visible (Etiqueta verde).</li>
-                <li><strong>Conocido de Oídas:</strong> Referencias generales, silueta misteriosa en lugar de foto y ubicación oculta (Etiqueta verde sutil).</li>
+                <li><strong>Conocido de Oídas:</strong> Referencias generales, silueta misteriosa en lugar de foto y ubicación oculta, a menos que el PNJ posea un Cargo Oficial público (Etiqueta verde sutil).</li>
                 <li><strong>Rumor:</strong> Nivel mínimo de corrillo callejero; solo se muestra el nombre en una tarjeta minimalista (Etiqueta gris).</li>
                 <li><strong>Oculto / Desconocido:</strong> Información clasificada o fuera de radar (La tarjeta no se muestra a los jugadores).</li>
             </ul>
@@ -677,7 +766,6 @@
     }
     function cerrarModalNarrador() { document.getElementById('narratorModal').style.display = 'none'; }
 
-    /* Control de Modales Nuevos (Poder y Readme) */
     function abrirModalPoder() { document.getElementById('powerModal').style.display = 'flex'; }
     function cerrarModalPoder() { document.getElementById('powerModal').style.display = 'none'; }
     function abrirModalReadme() { document.getElementById('readmeModal').style.display = 'flex'; }
@@ -754,8 +842,10 @@
                 estatusClase = "estatus-rumor";
             }
 
-            const ubicacionMostrada = esConocidoOidas ? "Dominio desconocido" : ubicacion;
-            const imagenMostrada = esConocidoOidas ? "./retratos/silueta.jpg" : `./retratos/${imagenLimpia}`;
+            // REGLA: Si tiene cargo real o eres Narrator, la información (foto y ubicación) es pública
+            const esPublicoPorCargo = tieneCargoReal || esNarrator;
+            const ubicacionMostrada = (esConocidoOidas && !esPublicoPorCargo) ? "Dominio desconocido" : ubicacion;
+            const imagenMostrada = (esConocidoOidas && !esPublicoPorCargo) ? "./retratos/silueta.jpg" : `./retratos/${imagenLimpia}`;
 
             const card = document.createElement('div');
             card.className = 'card';
