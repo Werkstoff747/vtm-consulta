@@ -596,11 +596,11 @@
             const faccion = v["Facción"] || "";
             const sire = v["Sire / Creador"] || "";
             const menciones = v["Menciones"] || "";
-            const notas = v["Notas o Secretos"] || "";
+            const secret = v["Secretos"] || ""; // Columna simplificada a "Secretos"
 
             const card = document.createElement('div');
             card.className = 'card';
-            card.setAttribute('data-search', `${formattedId} ${nombre} ${clan} ${rango} ${ubicacion} ${faccion} ${sire} ${menciones} ${notas}`.toLowerCase());
+            card.setAttribute('data-search', `${formattedId} ${nombre} ${clan} ${rango} ${ubicacion} ${faccion} ${sire} ${menciones} ${secret}`.toLowerCase());
             card.setAttribute('data-faccion', faccion.toLowerCase());
 
             const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
@@ -623,11 +623,11 @@
                     <div class="info-block"><span class="info-label">Ubicación:</span><span class="info-value">${ubicacion}</span></div>
                     ${faccion ? `<div class="info-block"><span class="info-label">Facción:</span><span class="info-value"><span class="badge">${faccion}</span></span></div>` : ''}
 
-                    <!-- CAMPOS PRIVADOS NARRADOR -->
+                    <!-- CAMPOS PRIVADOS NARRADOR (Enlace actualizado a usar ID limpio) -->
                     ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire:</span><span class="info-value">${sire}</span></div>` : ''}
-                    ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?nombre=${encodeURIComponent(nombre)}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
+                    ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?id=${formattedId}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
                     ${menciones ? `<div class="info-block narrator-only"><span class="info-label">Menciones:</span><span class="info-value">${menciones}</span></div>` : ''}
-                    ${notas ? `<div class="card-notes narrator-only">🦇 <strong>Notas / Secretos:</strong> ${notas}</div>` : ''}
+                    ${secret ? `<div class="card-notes narrator-only">🦇 <strong>Secretos:</strong> ${secret}</div>` : ''}
                 </div>
             `;
             wrapper.appendChild(card);
