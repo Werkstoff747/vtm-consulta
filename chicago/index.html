@@ -422,9 +422,9 @@
     </div>
 </div>
 
-<!-- BOTONES FLOTANTES (CON BOTÓN DE HOME INCLUIDO) -->
+<!-- BOTONES FLOTANTES ACTUALIZADOS -->
 <div class="floating-btn-container">
-    <a href="https://werkstoff747.github.io/vtm-consulta/" class="floating-action-btn" title="Ir al Inicio (Herramientas V5)"><i class="fa-solid fa-house"></i></a>
+    <a href="https://werkstoff747.github.io/vtm-consulta/chicago/" class="floating-action-btn" title="Ir al Censo de Chicago"><i class="fa-solid fa-house"></i></a>
     <button class="floating-action-btn" id="narratorToggleBtn" onclick="abrirModalNarrador()" title="Modo Narrador"><i class="fa-solid fa-key"></i></button>
     <button class="floating-action-btn theme-toggle-btn" title="Cambiar tema"><i class="fa-solid fa-moon"></i></button>
     <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir"><i class="fa-solid fa-arrow-up"></i></button>
@@ -487,8 +487,8 @@
 </script>
 
 <script>
-    // URL apuntando a la pestaña Ficha con su gid exacto
-    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=0&single=true&output=csv';
+    // URL apuntando a la pestaña Censo con anti-caché dinámico
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=0&single=true&output=csv&_t=' + Date.now();
 
     const CLAN_ICONS = {
         "banu haqim": "./iconos/clanes/Banu_Haqim_Symbol.png",
@@ -594,11 +594,10 @@
             return idA - idB;
         });
 
-            datos.forEach(v => {
+        datos.forEach(v => {
             const id = v["ID"] || "";
             const formattedId = id ? String(id).padStart(2, '0') : "00";
             
-            // Mapeo exacto con tus 11 columnas de la A a la K
             const nombre = v["Nombre del Personaje"] || "Desconocido";
             const clan = v["Clan"] || "Desconocido";
             const apodoRango = v["Rango / Título"] || "Sin Rango";
@@ -608,8 +607,11 @@
             const menciones = v["Menciones"] || "";
             const secret = v["Secretos"] || "";
             
-            // Lee la imagen de su columna o recurre al nombre formateado por defecto
-            const imagenLimpia = v["Archivo de Imagen"] || (nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg");
+            // Resolución de imagen por ID prioritario, con respaldo en el nombre de archivo de la hoja o formateado
+            const cleanId = String(id).trim();
+            const imagenPorId = cleanId ? `${cleanId}.jpg` : '';
+            const imagenPorNombre = nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
+            const imagenLimpia = v["Archivo de Imagen"] || imagenPorId || imagenPorNombre;
 
             const card = document.createElement('div');
             card.className = 'card';
@@ -621,7 +623,7 @@
             card.innerHTML = `
                 <div class="id-badge">#${formattedId}</div>
                 <div class="card-img-container">
-                    <img src="./retratos/${imagenLimpia}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
+                    <img src="./retratos/${imagenLimpia}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='./retratos/${imagenPorNombre}';">
                 </div>
                 <div class="card-body-content">
                     <div class="card-header-vamp">
@@ -639,7 +641,7 @@
                     <!-- CAMPOS PRIVADOS NARRADOR -->
                     ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire / Creador:</span><span class="info-value">${sire}</span></div>` : ''}
                     ${menciones ? `<div class="info-block narrator-only"><span class="info-label">Menciones:</span><span class="info-value">${menciones}</span></div>` : ''}
-                    ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
+                    ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha2.html?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
                     ${secret ? `<div class="card-notes narrator-only">🦇 <strong>Secretos:</strong> ${secret}</div>` : ''}
                 </div>
             `;
