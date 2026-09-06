@@ -338,7 +338,7 @@
         <h1 class="cabecera-principal" id="pageTitle">Ficha de Vástago</h1>
     </header>
 
-    <div id="loading">Consultando los registros del Censo y la Ficha Técnica...</div>
+    <div id="loading">Consultando los registros técnicos de la Ficha...</div>
 
     <div id="sheetContent" style="display: none;">
         <!-- PRINCIPAL: RETRATO Y DATOS BÁSICOS -->
@@ -360,7 +360,7 @@
             </div>
         </div>
 
-        <!-- LINAJE Y DATOS DE LA FICHA NUEVOS -->
+        <!-- LINAJE Y DATOS DE LA FICHA -->
         <div class="sheet-section">
             <div class="section-title">Linaje, Crónica y Estatus</div>
             <div class="basic-info-grid">
@@ -372,7 +372,7 @@
             </div>
         </div>
 
-        <!-- CRÓNICA, AMBICIÓN Y CONVICCIONES -->
+        <!-- PSIQUE Y CONVICCIONES -->
         <div class="sheet-section">
             <div class="section-title">Psique y Convicciones</div>
             <div class="basic-info-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
@@ -467,8 +467,8 @@
 </div>
 
 <script>
-    // URL limpia de todo el documento para capturar de forma global las pestañas de Censo y Ficha
-        const SHEET_FULL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?output=csv&_t=' + Date.now();
+    // Enlace exclusivo correcto a la pestaña Ficha (gid=530703739) con anti-caché
+    const SHEET_FICHA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=530703739&single=true&output=csv&_t=' + Date.now();
 
     const ATTR_LIST = {
         fisicos: ['Atributo_Fuerza', 'Atributo_Destreza', 'Atributo_Resistencia'],
@@ -534,7 +534,7 @@
             return;
         }
 
-        Papa.parse(SHEET_FULL_URL, {
+        Papa.parse(SHEET_FICHA_URL, {
             download: true,
             header: true,
             skipEmptyLines: true,
@@ -546,15 +546,14 @@
 
                 if (!personaje) {
                     document.getElementById('loading').style.display = 'block';
-                    document.getElementById('loading').textContent = `No se han encontrado registros para el ID #${targetId}.`;
+                    document.getElementById('loading').textContent = `No se han encontrado registros de ficha técnica para el ID #${targetId}.`;
                     return;
                 }
 
-                // Extracción de campos adaptados a la nueva estructura de la pestaña Ficha
                 const nombre = personaje["Nombre_Personaje"] || personaje["Nombre del Personaje"] || "Desconocido";
                 const clan = personaje["Clan"] || "Desconocido";
                 const apodo = personaje["Apodo_o_Rango"] || personaje["Rango / Título"] || "Sin Rango";
-                const sire = personaje["Sire"] || "Desconocido";
+                const sire = personaje["Sire"] || personaje["Sire / Creador"] || "Desconocido";
                 const abrazo = personaje["Abrazo"] || "-";
                 const ambicion = personaje["Ambicion"] || "-";
                 const convicciones = personaje["Convicciones"] || "-";
@@ -564,14 +563,13 @@
                 const potencia = personaje["Potencia_de_Sangre"] || "1";
                 
                 const salud = personaje["Salud"] || "6";
-                const voluntad = personaje["Fuerza_de_Voluntad"] || "5";
+                const voluntad = personaje["Fuerza_de_Voluntad"] || personaje["Fuerza de Voluntad"] || "5";
 
                 const disciplinas = personaje["Disciplinas"] || "No registradas";
                 const ventajas = personaje["Ventajas_y_Defectos"] || "Ninguna";
                 const secretos = personaje["Secretos"] || "Sin registros clasificados.";
                 const imagen = personaje["Archivo de Imagen"] || (nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg");
 
-                // Volcar datos básicos a pantalla
                 document.getElementById('sheetContent').style.display = 'block';
                 document.getElementById('pageTitle').textContent = `Ficha de ${nombre}`;
 
@@ -592,16 +590,13 @@
                 document.getElementById('valSecretos').innerHTML = `🦇 <strong>Secretos:</strong> ${secretos}`;
                 document.getElementById('valImg').src = `./retratos/${imagen}`;
 
-                // Trackers de Salud y Fuerza de Voluntad
                 document.getElementById('trackSalud').innerHTML = renderBoxes(salud, 10);
                 document.getElementById('trackVoluntad').innerHTML = renderBoxes(voluntad, 10);
 
-                // Pintar Atributos
                 pintarBloqueEstadisticas(ATTR_LIST.fisicos, personaje, 'attrFisicos');
                 pintarBloqueEstadisticas(ATTR_LIST.sociales, personaje, 'attrSociales');
                 pintarBloqueEstadisticas(ATTR_LIST.mentales, personaje, 'attrMentales');
 
-                // Pintar Habilidades
                 pintarBloqueEstadisticas(HAB_LIST.fisicos, personaje, 'habFisicos');
                 pintarBloqueEstadisticas(HAB_LIST.sociales, personaje, 'habSociales');
                 pintarBloqueEstadisticas(HAB_LIST.mentales, personaje, 'habMentales');
