@@ -45,7 +45,6 @@
             --header-border: #8b0000;
             --card-title-color: #ffffff;
             --card-notes-bg: rgba(255, 255, 255, 0.03);
-            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
         }
 
         body.light-mode {
@@ -63,14 +62,9 @@
             --header-border: #7a0000;
             --card-title-color: #111115;
             --card-notes-bg: #f9f8f5;
-            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -85,13 +79,8 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            width: 100%;
-        }
+        .container { max-width: 1100px; margin: 0 auto; width: 100%; }
 
-        /* CABECERA */
         header {
             position: relative;
             display: flex;
@@ -117,21 +106,16 @@
 
         .theme-btn-header {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 38px;
-            height: 38px;
+            top: 15px; right: 15px;
+            width: 38px; height: 38px;
             border-radius: 50%;
             background-color: rgba(0, 0, 0, 0.35);
             border: 1px solid var(--accent-gold);
             color: var(--accent-gold);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* DISTRIBUCIÓN DE LA FICHA */
         .sheet-grid {
             display: grid;
             grid-template-columns: 320px 1fr;
@@ -140,14 +124,11 @@
         }
 
         @media (max-width: 850px) {
-            .sheet-grid {
-                grid-template-columns: 1fr;
-            }
+            .sheet-grid { grid-template-columns: 1fr; }
         }
 
         .portrait-container {
-            width: 100%;
-            height: 380px;
+            width: 100%; height: 380px;
             background-color: #000;
             border-radius: 6px;
             overflow: hidden;
@@ -155,13 +136,11 @@
         }
 
         .portrait-container img {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
             object-position: top;
         }
 
-        /* BLOQUES DE LA FICHA */
         .sheet-section {
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -174,10 +153,8 @@
         .sheet-section::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
             background-color: var(--accent-red);
         }
 
@@ -231,29 +208,63 @@
             margin-top: 10px;
         }
 
+        /* 3 COLUMNAS PARA ATRIBUTOS Y HABILIDADES */
+        .three-columns-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .three-columns-grid { grid-template-columns: 1fr; }
+        }
+
+        .column-group h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 4px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            font-size: 0.88rem;
+            border-bottom: 1px solid var(--card-notes-bg);
+        }
+
+        .stat-name { color: var(--text-main); font-weight: 500; }
+
+        /* PUNTOS DE VALOR (CÍRCULOS ESTILO V5) */
+        .dots-container { display: flex; gap: 4px; }
+        .dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            border: 1px solid var(--accent-gold);
+            background-color: transparent;
+        }
+        .dot.filled { background-color: var(--accent-gold); }
+
         /* BOTONES FLOTANTES */
         .floating-btn-container {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 9999;
+            position: fixed; bottom: 25px; right: 25px;
+            display: flex; flex-direction: column; gap: 12px; z-index: 9999;
         }
 
         .floating-action-btn {
-            width: 45px;
-            height: 45px;
+            width: 45px; height: 45px;
             border-radius: 50%;
             background-color: var(--accent-red);
             color: #fff;
             border: 1px solid var(--accent-crimson);
             font-size: 1.1rem;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             text-decoration: none;
             transition: transform 0.2s;
@@ -273,11 +284,9 @@
         }
 
         footer {
-            text-align: center;
-            padding: 20px;
+            text-align: center; padding: 20px;
             border-top: 1px solid var(--card-border);
-            margin-top: 40px;
-            font-size: 0.8rem;
+            margin-top: 40px; font-size: 0.8rem;
             color: var(--text-muted);
         }
     </style>
@@ -290,7 +299,7 @@
         <h1 class="cabecera-principal" id="pageTitle">Ficha de Vástago</h1>
     </header>
 
-    <div id="loading">Consultando los registros del Censo...</div>
+    <div id="loading">Consultando los registros del Censo y la Ficha Técnica...</div>
 
     <div id="sheetContent" style="display: none;">
         <!-- PRINCIPAL: RETRATO Y DATOS BÁSICOS -->
@@ -305,8 +314,8 @@
                     <div class="section-title">Expediente Oficial</div>
                     <div class="basic-info-grid" style="grid-template-columns: 1fr;">
                         <div class="info-box"><div class="info-label">Nombre del Personaje</div><div class="info-val" id="valNombre">-</div></div>
-                        <div class="info-box" style="margin-top: 12px;"><div class="info-label">Clan</div><div class="info-val" id="valClan">-</div></div>
-                        <div class="info-box" style="margin-top: 12px;"><div class="info-label">Rango / Título</div><div class="info-val" id="valRango">-</div></div>
+                        <div class="info-box" style="margin-top: 10px;"><div class="info-label">Clan</div><div class="info-val" id="valClan">-</div></div>
+                        <div class="info-box" style="margin-top: 10px;"><div class="info-label">Rango / Título</div><div class="info-val" id="valRango">-</div></div>
                     </div>
                 </div>
             </div>
@@ -319,6 +328,57 @@
                 <div class="info-box"><div class="info-label">Ubicación / Dominio habitual</div><div class="info-val" id="valUbicacion">-</div></div>
                 <div class="info-box"><div class="info-label">Facción</div><div class="info-val" id="valFaccion">-</div></div>
                 <div class="info-box"><div class="info-label">Sire / Creador</div><div class="info-val" id="valSire">-</div></div>
+            </div>
+        </div>
+
+        <!-- ATRIBUTOS -->
+        <div class="sheet-section">
+            <div class="section-title">Atributos</div>
+            <div class="three-columns-grid">
+                <div class="column-group">
+                    <h4>Físicos</h4>
+                    <div id="attrFisicos"></div>
+                </div>
+                <div class="column-group">
+                    <h4>Sociales</h4>
+                    <div id="attrSociales"></div>
+                </div>
+                <div class="column-group">
+                    <h4>Mentales</h4>
+                    <div id="attrMentales"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HABILIDADES -->
+        <div class="sheet-section">
+            <div class="section-title">Habilidades</div>
+            <div class="three-columns-grid">
+                <div class="column-group">
+                    <h4>Físicas / Técnicas</h4>
+                    <div id="habFisicos"></div>
+                </div>
+                <div class="column-group">
+                    <h4>Sociales</h4>
+                    <div id="habSociales"></div>
+                </div>
+                <div class="column-group">
+                    <h4>Mentales / Conocimientos</h4>
+                    <div id="habMentales"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DISCIPLINAS Y EXTRAS -->
+        <div class="sheet-section">
+            <div class="section-title">Disciplinas y Trasfondo</div>
+            <div style="margin-bottom: 12px;">
+                <strong style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 0.85rem;">Disciplinas:</strong>
+                <p id="valDisciplinas" style="margin-top: 4px; font-size: 0.95rem;">-</p>
+            </div>
+            <div>
+                <strong style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 0.85rem;">Lore / Notas:</strong>
+                <p id="valLore" style="margin-top: 4px; font-size: 0.95rem; font-style: italic; color: var(--text-muted);">-</p>
             </div>
         </div>
 
@@ -348,8 +408,20 @@
 </div>
 
 <script>
-    // Enlace exacto de la pestaña CENSO publicado como CSV con anti-caché dinámico
-    const SHEET_CENSO_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=0&single=true&output=csv&_t=' + Date.now();
+    // URL completa de todo el documento para extraer simultáneamente Censo y Ficha técnica con anti-caché
+    const SHEET_FULL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?output=csv&_t=' + Date.now();
+
+    const ATTR_LIST = {
+        fisicos: ['Atributo_Fuerza', 'Atributo_Destreza', 'Atributo_Resistencia'],
+        sociales: ['Atributo_Carisma', 'Atributo_Manipulacion', 'Atributo_Compostura'],
+        mentales: ['Atributo_Inteligencia', 'Atributo_Astucia', 'Atributo_Resolucion']
+    };
+
+    const HAB_LIST = {
+        fisicos: ['Hab_Armas_de_Fuego', 'Hab_Artesania', 'Hab_Atletismo', 'Hab_Conducir', 'Hab_Latrocinio', 'Hab_Pelea', 'Hab_Pelea_con_Armas', 'Hab_Sigilo', 'Hab_Supervivencia'],
+        sociales: ['Hab_Callejeo', 'Hab_Etiqueta', 'Hab_Interpretacion', 'Hab_Intimidacion', 'Hab_Liderazgo', 'Hab_Perspicacia', 'Hab_Persuasion', 'Hab_Subterfugio', 'Hab_Trato_con_Animales'],
+        mentales: ['Hab_Academicismo', 'Hab_Ciencias', 'Hab_Consciencia', 'Hab_Finanzas', 'Hab_Investigacion', 'Hab_Medicina', 'Hab_Ocultismo', 'Hab_Politica', 'Hab_Tecnologia']
+    };
 
     function initTheme() {
         const savedTheme = localStorage.getItem('vtm-theme');
@@ -369,6 +441,20 @@
         document.getElementById('themeToggleBtn').innerHTML = isLight ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
     }
 
+    function renderDots(value, max = 5) {
+        let val = parseInt(value) || 0;
+        let html = '<div class="dots-container">';
+        for (let i = 1; i <= max; i++) {
+            html += `<div class="dot ${i <= val ? 'filled' : ''}"></div>`;
+        }
+        html += '</div>';
+        return html;
+    }
+
+    function limpiarNombreColumna(key) {
+        return key.replace(/^(Atributo_|Hab_)/, '').replace(/_/g, ' ');
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
 
@@ -380,7 +466,7 @@
             return;
         }
 
-        Papa.parse(SHEET_CENSO_URL, {
+        Papa.parse(SHEET_FULL_URL, {
             download: true,
             header: true,
             skipEmptyLines: true,
@@ -388,19 +474,15 @@
                 document.getElementById('loading').style.display = 'none';
                 const filas = results.data;
 
-                // Buscamos estrictamente por el ID de la columna A
-                const personaje = filas.find(row => String(row["ID"]).trim() === String(targetId).trim());
+                const personaje = filas.find(row => String(row["ID"] || row["id"]).trim() === String(targetId).trim());
 
                 if (!personaje) {
                     document.getElementById('loading').style.display = 'block';
-                    document.getElementById('loading').textContent = `No se han encontrado registros en el censo para el ID #${targetId}.`;
+                    document.getElementById('loading').textContent = `No se han encontrado registros combinados para el ID #${targetId}.`;
                     return;
                 }
 
-                // Extracción segura de los campos de la A a la K
-                const id = personaje["ID"] || "";
-                const formattedId = id ? String(id).padStart(2, '0') : "00";
-                const nombre = personaje["Nombre del Personaje"] || "Desconocido";
+                const nombre = personaje["Nombre del Personaje"] || personaje["Nombre_Personaje"] || "Desconocido";
                 const clan = personaje["Clan"] || "Desconocido";
                 const rango = personaje["Rango / Título"] || "Sin Rango";
                 const ubicacion = personaje["Ubicación / Dominio habitual"] || "Desconocida";
@@ -410,9 +492,11 @@
                 const secretos = personaje["Secretos"] || "Sin registros clasificados.";
                 const imagen = personaje["Archivo de Imagen"] || (nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg");
 
-                // Renderizado en pantalla
+                const disciplinas = personaje["Disciplinas"] || "No registradas";
+                const lore = personaje["Lore_y_Trasfondo_Resumido"] || personaje["Lore y Trasfondo Resumido"] || "Sin notas adicionales.";
+
                 document.getElementById('sheetContent').style.display = 'block';
-                document.getElementById('pageTitle').textContent = `Ficha de ${nombre} (#${formattedId})`;
+                document.getElementById('pageTitle').textContent = `Ficha de ${nombre}`;
 
                 document.getElementById('valNombre').textContent = nombre;
                 document.getElementById('valClan').textContent = clan;
@@ -422,9 +506,17 @@
                 document.getElementById('valSire').textContent = sire;
                 document.getElementById('valMenciones').textContent = menciones;
                 document.getElementById('valSecretos').innerHTML = `🦇 <strong>Secretos:</strong> ${secretos}`;
-                
-                // Imagen con su ruta en GitHub y respaldo por si falla
+                document.getElementById('valDisciplinas').textContent = disciplinas;
+                document.getElementById('valLore').textContent = lore;
                 document.getElementById('valImg').src = `./retratos/${imagen}`;
+
+                pintarBloqueEstadisticas(ATTR_LIST.fisicos, personaje, 'attrFisicos');
+                pintarBloqueEstadisticas(ATTR_LIST.sociales, personaje, 'attrSociales');
+                pintarBloqueEstadisticas(ATTR_LIST.mentales, personaje, 'attrMentales');
+
+                pintarBloqueEstadisticas(HAB_LIST.fisicos, personaje, 'habFisicos');
+                pintarBloqueEstadisticas(HAB_LIST.sociales, personaje, 'habSociales');
+                pintarBloqueEstadisticas(HAB_LIST.mentales, personaje, 'habMentales');
             },
             error: function(err) {
                 document.getElementById('loading').textContent = "Error al conectar con la base de datos de Google Sheets.";
@@ -432,6 +524,26 @@
             }
         });
     });
+
+    function pintarBloqueEstadisticas(keysArray, dataObj, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        keysArray.forEach(key => {
+            let valor = dataObj[key];
+            if (valor === undefined) {
+                const altKey = Object.keys(dataObj).find(k => k.toLowerCase().includes(key.toLowerCase().replace(/_/g, ' ')));
+                valor = altKey ? dataObj[altKey] : 0;
+            }
+
+            const row = document.createElement('div');
+            row.className = 'stat-row';
+            row.innerHTML = `
+                <span class="stat-name">${limpiarNombreColumna(key)}</span>
+                ${renderDots(valor)}
+            `;
+            container.appendChild(row);
+        });
+    }
 </script>
 
 </body>
