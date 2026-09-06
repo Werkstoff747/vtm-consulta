@@ -594,22 +594,22 @@
             return idA - idB;
         });
 
-        datos.forEach(v => {
+            datos.forEach(v => {
             const id = v["ID"] || "";
             const formattedId = id ? String(id).padStart(2, '0') : "00";
             
-            // Lectura de columnas exactamente como en tu listado de Excel
-            const nombre = v["Nombre del Personaje"] || v["Nombre_Personaje"] || "Desconocido";
+            // Mapeo exacto con tus 11 columnas de la A a la K
+            const nombre = v["Nombre del Personaje"] || "Desconocido";
             const clan = v["Clan"] || "Desconocido";
-            const apodoRango = v["Rango / Título"] || v["Apodo_o_Rango"] || "Sin Rango";
+            const apodoRango = v["Rango / Título"] || "Sin Rango";
             const ubicacion = v["Ubicación / Dominio habitual"] || "Desconocida";
             const faccion = v["Facción"] || "";
-            const sire = v["Sire / Creador"] || v["Sire"] || "";
+            const sire = v["Sire / Creador"] || "";
             const menciones = v["Menciones"] || "";
             const secret = v["Secretos"] || "";
             
-            // Lee de la columna "Archivo de Imagen" o recurre al nombre por defecto si estuviera vacía
-            const imagenLimpia = v["Archivo de Imagen"] || v["Archivo_de_Imagen"] || v["Archivo_Imagen"] || (nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg");
+            // Lee la imagen de su columna o recurre al nombre formateado por defecto
+            const imagenLimpia = v["Archivo de Imagen"] || (nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg");
 
             const card = document.createElement('div');
             card.className = 'card';
