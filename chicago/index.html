@@ -216,18 +216,33 @@
             z-index: 10;
         }
 
-        /* Etiqueta de estatus flotante arriba a la derecha */
+        /* ETIQUETAS DE ESTATUS DINÁMICAS SEGÚN TUS COLORES */
         .estatus-badge {
             position: absolute;
             top: 10px; right: 12px;
-            background: rgba(201, 42, 42, 0.2);
-            color: var(--accent-crimson);
-            border: 1px solid var(--accent-crimson);
-            padding: 0.2rem 0.5rem;
+            padding: 0.2rem 0.6rem;
             font-size: 0.75rem;
             font-weight: 600;
             border-radius: 4px;
             z-index: 10;
+        }
+        /* Interactuado: Verde */
+        .estatus-interactuado {
+            background: rgba(46, 160, 67, 0.2);
+            color: #3fb950;
+            border: 1px solid rgba(46, 160, 67, 0.4);
+        }
+        /* Conocido de Oídas: Verde muy clarito / sutil */
+        .estatus-oidas {
+            background: rgba(46, 160, 67, 0.08);
+            color: #85e89d;
+            border: 1px solid rgba(46, 160, 67, 0.2);
+        }
+        /* Rumor: Gris */
+        .estatus-rumor {
+            background: rgba(110, 118, 129, 0.2);
+            color: #8b949e;
+            border: 1px solid rgba(110, 118, 129, 0.4);
         }
 
         .card-img-container {
@@ -251,20 +266,6 @@
             flex-direction: column;
             gap: 10px;
             flex-grow: 1;
-        }
-
-        /* Bloque superior para el Cargo Oficial (Antes estaba donde el rango) */
-        .cargo-box {
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--accent-gold);
-            background: rgba(197, 160, 89, 0.1);
-            border: 1px solid rgba(197, 160, 89, 0.3);
-            padding: 5px 10px;
-            border-radius: 4px;
-            text-align: center;
-            margin-bottom: 4px;
         }
 
         .card-header-vamp {
@@ -295,6 +296,19 @@
             color: var(--text-muted);
             font-style: italic;
             font-weight: 600;
+        }
+
+        /* Cargo oficial adaptado justo encima de ocupación */
+        .cargo-block {
+            background: rgba(197, 160, 89, 0.12);
+            border: 1px solid rgba(197, 160, 89, 0.35);
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .cargo-block .info-label {
+            color: var(--accent-gold);
         }
 
         .info-block {
@@ -614,6 +628,8 @@
         const wrapper = document.getElementById('vampiresWrapper');
         wrapper.innerHTML = '';
 
+        const esNarrator = document.body.classList.contains('narrator-mode');
+
         datos.sort((a, b) => {
             let idA = parseInt(a["ID"]) || 0;
             let idB = parseInt(b["ID"]) || 0;
@@ -628,56 +644,85 @@
             const clan = v["Clan"] || "Desconocido";
             const ocupacion = v["Profesion_Ocupacion"] || "";
             const ubicacion = v["Ubicación / Dominio habitual"] || "Desconocida";
-            const facción = v["Facción"] || "";
+            const faccion = v["Facción"] || "";
             const sire = v["Sire / Creador"] || "";
             const menciones = v["Menciones"] || "";
             const secret = v["Secretos"] || "";
             const cargoOficial = v["Cargo_Oficial"] || "";
-            const estatus = v["Estatus"] || "Interactuado";
+            const estatus = (v["Estatus"] || "Interactuado").trim();
             
             const cleanId = String(id).trim();
             const imagenPorId = cleanId ? `${cleanId}.jpg` : '';
             const imagenPorNombre = nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
             const imagenLimpia = v["Archivo de Imagen"] || imagenPorId || imagenPorNombre;
 
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.setAttribute('data-search', `${formattedId} ${nombre} ${clan} ${ocupacion} ${cargoOficial} ${ubicacion} ${facción} ${sire} ${menciones} ${secret} ${estatus}`.toLowerCase());
-            card.setAttribute('data-faccion', facción.toLowerCase());
-
-            const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
             const tieneCargoReal = cargoOficial && cargoOficial.trim() !== "" && cargoOficial.trim() !== "-";
 
-            card.innerHTML = `
-                <div class="id-badge">#${formattedId}</div>
-                <div class="estatus-badge">${estatus}</div>
-                
-                <div class="card-img-container">
-                    <img src="./retratos/${imagenLimpia}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
-                </div>
-                
-                <div class="card-body-content">
-                    ${tieneCargoReal ? `<div class="cargo-box"><i class="fa-solid fa-crown"></i> ${cargoOficial}</div>` : ''}
+            // Si está Oculto / Desconocido y NO es narrador, se oculta por completo
+            if (!esNarrator && (estatus.toLowerCase().includes("oculto") || estatus.toLowerCase().includes("desconocido"))) {
+                return; 
+            }
+
+            // Asignar clase de color según el estatus
+            let estatusClase = "estatus-interactuado";
+            const estatusLower = estatus.toLowerCase();
+            if (estatusLower.includes("oídas") || estatusLower.includes("oidas")) {
+                estatusClase = "estatus-oidas";
+            } else if (estatusLower.includes("rumor")) {
+                estatusClase = "estatus-rumor";
+            }
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.setAttribute('data-search', `${formattedId} ${nombre} ${clan} ${ocupacion} ${cargoOficial} ${ubicacion} ${faccion} ${sire} ${menciones} ${secret} ${estatus}`.toLowerCase());
+            card.setAttribute('data-faccion', faccion.toLowerCase());
+
+            const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
+
+            // Si es Rumor y no es narrador, se muestra versión reducida con el estatus gris
+            if (!esNarrator && estatusLower.includes("rumor")) {
+                card.innerHTML = `
+                    <div class="id-badge">#${formattedId}</div>
+                    <div class="estatus-badge ${estatusClase}">${estatus}</div>
+                    <div class="card-body-content" style="padding-top: 40px; text-align: center;">
+                        <div class="card-title" style="margin-bottom: 10px;">${nombre}</div>
+                        <p class="rumor-text" style="color: var(--text-muted); font-style: italic;">Se oye un rumor en las calles...</p>
+                    </div>
+                `;
+            } else {
+                // Vista normal completa
+                card.innerHTML = `
+                    <div class="id-badge">#${formattedId}</div>
+                    <div class="estatus-badge ${estatusClase}">${estatus}</div>
                     
-                    <div class="card-header-vamp">
-                        ${iconPath ? `<img src="${iconPath}" class="clan-symbol" alt="${clan}">` : ''}
-                        <div class="vamp-titles-box">
-                            <div class="card-title">${nombre}</div>
-                            <div class="card-clan-tag">${clan}</div>
-                        </div>
+                    <div class="card-img-container">
+                        <img src="./retratos/${imagenLimpia}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
                     </div>
                     
-                    <div class="info-block"><span class="info-label">Ocupación:</span><span class="info-value">${ocupacion}</span></div>
-                    <div class="info-block"><span class="info-label">Ubicación:</span><span class="info-value">${ubicacion}</span></div>
-                    ${facción ? `<div class="info-block"><span class="info-label">Facción:</span><span class="info-value"><span class="badge">${facción}</span></span></div>` : ''}
+                    <div class="card-body-content">
+                        <div class="card-header-vamp">
+                            ${iconPath ? `<img src="${iconPath}" class="clan-symbol" alt="${clan}">` : ''}
+                            <div class="vamp-titles-box">
+                                <div class="card-title">${nombre}</div>
+                                <div class="card-clan-tag">${clan}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Cargo oficial situado limpiamente justo encima de la ocupación -->
+                        ${tieneCargoReal ? `<div class="info-block cargo-block"><span class="info-label"><i class="fa-solid fa-crown"></i> Cargo:</span><span class="info-value" style="color: var(--accent-gold); max-width: 100%;">${cargoOficial}</span></div>` : ''}
+                        
+                        <div class="info-block"><span class="info-label">Ocupación:</span><span class="info-value">${ocupacion}</span></div>
+                        <div class="info-block"><span class="info-label">Ubicación:</span><span class="info-value">${ubicacion}</span></div>
+                        ${faccion ? `<div class="info-block"><span class="info-label">Facción:</span><span class="info-value"><span class="badge">${faccion}</span></span></div>` : ''}
 
-                    <!-- CAMPOS PRIVADOS NARRADOR (Apunta a ficha.html) -->
-                    ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire / Creador:</span><span class="info-value">${sire}</span></div>` : ''}
-                    ${menciones ? `<div class="info-block narrator-only"><span class="info-label">Menciones:</span><span class="info-value">${menciones}</span></div>` : ''}
-                    ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
-                    ${secret ? `<div class="card-notes narrator-only">🦇 <strong>Secretos:</strong> ${secret}</div>` : ''}
-                </div>
-            `;
+                        <!-- CAMPOS PRIVADOS NARRADOR -->
+                        ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire / Creador:</span><span class="info-value">${sire}</span></div>` : ''}
+                        ${menciones ? `<div class="info-block narrator-only"><span class="info-label">Menciones:</span><span class="info-value">${menciones}</span></div>` : ''}
+                        ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
+                        ${secret ? `<div class="card-notes narrator-only">🦇 <strong>Secretos:</strong> ${secret}</div>` : ''}
+                    </div>
+                `;
+            }
             wrapper.appendChild(card);
         });
         applyFilters();
