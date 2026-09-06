@@ -23,42 +23,32 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome para los iconos en color plano -->
+    <!-- FontAwesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Librería para procesar CSV de Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
-        /* =========================================================
-            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
-            ========================================================= */
-
-        /* MODO NOCHE / OSCURO (Predeterminado - "Medianoche Vampírica") */
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
             --card-border: #2a2a32;
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
-            --accent-gold: #c5a059; /* Dorado Oficial V5 */
+            --accent-gold: #c5a059;
             --text-main: #e1e1e6;
             --text-muted: #a0a0b0;
             --tag-bg: #25252e;
             --input-bg: #0f0f12;
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
-            --header-title-color: #c5a059;
             --card-title-color: #ffffff;
             --card-notes-bg: rgba(255, 255, 255, 0.03);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
-            --section-title-color: #c5a059;
-            
-            /* Logos de clanes en Modo Noche: Blancos para destacar */
             --clan-icon-filter: brightness(0) invert(1);
         }
 
-        /* MODO DÍA / CLARO ("Gris Pizarra / Pergamino Neutro") */
         body.light-mode {
             --bg-color: #a8a7a4;
             --card-bg: #ffffff;
@@ -70,24 +60,13 @@
             --text-muted: #555459;
             --tag-bg: #f2f0eb;
             --input-bg: #ffffff;            
-            
-            /* Cabecera Rojo Sangre Oscuro */
             --header-bg: #2b0408;
             --header-border: #7a0000;
-            --header-title-color: #c5a059; 
             --card-title-color: #111115;
-            
             --card-notes-bg: #f9f8f5;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
-            --section-title-color: #8b0000;
-            
-            /* Logos de clanes en Modo Día: Color original */
             --clan-icon-filter: none;
         }
-
-        /* =========================================================
-            ESTILOS GENERALES Y ESTRUCTURA
-            ========================================================= */
 
         * {
             box-sizing: border-box;
@@ -114,10 +93,6 @@
             width: 100%;
         }
 
-        /* =========================================================
-            CABECERA
-            ========================================================= */
-
         header {
             position: relative;
             display: flex;
@@ -130,7 +105,6 @@
             background: var(--header-bg);
             border-radius: 8px;
             text-align: center;
-            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .header-logos {
@@ -139,47 +113,23 @@
             justify-content: center;
             gap: 15px;
             margin-bottom: 12px;
-            max-width: 100%;
         }
 
-        .header-ank-logo {
-            height: 55px;
-            width: auto;
-            object-fit: contain;
+        .header-ank-logo, .header-main-logo {
             filter: var(--logo-filter);
-        }
-
-        .header-main-logo {
-            height: 95px;
-            max-width: 85vw;
-            width: auto;
             object-fit: contain;
-            filter: var(--logo-filter);
         }
-
-        .header-text {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        .header-ank-logo { height: 55px; width: auto; }
+        .header-main-logo { height: 95px; max-width: 85vw; width: auto; }
 
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: 1.35rem;
             color: var(--accent-gold);
-            font-variant: small-caps;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 0px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            line-height: 1.15;
-            transition: color 0.3s ease;
         }
-
-        /* =========================================================
-            CONTROLES Y BUSCADOR
-            ========================================================= */
 
         .controls {
             background: var(--card-bg);
@@ -190,7 +140,6 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .controls-row {
@@ -199,14 +148,8 @@
             flex-wrap: wrap;
         }
 
-        .search-box {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .filter-box {
-            min-width: 200px;
-        }
+        .search-box { flex: 1; min-width: 250px; }
+        .filter-box { min-width: 200px; }
 
         .search-box input, .filter-box select {
             width: 100%;
@@ -217,11 +160,6 @@
             color: var(--text-main);
             font-size: 1rem;
             outline: none;
-            transition: border-color 0.2s, background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .search-box input:focus, .filter-box select:focus {
-            border-color: var(--accent-crimson);
         }
 
         .results-counter {
@@ -230,10 +168,6 @@
             margin-bottom: 20px;
             font-style: italic;
         }
-
-        /* =========================================================
-            TARJETAS DE VÁSTAGOS
-            ========================================================= */
 
         .grid {
             display: grid;
@@ -250,21 +184,15 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s, background-color 0.3s ease;
             position: relative;
-        }
-
-        body.light-mode .card {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s, border-color 0.2s;
         }
 
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
             background-color: var(--accent-red);
             z-index: 5;
         }
@@ -272,13 +200,11 @@
         .card:hover {
             transform: translateY(-3px);
             border-color: rgba(201, 42, 42, 0.4);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
 
         .id-badge {
             position: absolute;
-            top: 10px;
-            left: 12px;
+            top: 10px; left: 12px;
             background: rgba(15, 15, 18, 0.85);
             color: var(--accent-gold);
             border: 1px solid var(--accent-gold);
@@ -288,11 +214,6 @@
             font-weight: 700;
             border-radius: 4px;
             z-index: 10;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
-
-        body.light-mode .id-badge {
-            background: rgba(255, 255, 255, 0.9);
         }
 
         .card-img-container {
@@ -300,20 +221,15 @@
             height: 280px;
             background-color: #000;
             overflow: hidden;
-            position: relative;
         }
 
         .card-img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top;
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: top;
             transition: transform 0.4s ease;
         }
 
-        .card:hover .card-img-container img {
-            transform: scale(1.04);
-        }
+        .card:hover .card-img-container img { transform: scale(1.04); }
 
         .card-body-content {
             padding: 18px;
@@ -332,26 +248,18 @@
         }
 
         .clan-symbol {
-            width: 42px;  
-            height: 42px; 
-            object-fit: contain;
+            width: 42px; height: 42px; object-fit: contain;
             filter: var(--clan-icon-filter);
-            transition: filter 0.3s ease;
             flex-shrink: 0;
         }
 
-        .vamp-titles-box {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
+        .vamp-titles-box { display: flex; flex-direction: column; flex-grow: 1; }
 
         .card-title {
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: 1.25rem;
             color: var(--card-title-color);
-            line-height: 1.15;
         }
 
         .card-clan-tag {
@@ -363,7 +271,6 @@
 
         .info-block {
             font-size: 0.88rem;
-            color: var(--text-main);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -373,27 +280,11 @@
             border: 1px solid var(--card-border);
         }
 
-        .info-label {
-            color: var(--text-muted);
-            font-weight: 600;
-        }
+        .info-label { color: var(--text-muted); font-weight: 600; }
+        .info-value { font-weight: 600; text-align: right; max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        .info-value {
-            font-weight: 600;
-            text-align: right;
-            max-width: 65%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        /* Bloques exclusivos para Narradores (Ocultos por defecto) */
-        .narrator-only {
-            display: none !important;
-        }
-        body.narrator-mode .narrator-only {
-            display: flex !important;
-        }
+        .narrator-only { display: none !important; }
+        body.narrator-mode .narrator-only { display: flex !important; }
 
         .card-notes {
             font-size: 0.85rem;
@@ -402,7 +293,6 @@
             padding: 8px 10px;
             background-color: rgba(139, 0, 0, 0.08);
             border-radius: 6px;
-            border-top: 1px dashed var(--accent-red);
             border: 1px solid rgba(139, 0, 0, 0.3);
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -419,11 +309,6 @@
             border: 1px solid var(--card-border);
         }
 
-        body.light-mode .badge {
-            border-color: #b8b5ae;
-            color: #333236;
-        }
-
         #loading {
             text-align: center;
             font-size: 1.1rem;
@@ -432,147 +317,49 @@
             font-family: 'Cinzel', serif;
         }
 
-        /* =========================================================
-            BOTONES FLOTANTES INFERIORES
-            ========================================================= */
+        /* FLOTANTES */
         .floating-btn-container {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 9999;
+            position: fixed; bottom: 25px; right: 25px;
+            display: flex; flex-direction: column; gap: 12px; z-index: 9999;
         }
 
         .floating-action-btn, .scroll-top-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: var(--accent-red);
-            color: #fff;
-            border: 1px solid var(--accent-crimson);
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            transition: all 0.2s ease;
-            text-decoration: none;
+            width: 45px; height: 45px; border-radius: 50%;
+            background-color: var(--accent-red); color: #fff;
+            border: 1px solid var(--accent-crimson); font-size: 1.1rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5); text-decoration: none;
+            transition: transform 0.2s;
         }
 
         .floating-action-btn:hover, .scroll-top-btn:hover {
-            transform: translateY(-3px);
-            background-color: var(--accent-crimson);
+            transform: translateY(-3px); background-color: var(--accent-crimson);
         }
 
-        .scroll-top-btn {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s, transform 0.2s, background-color 0.2s;
-        }
+        .scroll-top-btn { opacity: 0; visibility: hidden; transition: opacity 0.3s; }
+        .scroll-top-btn.show { opacity: 1; visibility: visible; }
+        .floating-action-btn.narrator-active { border-color: var(--accent-gold); box-shadow: 0 0 10px var(--accent-gold); }
 
-        .scroll-top-btn.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .floating-action-btn.narrator-active {
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 10px var(--accent-gold);
-        }
-
-        /* =========================================================
-            MODAL DE CONTRASEÑA NARRADOR
-            ========================================================= */
+        /* MODAL */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); display: none; align-items: center; justify-content: center; z-index: 10000;
         }
-
         .modal-content {
-            background: var(--card-bg);
-            border: 2px solid var(--accent-gold);
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            background: var(--card-bg); border: 2px solid var(--accent-gold);
+            padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center;
         }
-
-        .modal-content h3 {
-            font-family: 'Cinzel', serif;
-            color: var(--accent-gold);
-            margin-bottom: 15px;
-        }
-
+        .modal-content h3 { font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 15px; }
         .modal-content input {
-            width: 100%;
-            padding: 10px;
-            background: var(--input-bg);
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-            border-radius: 5px;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            outline: none;
-            text-align: center;
+            width: 100%; padding: 10px; background: var(--input-bg);
+            border: 1px solid var(--card-border); color: var(--text-main); border-radius: 5px; text-align: center; margin-bottom: 15px; outline: none;
         }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .modal-btn { padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; border: none; }
+        .modal-btn-confirm { background: var(--accent-red); color: #fff; border: 1px solid var(--accent-crimson); }
+        .modal-btn-cancel { background: var(--tag-bg); color: var(--text-muted); border: 1px solid var(--card-border); }
 
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .modal-btn {
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            border: none;
-        }
-
-        .modal-btn-confirm {
-            background: var(--accent-red);
-            color: #fff;
-            border: 1px solid var(--accent-crimson);
-        }
-
-        .modal-btn-cancel {
-            background: var(--tag-bg);
-            color: var(--text-muted);
-            border: 1px solid var(--card-border);
-        }
-
-        /* =========================================================
-            FOOTER Y LICENCIA DARK PACK
-            ========================================================= */
-
-        footer {
-            text-align: center;
-            padding: 30px 20px;
-            border-top: 1px solid var(--card-border);
-            margin-top: 50px;
-        }
-
-        @media (max-width: 600px) {
-            header { padding-top: 45px; }
-            .header-ank-logo { height: 44px; }
-            .header-main-logo { height: 65px; }
-            h1.cabecera-principal { font-size: 1.15rem; }
-            .grid { grid-template-columns: 1fr; }
-        }
+        footer { text-align: center; padding: 30px 20px; border-top: 1px solid var(--card-border); margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -580,8 +367,8 @@
 <div class="container">
     <header>
         <div class="header-logos">
-            <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
-            <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo.png';">
+            <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM">
+            <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada">
         </div>
         <div class="header-text">
             <h1 class="cabecera-principal">Censo de Vástagos — Chicago</h1>
@@ -606,43 +393,27 @@
     </div>
 
     <div id="resultsCounter" class="results-counter"></div>
-
     <div id="loading">Cargando censo de vástagos desde Google Sheets...</div>
-
     <div id="vampiresWrapper" class="grid"></div>
 
     <footer>
         <div style="max-width: 850px; margin: 0 auto; display: flex; align-items: center; gap: 20px; text-align: left; justify-content: center; flex-wrap: wrap;">
-            <div style="flex-shrink: 0;">
-                <img src="./iconos/darkpack_logo2.webp" alt="Dark Pack Logo" style="max-height: 65px; width: auto; object-fit: contain;" class="darkpack-logo">
+            <div>
+                <img src="./iconos/darkpack_logo2.webp" alt="Dark Pack Logo" style="max-height: 65px; width: auto;" class="darkpack-logo">
             </div>
             <div>
-                <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">
-                    Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)
-                </div>
-                <p style="margin-bottom: 0; font-size: 0.85rem;">
-                    Consigue los libros y suplementos oficiales en 
-                    <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">Nosolorol</a> y 
-                    <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
-                </p>
-            </div>
-        </div>
-        <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; text-align: center;">
-            <p style="margin-bottom: 8px; font-size: 0.82rem; color: var(--text-main); opacity: 0.9; max-width: 900px; margin-left: auto; margin-right: auto;">
-                Esta aplicación es una herramienta/ayuda de juego no oficial para jugadores y Narradores, creada sin ánimo de lucro al amparo de la política Dark Pack de Paradox Interactive.
-            </p>
-            <div style="font-size: 0.73rem; color: var(--text-muted); max-width: 850px; margin: 0 auto; line-height: 1.4; opacity: 0.85;">
-                Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com.
+                <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)</div>
+                <p style="margin-bottom: 0; font-size: 0.85rem;">Consigue los libros oficiales en <a href="https://www.nosolorol.com" target="_blank" style="color: var(--accent-gold);">Nosolorol</a>.</p>
             </div>
         </div>
     </footer>
 </div>
 
-<!-- VENTANA MODAL PARA CONTRASEÑA DE NARRADOR -->
+<!-- MODAL CONTRASEÑA -->
 <div id="narratorModal" class="modal-overlay">
     <div class="modal-content">
         <h3>Acceso de Narrador</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Introduce la palabra de pase para revelar los secretos de los Vástagos:</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Introduce la palabra de pase:</p>
         <input type="password" id="narratorPasswordInput" placeholder="Contraseña...">
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-confirm" onclick="verificarPassword()">Desbloquear</button>
@@ -651,13 +422,68 @@
     </div>
 </div>
 
-<!-- BOTONES FLOTANTES INFERIORES ORDENADOS CON FONTTAWESOME -->
+<!-- BOTONES FLOTANTES -->
 <div class="floating-btn-container">
-    <button class="floating-action-btn" id="narratorToggleBtn" onclick="abrirModalNarrador()" title="Modo Narrador (Privado)"><i class="fa-solid fa-key"></i></button>
-    <button class="floating-action-btn theme-toggle-btn" title="Cambiar modo claro/oscuro"><i class="fa-solid fa-moon"></i></button>
-    <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)"><i class="fa-solid fa-house"></i></a>
-    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba"><i class="fa-solid fa-arrow-up"></i></button>
+    <button class="floating-action-btn" id="narratorToggleBtn" onclick="abrirModalNarrador()" title="Modo Narrador"><i class="fa-solid fa-key"></i></button>
+    <button class="floating-action-btn theme-toggle-btn" title="Cambiar tema"><i class="fa-solid fa-moon"></i></button>
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir"><i class="fa-solid fa-arrow-up"></i></button>
 </div>
+
+<!-- IMPORTAR FIREBASE REALTIME DATABASE -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "TU_API_KEY",
+        authDomain: "drrol-chat.firebaseapp.com",
+        databaseURL: "https://drrol-chat-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "drrol-chat",
+        storageBucket: "drrol-chat.appspot.com",
+        messagingSenderId: "TID",
+        appId: "APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.verificarPassword = async function() {
+        const passIngresada = document.getElementById('narratorPasswordInput').value.trim();
+        
+        if (!passIngresada) {
+            alert("Por favor, introduce una contraseña.");
+            return;
+        }
+
+        try {
+            const passwordRef = ref(db, 'password_narrador');
+            const snapshot = await get(passwordRef);
+
+            if (snapshot.exists()) {
+                const passReal = snapshot.val();
+
+                if (passIngresada === passReal) {
+                    document.body.classList.add('narrator-mode');
+                    localStorage.setItem('vtm-narrator-mode', 'true');
+                    
+                    const btnNarrator = document.getElementById('narratorToggleBtn');
+                    btnNarrator.classList.add('narrator-active');
+                    btnNarrator.title = "Modo Narrador Activo";
+                    btnNarrator.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i>';
+                    
+                    cerrarModalNarrador();
+                } else {
+                    alert("Contraseña incorrecta. Acceso denegado.");
+                }
+            } else {
+                alert("Error: No se encuentra 'password_narrador' en Firebase.");
+            }
+        } catch (error) {
+            console.error("Error al verificar la contraseña en Firebase:", error);
+            alert("Error de conexión con la base de datos.");
+        }
+    };
+</script>
 
 <script>
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?output=csv';
@@ -684,37 +510,21 @@
     function actualizarIconoTema() {
         const esClaro = document.body.classList.contains("light-mode");
         themeToggleBtns.forEach(btn => {
-            if (esClaro) {
-                btn.innerHTML = '<i class="fa-regular fa-sun"></i>';
-            } else {
-                btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
-            }
+            btn.innerHTML = esClaro ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
         });
-    }
-
-    function updateDarkPackLogo() {
-        const logoImg = document.querySelector('.darkpack-logo');
-        if (!logoImg) return;
-        const isLightMode = document.body.classList.contains('light-mode');
-        logoImg.src = isLightMode ? './iconos/darkpack_logo1.webp' : './iconos/darkpack_logo2.webp';
     }
 
     function initTheme() {
         const savedTheme = localStorage.getItem('vtm-theme');
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-mode');
-        } else {
-            document.body.classList.remove('light-mode');
-        }
+        if (savedTheme === 'light') document.body.classList.add('light-mode');
         actualizarIconoTema();
-        updateDarkPackLogo();
 
         if (localStorage.getItem('vtm-narrator-mode') === 'true') {
             document.body.classList.add('narrator-mode');
             const btnNarrator = document.getElementById('narratorToggleBtn');
             if(btnNarrator) {
                 btnNarrator.classList.add('narrator-active');
-                btnNarrator.title = "Modo Narrador Activo (Desbloqueado)";
+                btnNarrator.title = "Modo Narrador Activo";
                 btnNarrator.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i>';
             }
         }
@@ -723,10 +533,8 @@
     themeToggleBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             document.body.classList.toggle("light-mode");
-            const isLight = document.body.classList.contains("light-mode");
-            localStorage.setItem('vtm-theme', isLight ? 'light' : 'dark');
+            localStorage.setItem('vtm-theme', document.body.classList.contains("light-mode") ? 'light' : 'dark');
             actualizarIconoTema();
-            updateDarkPackLogo();
         });
     });
 
@@ -736,9 +544,9 @@
             localStorage.setItem('vtm-narrator-mode', 'false');
             const btnNarrator = document.getElementById('narratorToggleBtn');
             btnNarrator.classList.remove('narrator-active');
-            btnNarrator.title = "Modo Narrador (Privado)";
+            btnNarrator.title = "Modo Narrador";
             btnNarrator.innerHTML = '<i class="fa-solid fa-key"></i>';
-            alert("Modo Narrador bloqueado de nuevo.");
+            alert("Modo Narrador bloqueado.");
             return;
         }
         document.getElementById('narratorModal').style.display = 'flex';
@@ -750,65 +558,32 @@
         document.getElementById('narratorModal').style.display = 'none';
     }
 
-    function verificarPassword() {
-        const pass = document.getElementById('narratorPasswordInput').value.trim();
-        if (pass === "Werkstoff") {
-            document.body.classList.add('narrator-mode');
-            localStorage.setItem('vtm-narrator-mode', 'true');
-            const btnNarrator = document.getElementById('narratorToggleBtn');
-            btnNarrator.classList.add('narrator-active');
-            btnNarrator.title = "Modo Narrador Activo (Desbloqueado)";
-            btnNarrator.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i>';
-            cerrarModalNarrador();
-        } else {
-            alert("Contraseña incorrecta. Acceso denegado por la Camarilla.");
-        }
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
         const passInput = document.getElementById('narratorPasswordInput');
         if (passInput) {
             passInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') verificarPassword();
+                if (e.key === 'Enter') window.verificarPassword();
             });
         }
     });
 
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
-
         Papa.parse(SHEET_CSV_URL, {
-            download: true,
-            header: true,
-            skipEmptyLines: true,
+            download: true, header: true, skipEmptyLines: true,
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
                 renderVampiros(results.data);
-            },
-            error: function(err) {
-                document.getElementById('loading').textContent = "Error al conectar con la base de datos de Google Sheets.";
-                console.error(err);
             }
         });
-
         window.addEventListener('scroll', () => {
-            const scrollTopBtn = document.getElementById("scrollTopBtn");
-            if (window.scrollY > 300) {
-                scrollTopBtn.classList.add("show");
-            } else {
-                scrollTopBtn.classList.remove("show");
-            }
+            document.getElementById("scrollTopBtn").classList.toggle("show", window.scrollY > 300);
         });
     });
 
     function renderVampiros(datos) {
         const wrapper = document.getElementById('vampiresWrapper');
         wrapper.innerHTML = '';
-
-        if (!datos || datos.length === 0) {
-            wrapper.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--accent-gold);">No se encontraron registros en el censo.</div>`;
-            return;
-        }
 
         datos.forEach(v => {
             const id = v["ID"] || "";
@@ -819,7 +594,6 @@
             const rango = v["Rango / Título"] || "Sin Rango";
             const ubicacion = v["Ubicación / Dominio habitual"] || "Desconocida";
             const faccion = v["Facción"] || "";
-            
             const sire = v["Sire / Creador"] || "";
             const menciones = v["Menciones"] || "";
             const notas = v["Notas o Secretos"] || "";
@@ -829,81 +603,46 @@
             card.setAttribute('data-search', `${formattedId} ${nombre} ${clan} ${rango} ${ubicacion} ${faccion} ${sire} ${menciones} ${notas}`.toLowerCase());
             card.setAttribute('data-faccion', faccion.toLowerCase());
 
-            const clanKey = clan.toLowerCase().trim();
-            const iconPath = CLAN_ICONS[clanKey] || '';
+            const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
 
             card.innerHTML = `
                 <div class="id-badge">#${formattedId}</div>
                 <div class="card-img-container">
-                    <img src="retratos/${imagen}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
+                    <img src="./retratos/${imagen}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
                 </div>
                 <div class="card-body-content">
                     <div class="card-header-vamp">
-                        ${iconPath ? `<img src="${iconPath}" class="clan-symbol" alt="${clan}" onerror="this.style.display='none'">` : ''}
+                        ${iconPath ? `<img src="${iconPath}" class="clan-symbol" alt="${clan}">` : ''}
                         <div class="vamp-titles-box">
                             <div class="card-title">${nombre}</div>
                             <div class="card-clan-tag">${clan}</div>
                         </div>
                     </div>
                     
-                    <div class="info-block">
-                        <span class="info-label">Rango:</span>
-                        <span class="info-value" title="${rango}">${rango}</span>
-                    </div>
-                    
-                    <div class="info-block">
-                        <span class="info-label">Ubicación:</span>
-                        <span class="info-value" title="${ubicacion}">${ubicacion}</span>
-                    </div>
+                    <div class="info-block"><span class="info-label">Rango:</span><span class="info-value">${rango}</span></div>
+                    <div class="info-block"><span class="info-label">Ubicación:</span><span class="info-value">${ubicacion}</span></div>
+                    ${faccion ? `<div class="info-block"><span class="info-label">Facción:</span><span class="info-value"><span class="badge">${faccion}</span></span></div>` : ''}
 
-                    ${faccion ? `
-                    <div class="info-block">
-                        <span class="info-label">Facción:</span>
-                        <span class="info-value"><span class="badge">${faccion}</span></span>
-                    </div>` : ''}
-
-                    <!-- CAMPOS PRIVADOS EXCLUSIVOS PARA NARRADORES -->
-                    ${sire ? `
-                    <div class="info-block narrator-only">
-                        <span class="info-label">Sire:</span>
-                        <span class="info-value" title="${sire}">${sire}</span>
-                    </div>` : ''}
-
-                    ${nombre ? `
-                    <div class="info-block narrator-only">
-                        <span class="info-label">Ficha / Perfil:</span>
-                        <span class="info-value"><a href="ficha.html?nombre=${encodeURIComponent(nombre)}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span>
-                    </div>` : ''}
-
-                    ${menciones ? `
-                    <div class="info-block narrator-only">
-                        <span class="info-label">Menciones:</span>
-                        <span class="info-value" title="${menciones}">${menciones}</span>
-                    </div>` : ''}
-
-                    ${notas ? `<div class="card-notes narrator-only" title="${notas}">🦇 <strong>Notas / Secretos:</strong> ${notas}</div>` : ''}
+                    <!-- CAMPOS PRIVADOS NARRADOR -->
+                    ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire:</span><span class="info-value">${sire}</span></div>` : ''}
+                    ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?nombre=${encodeURIComponent(nombre)}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
+                    ${menciones ? `<div class="info-block narrator-only"><span class="info-label">Menciones:</span><span class="info-value">${menciones}</span></div>` : ''}
+                    ${notas ? `<div class="card-notes narrator-only">🦇 <strong>Notas / Secretos:</strong> ${notas}</div>` : ''}
                 </div>
             `;
-
             wrapper.appendChild(card);
         });
-
         applyFilters();
     }
 
     function applyFilters() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
         const factionQuery = document.getElementById('factionFilter').value.toLowerCase().trim();
-        const cards = document.querySelectorAll('.card');
         let visibleCount = 0;
 
-        cards.forEach(card => {
-            const text = card.getAttribute('data-search');
-            const faccion = card.getAttribute('data-faccion');
-
-            const matchesSearch = !query || text.includes(query);
-            const matchesFaction = !factionQuery || faccion.includes(factionQuery);
-
+        document.querySelectorAll('.card').forEach(card => {
+            const matchesSearch = !query || card.getAttribute('data-search').includes(query);
+            const matchesFaction = !factionQuery || card.getAttribute('data-faccion').includes(factionQuery);
             if (matchesSearch && matchesFaction) {
                 card.style.display = 'flex';
                 visibleCount++;
@@ -911,11 +650,7 @@
                 card.style.display = 'none';
             }
         });
-
-        const counterEl = document.getElementById('resultsCounter');
-        if (counterEl) {
-            counterEl.textContent = `Mostrando ${visibleCount} vástago${visibleCount === 1 ? '' : 's'}`;
-        }
+        document.getElementById('resultsCounter').textContent = `Mostrando ${visibleCount} vástago${visibleCount === 1 ? '' : 's'}`;
     }
 
     function scrollToTop() {
