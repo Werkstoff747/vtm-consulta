@@ -208,6 +208,45 @@
             margin-top: 10px;
         }
 
+        /* TRACKERS (SALUD Y FUERZA DE VOLUNTAD) */
+        .trackers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .tracker-box {
+            background: var(--card-notes-bg);
+            border: 1px solid var(--card-border);
+            padding: 12px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .tracker-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .tracker-boxes {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .t-box {
+            width: 18px; height: 18px;
+            border: 1px solid var(--accent-gold);
+            border-radius: 3px;
+            background: transparent;
+        }
+        .t-box.filled {
+            background: var(--accent-red);
+            border-color: var(--accent-crimson);
+        }
+
         /* 3 COLUMNAS PARA ATRIBUTOS Y HABILIDADES */
         .three-columns-grid {
             display: grid;
@@ -314,20 +353,44 @@
                     <div class="section-title">Expediente Oficial</div>
                     <div class="basic-info-grid" style="grid-template-columns: 1fr;">
                         <div class="info-box"><div class="info-label">Nombre del Personaje</div><div class="info-val" id="valNombre">-</div></div>
-                        <div class="info-box" style="margin-top: 10px;"><div class="info-label">Clan</div><div class="info-val" id="valClan">-</div></div>
-                        <div class="info-box" style="margin-top: 10px;"><div class="info-label">Rango / Título</div><div class="info-val" id="valRango">-</div></div>
+                        <div class="info-box" style="margin-top: 8px;"><div class="info-label">Clan</div><div class="info-val" id="valClan">-</div></div>
+                        <div class="info-box" style="margin-top: 8px;"><div class="info-label">Apodo o Rango</div><div class="info-val" id="valApodo">-</div></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- UBICACIÓN Y FACCIÓN -->
+        <!-- LINAJE Y DATOS DE LA FICHA NUEVOS -->
         <div class="sheet-section">
-            <div class="section-title">Estatus y Dominio</div>
+            <div class="section-title">Linaje, Crónica y Estatus</div>
             <div class="basic-info-grid">
-                <div class="info-box"><div class="info-label">Ubicación / Dominio habitual</div><div class="info-val" id="valUbicacion">-</div></div>
-                <div class="info-box"><div class="info-label">Facción</div><div class="info-val" id="valFaccion">-</div></div>
                 <div class="info-box"><div class="info-label">Sire / Creador</div><div class="info-val" id="valSire">-</div></div>
+                <div class="info-box"><div class="info-label">Abrazo</div><div class="info-val" id="valAbrazo">-</div></div>
+                <div class="info-box"><div class="info-label">Generación</div><div class="info-val" id="valGeneracion">-</div></div>
+                <div class="info-box"><div class="info-label">Potencia de Sangre</div><div class="info-val" id="valPotencia">-</div></div>
+                <div class="info-box"><div class="info-label">Humanidad</div><div class="info-val" id="valHumanidad">-</div></div>
+            </div>
+        </div>
+
+        <!-- CRÓNICA, AMBICIÓN Y CONVICCIONES -->
+        <div class="sheet-section">
+            <div class="section-title">Psique y Convicciones</div>
+            <div class="basic-info-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <div class="info-box"><div class="info-label">Ambición</div><div class="info-val" id="valAmbicion" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
+                <div class="info-box"><div class="info-label">Convicciones</div><div class="info-val" id="valConvicciones" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
+                <div class="info-box"><div class="info-label">Piedras de Toque</div><div class="info-val" id="valPiedras" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
+            </div>
+
+            <!-- SALUD Y FUERZA DE VOLUNTAD (TRACKERS) -->
+            <div class="trackers-grid">
+                <div class="tracker-box">
+                    <div class="tracker-title">Salud</div>
+                    <div class="tracker-boxes" id="trackSalud"></div>
+                </div>
+                <div class="tracker-box">
+                    <div class="tracker-title">Fuerza de Voluntad</div>
+                    <div class="tracker-boxes" id="trackVoluntad"></div>
+                </div>
             </div>
         </div>
 
@@ -369,7 +432,7 @@
             </div>
         </div>
 
-        <!-- DISCIPLINAS Y EXTRAS -->
+        <!-- DISCIPLINAS Y VENTAJAS -->
         <div class="sheet-section">
             <div class="section-title">Disciplinas y Trasfondo</div>
             <div style="margin-bottom: 12px;">
@@ -377,18 +440,14 @@
                 <p id="valDisciplinas" style="margin-top: 4px; font-size: 0.95rem;">-</p>
             </div>
             <div>
-                <strong style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 0.85rem;">Lore / Notas:</strong>
-                <p id="valLore" style="margin-top: 4px; font-size: 0.95rem; font-style: italic; color: var(--text-muted);">-</p>
+                <strong style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 0.85rem;">Ventajas y Defectos:</strong>
+                <p id="valVentajas" style="margin-top: 4px; font-size: 0.95rem; font-style: italic; color: var(--text-muted);">-</p>
             </div>
         </div>
 
-        <!-- MENCIONES Y SECRETOS -->
+        <!-- SECRETOS (NARRADOR) -->
         <div class="sheet-section">
-            <div class="section-title">Registros y Crónicas</div>
-            <div style="margin-bottom: 15px;">
-                <strong style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 0.85rem; text-transform: uppercase;">Menciones:</strong>
-                <p id="valMenciones" style="margin-top: 5px; font-size: 0.95rem; color: var(--text-main);">-</p>
-            </div>
+            <div class="section-title">Registros Ocultos</div>
             <div>
                 <strong style="color: var(--accent-red); font-family: 'Cinzel', serif; font-size: 0.85rem; text-transform: uppercase;"><i class="fa-solid fa-lock"></i> Secretos (Narrador):</strong>
                 <div class="card-notes" id="valSecretos">Sin registros clasificados.</div>
@@ -408,7 +467,7 @@
 </div>
 
 <script>
-    // URL completa de todo el documento para extraer simultáneamente Censo y Ficha técnica con anti-caché
+    // URL completa para extraer los datos de la hoja de Google Sheets con anti-caché
     const SHEET_FULL_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?output=csv&_t=' + Date.now();
 
     const ATTR_LIST = {
@@ -451,6 +510,15 @@
         return html;
     }
 
+    function renderBoxes(value, max = 10) {
+        let val = parseInt(value) || 0;
+        let html = '';
+        for (let i = 1; i <= max; i++) {
+            html += `<div class="t-box ${i <= val ? 'filled' : ''}"></div>`;
+        }
+        return html;
+    }
+
     function limpiarNombreColumna(key) {
         return key.replace(/^(Atributo_|Hab_)/, '').replace(/_/g, ' ');
     }
@@ -478,42 +546,62 @@
 
                 if (!personaje) {
                     document.getElementById('loading').style.display = 'block';
-                    document.getElementById('loading').textContent = `No se han encontrado registros combinados para el ID #${targetId}.`;
+                    document.getElementById('loading').textContent = `No se han encontrado registros para el ID #${targetId}.`;
                     return;
                 }
 
-                const nombre = personaje["Nombre del Personaje"] || personaje["Nombre_Personaje"] || "Desconocido";
+                // Extracción de campos adaptados a la nueva estructura de la pestaña Ficha
+                const nombre = personaje["Nombre_Personaje"] || personaje["Nombre del Personaje"] || "Desconocido";
                 const clan = personaje["Clan"] || "Desconocido";
-                const rango = personaje["Rango / Título"] || "Sin Rango";
-                const ubicacion = personaje["Ubicación / Dominio habitual"] || "Desconocida";
-                const faccion = personaje["Facción"] || "Independiente";
-                const sire = personaje["Sire / Creador"] || "Desconocido";
-                const menciones = personaje["Menciones"] || "Ninguna";
+                const apodo = personaje["Apodo_o_Rango"] || personaje["Rango / Título"] || "Sin Rango";
+                const sire = personaje["Sire"] || "Desconocido";
+                const abrazo = personaje["Abrazo"] || "-";
+                const ambicion = personaje["Ambicion"] || "-";
+                const convicciones = personaje["Convicciones"] || "-";
+                const piedras = personaje["Piedras_de_Toque"] || "-";
+                const humanidad = personaje["Humanidad"] || "7";
+                const generacion = personaje["Generacion"] || "10ª";
+                const potencia = personaje["Potencia_de_Sangre"] || "1";
+                
+                const salud = personaje["Salud"] || "6";
+                const voluntad = personaje["Fuerza_de_Voluntad"] || "5";
+
+                const disciplinas = personaje["Disciplinas"] || "No registradas";
+                const ventajas = personaje["Ventajas_y_Defectos"] || "Ninguna";
                 const secretos = personaje["Secretos"] || "Sin registros clasificados.";
                 const imagen = personaje["Archivo de Imagen"] || (nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg");
 
-                const disciplinas = personaje["Disciplinas"] || "No registradas";
-                const lore = personaje["Lore_y_Trasfondo_Resumido"] || personaje["Lore y Trasfondo Resumido"] || "Sin notas adicionales.";
-
+                // Volcar datos básicos a pantalla
                 document.getElementById('sheetContent').style.display = 'block';
                 document.getElementById('pageTitle').textContent = `Ficha de ${nombre}`;
 
                 document.getElementById('valNombre').textContent = nombre;
                 document.getElementById('valClan').textContent = clan;
-                document.getElementById('valRango').textContent = rango;
-                document.getElementById('valUbicacion').textContent = ubicacion;
-                document.getElementById('valFaccion').textContent = faccion;
+                document.getElementById('valApodo').textContent = apodo;
                 document.getElementById('valSire').textContent = sire;
-                document.getElementById('valMenciones').textContent = menciones;
-                document.getElementById('valSecretos').innerHTML = `🦇 <strong>Secretos:</strong> ${secretos}`;
+                document.getElementById('valAbrazo').textContent = abrazo;
+                document.getElementById('valAmbicion').textContent = ambicion;
+                document.getElementById('valConvicciones').textContent = convicciones;
+                document.getElementById('valPiedras').textContent = piedras;
+                document.getElementById('valHumanidad').textContent = humanidad;
+                document.getElementById('valGeneracion').textContent = generacion;
+                document.getElementById('valPotencia').textContent = potencia;
+
                 document.getElementById('valDisciplinas').textContent = disciplinas;
-                document.getElementById('valLore').textContent = lore;
+                document.getElementById('valVentajas').textContent = ventajas;
+                document.getElementById('valSecretos').innerHTML = `🦇 <strong>Secretos:</strong> ${secretos}`;
                 document.getElementById('valImg').src = `./retratos/${imagen}`;
 
+                // Trackers de Salud y Fuerza de Voluntad
+                document.getElementById('trackSalud').innerHTML = renderBoxes(salud, 10);
+                document.getElementById('trackVoluntad').innerHTML = renderBoxes(voluntad, 10);
+
+                // Pintar Atributos
                 pintarBloqueEstadisticas(ATTR_LIST.fisicos, personaje, 'attrFisicos');
                 pintarBloqueEstadisticas(ATTR_LIST.sociales, personaje, 'attrSociales');
                 pintarBloqueEstadisticas(ATTR_LIST.mentales, personaje, 'attrMentales');
 
+                // Pintar Habilidades
                 pintarBloqueEstadisticas(HAB_LIST.fisicos, personaje, 'habFisicos');
                 pintarBloqueEstadisticas(HAB_LIST.sociales, personaje, 'habSociales');
                 pintarBloqueEstadisticas(HAB_LIST.mentales, personaje, 'habMentales');
