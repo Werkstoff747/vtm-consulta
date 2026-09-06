@@ -356,8 +356,8 @@
 </div>
 
 <script>
-    // URL de tu hoja de Google Sheets (pestaña Ficha)
-    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=530703739&single=true&output=csv';
+    // URL de tu hoja de Google Sheets (pestaña Ficha) con anti-caché
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=530703739&single=true&output=csv&_t=' + Date.now();
 
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -373,13 +373,12 @@
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
                 
-                // Búsqueda inteligente tolerante a cabeceras fusionadas en el CSV
+                // Búsqueda robusta basada estrictamente en la primera columna (ID exacto)
                 const v = results.data.find(row => {
-                    for (let key in row) {
-                        if (key.toLowerCase().includes('id')) {
-                            const val = String(row[key] || "").trim();
-                            if (val === String(targetId).trim()) return true;
-                        }
+                    const keys = Object.keys(row);
+                    if (keys.length > 0) {
+                        const idValue = String(row[keys[0]] || "").trim();
+                        return idValue === String(targetId).trim();
                     }
                     return false;
                 });
@@ -401,7 +400,7 @@
         });
     });
 
-    // Función auxiliar para buscar valores en el objeto ignorando variaciones de nombres de columnas
+    // Función auxiliar tolerante para encontrar valores en columnas fusionadas del CSV
     function getVal(v, possibleKeys) {
         for (let prop in v) {
             const cleanProp = prop.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -437,7 +436,7 @@
         document.getElementById('fSalud').textContent = getVal(v, ["Salud"]) || "-";
         document.getElementById('fVoluntad').textContent = getVal(v, ["Fuerza_de_Voluntad"]) || "-";
 
-        // Resolución de imagen por nombre formateado (ej: Bennet_Steadman.jpg)
+        // Carga de imagen por nombre formateado (ej: Bennet_Steadman.jpg)
         const nombreArchivoSeguro = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_") + ".jpg";
         const imgElement = document.getElementById('fImage');
         imgElement.src = `./retratos/${nombreArchivoSeguro}`;
@@ -448,13 +447,14 @@
             this.src = `./retratos/${nombreArchivoSeguro}`;
         };
 
-        // Mapeo dinámico de Atributos y Habilidades
+        // Mapeo dinámico de Atributos
         const attrKeys = ["Fuerza", "Destreza", "Resistencia", "Carisma", "Manipulacion", "Compostura", "Inteligencia", "Astucia", "Resolucion"];
         attrKeys.forEach(key => {
             const el = document.getElementById(`attr_${key}`);
             if (el) el.textContent = getVal(v, [`Atributo_${key}`, key]) || "0";
         });
 
+        // Mapeo dinámico de Habilidades
         const habKeys = [
             "Armas_de_Fuego", "Artesania", "Atletismo", "Conducir", "Latrocinio", "Pelea", "Pelea_con_Armas", "Sigilo", "Supervivencia",
             "Callejeo", "Etiqueta", "Interpretacion", "Intimidacion", "Liderazgo", "Perspicacia", "Persuasion", "Subterfugio", "Trato_con_Animales",
