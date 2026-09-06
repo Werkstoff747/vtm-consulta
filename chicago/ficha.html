@@ -377,7 +377,7 @@
                 const v = results.data.find(row => String(Number(row["ID"])) === String(Number(targetId)));
 
                 if (v) {
-                    renderFicha(v, targetId);
+                    renderFicha(v);
                 } else {
                     mostrarError("No se ha encontrado ningún registro con el ID #" + targetId);
                 }
@@ -393,7 +393,7 @@
         });
     });
 
-    function renderFicha(v, targetId) {
+    function renderFicha(v) {
         document.getElementById('fichaContent').style.display = 'block';
 
         const nombre = v["Nombre_Personaje"] || v["Nombre del Personaje"] || "Desconocido";
@@ -416,11 +416,9 @@
         document.getElementById('fSalud').textContent = v["Salud"] || "-";
         document.getElementById('fVoluntad').textContent = v["Fuerza_de_Voluntad"] || "-";
 
-        // Carga de imagen por ID prioritario con respaldo en el nombre formateado
-        const cleanId = String(targetId).trim();
-        const imagenPorId = cleanId ? `${cleanId}.jpg` : '';
-        const imagenPorNombre = nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
-        const imagenLimpia = v["Archivo de Imagen"] || imagenPorId || imagenPorNombre;
+        // Resolución de imagen idéntica al censo (index.html): revisa la hoja o usa el nombre formateado
+        const imagenPorNombre = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_") + ".jpg";
+        const imagenLimpia = (v["Archivo de Imagen"] && v["Archivo de Imagen"].trim() !== "") ? v["Archivo de Imagen"].trim() : imagenPorNombre;
 
         const imgElement = document.getElementById('fImage');
         imgElement.src = `./retratos/${imagenLimpia}`;
