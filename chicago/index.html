@@ -486,8 +486,8 @@
 </script>
 
 <script>
-    // URL de tu hoja de Google Sheets principal (asegúrate de que apunta a tu CSV)
-    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=0&single=true&output=csv';
+    // URL apuntando a la pestaña Ficha con su gid exacto
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=530703739&single=true&output=csv';
 
     const CLAN_ICONS = {
         "banu haqim": "./iconos/clanes/Banu_Haqim_Symbol.png",
@@ -586,6 +586,13 @@
         const wrapper = document.getElementById('vampiresWrapper');
         wrapper.innerHTML = '';
 
+        // ORDENAR ESTRICTAMENTE POR ID NUMÉRICO DE MENOR A MAYOR
+        datos.sort((a, b) => {
+            let idA = parseInt(a["ID"]) || 0;
+            let idB = parseInt(b["ID"]) || 0;
+            return idA - idB;
+        });
+
         datos.forEach(v => {
             const id = v["ID"] || "";
             const formattedId = id ? String(id).padStart(2, '0') : "00";
@@ -597,9 +604,8 @@
             const sire = v["Sire"] || "";
             const secret = v["Secretos"] || "";
             
-            // Generamos el nombre del archivo de imagen basado en el ID o en el nombre limpio si lo usas
-            // (puedes ajustar esta línea si prefieres usar otra columna de imagen)
-            const imagenLimpia = nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
+            // Lee de la columna Archivo_Imagen o recurre al nombre por defecto si estuviera vacía
+            const imagenLimpia = v["Archivo_Imagen"] || (nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg");
 
             const card = document.createElement('div');
             card.className = 'card';
@@ -626,7 +632,7 @@
                     <div class="info-block"><span class="info-label">Ubicación:</span><span class="info-value">${ubicacion}</span></div>
                     ${faccion ? `<div class="info-block"><span class="info-label">Facción:</span><span class="info-value"><span class="badge">${faccion}</span></span></div>` : ''}
 
-                    <!-- CAMPOS PRIVADOS NARRADOR (Enlace actualizado a usar ID limpio) -->
+                    <!-- CAMPOS PRIVADOS NARRADOR -->
                     ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire:</span><span class="info-value">${sire}</span></div>` : ''}
                     ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
                     ${secret ? `<div class="card-notes narrator-only">🦇 <strong>Secretos:</strong> ${secret}</div>` : ''}
