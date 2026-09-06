@@ -3,26 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ficha de Vástago - Censo de Chicago</title>
+    <title>Ficha de Personaje - Censo de Chicago</title>
 
     <!-- FAVICON -->
     <link rel="icon" type="image/png" href="./iconos/drRol.png">
     
-    <!-- FUENTES OFICIALES V5 (Google Fonts: Cinzel & Inter) -->
+    <!-- FUENTES OFICIALES V5 (Cinzel) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome para los iconos -->
+    <!-- FontAwesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Librería para procesar CSV de Google Sheets -->
+    <!-- PapaParse para leer Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
-        /* =========================================================
-            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
-            ========================================================= */
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
@@ -33,40 +30,14 @@
             --text-main: #e1e1e6;
             --text-muted: #a0a0b0;
             --tag-bg: #25252e;
-            --input-bg: #0f0f12;
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
-            --card-title-color: #ffffff;
-            --card-notes-bg: rgba(255, 255, 255, 0.03);
-            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
         }
 
-        body.light-mode {
-            --bg-color: #a8a7a4;
-            --card-bg: #ffffff;
-            --card-border: #bcaba0;
-            --accent-red: #8b0000;
-            --accent-crimson: #c92a2a;
-            --accent-gold: #8d6722;
-            --text-main: #1f1f22;
-            --text-muted: #555459;
-            --tag-bg: #f2f0eb;
-            --input-bg: #ffffff;            
-            --header-bg: #2b0408;
-            --header-border: #7a0000;
-            --card-title-color: #111115;
-            --card-notes-bg: #f9f8f5;
-            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.6;
@@ -75,424 +46,240 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            width: 100%;
-        }
+        .container { max-width: 1000px; margin: 0 auto; width: 100%; }
 
-        /* CABECERA */
         header {
-            position: relative;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
+            justify-content: space-between;
+            padding: 15px 20px;
             border-bottom: 2px solid var(--header-border);
             margin-bottom: 25px;
             background: var(--header-bg);
             border-radius: 8px;
-            text-align: center;
         }
+
+        .back-btn {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            transition: opacity 0.2s;
+        }
+        .back-btn:hover { opacity: 0.8; }
 
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.35rem;
+            font-size: 1.2rem;
             color: var(--accent-gold);
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
-        .theme-btn-header {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.35);
-            border: 1px solid var(--accent-gold);
-            color: var(--accent-gold);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* BLOQUES DE LA FICHA */
-        .sheet-section {
+        .sheet-card {
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .sheet-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background-color: var(--accent-red);
-        }
-
-        .section-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
-            color: var(--accent-gold);
-            margin-bottom: 15px;
-            border-bottom: 1px dashed var(--card-border);
-            padding-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* DATOS BÁSICOS (CABECERA DE FICHA) */
-        .basic-info-grid {
+            padding: 25px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            position: relative;
+            margin-bottom: 40px;
+        }
+        .sheet-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background-color: var(--accent-red); border-top-left-radius: 8px; border-bottom-left-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .sheet-card { grid-template-columns: 1fr; }
+        }
+
+        .sheet-img-container {
+            width: 100%; height: 380px; background: #000; border-radius: 6px; overflow: hidden; border: 1px solid var(--card-border);
+        }
+        .sheet-img-container img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+        .sheet-details { display: flex; flex-direction: column; gap: 15px; }
+
+        .sheet-title-area { border-bottom: 1px dashed var(--card-border); padding-bottom: 12px; }
+        .sheet-name { font-family: 'Cinzel', serif; font-size: 1.8rem; color: #fff; font-weight: 700; }
+        .sheet-clan { font-size: 1.1rem; color: var(--accent-gold); font-style: italic; font-weight: 600; }
+
+        .sheet-grid-info {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;
         }
 
         .info-box {
-            background: var(--card-notes-bg);
-            padding: 10px 15px;
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--card-border);
-        }
-
-        .info-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .info-val {
-            font-size: 1.1rem;
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            color: var(--card-title-color);
-        }
-
-        /* 3 COLUMNAS PARA ATRIBUTOS Y HABILIDADES */
-        .three-columns-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        @media (max-width: 850px) {
-            .three-columns-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .column-group h4 {
-            font-family: 'Cinzel', serif;
+            padding: 8px 12px;
+            border-radius: 6px;
             font-size: 0.9rem;
-            color: var(--accent-gold);
-            margin-bottom: 10px;
-            text-align: center;
-            border-bottom: 1px solid var(--card-border);
-            padding-bottom: 4px;
+        }
+        .info-label { color: var(--text-muted); font-weight: 600; display: block; font-size: 0.8rem; }
+        .info-val { font-weight: 600; color: var(--text-main); }
+
+        .stats-section { margin-top: 10px; }
+        .stats-title { font-family: 'Cinzel', serif; color: var(--accent-gold); font-size: 1rem; margin-bottom: 8px; border-bottom: 1px solid var(--card-border); padding-bottom: 4px; }
+        
+        .stats-container {
+            display: flex; flex-wrap: wrap; gap: 6px;
+        }
+        .stat-badge {
+            background: var(--tag-bg);
+            border: 1px solid var(--card-border);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
         }
 
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 8px;
-            font-size: 0.88rem;
-            border-bottom: 1px solid var(--card-notes-bg);
+        #loading, #error-msg {
+            text-align: center; font-family: 'Cinzel', serif; color: var(--accent-gold); padding: 50px; font-size: 1.2rem;
         }
+        #error-msg { color: var(--accent-crimson); }
 
-        .stat-name {
-            color: var(--text-main);
-            font-weight: 500;
-        }
-
-        /* PUNTOS DE VALOR (CÍRCULOS ESTILO V5) */
-        .dots-container {
-            display: flex;
-            gap: 4px;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            border: 1px solid var(--accent-gold);
-            background-color: transparent;
-            transition: background-color 0.2s;
-        }
-
-        .dot.filled {
-            background-color: var(--accent-gold);
-        }
-
-        /* BOTONES FLOTANTES */
-        .floating-btn-container {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 9999;
-        }
-
-        .floating-action-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: var(--accent-red);
-            color: #fff;
-            border: 1px solid var(--accent-crimson);
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-            text-decoration: none;
-            transition: transform 0.2s;
-        }
-
-        .floating-action-btn:hover {
-            transform: translateY(-3px);
-            background-color: var(--accent-crimson);
-        }
-
-        #loading {
-            text-align: center;
-            font-size: 1.2rem;
-            color: var(--accent-gold);
-            padding: 50px;
-            font-family: 'Cinzel', serif;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            border-top: 1px solid var(--card-border);
-            margin-top: 40px;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
+        footer { text-align: center; padding: 20px; border-top: 1px solid var(--card-border); color: var(--text-muted); font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema"><i class="fa-solid fa-moon"></i></button>
-        <h1 class="cabecera-principal" id="pageTitle">Ficha de Vástago</h1>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Volver al Censo</a>
+        <h1 class="cabecera-principal">Hoja Técnica del Vástago</h1>
     </header>
 
-    <div id="loading">Consultando los registros de la Camarilla...</div>
+    <div id="loading">Consultando Archivos de la Camarilla...</div>
+    <div id="error-msg" style="display: none;"></div>
 
-    <div id="sheetContent" style="display: none;">
-        <!-- DATOS BÁSICOS -->
-        <div class="sheet-section">
-            <div class="section-title">Información del Vástago</div>
-            <div class="basic-info-grid">
-                <div class="info-box"><div class="info-label">Nombre</div><div class="info-val" id="valNombre">-</div></div>
-                <div class="info-box"><div class="info-label">Clan</div><div class="info-val" id="valClan">-</div></div>
-                <div class="info-box"><div class="info-label">Apodo</div><div class="info-val" id="valApodo">-</div></div>
+    <div id="fichaContent" style="display: none;">
+        <div class="sheet-card">
+            <div class="sheet-img-container">
+                <img id="fImage" src="" alt="Retrato" onerror="this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
             </div>
-        </div>
+            <div class="sheet-details">
+                <div class="sheet-title-area">
+                    <div id="fName" class="sheet-name">Cargando...</div>
+                    <div id="fClan" class="sheet-clan">Clan</div>
+                </div>
 
-        <!-- ATRIBUTOS EN 3 COLUMNAS -->
-        <div class="sheet-section">
-            <div class="section-title">Atributos</div>
-            <div class="three-columns-grid">
-                <div class="column-group">
-                    <h4>Físicos</h4>
-                    <div id="attrFisicos"></div>
+                <div class="sheet-grid-info">
+                    <div class="info-box"><span class="info-label">Rango / Título</span><span id="fRango" class="info-val">-</span></div>
+                    <div class="info-box"><span class="info-label">Ubicación Habitual</span><span id="fUbicacion" class="info-val">-</span></div>
+                    <div class="info-box"><span class="info-label">Facción</span><span id="fFaccion" class="info-val">-</span></div>
+                    <div class="info-box"><span class="info-label">Sire / Creador</span><span id="fSire" class="info-val">-</span></div>
                 </div>
-                <div class="column-group">
-                    <h4>Sociales</h4>
-                    <div id="attrSociales"></div>
-                </div>
-                <div class="column-group">
-                    <h4>Mentales</h4>
-                    <div id="attrMentales"></div>
-                </div>
-            </div>
-        </div>
 
-        <!-- HABILIDADES EN 3 COLUMNAS -->
-        <div class="sheet-section">
-            <div class="section-title">Habilidades</div>
-            <div class="three-columns-grid">
-                <div class="column-group">
-                    <h4>Físicas / Técnicas</h4>
-                    <div id="habFisicos"></div>
+                <div class="stats-section">
+                    <div class="stats-title">Menciones en Crónica</div>
+                    <div id="fMenciones" class="info-val" style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">-</div>
                 </div>
-                <div class="column-group">
-                    <h4>Sociales</h4>
-                    <div id="habSociales"></div>
-                </div>
-                <div class="column-group">
-                    <h4>Mentales / Conocimientos</h4>
-                    <div id="habMentales"></div>
-                </div>
-            </div>
-        </div>
 
-        <!-- DISCIPLINAS Y EXTRAS -->
-        <div class="sheet-section">
-            <div class="section-title">Disciplinas y Trasfondo</div>
-            <div style="margin-bottom: 15px;">
-                <strong style="color: var(--accent-gold); font-family: 'Cinzel', serif;">Disciplinas:</strong>
-                <p id="valDisciplinas" style="margin-top: 5px; font-size: 0.95rem;">-</p>
-            </div>
-            <div>
-                <strong style="color: var(--accent-gold); font-family: 'Cinzel', serif;">Lore / Notas:</strong>
-                <p id="valLore" style="margin-top: 5px; font-size: 0.95rem; font-style: italic; color: var(--text-muted);">-</p>
+                <div class="stats-section">
+                    <div class="stats-title">Estadísticas y Disciplinas</div>
+                    <div id="fStatsContainer" class="stats-container">
+                        <!-- Las estadísticas de la tabla de atributos se inyectarán aquí dinámicamente -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <footer>
-        Censo de Chicago — Herramienta de Rol no oficial bajo licencia Dark Pack
+        Censo de Chicago — Vampiro: La Mascarada 5ª Edición
     </footer>
 </div>
 
-<!-- BOTONES FLOTANTES -->
-<div class="floating-btn-container">
-    <button class="floating-action-btn" onclick="history.back()" title="Volver al Censo"><i class="fa-solid fa-arrow-left"></i></button>
-</div>
-
 <script>
-    // URL específica de la pestaña "Ficha" con su gid correcto
-    const SHEET_FICHAS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=310360242&single=true&output=csv';
-
-    const ATTR_LIST = {
-        fisicos: ['Atributo_Fuerza', 'Atributo_Destreza', 'Atributo_Resistencia'],
-        sociales: ['Atributo_Carisma', 'Atributo_Manipulacion', 'Atributo_Compostura'],
-        mentales: ['Atributo_Inteligencia', 'Atributo_Astucia', 'Atributo_Resolucion']
-    };
-
-    const HAB_LIST = {
-        fisicos: ['Hab_Armas_de_Fuego', 'Hab_Artesania', 'Hab_Atletismo', 'Hab_Conducir', 'Hab_Latrocinio', 'Hab_Pelea', 'Hab_Pelea_con_Armas', 'Hab_Sigilo', 'Hab_Supervivencia'],
-        sociales: ['Hab_Callejeo', 'Hab_Etiqueta', 'Hab_Interpretacion', 'Hab_Intimidacion', 'Hab_Liderazgo', 'Hab_Perspicacia', 'Hab_Persuasion', 'Hab_Subterfugio', 'Hab_Trato_con_Animales'],
-        mentales: ['Hab_Academicismo', 'Hab_Ciencias', 'Hab_Consciencia', 'Hab_Finanzas', 'Hab_Investigacion', 'Hab_Medicina', 'Hab_Ocultismo', 'Hab_Politica', 'Hab_Tecnologia']
-    };
-
-    function initTheme() {
-        const savedTheme = localStorage.getItem('vtm-theme');
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-mode');
-            document.getElementById('themeToggleBtn').innerHTML = '<i class="fa-regular fa-sun"></i>';
-        } else {
-            document.body.classList.remove('light-mode');
-            document.getElementById('themeToggleBtn').innerHTML = '<i class="fa-solid fa-moon"></i>';
-        }
-    }
-
-    function toggleTheme() {
-        document.body.classList.toggle('light-mode');
-        const isLight = document.body.classList.contains('light-mode');
-        localStorage.setItem('vtm-theme', isLight ? 'light' : 'dark');
-        document.getElementById('themeToggleBtn').innerHTML = isLight ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
-    }
-
-    function renderDots(value, max = 5) {
-        let val = parseInt(value) || 0;
-        let html = '<div class="dots-container">';
-        for (let i = 1; i <= max; i++) {
-            html += `<div class="dot ${i <= val ? 'filled' : ''}"></div>`;
-        }
-        html += '</div>';
-        return html;
-    }
-
-    function limpiarNombreColumna(key) {
-        return key.replace(/^(Atributo_|Hab_)/, '').replace(/_/g, ' ');
-    }
+    // URL de tu hoja de Google Sheets (asegúrate de que sea la misma o la de tu pestaña de estadísticas si la tienes separada)
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?output=csv';
 
     window.addEventListener('DOMContentLoaded', () => {
-        initTheme();
-
         const urlParams = new URLSearchParams(window.location.search);
-        const nombreBuscado = urlParams.get('nombre');
+        const targetId = urlParams.get('id');
 
-        if (!nombreBuscado) {
-            document.getElementById('loading').textContent = "Error: No se ha especificado ningún vástago.";
+        if (!targetId) {
+            mostrarError("No se ha especificado ningún ID de Vástago.");
             return;
         }
 
-        Papa.parse(SHEET_FICHAS_URL, {
-            download: true,
-            header: true,
-            skipEmptyLines: true,
+        Papa.parse(SHEET_CSV_URL, {
+            download: true, header: true, skipEmptyLines: true,
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
-                const filas = results.data;
+                
+                // Buscamos la fila cuyo ID coincida (limpiando posibles espacios o ceros)
+                const v = results.data.find(row => String(Number(row["ID"])) === String(Number(targetId)));
 
-                const personaje = filas.find(row => {
-                    const nombreFila = (row["Nombre_Personaje"] || row["Nombre del Personaje"] || "").trim().toLowerCase();
-                    return nombreFila === nombreBuscado.trim().toLowerCase();
-                });
-
-                if (!personaje) {
-                    document.getElementById('loading').style.display = 'block';
-                    document.getElementById('loading').textContent = `No se han encontrado registros técnicos para "${nombreBuscado}".`;
-                    return;
+                if (v) {
+                    renderFicha(v);
+                } else {
+                    mostrarError("No se ha encontrado ningún registro con el ID #" + targetId);
                 }
-
-                document.getElementById('sheetContent').style.display = 'block';
-                document.getElementById('pageTitle').textContent = `Ficha de ${personaje["Nombre_Personaje"] || personaje["Nombre del Personaje"] || nombreBuscado}`;
-
-                document.getElementById('valNombre').textContent = personaje["Nombre_Personaje"] || personaje["Nombre del Personaje"] || "-";
-                document.getElementById('valClan').textContent = personaje["Clan"] || "-";
-                document.getElementById('valApodo').textContent = personaje["Apodo"] || "-";
-                document.getElementById('valDisciplinas').textContent = personaje["Disciplinas"] || "No registradas";
-                document.getElementById('valLore').textContent = personaje["Lore_y_Trasfondo_Resumido"] || personaje["Lore y Trasfondo Resumido"] || "Sin notas adicionales.";
-
-                pintarBloqueEstadisticas(ATTR_LIST.fisicos, personaje, 'attrFisicos');
-                pintarBloqueEstadisticas(ATTR_LIST.sociales, personaje, 'attrSociales');
-                pintarBloqueEstadisticas(ATTR_LIST.mentales, personaje, 'attrMentales');
-
-                pintarBloqueEstadisticas(HAB_LIST.fisicos, personaje, 'habFisicos');
-                pintarBloqueEstadisticas(HAB_LIST.sociales, personaje, 'habSociales');
-                pintarBloqueEstadisticas(HAB_LIST.mentales, personaje, 'habMentales');
             },
             error: function(err) {
-                document.getElementById('loading').textContent = "Error al conectar con la base de datos de Google Sheets.";
-                console.error(err);
+                document.getElementById('loading').style.display = 'none';
+                mostrarError("Error al conectar con la base de datos de Google Sheets.");
             }
         });
     });
 
-    function pintarBloqueEstadisticas(keysArray, dataObj, containerId) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = '';
-        keysArray.forEach(key => {
-            let valor = dataObj[key];
-            if (valor === undefined) {
-                const altKey = Object.keys(dataObj).find(k => k.toLowerCase().includes(key.toLowerCase().replace(/_/g, ' ')));
-                valor = altKey ? dataObj[altKey] : 0;
-            }
+    function renderFicha(v) {
+        document.getElementById('fichaContent').style.display = 'block';
 
-            const row = document.createElement('div');
-            row.className = 'stat-row';
-            row.innerHTML = `
-                <span class="stat-name">${limpiarNombreColumna(key)}</span>
-                ${renderDots(valor)}
-            `;
-            container.appendChild(row);
-        });
+        const nombre = v["Nombre del Personaje"] || "Desconocido";
+        const clan = v["Clan"] || "Desconocido";
+        const imagen = v["Archivo de Imagen"] || "";
+        
+        document.getElementById('fName').textContent = nombre;
+        document.getElementById('fClan').textContent = clan;
+        document.getElementById('fRango').textContent = v["Rango / Título"] || "Sin Rango";
+        document.getElementById('fUbicacion').textContent = v["Ubicación / Dominio habitual"] || "Desconocida";
+        document.getElementById('fFaccion').textContent = v["Facción"] || "Independiente";
+        document.getElementById('fSire'] = v["Sire / Creador"] || "Desconocido";
+        
+        // RUTA DE LA IMAGEN CORRECTA EN LA CARPETA LOCAL
+        if (imagen) {
+            document.getElementById('fImage').src = `./retratos/${imagen}`;
+        }
+
+        document.getElementById('fMenciones').textContent = v["Menciones"] || "Sin menciones registradas.";
+
+        // Recorremos el resto de columnas del CSV por si tienes estadísticas adicionales (atributos, disciplinas, etc.)
+        const statsContainer = document.getElementById('fStatsContainer');
+        statsContainer.innerHTML = '';
+
+        // Excluimos las columnas principales para pintar el resto como atributos/estadísticas dinámicas
+        const excludeKeys = ["ID", "Archivo de Imagen", "Nombre del Personaje", "Clan", "Rango / Título", "Ubicación / Dominio habitual", "Facción", "Sire / Creador", "Ficha / Perfil", "Menciones", "Secretos", "Notas o Secretos"];
+        
+        let hasExtraStats = false;
+        for (const [key, value] of Object.entries(v)) {
+            if (!excludeKeys.includes(key) && value && value.trim() !== "" && value !== "0") {
+                hasExtraStats = true;
+                const badge = document.createElement('div');
+                badge.className = 'stat-badge';
+                badge.innerHTML = `<strong>${key}:</strong> ${value}`;
+                statsContainer.appendChild(badge);
+            }
+        }
+
+        if (!hasExtraStats) {
+            statsContainer.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">No hay estadísticas adicionales registradas en esta hoja.</span>';
+        }
+    }
+
+    function mostrarError(mensaje) {
+        const errDiv = document.getElementById('error-msg');
+        errDiv.textContent = mensaje;
+        errDiv.style.display = 'block';
     }
 </script>
 
