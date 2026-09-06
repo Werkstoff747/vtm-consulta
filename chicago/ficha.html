@@ -184,6 +184,28 @@
         }
         #error-msg { color: var(--accent-crimson); }
 
+        /* BOTONES FLOTANTES */
+        .floating-btn-container {
+            position: fixed; bottom: 25px; right: 25px;
+            display: flex; flex-direction: column; gap: 12px; z-index: 9999;
+        }
+
+        .floating-action-btn, .scroll-top-btn {
+            width: 45px; height: 45px; border-radius: 50%;
+            background-color: var(--accent-red); color: #fff;
+            border: 1px solid var(--accent-crimson); font-size: 1.1rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5); text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .floating-action-btn:hover, .scroll-top-btn:hover {
+            transform: translateY(-3px); background-color: var(--accent-crimson);
+        }
+
+        .scroll-top-btn { opacity: 0; visibility: hidden; transition: opacity 0.3s; }
+        .scroll-top-btn.show { opacity: 1; visibility: visible; }
+
         footer { text-align: center; padding: 20px; border-top: 1px solid var(--card-border); color: var(--text-muted); font-size: 0.85rem; }
     </style>
 </head>
@@ -204,7 +226,7 @@
             <!-- TOP: IMAGEN Y DATOS BÁSICOS -->
             <div class="sheet-top-grid">
                 <div class="sheet-img-container">
-                    <img id="fImage" src="" alt="Retrato" onerror="this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
+                    <img id="fImage" src="" alt="Retrato" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
                 </div>
                 <div class="sheet-main-info">
                     <div>
@@ -327,6 +349,12 @@
     </footer>
 </div>
 
+<!-- MENÚ FLOTANTE -->
+<div class="floating-btn-container">
+    <a href="https://werkstoff747.github.io/vtm-consulta/chicago/" class="floating-action-btn" title="Ir al Censo de Chicago"><i class="fa-solid fa-house"></i></a>
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir"><i class="fa-solid fa-arrow-up"></i></button>
+</div>
+
 <script>
     // URL de tu hoja de Google Sheets (pestaña Ficha)
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=530703739&single=true&output=csv';
@@ -349,7 +377,7 @@
                 const v = results.data.find(row => String(Number(row["ID"])) === String(Number(targetId)));
 
                 if (v) {
-                    renderFicha(v);
+                    renderFicha(v, targetId);
                 } else {
                     mostrarError("No se ha encontrado ningún registro con el ID #" + targetId);
                 }
@@ -359,9 +387,13 @@
                 mostrarError("Error al conectar con la base de datos de Google Sheets.");
             }
         });
+
+        window.addEventListener('scroll', () => {
+            document.getElementById("scrollTopBtn").classList.toggle("show", window.scrollY > 300);
+        });
     });
 
-    function renderFicha(v) {
+    function renderFicha(v, targetId) {
         document.getElementById('fichaContent').style.display = 'block';
 
         const nombre = v["Nombre_Personaje"] || v["Nombre del Personaje"] || "Desconocido";
@@ -384,9 +416,20 @@
         document.getElementById('fSalud').textContent = v["Salud"] || "-";
         document.getElementById('fVoluntad').textContent = v["Fuerza_de_Voluntad"] || "-";
 
-        // Imagen local
-        const imagenLimpia = nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
-        document.getElementById('fImage').src = `./retratos/${imagenLimpia}`;
+        // Carga de imagen por ID prioritario con respaldo en el nombre formateado
+        const cleanId = String(targetId).trim();
+        const imagenPorId = cleanId ? `${cleanId}.jpg` : '';
+        const imagenPorNombre = nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
+        const imagenLimpia = v["Archivo de Imagen"] || imagenPorId || imagenPorNombre;
+
+        const imgElement = document.getElementById('fImage');
+        imgElement.src = `./retratos/${imagenLimpia}`;
+        imgElement.onerror = function() {
+            this.onerror = function() {
+                this.src = 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';
+            };
+            this.src = `./retratos/${imagenPorNombre}`;
+        };
 
         // Mapeo dinámico de Atributos y Habilidades
         const attrKeys = ["Fuerza", "Destreza", "Resistencia", "Carisma", "Manipulacion", "Compostura", "Inteligencia", "Astucia", "Resolucion"];
@@ -415,6 +458,10 @@
         const errDiv = document.getElementById('error-msg');
         errDiv.textContent = mensaje;
         errDiv.style.display = 'block';
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 
