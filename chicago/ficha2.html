@@ -149,7 +149,7 @@
             letter-spacing: 1px;
         }
 
-        /* CABECERA EXACTA ESTILO IMAGEN 1 */
+        /* CABECERA ESTILO IMAGEN 1 */
         .sheet-top-grid {
             display: grid;
             grid-template-columns: 280px 1fr;
@@ -226,7 +226,7 @@
             word-break: break-word;
         }
 
-        /* ESTADÍSTICAS VITALES (HUMANIDAD Y POTENCIA) */
+        /* ESTADÍSTICAS VITALES (SOLO HUMANIDAD Y POTENCIA ARRIBA) */
         .stats-pools-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -247,35 +247,33 @@
             color: var(--accent-gold);
         }
 
-        /* TRACKERS DE SALUD Y VOLUNTAD */
-        .trackers-grid {
+        /* TRACKERS INTEGRADOS DEBAJO DE ATRIBUTOS (ESTILO OFICIAL V5) */
+        .trackers-under-attr {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 15px;
+            gap: 20px;
+            margin-top: 20px;
+            border-top: 1px dashed var(--card-border);
+            padding-top: 15px;
         }
         @media (max-width: 750px) {
-            .trackers-grid { grid-template-columns: 1fr; }
+            .trackers-under-attr { grid-template-columns: 1fr; }
         }
-        .tracker-box {
-            background: var(--card-notes-bg);
-            border: 1px solid var(--card-border);
-            padding: 12px;
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .tracker-item {
+            text-align: center;
         }
-        .tracker-title {
+        .tracker-label {
             font-family: 'Cinzel', serif;
             font-size: 0.85rem;
             color: var(--accent-gold);
             font-weight: 700;
             text-transform: uppercase;
+            margin-bottom: 6px;
         }
         .tracker-boxes {
             display: flex;
-            gap: 5px;
+            gap: 6px;
+            justify-content: center;
             flex-wrap: wrap;
         }
         .t-box {
@@ -398,7 +396,7 @@
 
     <div id="sheetContent" style="display: none;">
         
-        <!-- CABECERA ESTILO IMAGEN 1 (RETRATO + BIO LATERAL) -->
+        <!-- CABECERA ESTILO IMAGEN 1 -->
         <div class="sheet-section">
             <div class="sheet-top-grid" style="margin-bottom: 0;">
                 <div class="portrait-container">
@@ -436,21 +434,9 @@
                 <div class="pool-card"><span class="info-label">Humanidad</span><div id="valHumanidad" class="pool-num">-</div></div>
                 <div class="pool-card"><span class="info-label">Potencia de Sangre</span><div id="valPotencia" class="pool-num">-</div></div>
             </div>
-
-            <!-- TRACKERS DE SALUD Y VOLUNTAD (BOLITAS V5) -->
-            <div class="trackers-grid">
-                <div class="tracker-box">
-                    <div class="tracker-title">Salud</div>
-                    <div class="tracker-boxes" id="trackSalud"></div>
-                </div>
-                <div class="tracker-box">
-                    <div class="tracker-title">Fuerza de Voluntad</div>
-                    <div class="tracker-boxes" id="trackVoluntad"></div>
-                </div>
-            </div>
         </div>
 
-        <!-- ATRIBUTOS -->
+        <!-- ATRIBUTOS CON SALUD Y VOLUNTAD DEBAJO -->
         <div class="sheet-section">
             <div class="section-title"><i class="fa-solid fa-chart-bar"></i> Atributos</div>
             <div class="three-columns-grid">
@@ -465,6 +451,18 @@
                 <div class="column-group">
                     <h4>Mentales</h4>
                     <div id="attrMentales"></div>
+                </div>
+            </div>
+
+            <!-- SALUD Y FUERZA DE VOLUNTAD INTEGRADOS DEBAJO DE LOS ATRIBUTOS -->
+            <div class="trackers-under-attr">
+                <div class="tracker-item">
+                    <div class="tracker-label">Salud</div>
+                    <div class="tracker-boxes" id="trackSalud"></div>
+                </div>
+                <div class="tracker-item">
+                    <div class="tracker-label">Fuerza de Voluntad</div>
+                    <div class="tracker-boxes" id="trackVoluntad"></div>
                 </div>
             </div>
         </div>
