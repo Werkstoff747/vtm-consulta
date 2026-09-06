@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha de Vástago - Censo de Chicago</title>
 
-    <!-- Google Tag Manager -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0REGNEJC1G"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -13,20 +12,14 @@
       gtag('js', new Date());
       gtag('config', 'G-0REGNEJC1G');
     </script>
-    <!-- End Google Tag Manager -->
-
-    <!-- FAVICON -->
     <link rel="icon" type="image/png" href="./iconos/drRol.png">
     
-    <!-- FUENTES OFICIALES V5 (Cinzel & Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Librería para procesar CSV de Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
@@ -341,7 +334,6 @@
     <div id="loading">Consultando los registros técnicos de la Ficha...</div>
 
     <div id="sheetContent" style="display: none;">
-        <!-- PRINCIPAL: RETRATO Y DATOS BÁSICOS -->
         <div class="sheet-grid">
             <div>
                 <div class="portrait-container">
@@ -360,7 +352,6 @@
             </div>
         </div>
 
-        <!-- LINAJE Y DATOS DE LA FICHA -->
         <div class="sheet-section">
             <div class="section-title">Linaje, Crónica y Estatus</div>
             <div class="basic-info-grid">
@@ -372,7 +363,6 @@
             </div>
         </div>
 
-        <!-- PSIQUE Y CONVICCIONES -->
         <div class="sheet-section">
             <div class="section-title">Psique y Convicciones</div>
             <div class="basic-info-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
@@ -381,7 +371,6 @@
                 <div class="info-box"><div class="info-label">Piedras de Toque</div><div class="info-val" id="valPiedras" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
             </div>
 
-            <!-- SALUD Y FUERZA DE VOLUNTAD (TRACKERS) -->
             <div class="trackers-grid">
                 <div class="tracker-box">
                     <div class="tracker-title">Salud</div>
@@ -394,7 +383,6 @@
             </div>
         </div>
 
-        <!-- ATRIBUTOS -->
         <div class="sheet-section">
             <div class="section-title">Atributos</div>
             <div class="three-columns-grid">
@@ -413,7 +401,6 @@
             </div>
         </div>
 
-        <!-- HABILIDADES -->
         <div class="sheet-section">
             <div class="section-title">Habilidades</div>
             <div class="three-columns-grid">
@@ -432,7 +419,6 @@
             </div>
         </div>
 
-        <!-- DISCIPLINAS Y VENTAJAS -->
         <div class="sheet-section">
             <div class="section-title">Disciplinas y Trasfondo</div>
             <div style="margin-bottom: 12px;">
@@ -445,7 +431,6 @@
             </div>
         </div>
 
-        <!-- SECRETOS (NARRADOR) -->
         <div class="sheet-section">
             <div class="section-title">Registros Ocultos</div>
             <div>
@@ -460,10 +445,9 @@
     </footer>
 </div>
 
-<!-- BOTONES FLOTANTES -->
 <div class="floating-btn-container">
-    <a href="https://werkstoff747.github.io/vtm-consulta/" class="floating-action-btn" title="Ir al Inicio (Herramientas V5)"><i class="fa-solid fa-house"></i></a>
-    <button class="floating-action-btn" onclick="history.back()" title="Volver al Censo"><i class="fa-solid fa-arrow-left"></i></button>
+    <a href="https://werkstoff747.github.io/vtm-consulta/chicago/" class="floating-action-btn" title="Ir al Censo de Chicago"><i class="fa-solid fa-house"></i></a>
+    <button class="floating-action-btn" onclick="history.back()" title="Volver atrás"><i class="fa-solid fa-arrow-left"></i></button>
 </div>
 
 <script>
@@ -500,7 +484,6 @@
         document.getElementById('themeToggleBtn').innerHTML = isLight ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
     }
 
-    // Limpiador automático a prueba de fallos para extraer números limpios
     function renderDots(value, max = 5) {
         const match = String(value || "").trim().match(/\d/);
         let val = match ? parseInt(match[0]) : 0;
@@ -576,7 +559,9 @@
                 const disciplinas = personaje["Disciplinas"] || "No registradas";
                 const ventajas = personaje["Ventajas_y_Defectos"] || "Ninguna";
                 const secretos = personaje["Secretos"] || "Sin registros clasificados.";
-                const imagen = personaje["Archivo de Imagen"] || (nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg");
+                          // Forzamos que la imagen se busque de forma limpia por el ID del vástago (ej: 1.jpg, 2.jpg...)
+                const idImagen = String(targetId).trim();
+                const imagen = personaje["Archivo de Imagen"] || (`${idImagen}.jpg`);
 
                 document.getElementById('sheetContent').style.display = 'block';
                 document.getElementById('pageTitle').textContent = `Ficha de ${nombre}`;
