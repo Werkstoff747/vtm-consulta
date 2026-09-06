@@ -149,7 +149,7 @@
             letter-spacing: 1px;
         }
 
-        /* CABECERA: RETRATO A LA IZQUIERDA Y BIO AL LADO */
+        /* CABECERA EXACTA ESTILO IMAGEN 1 */
         .sheet-top-grid {
             display: grid;
             grid-template-columns: 280px 1fr;
@@ -175,35 +175,79 @@
             object-position: top;
         }
 
-        .basic-info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        .sheet-main-info {
+            display: flex;
+            flex-direction: column;
             gap: 12px;
+        }
+
+        .sheet-name {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            color: var(--card-title-color);
+            font-weight: 700;
+            line-height: 1.1;
+            text-transform: uppercase;
+        }
+
+        .sheet-clan {
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            font-style: italic;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .bio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
         }
 
         .info-box {
             background: var(--card-notes-bg);
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-radius: 6px;
             border: 1px solid var(--card-border);
         }
 
         .info-label {
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--text-muted);
             text-transform: uppercase;
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .info-val {
-            font-size: 1.05rem;
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
+            font-size: 0.95rem;
+            font-weight: 600;
             color: var(--card-title-color);
             word-break: break-word;
         }
 
-        /* TRACKERS DE SALUD Y VOLUNTAD (ESTILO V5) */
+        /* ESTADÍSTICAS VITALES (HUMANIDAD Y POTENCIA) */
+        .stats-pools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .pool-card {
+            background: var(--card-notes-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        .pool-num {
+            font-size: 1.4rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        /* TRACKERS DE SALUD Y VOLUNTAD */
         .trackers-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -347,50 +391,53 @@
     <header>
         <a href="index.html" class="back-link-header"><i class="fa-solid fa-arrow-left"></i> Censo</a>
         <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema"><i class="fa-solid fa-moon"></i></button>
-        <h1 class="cabecera-principal" id="pageTitle">Ficha de Vástago</h1>
+        <h1 class="cabecera-principal">Ficha Técnica Oficial V5</h1>
     </header>
 
-    <div id="loading">Consultando los registros técnicos de la Ficha...</div>
+    <div id="loading">Consultando Archivos de la Camarilla...</div>
 
     <div id="sheetContent" style="display: none;">
         
-        <!-- CABECERA: RETRATO + BIO COMPLETA -->
-        <div class="sheet-top-grid">
-            <div class="portrait-container">
-                <img id="valImg" src="" alt="Retrato del Vástago" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
-            </div>
-            <div>
-                <div class="sheet-section" style="margin-bottom: 0; height: 100%;">
-                    <div class="section-title">Expediente Oficial</div>
-                    <div class="basic-info-grid" style="grid-template-columns: 1fr;">
-                        <div class="info-box"><div class="info-label">Nombre del Personaje</div><div class="info-val" id="valNombre">-</div></div>
-                        <div class="info-box"><div class="info-label">Clan</div><div class="info-val" id="valClan">-</div></div>
-                        <div class="info-box"><div class="info-label">Apodo o Rango</div><div class="info-val" id="valApodo">-</div></div>
+        <!-- CABECERA ESTILO IMAGEN 1 (RETRATO + BIO LATERAL) -->
+        <div class="sheet-section">
+            <div class="sheet-top-grid" style="margin-bottom: 0;">
+                <div class="portrait-container">
+                    <img id="valImg" src="" alt="Retrato" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
+                </div>
+                <div class="sheet-main-info">
+                    <div>
+                        <div id="valNombre" class="sheet-name">Cargando...</div>
+                        <div id="valClan" class="sheet-clan">Clan</div>
+                    </div>
+
+                    <div class="bio-grid">
+                        <div class="info-box"><div class="info-label">Apodo / Rango</div><div class="info-val" id="valApodo">-</div></div>
+                        <div class="info-box"><div class="info-label">Sire</div><div class="info-val" id="valSire">-</div></div>
+                        <div class="info-box"><div class="info-label">Abrazo</div><div class="info-val" id="valAbrazo">-</div></div>
+                        <div class="info-box"><div class="info-label">Generación</div><div class="info-val" id="valGeneracion">-</div></div>
+                    </div>
+
+                    <div class="bio-grid">
+                        <div class="info-box"><div class="info-label">Ambición</div><div class="info-val" id="valAmbicion">-</div></div>
+                        <div class="info-box"><div class="info-label">Convicciones</div><div class="info-val" id="valConvicciones">-</div></div>
+                    </div>
+
+                    <div class="bio-grid">
+                        <div class="info-box" style="grid-column: span 2;"><div class="info-label">Piedras de Toque</div><div class="info-val" id="valPiedras">-</div></div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- ESTADÍSTICAS VITALES (HUMANIDAD Y POTENCIA) -->
         <div class="sheet-section">
-            <div class="section-title">Linaje, Crónica y Estatus</div>
-            <div class="basic-info-grid">
-                <div class="info-box"><div class="info-label">Sire / Creador</div><div class="info-val" id="valSire">-</div></div>
-                <div class="info-box"><div class="info-label">Abrazo</div><div class="info-val" id="valAbrazo">-</div></div>
-                <div class="info-box"><div class="info-label">Generación</div><div class="info-val" id="valGeneracion">-</div></div>
-                <div class="info-box"><div class="info-label">Potencia de Sangre</div><div class="info-val" id="valPotencia">-</div></div>
-                <div class="info-box"><div class="info-label">Humanidad</div><div class="info-val" id="valHumanidad">-</div></div>
-            </div>
-        </div>
-
-        <div class="sheet-section">
-            <div class="section-title">Psique y Convicciones</div>
-            <div class="basic-info-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
-                <div class="info-box"><div class="info-label">Ambición</div><div class="info-val" id="valAmbicion" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
-                <div class="info-box"><div class="info-label">Convicciones</div><div class="info-val" id="valConvicciones" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
-                <div class="info-box" style="grid-column: span 2;"><div class="info-label">Piedras de Toque</div><div class="info-val" id="valPiedras" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
+            <div class="section-title"><i class="fa-solid fa-heart-pulse"></i> Estadísticas Vitales</div>
+            <div class="stats-pools-grid">
+                <div class="pool-card"><span class="info-label">Humanidad</span><div id="valHumanidad" class="pool-num">-</div></div>
+                <div class="pool-card"><span class="info-label">Potencia de Sangre</span><div id="valPotencia" class="pool-num">-</div></div>
             </div>
 
-            <!-- TRACKERS ESTILO V5 (SALUD Y VOLUNTAD) -->
+            <!-- TRACKERS DE SALUD Y VOLUNTAD (BOLITAS V5) -->
             <div class="trackers-grid">
                 <div class="tracker-box">
                     <div class="tracker-title">Salud</div>
@@ -403,8 +450,9 @@
             </div>
         </div>
 
+        <!-- ATRIBUTOS -->
         <div class="sheet-section">
-            <div class="section-title">Atributos</div>
+            <div class="section-title"><i class="fa-solid fa-chart-bar"></i> Atributos</div>
             <div class="three-columns-grid">
                 <div class="column-group">
                     <h4>Físicos</h4>
@@ -421,8 +469,9 @@
             </div>
         </div>
 
+        <!-- HABILIDADES -->
         <div class="sheet-section">
-            <div class="section-title">Habilidades</div>
+            <div class="section-title"><i class="fa-solid fa-list-check"></i> Habilidades</div>
             <div class="three-columns-grid">
                 <div class="column-group">
                     <h4>Físicas / Técnicas</h4>
@@ -439,8 +488,9 @@
             </div>
         </div>
 
+        <!-- DISCIPLINAS Y VENTAJAS -->
         <div class="sheet-section">
-            <div class="section-title">Disciplinas y Trasfondo</div>
+            <div class="section-title"><i class="fa-solid fa-bolt"></i> Disciplinas y Trasfondos</div>
             <div style="margin-bottom: 12px;">
                 <strong style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 0.85rem;">Disciplinas:</strong>
                 <p id="valDisciplinas" style="margin-top: 4px; font-size: 0.95rem;">-</p>
@@ -451,17 +501,18 @@
             </div>
         </div>
 
+        <!-- SECRETOS -->
         <div class="sheet-section">
-            <div class="section-title">Registros Ocultos</div>
+            <div class="section-title"><i class="fa-solid fa-user-secret"></i> Registros Ocultos</div>
             <div>
-                <strong style="color: var(--accent-red); font-family: 'Cinzel', serif; font-size: 0.85rem; text-transform: uppercase;"><i class="fa-solid fa-lock"></i> Secretos (Narrador):</strong>
+                <strong style="color: var(--accent-red); font-family: 'Cinzel', serif; font-size: 0.85rem; text-transform: uppercase;">Notas y Secretos del Narrador:</strong>
                 <div class="card-notes" id="valSecretos">Sin registros clasificados.</div>
             </div>
         </div>
     </div>
 
     <footer>
-        Censo de Chicago — Herramienta de Rol no oficial bajo licencia Dark Pack
+        Censo de Chicago — Vampiro: La Mascarada 5ª Edición
     </footer>
 </div>
 
@@ -581,7 +632,6 @@
                 const ventajas = personaje["Ventajas_y_Defectos"] || "Ninguna";
                 const secretos = personaje["Secretos"] || "Sin registros clasificados.";
 
-                // Imagen prioritaria por columna o por nombre formateado con anti-caché
                 let nombreImagen = personaje["Archivo de Imagen"] ? String(personaje["Archivo de Imagen"]).trim() : "";
                 if (!nombreImagen || nombreImagen === "") {
                     const nombreLimpioImg = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_");
@@ -589,18 +639,17 @@
                 }
 
                 document.getElementById('sheetContent').style.display = 'block';
-                document.getElementById('pageTitle').textContent = `Ficha de ${nombre}`;
 
                 document.getElementById('valNombre').textContent = nombre;
                 document.getElementById('valClan').textContent = clan;
                 document.getElementById('valApodo').textContent = apodo;
                 document.getElementById('valSire').textContent = sire;
                 document.getElementById('valAbrazo').textContent = abrazo;
+                document.getElementById('valGeneracion').textContent = generacion;
                 document.getElementById('valAmbicion').textContent = ambicion;
                 document.getElementById('valConvicciones').textContent = convicciones;
                 document.getElementById('valPiedras').textContent = piedras;
                 document.getElementById('valHumanidad').textContent = humanidad;
-                document.getElementById('valGeneracion').textContent = generacion;
                 document.getElementById('valPotencia').textContent = potencia;
 
                 document.getElementById('valDisciplinas').textContent = disciplinas;
