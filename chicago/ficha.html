@@ -260,7 +260,7 @@
                 <div class="pool-card"><span class="info-label">Fuerza de Voluntad</span><div id="fVoluntad" class="pool-num">-</div></div>
             </div>
 
-            <!-- ATRIBUTOS Y HABILIDADES (3 COLUMNAS: FÍSICOS, SOCIALES, MENTALES) -->
+            <!-- ATRIBUTOS Y HABILIDADES -->
             <div class="section-title"><i class="fa-solid fa-chart-bar"></i> Atributos y Habilidades</div>
             <div class="attributes-skills-layout">
                 
@@ -373,8 +373,16 @@
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
                 
-                // Buscamos la fila cuyo ID coincida exactamente
-                const v = results.data.find(row => String(Number(row["ID"])) === String(Number(targetId)));
+                // Búsqueda inteligente tolerante a cabeceras fusionadas en el CSV
+                const v = results.data.find(row => {
+                    for (let key in row) {
+                        if (key.toLowerCase().includes('id')) {
+                            const val = String(row[key] || "").trim();
+                            if (val === String(targetId).trim()) return true;
+                        }
+                    }
+                    return false;
+                });
 
                 if (v) {
                     renderFicha(v);
@@ -393,47 +401,58 @@
         });
     });
 
+    // Función auxiliar para buscar valores en el objeto ignorando variaciones de nombres de columnas
+    function getVal(v, possibleKeys) {
+        for (let prop in v) {
+            const cleanProp = prop.toLowerCase().replace(/[^a-z0-9]/g, '');
+            for (let pk of possibleKeys) {
+                if (cleanProp.includes(pk.toLowerCase().replace(/[^a-z0-9]/g, ''))) {
+                    return v[prop];
+                }
+            }
+        }
+        return "";
+    }
+
     function renderFicha(v) {
         document.getElementById('fichaContent').style.display = 'block';
 
-        const nombre = v["Nombre_Personaje"] || v["Nombre del Personaje"] || "Desconocido";
-        const clan = v["Clan"] || "Desconocido";
+        const nombre = getVal(v, ["Nombre_Personaje", "Nombre del Personaje", "Nombre"]) || "Desconocido";
+        const clan = getVal(v, ["Clan"]) || "Desconocido";
         
         // Datos básicos
         document.getElementById('fName').textContent = nombre;
         document.getElementById('fClan').textContent = clan;
-        document.getElementById('fApodo').textContent = v["Apodo_o_Rango"] || "-";
-        document.getElementById('fSire').textContent = v["Sire"] || "-";
-        document.getElementById('fAbrazo').textContent = v["Abrazo"] || "-";
-        document.getElementById('fGeneracion').textContent = v["Generacion"] || "-";
-        document.getElementById('fAmbicion').textContent = v["Ambicion"] || "-";
-        document.getElementById('fConvicciones').textContent = v["Convicciones"] || "-";
-        document.getElementById('fPiedras').textContent = v["Piedras_de_Toque"] || "-";
+        document.getElementById('fApodo').textContent = getVal(v, ["Apodo_o_Rango", "Rango", "Título"]) || "-";
+        document.getElementById('fSire').textContent = getVal(v, ["Sire"]) || "-";
+        document.getElementById('fAbrazo').textContent = getVal(v, ["Abrazo"]) || "-";
+        document.getElementById('fGeneracion').textContent = getVal(v, ["Generacion"]) || "-";
+        document.getElementById('fAmbicion').textContent = getVal(v, ["Ambicion"]) || "-";
+        document.getElementById('fConvicciones').textContent = getVal(v, ["Convicciones"]) || "-";
+        document.getElementById('fPiedras').textContent = getVal(v, ["Piedras_de_Toque"]) || "-";
 
         // Estadísticas vitales
-        document.getElementById('fHumanidad').textContent = v["Humanidad"] || "-";
-        document.getElementById('fPotencia').textContent = v["Potencia_de_Sangre"] || "-";
-        document.getElementById('fSalud').textContent = v["Salud"] || "-";
-        document.getElementById('fVoluntad').textContent = v["Fuerza_de_Voluntad"] || "-";
+        document.getElementById('fHumanidad').textContent = getVal(v, ["Humanidad"]) || "-";
+        document.getElementById('fPotencia').textContent = getVal(v, ["Potencia_de_Sangre"]) || "-";
+        document.getElementById('fSalud').textContent = getVal(v, ["Salud"]) || "-";
+        document.getElementById('fVoluntad').textContent = getVal(v, ["Fuerza_de_Voluntad"]) || "-";
 
-        // Resolución de imagen idéntica al censo (index.html): revisa la hoja o usa el nombre formateado
-        const imagenPorNombre = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_") + ".jpg";
-        const imagenLimpia = (v["Archivo de Imagen"] && v["Archivo de Imagen"].trim() !== "") ? v["Archivo de Imagen"].trim() : imagenPorNombre;
-
+        // Resolución de imagen por nombre formateado (ej: Bennet_Steadman.jpg)
+        const nombreArchivoSeguro = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_") + ".jpg";
         const imgElement = document.getElementById('fImage');
-        imgElement.src = `./retratos/${imagenLimpia}`;
+        imgElement.src = `./retratos/${nombreArchivoSeguro}`;
         imgElement.onerror = function() {
             this.onerror = function() {
                 this.src = 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';
             };
-            this.src = `./retratos/${imagenPorNombre}`;
+            this.src = `./retratos/${nombreArchivoSeguro}`;
         };
 
         // Mapeo dinámico de Atributos y Habilidades
         const attrKeys = ["Fuerza", "Destreza", "Resistencia", "Carisma", "Manipulacion", "Compostura", "Inteligencia", "Astucia", "Resolucion"];
         attrKeys.forEach(key => {
             const el = document.getElementById(`attr_${key}`);
-            if (el) el.textContent = v[`Atributo_${key}`] || "0";
+            if (el) el.textContent = getVal(v, [`Atributo_${key}`, key]) || "0";
         });
 
         const habKeys = [
@@ -443,13 +462,13 @@
         ];
         habKeys.forEach(key => {
             const el = document.getElementById(`hab_${key}`);
-            if (el) el.textContent = v[`Hab_${key}`] || "0";
+            if (el) el.textContent = getVal(v, [`Hab_${key}`, key]) || "0";
         });
 
         // Extras y Secretos
-        document.getElementById('fDisciplinas').textContent = v["Disciplinas"] || "Ninguna registrada.";
-        document.getElementById('fVentajas').textContent = v["Ventajas_y_Defectos"] || "Ninguna registrada.";
-        document.getElementById('fSecretos').textContent = v["Secretos"] || "No hay secretos registrados.";
+        document.getElementById('fDisciplinas').textContent = getVal(v, ["Disciplinas"]) || "Ninguna registrada.";
+        document.getElementById('fVentajas').textContent = getVal(v, ["Ventajas_y_Defectos"]) || "Ninguna registrada.";
+        document.getElementById('fSecretos').textContent = getVal(v, ["Secretos"]) || "No hay secretos registrados.";
     }
 
     function mostrarError(mensaje) {
