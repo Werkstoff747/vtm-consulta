@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compendio y Herramientas - Vampiro: La Mascarada V5</title>
+    <title>Portal de Herramientas y Compendios - Vampiro: La Mascarada V5</title>
 
     <!-- Google Tag Manager -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0REGNEJC1G"></script>
@@ -23,10 +23,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
 
+    <!-- Librería PapaParse para leer la pestaña Index del Google Sheet -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
     <style>
         /* =========================================================
-           VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
-           ========================================================= */
+            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
+            ========================================================= */
 
         /* MODO NOCHE / OSCURO (Predeterminado - "Medianoche Vampírica") */
         :root {
@@ -42,6 +45,9 @@
             --header-border: #8b0000;
             --card-title-color: #ffffff;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
+            --badge-note-bg: rgba(197, 160, 89, 0.15);
+            --badge-note-border: rgba(197, 160, 89, 0.4);
+            --badge-note-text: #c5a059;
         }
 
         /* MODO DÍA / CLARO ("Gris Pizarra / Pergamino Neutro") */
@@ -58,11 +64,14 @@
             --header-border: #7a0000;
             --card-title-color: #111115;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
+            --badge-note-bg: rgba(141, 103, 34, 0.12);
+            --badge-note-border: rgba(141, 103, 34, 0.35);
+            --badge-note-text: #8d6722;
         }
 
         /* =========================================================
-           ESTILOS GENERALES Y ESTRUCTURA
-           ========================================================= */
+            ESTILOS GENERALES Y ESTRUCTURA
+            ========================================================= */
 
         * {
             box-sizing: border-box;
@@ -90,8 +99,8 @@
         }
 
         /* =========================================================
-           CABECERA
-           ========================================================= */
+            CABECERA
+            ========================================================= */
 
         header {
             position: relative;
@@ -173,8 +182,8 @@
         }
 
         /* =========================================================
-           HUB / TARJETAS DE ACCESO
-           ========================================================= */
+            HUB / TARJETAS DINÁMICAS DESDE GOOGLE SHEETS
+            ========================================================= */
 
         .hub-grid {
             display: grid;
@@ -254,9 +263,34 @@
             line-height: 1.5;
         }
 
+        /* BADGE DE NOTA DORADA (Ej: "En construcción") */
+        .hub-badge-note {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--badge-note-bg);
+            border: 1px solid var(--badge-note-border);
+            color: var(--badge-note-text);
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        #loading {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            padding: 40px;
+            font-family: 'Cinzel', serif;
+        }
+
         /* =========================================================
-           FOOTER Y LICENCIA DARK PACK
-           ========================================================= */
+            FOOTER Y LICENCIA DARK PACK
+            ========================================================= */
 
         footer {
             text-align: center;
@@ -266,8 +300,8 @@
         }
 
         /* =========================================================
-           BOTONES FLOTANTES INFERIORES
-           ========================================================= */
+            BOTÓN FLOTANTE INFERIOR
+            ========================================================= */
         .floating-btn-container {
             position: fixed;
             bottom: 25px;
@@ -296,7 +330,7 @@
         }
 
         .scroll-top-btn {
-            display: none; /* Se muestra con JS al hacer scroll */
+            display: none;
         }
 
         .floating-action-btn:hover, .scroll-top-btn:hover {
@@ -325,36 +359,10 @@
         </div>
     </header>
 
-    <!-- HUB DE NAVEGACIÓN -->
-    <div class="hub-grid">
-        <!-- Enlace a Disciplinas -->
-        <a href="disciplinas.html" class="hub-card">
-            <img src="./iconos/disciplinas_logo.png" class="hub-icon" alt="Disciplinas">
-            <div class="hub-title">Compendio de Disciplinas</div>
-            <div class="hub-desc">Accede al grimorio completo de poderes, rituales y ceremonias de la 5ª Edición con filtros avanzados y buscador.</div>
-        </a>
+    <div id="loading">Cargando secciones desde Google Sheets...</div>
 
-        <!-- Enlace a Clanes -->
-        <a href="clanes.html" class="hub-card">
-            <img src="./iconos/clanes_logo.png" class="hub-icon" alt="Clanes">
-            <div class="hub-title">Compendio de Clanes</div>
-            <div class="hub-desc">Consulta los clanes de la Camarilla, Anarquistas y Hecata, con sus respectivas disciplinas y perdiciones.</div>
-        </a>
-
-        <!-- Enlace a Tirador de Dados -->
-        <a href="dadosv5.html" class="hub-card">
-            <img src="./iconos/dados_logo.png" class="hub-icon" alt="Dados V5">
-            <div class="hub-title">Tirador de Dados V5</div>
-            <div class="hub-desc">Simulador oficial de dados de Vampiro V5 con cálculo automático de éxitos, ansia y críticos.</div>
-        </a>
-
-        <!-- Enlace a Cartas / Impresión -->
-        <a href="cartas.html" class="hub-card">
-            <img src="./iconos/cartas_logo.png" class="hub-icon" alt="Generador de Cartas">
-            <div class="hub-title">Generador de Cartas</div>
-            <div class="hub-desc">Herramienta de diseño y preparación de cartas imprimibles para tus sesiones de juego presenciales.</div>
-        </a>
-    </div>
+    <!-- HUB DE NAVEGACIÓN DINÁMICO -->
+    <div id="hubGrid" class="hub-grid"></div>
 
     <footer>
         <!-- BLOQUE SUPERIOR: LOGO Y TEXTOS PRINCIPALES (TODO CENTRADO) -->
@@ -393,7 +401,7 @@
     </footer>
 </div>
 
-<!-- BOTÓN FLOTANTE INFERIOR (Solo Subir Arriba en Index) -->
+<!-- BOTÓN FLOTANTE INFERIOR -->
 <div class="floating-btn-container">
     <a href="https://werkstoff747.github.io/rolkit/index.html" class="floating-action-btn" title="Volver al RolKit (Hub Principal)">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" style="vertical-align: middle;">
@@ -404,6 +412,9 @@
 </div>
 
 <script>
+    // URL apuntando a tu Pestaña "Index" en Google Sheets (Cámbiala si tu gid de la pestaña Index es distinto)
+    const CSV_INDEX_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=TU_GID_DE_INDEX&single=true&output=csv';
+
     function initTheme() {
         const savedTheme = localStorage.getItem('vtm-theme');
         const themeBtn = document.getElementById('themeToggleBtn');
@@ -430,24 +441,77 @@
         }
     }
 
-    window.addEventListener('scroll', () => {
-        const btn = document.getElementById('scrollTopBtn');
-        if (btn) {
+    window.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+
+        // Lectura de la pestaña Index desde Google Sheets con PapaParse
+        Papa.parse(CSV_INDEX_URL, {
+            download: true,
+            header: false,
+            skipEmptyLines: true,
+            complete: function(results) {
+                document.getElementById('loading').style.display = 'none';
+                const filas = results.data;
+                
+                // Mapeo según tus columnas: Logo | TITULO | Descripción | NOTA | Enlace
+                const datosIndex = filas.slice(1).map(row => {
+                    return {
+                        logo: (row[0] || '').trim(),
+                        titulo: (row[1] || '').trim(),
+                        descripcion: (row[2] || '').trim(),
+                        nota: (row[3] || '').trim(),
+                        enlace: (row[4] || '').trim()
+                    };
+                }).filter(item => item.titulo && item.titulo.toLowerCase() !== 'titulo');
+
+                renderizarHub(datosIndex);
+            },
+            error: function(err) {
+                document.getElementById('loading').textContent = "Error al cargar el índice desde Google Sheets.";
+                console.error(err);
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTopBtn');
             if (window.scrollY > 300) {
                 btn.style.display = 'flex';
             } else {
                 btn.style.display = 'none';
             }
-        }
+        });
     });
+
+    function renderizarHub(datos) {
+        const grid = document.getElementById('hubGrid');
+        grid.innerHTML = '';
+
+        datos.forEach(item => {
+            const card = document.createElement('a');
+            card.href = item.enlace || '#';
+            card.className = 'hub-card';
+
+            let noteBadgeHTML = '';
+            if (item.nota && item.nota !== '-' && item.nota.toLowerCase() !== 'n/a') {
+                noteBadgeHTML = `<div class="hub-badge-note">${item.nota}</div>`;
+            }
+
+            const logoSrc = item.logo ? `./iconos/${item.logo}` : './iconos/VTM-Ank.png';
+
+            card.innerHTML = `
+                ${noteBadgeHTML}
+                <img src="${logoSrc}" class="hub-icon" alt="${item.titulo}" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
+                <div class="hub-title">${item.titulo}</div>
+                <div class="hub-desc">${item.descripcion}</div>
+            `;
+
+            grid.appendChild(card);
+        });
+    }
 
     function scrollToTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        initTheme();
-    });
 </script>
 
 </body>
