@@ -131,35 +131,70 @@
             text-transform: uppercase;
         }
 
+        /* NUEVA DISTRIBUCIÓN DE CONTROLES (3/4 y Botones) */
         .controls {
             background: var(--card-bg);
-            padding: 20px;
+            padding: 15px 20px;
             border-radius: 8px;
             border: 1px solid var(--card-border);
             margin-bottom: 20px;
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .controls-row {
-            display: flex;
+            align-items: center;
+            justify-content: space-between;
             gap: 15px;
             flex-wrap: wrap;
         }
 
-        .search-box { flex: 1; min-width: 250px; }
-        .filter-box { min-width: 200px; }
+        .controls-main-group {
+            display: flex;
+            gap: 15px;
+            flex: 3; /* Ocupa la mayor parte (3/4 aprox) */
+            min-width: 280px;
+            flex-wrap: wrap;
+        }
+
+        .controls-actions-group {
+            display: flex;
+            gap: 10px;
+            flex: 1; /* Ocupa el resto para los dos botones */
+            min-width: 220px;
+            justify-content: flex-end;
+        }
+
+        .search-box { flex: 2; min-width: 180px; }
+        .filter-box { flex: 1; min-width: 140px; }
 
         .search-box input, .filter-box select {
             width: 100%;
-            padding: 10px 15px;
+            padding: 9px 12px;
             background-color: var(--input-bg);
             border: 1px solid var(--card-border);
             border-radius: 6px;
             color: var(--text-main);
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
+        }
+
+        .action-control-btn {
+            background: var(--tag-bg);
+            border: 1px solid var(--card-border);
+            color: var(--accent-gold);
+            padding: 9px 14px;
+            border-radius: 6px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .action-control-btn:hover {
+            background: rgba(197, 160, 89, 0.15);
+            border-color: var(--accent-gold);
         }
 
         .results-counter {
@@ -216,7 +251,7 @@
             z-index: 10;
         }
 
-        /* ETIQUETAS DE ESTATUS DINÁMICAS SEGÚN TUS COLORES */
+        /* ETIQUETAS DE ESTATUS */
         .estatus-badge {
             position: absolute;
             top: 10px; right: 12px;
@@ -226,19 +261,16 @@
             border-radius: 4px;
             z-index: 10;
         }
-        /* Interactuado: Verde */
         .estatus-interactuado {
             background: rgba(46, 160, 67, 0.2);
             color: #3fb950;
             border: 1px solid rgba(46, 160, 67, 0.4);
         }
-        /* Conocido de Oídas: Verde muy clarito / sutil */
         .estatus-oidas {
             background: rgba(46, 160, 67, 0.08);
             color: #85e89d;
             border: 1px solid rgba(46, 160, 67, 0.2);
         }
-        /* Rumor: Gris */
         .estatus-rumor {
             background: rgba(110, 118, 129, 0.2);
             color: #8b949e;
@@ -298,7 +330,6 @@
             font-weight: 600;
         }
 
-        /* Cargo oficial adaptado justo encima de ocupación */
         .cargo-block {
             background: rgba(197, 160, 89, 0.12);
             border: 1px solid rgba(197, 160, 89, 0.35);
@@ -382,24 +413,35 @@
         .scroll-top-btn.show { opacity: 1; visibility: visible; }
         .floating-action-btn.narrator-active { border-color: var(--accent-gold); box-shadow: 0 0 10px var(--accent-gold); }
 
-        /* MODAL */
+        /* MODALES GENERALES */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.8); display: none; align-items: center; justify-content: center; z-index: 10000;
         }
         .modal-content {
             background: var(--card-bg); border: 2px solid var(--accent-gold);
-            padding: 30px; border-radius: 10px; width: 90%; max-width: 400px; text-align: center;
+            padding: 30px; border-radius: 10px; width: 90%; max-width: 450px; text-align: center;
         }
         .modal-content h3 { font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 15px; }
         .modal-content input {
             width: 100%; padding: 10px; background: var(--input-bg);
             border: 1px solid var(--card-border); color: var(--text-main); border-radius: 5px; text-align: center; margin-bottom: 15px; outline: none;
         }
-        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
         .modal-btn { padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; border: none; }
         .modal-btn-confirm { background: var(--accent-red); color: #fff; border: 1px solid var(--accent-crimson); }
         .modal-btn-cancel { background: var(--tag-bg); color: var(--text-muted); border: 1px solid var(--card-border); }
+
+        /* ESTILOS ESPECÍFICOS PARA EL ORGANIGRAMA Y EL README MODAL */
+        .modal-large { max-width: 700px; text-align: left; max-height: 85vh; overflow-y: auto; }
+        .org-chart { display: flex; flex-direction: column; gap: 15px; align-items: center; padding: 10px 0; }
+        .org-level { display: flex; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap; }
+        .org-node { background: var(--tag-bg); border: 1px solid var(--accent-gold); padding: 8px 12px; border-radius: 6px; text-align: center; font-size: 0.85rem; font-family: 'Cinzel', serif; color: var(--text-main); min-width: 140px; }
+        .org-node.prince { background: rgba(197, 160, 89, 0.2); border-width: 2px; }
+        .org-node.primogen { background: rgba(139, 0, 0, 0.2); border-color: var(--accent-crimson); }
+        .markdown-viewer { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+        .markdown-viewer h4 { color: var(--accent-gold); font-family: 'Cinzel', serif; margin: 12px 0 6px 0; }
+        .markdown-viewer ul { padding-left: 20px; margin-bottom: 10px; }
 
         footer { text-align: center; padding: 30px 20px; border-top: 1px solid var(--card-border); margin-top: 50px; }
     </style>
@@ -417,10 +459,11 @@
         </div>
     </header>
 
+    <!-- BARRA DE CONTROLES REDUCIDA CON 3/4 Y BOTONES -->
     <div class="controls">
-        <div class="controls-row">
+        <div class="controls-main-group">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar por ID (#), nombre, clan, ocupación, ubicación..." oninput="applyFilters()">
+                <input type="text" id="searchInput" placeholder="Buscar por ID (#), nombre, clan, ocupación..." oninput="applyFilters()">
             </div>
             <div class="filter-box">
                 <select id="factionFilter" onchange="applyFilters()">
@@ -431,6 +474,10 @@
                     <option value="Hecata">Hecata</option>
                 </select>
             </div>
+        </div>
+        <div class="controls-actions-group">
+            <button class="action-control-btn" onclick="abrirModalPoder()"><i class="fa-solid fa-sitemap"></i> Poder</button>
+            <button class="action-control-btn" onclick="abrirModalReadme()"><i class="fa-solid fa-book-open"></i> Guía</button>
         </div>
     </div>
 
@@ -451,7 +498,7 @@
     </footer>
 </div>
 
-<!-- MODAL CONTRASEÑA -->
+<!-- MODAL CONTRASEÑA NARRADOR -->
 <div id="narratorModal" class="modal-overlay">
     <div class="modal-content">
         <h3>Acceso de Narrador</h3>
@@ -460,6 +507,53 @@
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-confirm" onclick="verificarPassword()">Desbloquear</button>
             <button class="modal-btn modal-btn-cancel" onclick="cerrarModalNarrador()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ESTRUCTURA DE PODER (ORGANIGRAMA) -->
+<div id="powerModal" class="modal-overlay">
+    <div class="modal-content modal-large">
+        <h3>Estructura de Poder de Chicago</h3>
+        <div class="org-chart">
+            <!-- Nivel Supremo -->
+            <div class="org-node prince">👑 Príncipe de Chicago</div>
+            <div style="color: var(--accent-gold); font-size: 0.8rem;">↓</div>
+            <!-- Nivel Ejecutivo -->
+            <div class="org-level">
+                <div class="org-node">📜 Senescal</div>
+                <div class="org-node">⚔️ Sheriff</div>
+                <div class="org-node">⚖️ Primogenitura / Jueces</div>
+            </div>
+            <div style="color: var(--accent-gold); font-size: 0.8rem;">↓</div>
+            <!-- Nivel Primogénitos -->
+            <div class="org-node primogen">🏛️ Primogénitos de Clanes (Brujah, Malkavian, Toreador, Ventrue, etc.)</div>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalPoder()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL GUÍA / README -->
+<div id="readmeModal" class="modal-overlay">
+    <div class="modal-content modal-large">
+        <h3>Guía del Censo (Funcionamiento)</h3>
+        <div class="markdown-viewer">
+            <h4>Funcionamiento del Directorio</h4>
+            <p>Este censo simula el flujo de información de la Camarilla en Chicago. Los datos se actualizan en tiempo real desde Google Sheets.</p>
+            <h4>Niveles de Estatus y Visibilidad</h4>
+            <ul>
+                <li><strong>Interactuado:</strong> Ficha completa disponible, retrato real y ubicación visible (Etiqueta verde).</li>
+                <li><strong>Conocido de Oídas:</strong> Referencias generales, silueta misteriosa en lugar de foto y ubicación oculta (Etiqueta verde sutil).</li>
+                <li><strong>Rumor:</strong> Nivel mínimo de corrillo callejero; solo se muestra el nombre en una tarjeta minimalista (Etiqueta gris).</li>
+                <li><strong>Oculto / Desconocido:</strong> Información clasificada o fuera de radar (La tarjeta no se muestra a los jugadores).</li>
+            </ul>
+            <h4>Modo Narrador</h4>
+            <p>Pulsa la llave flotante e introduce la clave del Narrator para desbloquear la visión absoluta de todos los secretos y personajes ocultos.</p>
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalReadme()">Cerrar</button>
         </div>
     </div>
 </div>
@@ -492,39 +586,24 @@
 
     window.verificarPassword = async function() {
         const passIngresada = document.getElementById('narratorPasswordInput').value.trim();
-        
-        if (!passIngresada) {
-            alert("Por favor, introduce una contraseña.");
-            return;
-        }
+        if (!passIngresada) { alert("Por favor, introduce una contraseña."); return; }
 
         try {
             const passwordRef = ref(db, 'password_narrador');
             const snapshot = await get(passwordRef);
-
             if (snapshot.exists()) {
                 const passReal = snapshot.val();
-
                 if (passIngresada === passReal) {
                     document.body.classList.add('narrator-mode');
                     localStorage.setItem('vtm-narrator-mode', 'true');
-                    
                     const btnNarrator = document.getElementById('narratorToggleBtn');
                     btnNarrator.classList.add('narrator-active');
                     btnNarrator.title = "Modo Narrador Activo";
                     btnNarrator.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i>';
-                    
                     cerrarModalNarrador();
-                } else {
-                    alert("Contraseña incorrecta. Acceso denegado.");
-                }
-            } else {
-                alert("Error: No se encuentra 'password_narrador' en Firebase.");
-            }
-        } catch (error) {
-            console.error("Error al verificar la contraseña en Firebase:", error);
-            alert("Error de conexión con la base de datos.");
-        }
+                } else { alert("Contraseña incorrecta. Acceso denegado."); }
+            } else { alert("Error: No se encuentra 'password_narrador' en Firebase."); }
+        } catch (error) { console.error("Error:", error); alert("Error de conexión con la base de datos."); }
     };
 </script>
 
@@ -596,10 +675,13 @@
         document.getElementById('narratorPasswordInput').value = '';
         document.getElementById('narratorPasswordInput').focus();
     }
+    function cerrarModalNarrador() { document.getElementById('narratorModal').style.display = 'none'; }
 
-    function cerrarModalNarrador() {
-        document.getElementById('narratorModal').style.display = 'none';
-    }
+    /* Control de Modales Nuevos (Poder y Readme) */
+    function abrirModalPoder() { document.getElementById('powerModal').style.display = 'flex'; }
+    function cerrarModalPoder() { document.getElementById('powerModal').style.display = 'none'; }
+    function abrirModalReadme() { document.getElementById('readmeModal').style.display = 'flex'; }
+    function cerrarModalReadme() { document.getElementById('readmeModal').style.display = 'none'; }
 
     document.addEventListener("DOMContentLoaded", () => {
         const passInput = document.getElementById('narratorPasswordInput');
@@ -658,19 +740,22 @@
 
             const tieneCargoReal = cargoOficial && cargoOficial.trim() !== "" && cargoOficial.trim() !== "-";
 
-            // Si está Oculto / Desconocido y NO es narrador, se oculta por completo
             if (!esNarrator && (estatus.toLowerCase().includes("oculto") || estatus.toLowerCase().includes("desconocido"))) {
                 return; 
             }
 
-            // Asignar clase de color según el estatus
             let estatusClase = "estatus-interactuado";
             const estatusLower = estatus.toLowerCase();
-            if (estatusLower.includes("oídas") || estatusLower.includes("oidas")) {
+            const esConocidoOidas = estatusLower.includes("oídas") || estatusLower.includes("oidas");
+
+            if (esConocidoOidas) {
                 estatusClase = "estatus-oidas";
             } else if (estatusLower.includes("rumor")) {
                 estatusClase = "estatus-rumor";
             }
+
+            const ubicacionMostrada = esConocidoOidas ? "Dominio desconocido" : ubicacion;
+            const imagenMostrada = esConocidoOidas ? "./retratos/silueta.jpg" : `./retratos/${imagenLimpia}`;
 
             const card = document.createElement('div');
             card.className = 'card';
@@ -679,7 +764,6 @@
 
             const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
 
-            // Si es Rumor y no es narrador, se muestra versión reducida con el estatus gris
             if (!esNarrator && estatusLower.includes("rumor")) {
                 card.innerHTML = `
                     <div class="id-badge">#${formattedId}</div>
@@ -690,13 +774,12 @@
                     </div>
                 `;
             } else {
-                // Vista normal completa
                 card.innerHTML = `
                     <div class="id-badge">#${formattedId}</div>
                     <div class="estatus-badge ${estatusClase}">${estatus}</div>
                     
                     <div class="card-img-container">
-                        <img src="./retratos/${imagenLimpia}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
+                        <img src="${imagenMostrada}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
                     </div>
                     
                     <div class="card-body-content">
@@ -708,14 +791,12 @@
                             </div>
                         </div>
                         
-                        <!-- Cargo oficial situado limpiamente justo encima de la ocupación -->
                         ${tieneCargoReal ? `<div class="info-block cargo-block"><span class="info-label"><i class="fa-solid fa-crown"></i> Cargo:</span><span class="info-value" style="color: var(--accent-gold); max-width: 100%;">${cargoOficial}</span></div>` : ''}
                         
                         <div class="info-block"><span class="info-label">Ocupación:</span><span class="info-value">${ocupacion}</span></div>
-                        <div class="info-block"><span class="info-label">Ubicación:</span><span class="info-value">${ubicacion}</span></div>
+                        <div class="info-block"><span class="info-label">Ubicación:</span><span class="info-value">${ubicacionMostrada}</span></div>
                         ${faccion ? `<div class="info-block"><span class="info-label">Facción:</span><span class="info-value"><span class="badge">${faccion}</span></span></div>` : ''}
 
-                        <!-- CAMPOS PRIVADOS NARRADOR -->
                         ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire / Creador:</span><span class="info-value">${sire}</span></div>` : ''}
                         ${menciones ? `<div class="info-block narrator-only"><span class="info-label">Menciones:</span><span class="info-value">${menciones}</span></div>` : ''}
                         ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
