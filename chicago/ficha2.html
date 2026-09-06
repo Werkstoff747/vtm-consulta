@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ficha de Vástago - Censo de Chicago</title>
+    <title>Hoja de Personaje - Censo de Chicago V5</title>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0REGNEJC1G"></script>
     <script>
@@ -88,6 +88,18 @@
             text-align: center;
         }
 
+        .back-link-header {
+            position: absolute;
+            top: 15px; left: 15px;
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.9rem;
+        }
+        .back-link-header:hover { opacity: 0.8; }
+
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
@@ -107,31 +119,6 @@
             color: var(--accent-gold);
             cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-        }
-
-        .sheet-grid {
-            display: grid;
-            grid-template-columns: 320px 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 850px) {
-            .sheet-grid { grid-template-columns: 1fr; }
-        }
-
-        .portrait-container {
-            width: 100%; height: 380px;
-            background-color: #000;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid var(--card-border);
-        }
-
-        .portrait-container img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            object-position: top;
         }
 
         .sheet-section {
@@ -162,10 +149,36 @@
             letter-spacing: 1px;
         }
 
+        /* CABECERA: RETRATO A LA IZQUIERDA Y BIO AL LADO */
+        .sheet-top-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 850px) {
+            .sheet-top-grid { grid-template-columns: 1fr; }
+        }
+
+        .portrait-container {
+            width: 100%; height: 360px;
+            background-color: #000;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+
+        .portrait-container img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            object-position: top;
+        }
+
         .basic-info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            gap: 12px;
         }
 
         .info-box {
@@ -190,23 +203,15 @@
             word-break: break-word;
         }
 
-        .card-notes {
-            font-size: 0.9rem;
-            color: var(--accent-gold);
-            font-style: italic;
-            padding: 12px 15px;
-            background-color: rgba(139, 0, 0, 0.08);
-            border-radius: 6px;
-            border: 1px solid rgba(139, 0, 0, 0.3);
-            margin-top: 10px;
-        }
-
-        /* TRACKERS (SALUD Y FUERZA DE VOLUNTAD) */
+        /* TRACKERS DE SALUD Y VOLUNTAD (ESTILO V5) */
         .trackers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
             margin-top: 15px;
+        }
+        @media (max-width: 750px) {
+            .trackers-grid { grid-template-columns: 1fr; }
         }
         .tracker-box {
             background: var(--card-notes-bg);
@@ -230,7 +235,7 @@
             flex-wrap: wrap;
         }
         .t-box {
-            width: 18px; height: 18px;
+            width: 20px; height: 20px;
             border: 1px solid var(--accent-gold);
             border-radius: 3px;
             background: transparent;
@@ -272,7 +277,6 @@
 
         .stat-name { color: var(--text-main); font-weight: 500; }
 
-        /* PUNTOS DE VALOR (CÍRCULOS ESTILO V5) */
         .dots-container { display: flex; gap: 4px; }
         .dot {
             width: 12px; height: 12px;
@@ -282,13 +286,24 @@
         }
         .dot.filled { background-color: var(--accent-gold); }
 
+        .card-notes {
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            font-style: italic;
+            padding: 12px 15px;
+            background-color: rgba(139, 0, 0, 0.08);
+            border-radius: 6px;
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            margin-top: 10px;
+        }
+
         /* BOTONES FLOTANTES */
         .floating-btn-container {
             position: fixed; bottom: 25px; right: 25px;
             display: flex; flex-direction: column; gap: 12px; z-index: 9999;
         }
 
-        .floating-action-btn {
+        .floating-action-btn, .scroll-top-btn {
             width: 45px; height: 45px;
             border-radius: 50%;
             background-color: var(--accent-red);
@@ -302,10 +317,13 @@
             transition: transform 0.2s;
         }
 
-        .floating-action-btn:hover {
+        .floating-action-btn:hover, .scroll-top-btn:hover {
             transform: translateY(-3px);
             background-color: var(--accent-crimson);
         }
+
+        .scroll-top-btn { opacity: 0; visibility: hidden; transition: opacity 0.3s; }
+        .scroll-top-btn.show { opacity: 1; visibility: visible; }
 
         #loading {
             text-align: center;
@@ -327,6 +345,7 @@
 
 <div class="container">
     <header>
+        <a href="index.html" class="back-link-header"><i class="fa-solid fa-arrow-left"></i> Censo</a>
         <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema"><i class="fa-solid fa-moon"></i></button>
         <h1 class="cabecera-principal" id="pageTitle">Ficha de Vástago</h1>
     </header>
@@ -334,19 +353,19 @@
     <div id="loading">Consultando los registros técnicos de la Ficha...</div>
 
     <div id="sheetContent" style="display: none;">
-        <div class="sheet-grid">
-            <div>
-                <div class="portrait-container">
-                    <img id="valImg" src="" alt="Retrato del Vástago" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
-                </div>
+        
+        <!-- CABECERA: RETRATO + BIO COMPLETA -->
+        <div class="sheet-top-grid">
+            <div class="portrait-container">
+                <img id="valImg" src="" alt="Retrato del Vástago" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
             </div>
             <div>
                 <div class="sheet-section" style="margin-bottom: 0; height: 100%;">
                     <div class="section-title">Expediente Oficial</div>
                     <div class="basic-info-grid" style="grid-template-columns: 1fr;">
                         <div class="info-box"><div class="info-label">Nombre del Personaje</div><div class="info-val" id="valNombre">-</div></div>
-                        <div class="info-box" style="margin-top: 8px;"><div class="info-label">Clan</div><div class="info-val" id="valClan">-</div></div>
-                        <div class="info-box" style="margin-top: 8px;"><div class="info-label">Apodo o Rango</div><div class="info-val" id="valApodo">-</div></div>
+                        <div class="info-box"><div class="info-label">Clan</div><div class="info-val" id="valClan">-</div></div>
+                        <div class="info-box"><div class="info-label">Apodo o Rango</div><div class="info-val" id="valApodo">-</div></div>
                     </div>
                 </div>
             </div>
@@ -368,9 +387,10 @@
             <div class="basic-info-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
                 <div class="info-box"><div class="info-label">Ambición</div><div class="info-val" id="valAmbicion" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
                 <div class="info-box"><div class="info-label">Convicciones</div><div class="info-val" id="valConvicciones" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
-                <div class="info-box"><div class="info-label">Piedras de Toque</div><div class="info-val" id="valPiedras" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
+                <div class="info-box" style="grid-column: span 2;"><div class="info-label">Piedras de Toque</div><div class="info-val" id="valPiedras" style="font-size: 0.95rem; font-family: 'Inter', sans-serif;">-</div></div>
             </div>
 
+            <!-- TRACKERS ESTILO V5 (SALUD Y VOLUNTAD) -->
             <div class="trackers-grid">
                 <div class="tracker-box">
                     <div class="tracker-title">Salud</div>
@@ -445,13 +465,13 @@
     </footer>
 </div>
 
+<!-- MENÚ FLOTANTE -->
 <div class="floating-btn-container">
     <a href="https://werkstoff747.github.io/vtm-consulta/chicago/" class="floating-action-btn" title="Ir al Censo de Chicago"><i class="fa-solid fa-house"></i></a>
-    <button class="floating-action-btn" onclick="history.back()" title="Volver atrás"><i class="fa-solid fa-arrow-left"></i></button>
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir"><i class="fa-solid fa-arrow-up"></i></button>
 </div>
 
 <script>
-    // Enlace exclusivo correcto a la pestaña Ficha (gid=530703739) con anti-caché
     const SHEET_FICHA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=530703739&single=true&output=csv&_t=' + Date.now();
 
     const ATTR_LIST = {
@@ -528,11 +548,12 @@
             skipEmptyLines: true,
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
-                const filas = results.data;
-
-                const personaje = filas.find(row => {
-                    const rowId = row["ID"] || row["id"] || "";
-                    return String(rowId).trim() === String(targetId).trim();
+                
+                const idBuscado = parseInt(targetId, 10);
+                const personaje = results.data.find(row => {
+                    if (!row["ID"]) return false;
+                    const idFila = parseInt(String(row["ID"]).trim(), 10);
+                    return idFila === idBuscado;
                 });
 
                 if (!personaje) {
@@ -541,10 +562,10 @@
                     return;
                 }
 
-                const nombre = personaje["Nombre_Personaje"] || personaje["Nombre del Personaje"] || "Desconocido";
-                const clan = personaje["Clan"] || "Desconocido";
-                const apodo = personaje["Apodo_o_Rango"] || personaje["Rango / Título"] || "Sin Rango";
-                const sire = personaje["Sire"] || personaje["Sire / Creador"] || "Desconocido";
+                const nombre = personaje["Nombre_Personaje"] ? personaje["Nombre_Personaje"].trim() : "Desconocido";
+                const clan = personaje["Clan"] ? personaje["Clan"].trim() : "Desconocido";
+                const apodo = personaje["Apodo_o_Rango"] || "Sin Rango";
+                const sire = personaje["Sire"] || "Desconocido";
                 const abrazo = personaje["Abrazo"] || "-";
                 const ambicion = personaje["Ambicion"] || "-";
                 const convicciones = personaje["Convicciones"] || "-";
@@ -554,14 +575,18 @@
                 const potencia = personaje["Potencia_de_Sangre"] || "1";
                 
                 const salud = personaje["Salud"] || "6";
-                const voluntad = personaje["Fuerza_de_Voluntad"] || personaje["Fuerza de Voluntad"] || "5";
+                const voluntad = personaje["Fuerza_de_Voluntad"] || "5";
 
                 const disciplinas = personaje["Disciplinas"] || "No registradas";
                 const ventajas = personaje["Ventajas_y_Defectos"] || "Ninguna";
                 const secretos = personaje["Secretos"] || "Sin registros clasificados.";
-                          // Forzamos que la imagen se busque de forma limpia por el ID del vástago (ej: 1.jpg, 2.jpg...)
-                const idImagen = String(targetId).trim();
-                const imagen = personaje["Archivo de Imagen"] || (`${idImagen}.jpg`);
+
+                // Imagen prioritaria por columna o por nombre formateado con anti-caché
+                let nombreImagen = personaje["Archivo de Imagen"] ? String(personaje["Archivo de Imagen"]).trim() : "";
+                if (!nombreImagen || nombreImagen === "") {
+                    const nombreLimpioImg = nombre.replace(/["']/g, "").trim().replace(/\s+/g, "_");
+                    nombreImagen = `${nombreLimpioImg}.jpg`;
+                }
 
                 document.getElementById('sheetContent').style.display = 'block';
                 document.getElementById('pageTitle').textContent = `Ficha de ${nombre}`;
@@ -581,7 +606,9 @@
                 document.getElementById('valDisciplinas').textContent = disciplinas;
                 document.getElementById('valVentajas').textContent = ventajas;
                 document.getElementById('valSecretos').innerHTML = `🦇 <strong>Secretos:</strong> ${secretos}`;
-                document.getElementById('valImg').src = `./retratos/${imagen}`;
+                
+                const imgElement = document.getElementById('valImg');
+                imgElement.src = `./retratos/${nombreImagen}?t=` + new Date().getTime();
 
                 document.getElementById('trackSalud').innerHTML = renderBoxes(salud, 10);
                 document.getElementById('trackVoluntad').innerHTML = renderBoxes(voluntad, 10);
@@ -599,22 +626,17 @@
                 console.error(err);
             }
         });
+
+        window.addEventListener('scroll', () => {
+            document.getElementById("scrollTopBtn").classList.toggle("show", window.scrollY > 300);
+        });
     });
 
     function pintarBloqueEstadisticas(keysArray, dataObj, containerId) {
         const container = document.getElementById(containerId);
         container.innerHTML = '';
         keysArray.forEach(key => {
-            const cleanKeySearch = key.replace(/^(Atributo_|Hab_)/, '').toLowerCase().replace(/[_]/g, ' ').trim();
-            let valor = 0;
-            
-            for (let colName in dataObj) {
-                const cleanCol = colName.toLowerCase().replace(/^(atributo_|hab_|habilidad_)/, '').replace(/[_]/g, ' ').trim();
-                if (cleanCol === cleanKeySearch || cleanCol.includes(cleanKeySearch) || cleanKeySearch.includes(cleanCol)) {
-                    valor = dataObj[colName];
-                    break;
-                }
-            }
+            let valor = dataObj[key] || "0";
 
             const row = document.createElement('div');
             row.className = 'stat-row';
@@ -624,6 +646,10 @@
             `;
             container.appendChild(row);
         });
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 
