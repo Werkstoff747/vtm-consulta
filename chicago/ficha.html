@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ficha de Personaje - Censo de Chicago</title>
+    <title>Hoja de Personaje - Censo de Chicago V5</title>
 
     <!-- FAVICON -->
     <link rel="icon" type="image/png" href="./iconos/drRol.png">
@@ -40,7 +40,7 @@
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.6;
+            line-height: 1.5;
             padding: 20px;
             min-height: 100vh;
             display: flex;
@@ -48,7 +48,7 @@
             justify-content: space-between;
         }
 
-        .container { max-width: 1000px; margin: 0 auto; width: 100%; }
+        .container { max-width: 1100px; margin: 0 auto; width: 100%; }
 
         header {
             display: flex;
@@ -83,38 +83,44 @@
             text-transform: uppercase;
         }
 
-        .sheet-card {
+        .sheet-wrapper {
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 8px;
-            padding: 25px;
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 30px;
+            padding: 30px;
             position: relative;
             margin-bottom: 40px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
         }
-        .sheet-card::before {
+        .sheet-wrapper::before {
             content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background-color: var(--accent-red); border-top-left-radius: 8px; border-bottom-left-radius: 8px;
         }
 
+        .sheet-top-grid {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+            border-bottom: 1px dashed var(--card-border);
+            padding-bottom: 25px;
+        }
+
         @media (max-width: 768px) {
-            .sheet-card { grid-template-columns: 1fr; }
+            .sheet-top-grid { grid-template-columns: 1fr; }
         }
 
         .sheet-img-container {
-            width: 100%; height: 380px; background: #000; border-radius: 6px; overflow: hidden; border: 1px solid var(--card-border);
+            width: 100%; height: 320px; background: #000; border-radius: 6px; overflow: hidden; border: 1px solid var(--card-border);
         }
         .sheet-img-container img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 
-        .sheet-details { display: flex; flex-direction: column; gap: 15px; }
+        .sheet-main-info { display: flex; flex-direction: column; gap: 12px; }
 
-        .sheet-title-area { border-bottom: 1px dashed var(--card-border); padding-bottom: 12px; }
-        .sheet-name { font-family: 'Cinzel', serif; font-size: 1.8rem; color: #fff; font-weight: 700; }
-        .sheet-clan { font-size: 1.1rem; color: var(--accent-gold); font-style: italic; font-weight: 600; }
+        .sheet-name { font-family: 'Cinzel', serif; font-size: 2rem; color: #fff; font-weight: 700; line-height: 1.1; }
+        .sheet-clan { font-size: 1.15rem; color: var(--accent-gold); font-style: italic; font-weight: 600; }
 
-        .sheet-grid-info {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;
+        .bio-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 5px;
         }
 
         .info-box {
@@ -122,24 +128,56 @@
             border: 1px solid var(--card-border);
             padding: 8px 12px;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
-        .info-label { color: var(--text-muted); font-weight: 600; display: block; font-size: 0.8rem; }
+        .info-label { color: var(--text-muted); font-weight: 600; display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
         .info-val { font-weight: 600; color: var(--text-main); }
 
-        .stats-section { margin-top: 10px; }
-        .stats-title { font-family: 'Cinzel', serif; color: var(--accent-gold); font-size: 1rem; margin-bottom: 8px; border-bottom: 1px solid var(--card-border); padding-bottom: 4px; }
+        /* SECCIONES TÉCNICAS */
+        .section-title {
+            font-family: 'Cinzel', serif; color: var(--accent-gold); font-size: 1.05rem; margin: 20px 0 12px 0; border-bottom: 1px solid var(--card-border); padding-bottom: 4px; display: flex; align-items: center; gap: 8px;
+        }
+
+        .stats-pools-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px;
+        }
+
+        .pool-card {
+            background: var(--tag-bg); border: 1px solid var(--card-border); border-radius: 6px; padding: 10px; text-align: center;
+        }
+        .pool-num { font-size: 1.4rem; font-family: 'Cinzel', serif; font-weight: 700; color: var(--accent-gold); }
+
+        /* ATRIBUTOS Y HABILIDADES EN GRID */
+        .attributes-skills-layout {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px;
+        }
+        @media (max-width: 900px) {
+            .attributes-skills-layout { grid-template-columns: 1fr; }
+        }
+
+        .attr-group-box {
+            background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 6px; padding: 15px;
+        }
+        .attr-group-title { font-family: 'Cinzel', serif; font-size: 0.9rem; color: #fff; margin-bottom: 10px; text-align: center; border-bottom: 1px dashed var(--card-border); padding-bottom: 4px; }
         
-        .stats-container {
-            display: flex; flex-wrap: wrap; gap: 6px;
+        .stat-row {
+            display: flex; justify-content: space-between; font-size: 0.85rem; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
         }
-        .stat-badge {
-            background: var(--tag-bg);
-            border: 1px solid var(--card-border);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.85rem;
+        .stat-name { color: var(--text-muted); }
+        .stat-value { font-weight: bold; color: var(--accent-gold); font-family: 'Cinzel', serif; }
+
+        /* BLOQUES INFERIORES */
+        .bottom-info-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;
         }
+        @media (max-width: 768px) {
+            .bottom-info-grid { grid-template-columns: 1fr; }
+        }
+
+        .narrator-box {
+            background: rgba(139, 0, 0, 0.08); border: 1px solid rgba(139, 0, 0, 0.4); border-radius: 6px; padding: 15px;
+        }
+        .narrator-box h3 { font-family: 'Cinzel', serif; color: var(--accent-gold); font-size: 0.95rem; margin-bottom: 8px; }
 
         #loading, #error-msg {
             text-align: center; font-family: 'Cinzel', serif; color: var(--accent-gold); padding: 50px; font-size: 1.2rem;
@@ -154,42 +192,133 @@
 <div class="container">
     <header>
         <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Volver al Censo</a>
-        <h1 class="cabecera-principal">Hoja Técnica del Vástago</h1>
+        <h1 class="cabecera-principal">Ficha Técnica Oficial V5</h1>
     </header>
 
     <div id="loading">Consultando Archivos de la Camarilla...</div>
     <div id="error-msg" style="display: none;"></div>
 
     <div id="fichaContent" style="display: none;">
-        <div class="sheet-card">
-            <div class="sheet-img-container">
-                <img id="fImage" src="" alt="Retrato" onerror="this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
-            </div>
-            <div class="sheet-details">
-                <div class="sheet-title-area">
-                    <div id="fName" class="sheet-name">Cargando...</div>
-                    <div id="fClan" class="sheet-clan">Clan</div>
+        <div class="sheet-wrapper">
+            
+            <!-- TOP: IMAGEN Y DATOS BÁSICOS -->
+            <div class="sheet-top-grid">
+                <div class="sheet-img-container">
+                    <img id="fImage" src="" alt="Retrato" onerror="this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
                 </div>
+                <div class="sheet-main-info">
+                    <div>
+                        <div id="fName" class="sheet-name">Cargando...</div>
+                        <div id="fClan" class="sheet-clan">Clan</div>
+                    </div>
 
-                <div class="sheet-grid-info">
-                    <div class="info-box"><span class="info-label">Rango / Título</span><span id="fRango" class="info-val">-</span></div>
-                    <div class="info-box"><span class="info-label">Ubicación Habitual</span><span id="fUbicacion" class="info-val">-</span></div>
-                    <div class="info-box"><span class="info-label">Facción</span><span id="fFaccion" class="info-val">-</span></div>
-                    <div class="info-box"><span class="info-label">Sire / Creador</span><span id="fSire" class="info-val">-</span></div>
-                </div>
+                    <div class="bio-grid">
+                        <div class="info-box"><span class="info-label">Apodo / Rango</span><span id="fApodo" class="info-val">-</span></div>
+                        <div class="info-box"><span class="info-label">Sire</span><span id="fSire" class="info-val">-</span></div>
+                        <div class="info-box"><span class="info-label">Abrazo</span><span id="fAbrazo" class="info-val">-</span></div>
+                        <div class="info-box"><span class="info-label">Generación</span><span id="fGeneracion" class="info-val">-</span></div>
+                    </div>
 
-                <div class="stats-section">
-                    <div class="stats-title">Menciones en Crónica</div>
-                    <div id="fMenciones" class="info-val" style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">-</div>
-                </div>
-
-                <div class="stats-section">
-                    <div class="stats-title">Estadísticas y Disciplinas</div>
-                    <div id="fStatsContainer" class="stats-container">
-                        <!-- Las estadísticas de la tabla de atributos se inyectarán aquí dinámicamente -->
+                    <div class="bio-grid">
+                        <div class="info-box"><span class="info-label">Ambición</span><span id="fAmbicion" class="info-val">-</span></div>
+                        <div class="info-box"><span class="info-label">Convicciones</span><span id="fConvicciones" class="info-val">-</span></div>
+                    </div>
+                    <div class="bio-grid">
+                        <div class="info-box" style="grid-column: span 2;"><span class="info-label">Piedras de Toque</span><span id="fPiedras" class="info-val">-</span></div>
                     </div>
                 </div>
             </div>
+
+            <!-- BLOQUE DE ESTADÍSTICAS VITALES -->
+            <div class="section-title"><i class="fa-solid fa-heart-pulse"></i> Estadísticas Vitales</div>
+            <div class="stats-pools-grid">
+                <div class="pool-card"><span class="info-label">Humanidad</span><div id="fHumanidad" class="pool-num">-</div></div>
+                <div class="pool-card"><span class="info-label">Potencia de Sangre</span><div id="fPotencia" class="pool-num">-</div></div>
+                <div class="pool-card"><span class="info-label">Salud</span><div id="fSalud" class="pool-num">-</div></div>
+                <div class="pool-card"><span class="info-label">Fuerza de Voluntad</span><div id="fVoluntad" class="pool-num">-</div></div>
+            </div>
+
+            <!-- ATRIBUTOS Y HABILIDADES (3 COLUMNAS: FÍSICOS, SOCIALES, MENTALES) -->
+            <div class="section-title"><i class="fa-solid fa-chart-bar"></i> Atributos y Habilidades</div>
+            <div class="attributes-skills-layout">
+                
+                <!-- FÍSICOS -->
+                <div class="attr-group-box">
+                    <div class="attr-group-title">Físicos</div>
+                    <div class="stat-row"><span class="stat-name">Fuerza</span><span id="attr_Fuerza" class="stat-value">0</span></div>
+                    <div class="stat-row"><span class="stat-name">Destreza</span><span id="attr_Destreza" class="stat-value">0</span></div>
+                    <div class="stat-row"><span class="stat-name">Resistencia</span><span id="attr_Resistencia" class="stat-value">0</span></div>
+                    <div style="margin-top: 10px; border-top: 1px dashed var(--card-border); padding-top: 8px;">
+                        <div class="stat-row"><span class="stat-name">Armas de Fuego</span><span id="hab_Armas_de_Fuego" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Artesanía</span><span id="hab_Artesania" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Atletismo</span><span id="hab_Atletismo" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Conducir</span><span id="hab_Conducir" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Latrocinio</span><span id="hab_Latrocinio" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Pelea</span><span id="hab_Pelea" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Pelea con Armas</span><span id="hab_Pelea_con_Armas" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Sigilo</span><span id="hab_Sigilo" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Supervivencia</span><span id="hab_Supervivencia" class="stat-value">0</span></div>
+                    </div>
+                </div>
+
+                <!-- SOCIALES -->
+                <div class="attr-group-box">
+                    <div class="attr-group-title">Sociales</div>
+                    <div class="stat-row"><span class="stat-name">Carisma</span><span id="attr_Carisma" class="stat-value">0</span></div>
+                    <div class="stat-row"><span class="stat-name">Manipulación</span><span id="attr_Manipulacion" class="stat-value">0</span></div>
+                    <div class="stat-row"><span class="stat-name">Compostura</span><span id="attr_Compostura" class="stat-value">0</span></div>
+                    <div style="margin-top: 10px; border-top: 1px dashed var(--card-border); padding-top: 8px;">
+                        <div class="stat-row"><span class="stat-name">Callejeo</span><span id="hab_Callejeo" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Etiqueta</span><span id="hab_Etiqueta" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Interpretación</span><span id="hab_Interpretacion" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Intimidación</span><span id="hab_Intimidacion" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Liderazgo</span><span id="hab_Liderazgo" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Perspicacia</span><span id="hab_Perspicacia" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Persuasión</span><span id="hab_Persuasion" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Subterfugio</span><span id="hab_Subterfugio" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Trato con Animales</span><span id="hab_Trato_con_Animales" class="stat-value">0</span></div>
+                    </div>
+                </div>
+
+                <!-- MENTALES -->
+                <div class="attr-group-box">
+                    <div class="attr-group-title">Mentales</div>
+                    <div class="stat-row"><span class="stat-name">Inteligencia</span><span id="attr_Inteligencia" class="stat-value">0</span></div>
+                    <div class="stat-row"><span class="stat-name">Astucia</span><span id="attr_Astucia" class="stat-value">0</span></div>
+                    <div class="stat-row"><span class="stat-name">Resolución</span><span id="attr_Resolucion" class="stat-value">0</span></div>
+                    <div style="margin-top: 10px; border-top: 1px dashed var(--card-border); padding-top: 8px;">
+                        <div class="stat-row"><span class="stat-name">Academicismo</span><span id="hab_Academicismo" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Ciencias</span><span id="hab_Ciencias" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Consciencia</span><span id="hab_Consciencia" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Finanzas</span><span id="hab_Finanzas" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Investigación</span><span id="hab_Investigacion" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Medicina</span><span id="hab_Medicina" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Ocultismo</span><span id="hab_Ocultismo" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Política</span><span id="hab_Politica" class="stat-value">0</span></div>
+                        <div class="stat-row"><span class="stat-name">Tecnología</span><span id="hab_Tecnologia" class="stat-value">0</span></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- DISCIPLINAS Y VENTAJAS -->
+            <div class="bottom-info-grid">
+                <div class="info-box" style="background: rgba(255,255,255,0.02);">
+                    <span class="info-label"><i class="fa-solid fa-bolt"></i> Disciplinas</span>
+                    <span id="fDisciplinas" class="info-val" style="font-size: 0.95rem; display: block; margin-top: 5px;">-</span>
+                </div>
+                <div class="info-box" style="background: rgba(255,255,255,0.02);">
+                    <span class="info-label"><i class="fa-solid fa-star"></i> Ventajas y Trasfondos</span>
+                    <span id="fVentajas" class="info-val" style="font-size: 0.95rem; display: block; margin-top: 5px;">-</span>
+                </div>
+            </div>
+
+            <!-- SECRETOS (MODO NARRADOR) -->
+            <div class="narrator-box" style="margin-top: 20px;">
+                <h3><i class="fa-solid fa-user-secret"></i> Notas y Secretos del Narrador</h3>
+                <p id="fSecretos" style="font-style: italic; font-size: 0.9rem; color: var(--accent-gold);">-</p>
+            </div>
+
         </div>
     </div>
 
@@ -199,7 +328,7 @@
 </div>
 
 <script>
-    // URL de tu hoja de Google Sheets (asegúrate de que sea la misma o la de tu pestaña de estadísticas si la tienes separada)
+    // URL de tu hoja de Google Sheets (pestaña Ficha)
     const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?output=csv';
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -216,7 +345,7 @@
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
                 
-                // Buscamos la fila cuyo ID coincida (limpiando posibles espacios o ceros)
+                // Buscamos la fila cuyo ID coincida exactamente
                 const v = results.data.find(row => String(Number(row["ID"])) === String(Number(targetId)));
 
                 if (v) {
@@ -235,45 +364,51 @@
     function renderFicha(v) {
         document.getElementById('fichaContent').style.display = 'block';
 
-        const nombre = v["Nombre del Personaje"] || "Desconocido";
+        const nombre = v["Nombre_Personaje"] || v["Nombre del Personaje"] || "Desconocido";
         const clan = v["Clan"] || "Desconocido";
-        const imagen = v["Archivo de Imagen"] || "";
         
+        // Datos básicos
         document.getElementById('fName').textContent = nombre;
         document.getElementById('fClan').textContent = clan;
-        document.getElementById('fRango').textContent = v["Rango / Título"] || "Sin Rango";
-        document.getElementById('fUbicacion').textContent = v["Ubicación / Dominio habitual"] || "Desconocida";
-        document.getElementById('fFaccion').textContent = v["Facción"] || "Independiente";
-        document.getElementById('fSire'] = v["Sire / Creador"] || "Desconocido";
-        
-        // RUTA DE LA IMAGEN CORRECTA EN LA CARPETA LOCAL
-        if (imagen) {
-            document.getElementById('fImage').src = `./retratos/${imagen}`;
-        }
+        document.getElementById('fApodo').textContent = v["Apodo_o_Rango"] || "-";
+        document.getElementById('fSire').textContent = v["Sire"] || "-";
+        document.getElementById('fAbrazo').textContent = v["Abrazo"] || "-";
+        document.getElementById('fGeneracion').textContent = v["Generacion"] || "-";
+        document.getElementById('fAmbicion').textContent = v["Ambicion"] || "-";
+        document.getElementById('fConvicciones').textContent = v["Convicciones"] || "-";
+        document.getElementById('fPiedras').textContent = v["Piedras_de_Toque"] || "-";
 
-        document.getElementById('fMenciones').textContent = v["Menciones"] || "Sin menciones registradas.";
+        // Estadísticas vitales
+        document.getElementById('fHumanidad').textContent = v["Humanidad"] || "-";
+        document.getElementById('fPotencia').textContent = v["Potencia_de_Sangre"] || "-";
+        document.getElementById('fSalud').textContent = v["Salud"] || "-";
+        document.getElementById('fVoluntad').textContent = v["Fuerza_de_Voluntad"] || "-";
 
-        // Recorremos el resto de columnas del CSV por si tienes estadísticas adicionales (atributos, disciplinas, etc.)
-        const statsContainer = document.getElementById('fStatsContainer');
-        statsContainer.innerHTML = '';
+        // Imagen local
+        const imagenLimpia = nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
+        document.getElementById('fImage').src = `./retratos/${imagenLimpia}`;
 
-        // Excluimos las columnas principales para pintar el resto como atributos/estadísticas dinámicas
-        const excludeKeys = ["ID", "Archivo de Imagen", "Nombre del Personaje", "Clan", "Rango / Título", "Ubicación / Dominio habitual", "Facción", "Sire / Creador", "Ficha / Perfil", "Menciones", "Secretos", "Notas o Secretos"];
-        
-        let hasExtraStats = false;
-        for (const [key, value] of Object.entries(v)) {
-            if (!excludeKeys.includes(key) && value && value.trim() !== "" && value !== "0") {
-                hasExtraStats = true;
-                const badge = document.createElement('div');
-                badge.className = 'stat-badge';
-                badge.innerHTML = `<strong>${key}:</strong> ${value}`;
-                statsContainer.appendChild(badge);
-            }
-        }
+        // Mapeo dinámico de Atributos y Habilidades
+        const attrKeys = ["Fuerza", "Destreza", "Resistencia", "Carisma", "Manipulacion", "Compostura", "Inteligencia", "Astucia", "Resolucion"];
+        attrKeys.forEach(key => {
+            const el = document.getElementById(`attr_${key}`);
+            if (el) el.textContent = v[`Atributo_${key}`] || "0";
+        });
 
-        if (!hasExtraStats) {
-            statsContainer.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">No hay estadísticas adicionales registradas en esta hoja.</span>';
-        }
+        const habKeys = [
+            "Armas_de_Fuego", "Artesania", "Atletismo", "Conducir", "Latrocinio", "Pelea", "Pelea_con_Armas", "Sigilo", "Supervivencia",
+            "Callejeo", "Etiqueta", "Interpretacion", "Intimidacion", "Liderazgo", "Perspicacia", "Persuasion", "Subterfugio", "Trato_con_Animales",
+            "Academicismo", "Ciencias", "Consciencia", "Finanzas", "Investigacion", "Medicina", "Ocultismo", "Politica", "Tecnologia"
+        ];
+        habKeys.forEach(key => {
+            const el = document.getElementById(`hab_${key}`);
+            if (el) el.textContent = v[`Hab_${key}`] || "0";
+        });
+
+        // Extras y Secretos
+        document.getElementById('fDisciplinas').textContent = v["Disciplinas"] || "Ninguna registrada.";
+        document.getElementById('fVentajas').textContent = v["Ventajas_y_Defectos"] || "Ninguna registrada.";
+        document.getElementById('fSecretos').textContent = v["Secretos"] || "No hay secretos registrados.";
     }
 
     function mostrarError(mensaje) {
