@@ -55,29 +55,22 @@ Si deseas clonar esta estructura para dirigir tu propia crónica de rol, los arc
 ├── iconos/             # Directorio de recursos gráficos y símbolos de clan
 └── retratos/           # Directorio de imágenes de los Vástagos (nombradas por ID o Slug)
 ```
-Pasos para el Despliegue
-Configurar la Base de Datos (Google Sheets):
 
-Crea una hoja de cálculo con las 13 columnas obligatorias: ID, Archivo de Imagen, Nombre del Personaje, Clan, Profesion_Ocupacion, Ubicación / Dominio habitual, Facción, Sire / Creador, Ficha / Perfil, Menciones, Secretos, Cargo_Oficial y Estatus.
+### Pasos para el Despliegue
 
-Publica la hoja en la Web en formato CSV (Archivo > Compartir > Publicar en la web > Valores separados por comas).
+1. **Configurar la Base de Datos (Google Sheets):**
+   * Crea una hoja de cálculo con las 13 columnas obligatorias: `ID`, `Archivo de Imagen`, `Nombre del Personaje`, `Clan`, `Profesion_Ocupacion`, `Ubicación / Dominio habitual`, `Facción`, `Sire / Creador`, `Ficha / Perfil`, `Menciones`, `Secretos`, `Cargo_Oficial` y `Estatus`.
+   * Publica la hoja en la Web en formato CSV (*Archivo* > *Compartir* > *Publicar en la web* > *Valores separados por comas*).
+   * Sustituye la constante `SHEET_CSV_URL` en el código de `index.html` por tu nuevo enlace de publicación.
 
-Sustituye la constante SHEET_CSV_URL en el código de index.html por tu nuevo enlace de publicación.
+2. **Configurar la Autenticación (Firebase):**
+   * Crea un proyecto gratuito en Firebase y habilita *Realtime Database*.
+   * Crea un nodo raíz llamado `password_narrador` que contenga la contraseña que usarán los narradores para desbloquear el modo oculto.
+   * Actualiza el objeto `firebaseConfig` dentro del bloque `<script type="module">` de tu `index.html`.
 
-Configurar la Autenticación (Firebase):
+3. **Aprovisionar Activos Visuales:**
+   * Coloca los iconos oficiales de clanes en la ruta `./iconos/clanes/`.
+   * Sube los retratos de los PNJs a la carpeta `./retratos/` asegurándote de que coincidan con los nombres especificados en la columna de la hoja de cálculo (por defecto vincula por ID, ej: `01.jpg`).
 
-Crea un proyecto gratuito en Firebase y habilita Realtime Database.
-
-Crea un nodo raíz llamado password_narrador que contenga la contraseña que usarán los narradores para desbloquear el modo oculto.
-
-Actualiza el objeto firebaseConfig dentro del bloque <script type="module"> de tu index.html.
-
-Aprovisionar Activos Visuales:
-
-Coloca los iconos oficiales de clanes en la ruta ./iconos/clanes/.
-
-Sube los retratos de los PNJs a la carpeta ./retratos/ asegurándote de que coincidan con los nombres especificados en la columna de la hoja de cálculo (por defecto vincula por ID, ej: 01.jpg).
-
-Publicar en la Web:
-
-Sube los archivos a un repositorio de GitHub y activa GitHub Pages en la rama principal (main / root) para tener la aplicación en línea de forma gratuita e instantánea.
+4. **Publicar en la Web:**
+   * Sube los archivos a un repositorio de GitHub y activa *GitHub Pages* en la rama principal (`main` / `root`) para tener la aplicación en línea de forma gratuita e instantánea.
