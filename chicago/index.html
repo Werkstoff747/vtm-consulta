@@ -131,7 +131,7 @@
             text-transform: uppercase;
         }
 
-        /* BARRA DE CONTROLES (3/4 Y BOTONES) */
+        /* BARRA DE CONTROLES */
         .controls {
             background: var(--card-bg);
             padding: 15px 20px;
@@ -159,6 +159,7 @@
             flex: 1;
             min-width: 220px;
             justify-content: flex-end;
+            flex-wrap: wrap;
         }
 
         .search-box { flex: 2; min-width: 180px; }
@@ -194,6 +195,13 @@
 
         .action-control-btn:hover {
             background: rgba(197, 160, 89, 0.15);
+            border-color: var(--accent-gold);
+        }
+
+        #sortIdBtn { display: none; }
+        body.narrator-mode #sortIdBtn { display: flex; }
+        #sortIdBtn.active-sort {
+            background: rgba(197, 160, 89, 0.25);
             border-color: var(--accent-gold);
         }
 
@@ -257,7 +265,6 @@
             z-index: 10;
         }
 
-        /* ETIQUETA DE ORIGEN EXCLUSIVA PARA NARRADOR */
         .narrator-source-badge {
             position: absolute;
             bottom: 10px; left: 12px;
@@ -386,16 +393,15 @@
 
         .card-notes {
             font-size: 0.85rem;
-            color: var(--accent-gold);
+            color: var(--text-main);
             font-style: italic;
             padding: 8px 10px;
             background-color: rgba(139, 0, 0, 0.08);
             border-radius: 6px;
             border: 1px solid rgba(139, 0, 0, 0.3);
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .badge {
@@ -545,7 +551,7 @@
         </div>
     </header>
 
-    <!-- BARRA DE CONTROLES REDUCIDA -->
+    <!-- BARRA DE CONTROLES -->
     <div class="controls">
         <div class="controls-main-group">
             <div class="search-box">
@@ -563,6 +569,7 @@
             </div>
         </div>
         <div class="controls-actions-group">
+            <button class="action-control-btn" id="sortIdBtn" onclick="toggleSortById()" title="Alternar orden por ID numérico"><i class="fa-solid fa-arrow-down-1-9"></i> ID</button>
             <button class="action-control-btn" onclick="abrirModalPoder()"><i class="fa-solid fa-sitemap"></i> Poder</button>
             <button class="action-control-btn" onclick="abrirModalReadme()"><i class="fa-solid fa-book-open"></i> Guía</button>
         </div>
@@ -598,7 +605,7 @@
     </div>
 </div>
 
-<!-- MODAL ESTRUCTURA DE PODER (ORGANIGRAMA ESQUEMÁTICO) -->
+<!-- MODAL ESTRUCTURA DE PODER -->
 <div id="powerModal" class="modal-overlay">
     <div class="modal-content modal-large">
         <h3>Estructura de Poder — La Camarilla de Chicago</h3>
@@ -681,6 +688,12 @@
     <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir"><i class="fa-solid fa-arrow-up"></i></button>
 </div>
 
+<!-- VARIABLES GLOBALES DE DATOS Y ESTADO -->
+<script>
+    let globalVampirosData = [];
+    let ordenarPorIdActivo = false;
+</script>
+
 <!-- IMPORTAR FIREBASE REALTIME DATABASE -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -716,6 +729,7 @@
                     btnNarrator.title = "Modo Narrador Activo";
                     btnNarrator.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i>';
                     cerrarModalNarrador();
+                    if(globalVampirosData.length > 0) renderVampiros(globalVampirosData);
                 } else { alert("Contraseña incorrecta. Acceso denegado."); }
             } else { alert("Error: No se encuentra 'password_narrador' en Firebase."); }
         } catch (error) { console.error("Error:", error); alert("Error de conexión con la base de datos."); }
@@ -779,11 +793,14 @@
         if (document.body.classList.contains('narrator-mode')) {
             document.body.classList.remove('narrator-mode');
             localStorage.setItem('vtm-narrator-mode', 'false');
+            ordenarPorIdActivo = false;
+            document.getElementById('sortIdBtn').classList.remove('active-sort');
             const btnNarrator = document.getElementById('narratorToggleBtn');
             btnNarrator.classList.remove('narrator-active');
             btnNarrator.title = "Modo Narrador";
             btnNarrator.innerHTML = '<i class="fa-solid fa-key"></i>';
             alert("Modo Narrador bloqueado.");
+            if(globalVampirosData.length > 0) renderVampiros(globalVampirosData);
             return;
         }
         document.getElementById('narratorModal').style.display = 'flex';
@@ -796,6 +813,19 @@
     function cerrarModalPoder() { document.getElementById('powerModal').style.display = 'none'; }
     function abrirModalReadme() { document.getElementById('readmeModal').style.display = 'flex'; }
     function cerrarModalReadme() { document.getElementById('readmeModal').style.display = 'none'; }
+
+    function toggleSortById() {
+        ordenarPorIdActivo = !ordenarPorIdActivo;
+        const btnSort = document.getElementById('sortIdBtn');
+        if (ordenarPorIdActivo) {
+            btnSort.classList.add('active-sort');
+        } else {
+            btnSort.classList.remove('active-sort');
+        }
+        if(globalVampirosData.length > 0) {
+            renderVampiros(globalVampirosData);
+        }
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
         const passInput = document.getElementById('narratorPasswordInput');
@@ -812,7 +842,8 @@
             download: true, header: true, skipEmptyLines: true,
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
-                renderVampiros(results.data);
+                globalVampirosData = results.data;
+                renderVampiros(globalVampirosData);
             }
         });
         window.addEventListener('scroll', () => {
@@ -826,8 +857,13 @@
 
         const esNarrator = document.body.classList.contains('narrator-mode');
 
-        // ORDEN INTELIGENTE: 1º Cargos oficiales arriba, 2º Alfabético por nombre principal
         datos.sort((a, b) => {
+            if (esNarrator && ordenarPorIdActivo) {
+                let idA = parseInt(a["ID"]) || 0;
+                let idB = parseInt(b["ID"]) || 0;
+                return idA - idB;
+            }
+
             const cargoA = (a["Cargo_Oficial"] || "").trim();
             const cargoB = (b["Cargo_Oficial"] || "").trim();
             
@@ -865,7 +901,7 @@
             const secret = v["Secretos"] || "";
             const consejosIntegracion = v["Consejos_integracion_Chicago_Nocturno"] || ""; 
             const cargoOficial = v["Cargo_Oficial"] || "";
-            const fuente = (v["Fuente"] || "").trim();
+            const fuente = (v["FUENTE"] || v["Fuente"] || "").trim(); // Lee la nueva columna FUENTE
             const estatus = (v["Estatus"] || "Interactuado").trim();
             
             const cleanId = String(id).trim();
@@ -875,7 +911,6 @@
 
             const tieneCargoReal = cargoOficial && cargoOficial.trim() !== "" && cargoOficial.trim() !== "-";
 
-            // REGLA: Si no es narrador, filtramos los ocultos (salvo que tengan cargo oficial)
             if (!esNarrator) {
                 const estatusLower = estatus.toLowerCase();
                 const esOcultoODesconocido = estatusLower.includes("oculto") || estatusLower.includes("desconocido");
@@ -884,7 +919,6 @@
                 }
             }
 
-            // Forzar estatus visual a interactuado si tiene cargo oficial pero estaba oculto/desconocido
             const estatusEfectivo = (tieneCargoReal && (estatus.toLowerCase().includes("oculto") || estatus.toLowerCase().includes("desconocido"))) ? "Interactuado" : estatus;
 
             let estatusClase = "estatus-interactuado";
@@ -901,7 +935,6 @@
             const ubicacionMostrada = (esConocidoOidas && !esPublicoPorCargo) ? "Dominio desconocido" : ubicacion;
             const imagenMostrada = (esConocidoOidas && !esPublicoPorCargo) ? "./retratos/silueta.jpg" : `./retratos/${imagenLimpia}`;
 
-            // ETIQUETA DE ORIGEN EXCLUSIVA PARA NARRADOR SEGÚN FUENTE
             const esCloacaFuente = fuente.toLowerCase().includes("cloaca");
             const textoFuente = fuente !== "" ? fuente : (esCloacaFuente ? "La Cloaca Carmesí" : "Chicago Nocturno");
             const fuenteClase = esCloacaFuente ? "narrator-source-badge source-cloaca" : "narrator-source-badge";
@@ -941,7 +974,6 @@
                             </div>
                         </div>
                         
-                        <!-- NOMBRE REAL OCULTO (SOLO VISIBLE EN MODO NARRADOR SI HAY ALIAS) -->
                         ${alias !== "" ? `<div class="info-block narrator-only" style="background: rgba(139,0,0,0.12); border-color: rgba(139,0,0,0.4);"><span class="info-label"><i class="fa-solid fa-user-secret"></i> Identidad Real:</span><span class="info-value" style="color: var(--accent-gold);">${nombreReal}</span></div>` : ''}
                         
                         ${tieneCargoReal ? `<div class="info-block cargo-block"><span class="info-label"><i class="fa-solid fa-crown"></i> Cargo:</span><span class="info-value" style="color: var(--accent-gold); max-width: 100%;">${cargoOficial}</span></div>` : ''}
@@ -961,8 +993,8 @@
                             return nombrePrincipal ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="${archivoFicha}?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> ${etiquetaFicha}</a></span></div>` : '';
                         })()}
 
-                        ${secret ? `<div class="card-notes narrator-only">🦇 <strong>Secretos:</strong> ${secret}</div>` : ''}
-                        ${consejosIntegracion ? `<div class="card-notes narrator-only" style="background-color: rgba(197, 160, 89, 0.08); border-color: rgba(197, 160, 89, 0.3); color: var(--accent-gold);">💡 <strong>Consejos de Integración:</strong> ${consejosIntegracion}</div>` : ''}
+                        ${secret ? `<div class="card-notes narrator-only">🦇 <strong>Secretos:</strong><span>${secret}</span></div>` : ''}
+                        ${consejosIntegracion ? `<div class="card-notes narrator-only" style="background-color: rgba(197, 160, 89, 0.08); border-color: rgba(197, 160, 89, 0.3); color: var(--accent-gold);">💡 <strong>Consejos de Integración:</strong><span>${consejosIntegracion}</span></div>` : ''}
                     </div>
                 `;
             }
