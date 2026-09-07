@@ -5,18 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha de Personaje - La Cloaca Carmesí</title>
 
-    <!-- FAVICON -->
     <link rel="icon" type="image/png" href="./iconos/drRol.png">
     
-    <!-- FUENTES OFICIALES V5 (Google Fonts: Cinzel) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Librería para procesar CSV de Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
@@ -249,19 +245,43 @@
             font-size: 1rem;
         }
 
-        .disciplines-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        /* 3 COLUMNAS PARA DISCIPLINAS EN TARJETAS CON VALOR NUMÉRICO */
+        .disciplines-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
             margin-top: 8px;
         }
-        .discipline-row-item {
+        @media (max-width: 750px) {
+            .disciplines-grid { grid-template-columns: 1fr; }
+        }
+
+        .discipline-card {
             background: var(--card-notes-bg);
             border: 1px solid var(--card-border);
-            padding: 8px 12px;
             border-radius: 6px;
-            font-size: 0.92rem;
+            padding: 10px;
+        }
+        .discipline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--card-border);
+            padding-bottom: 5px;
+            margin-bottom: 6px;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+        }
+        .discipline-powers-list {
+            list-style-type: disc;
+            padding-left: 16px;
+            font-size: 0.82rem;
             color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
 
         .secrets-box {
@@ -293,8 +313,8 @@
             .sheet-container { background-color: transparent !important; border: 1px solid #000000 !important; box-shadow: none !important; display: block !important; padding: 15px !important; }
             .sheet-container::before { display: none !important; }
             .section-title { color: #000000 !important; border-bottom: 1px solid #000000 !important; font-weight: bold; }
-            .sheet-title, .sheet-clan, .info-value, .pool-col-label, .pool-col-value, .discipline-row-item, .secrets-box { color: #000000 !important; }
-            .info-block, .pool-col-box, .discipline-row-item { background-color: transparent !important; border: 1px solid #444444 !important; }
+            .sheet-title, .sheet-clan, .info-value, .pool-col-label, .pool-col-value, .discipline-card, .secrets-box { color: #000000 !important; }
+            .info-block, .pool-col-box, .discipline-card { background-color: transparent !important; border: 1px solid #444444 !important; }
             .secrets-box { background-color: transparent !important; border: 1px solid #000000 !important; }
             .sheet-img-box { border: 1px solid #000000 !important; filter: grayscale(100%); }
         }
@@ -382,21 +402,49 @@
         return html;
     }
 
-    // Renderiza cada disciplina obtenida de la columna "Disciplinas" en líneas independientes
-    function renderDisciplinasPorLinea(textoDisciplinas) {
+    // Parsea disciplinas estructuradas en tarjetas de 3 columnas mostrando el nivel en número
+    function renderDisciplinas(textoDisciplinas) {
         if (!textoDisciplinas || textoDisciplinas.trim() === '-' || textoDisciplinas.trim() === '') {
-            return '<span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Sin disciplinas registradas.</span>';
+            return '<span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; grid-column: span 3;">Sin disciplinas registradas.</span>';
         }
 
+        const regex = /([A-Za-zñÑáéíóúÁÉÍÓÚ\s]+?)\s*(\d+)(?:\s*\((.*?)\))?/g;
+        let match;
         let html = '';
-        const lineas = textoDisciplinas.split(/,(?=[^\)]*(?:\(|$))/);
-        
-        lineas.forEach(linea => {
-            const textoLimpio = linea.trim();
-            if (textoLimpio) {
-                html += `<div class="discipline-row-item"><strong>${textoLimpio}</strong></div>`;
+        let count = 0;
+
+        while ((match = regex.exec(textoDisciplinas)) !== null) {
+            count++;
+            const nombreDisc = match[1].trim();
+            const nivelDisc = match[2].trim();
+            const poderesRaw = match[3] ? match[3].trim() : "";
+            const poderesList = poderesRaw ? poderesRaw.split(',').map(p => p.trim()) : [];
+
+            let poderesHtml = '';
+            if (poderesList.length > 0) {
+                poderesHtml = '<ul class="discipline-powers-list">';
+                poderesList.forEach(pod => {
+                    poderesHtml += `<li>${pod}</li>`;
+                });
+                poderesHtml += '</ul>';
+            } else {
+                poderesHtml = '<span style="font-size: 0.82rem; color: var(--text-muted); font-style: italic;">Sin poderes específicos detallados.</span>';
             }
-        });
+
+            html += `
+                <div class="discipline-card">
+                    <div class="discipline-header">
+                        <span>${nombreDisc}</span>
+                        <span class="pool-col-value">${nivelDisc}</span>
+                    </div>
+                    ${poderesHtml}
+                </div>
+            `;
+        }
+
+        if (count === 0) {
+            return `<span style="font-size: 0.9rem; color: var(--text-main); grid-column: span 3;">${textoDisciplinas}</span>`;
+        }
 
         return html;
     }
@@ -424,7 +472,6 @@
         const poolSociales = v["Pool_Sociales"] || "-";
         const poolMentales = v["Pool_Mentales"] || "-";
         
-        // Extracción directa de la columna "Disciplinas"
         const textoDisciplinas = v["Disciplinas"] || "";
         const reservasExcepcionales = v["Reservas_Excepcionales"] || "";
         const disciplinasVentajas = v["DisciplinasVentajas_y_Defectos"] || "";
@@ -474,8 +521,8 @@
                 </div>
 
                 <div class="section-title">Disciplinas y Poderes</div>
-                <div class="disciplines-stack">
-                    ${renderDisciplinasPorLinea(textoDisciplinas)}
+                <div class="disciplines-grid">
+                    ${renderDisciplinas(textoDisciplinas)}
                 </div>
 
                 ${disciplinasVentajas ? `
