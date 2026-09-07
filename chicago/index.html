@@ -141,16 +141,17 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
         .controls-main-group {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             flex: 3;
             min-width: 280px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .controls-actions-group {
@@ -162,8 +163,8 @@
             flex-wrap: wrap;
         }
 
-        .search-box { flex: 2; min-width: 180px; }
-        .filter-box { flex: 1; min-width: 140px; }
+        .search-box { flex: 2; min-width: 160px; }
+        .filter-box { flex: 1; min-width: 110px; } /* Reducido de tamaño */
 
         .search-box input, .filter-box select {
             width: 100%;
@@ -172,7 +173,7 @@
             border: 1px solid var(--card-border);
             border-radius: 6px;
             color: var(--text-main);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             outline: none;
         }
 
@@ -390,6 +391,10 @@
 
         .narrator-only { display: none !important; }
         body.narrator-mode .narrator-only { display: flex !important; }
+        
+        /* Selector de fuente exclusivo de narrador */
+        #sourceFilter { display: none; }
+        body.narrator-mode #sourceFilter { display: block; }
 
         .card-notes {
             font-size: 0.85rem;
@@ -555,16 +560,25 @@
     <div class="controls">
         <div class="controls-main-group">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar por nombre, alias, clan, ocupación..." oninput="applyFilters()">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre, alias, clan..." oninput="applyFilters()">
             </div>
+            <!-- Selector de Facciones (Reducido) -->
             <div class="filter-box">
                 <select id="factionFilter" onchange="applyFilters()">
-                    <option value="">Todas las Facciones</option>
+                    <option value="">Facciones</option>
                     <option value="Camarilla">Camarilla</option>
                     <option value="Anarquistas">Anarquistas</option>
                     <option value="Independiente">Independiente</option>
                     <option value="Hecata">Hecata</option>
                     <option value="Autarcas">Autarcas</option>
+                </select>
+            </div>
+            <!-- NUEVO SELECTOR DE FUENTES (EXCLUSIVO NARRADOR) -->
+            <div class="filter-box" id="sourceFilter">
+                <select id="sourceSelectFilter" onchange="applyFilters()">
+                    <option value="">Fuentes</option>
+                    <option value="Chicago Nocturno">Chicago Nocturno</option>
+                    <option value="La Cloaca Carmesí">La Cloaca Carmesí</option>
                 </select>
             </div>
         </div>
@@ -795,6 +809,7 @@
             localStorage.setItem('vtm-narrator-mode', 'false');
             ordenarPorIdActivo = false;
             document.getElementById('sortIdBtn').classList.remove('active-sort');
+            document.getElementById('sourceSelectFilter').value = ""; // Resetear filtro de fuente
             const btnNarrator = document.getElementById('narratorToggleBtn');
             btnNarrator.classList.remove('narrator-active');
             btnNarrator.title = "Modo Narrador";
@@ -857,6 +872,7 @@
 
         const esNarrator = document.body.classList.contains('narrator-mode');
 
+        // ORDEN JERÁRQUICO ESTRICTO DE LA CAMARILLA + ALFABÉTICO
         datos.sort((a, b) => {
             if (esNarrator && ordenarPorIdActivo) {
                 let idA = parseInt(a["ID"]) || 0;
@@ -864,14 +880,26 @@
                 return idA - idB;
             }
 
-            const cargoA = (a["Cargo_Oficial"] || "").trim();
-            const cargoB = (b["Cargo_Oficial"] || "").trim();
+            const cargoA = (a["Cargo_Oficial"] || "").trim().toLowerCase();
+            const cargoB = (b["Cargo_Oficial"] || "").trim().toLowerCase();
             
             const tieneCargoA = cargoA !== "" && cargoA !== "-";
             const tieneCargoB = cargoB !== "" && cargoB !== "-";
 
-            if (tieneCargoA && !tieneCargoB) return -1;
-            if (!tieneCargoA && tieneCargoB) return 1;
+            function obtenerPesoCargo(cargo) {
+                if (cargo.includes("príncipe") || cargo.includes("principe")) return 1;
+                if (cargo.includes("senescal")) return 2;
+                if (cargo.includes("sheriff")) return 3;
+                if (cargo.includes("primogénito") || cargo.includes("primogenito") || cargo.includes("primogenitura")) return 4;
+                return 5;
+            }
+
+            const pesoA = tieneCargoA ? obtenerPesoCargo(cargoA) : 6;
+            const pesoB = tieneCargoB ? obtenerPesoCargo(cargoB) : 6;
+
+            if (pesoA !== pesoB) {
+                return pesoA - pesoB;
+            }
 
             const aliasA = (a["Alias"] || "").trim();
             const nombreA = (a["Nombre del Personaje"] || "").trim();
@@ -901,7 +929,7 @@
             const secret = v["Secretos"] || "";
             const consejosIntegracion = v["Consejos_integracion_Chicago_Nocturno"] || ""; 
             const cargoOficial = v["Cargo_Oficial"] || "";
-            const fuente = (v["FUENTE"] || v["Fuente"] || "").trim(); // Lee la nueva columna FUENTE
+            const fuente = (v["FUENTE"] || v["Fuente"] || "").trim();
             const estatus = (v["Estatus"] || "Interactuado").trim();
             
             const cleanId = String(id).trim();
@@ -943,6 +971,7 @@
             card.className = 'card';
             card.setAttribute('data-search', `${formattedId} ${alias} ${nombreReal} ${clan} ${ocupacion} ${cargoOficial} ${ubicacion} ${faccion} ${sire} ${menciones} ${secret} ${consejosIntegracion} ${estatusEfectivo} ${fuente}`.toLowerCase());
             card.setAttribute('data-faccion', faccion.toLowerCase());
+            card.setAttribute('data-source', textoFuente.toLowerCase()); // Atributo para filtrar por fuente
 
             const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
 
@@ -985,7 +1014,6 @@
                         ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire / Creador:</span><span class="info-value">${sire}</span></div>` : ''}
                         ${menciones ? `<div class="info-block narrator-only"><span class="info-label">Menciones:</span><span class="info-value">${menciones}</span></div>` : ''}
                         
-                        <!-- ENRUTAMIENTO DINÁMICO DE FICHA (STANDAR VS CLOACA) -->
                         ${(() => {
                             const esCloaca = fuente.toLowerCase().includes("cloaca");
                             const archivoFicha = esCloaca ? "ficha_cloaca.html" : "ficha.html";
@@ -1006,12 +1034,15 @@
     function applyFilters() {
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
         const factionQuery = document.getElementById('factionFilter').value.toLowerCase().trim();
+        const sourceQuery = document.getElementById('sourceSelectFilter').value.toLowerCase().trim();
         let visibleCount = 0;
 
         document.querySelectorAll('.card').forEach(card => {
             const matchesSearch = !query || card.getAttribute('data-search').includes(query);
             const matchesFaction = !factionQuery || card.getAttribute('data-faccion').includes(factionQuery);
-            if (matchesSearch && matchesFaction) {
+            const matchesSource = !sourceQuery || card.getAttribute('data-source').includes(sourceQuery);
+
+            if (matchesSearch && matchesFaction && matchesSource) {
                 card.style.display = 'flex';
                 visibleCount++;
             } else {
