@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoja de Personaje - Censo de Chicago V5</title>
+    <title>Hoja de Personaje Oficial - Censo de Chicago V5</title>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0REGNEJC1G"></script>
     <script>
@@ -109,10 +109,33 @@
             text-transform: uppercase;
         }
 
-        .theme-btn-header {
+        .header-actions-right {
             position: absolute;
-            top: 15px; right: 15px;
-            width: 38px; height: 38px;
+            top: 12px; right: 15px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .header-action-btn {
+            background-color: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .header-action-btn:hover {
+            background: rgba(197, 160, 89, 0.15);
+        }
+
+        .theme-btn-header {
+            width: 36px; height: 36px;
             border-radius: 50%;
             background-color: rgba(0, 0, 0, 0.35);
             border: 1px solid var(--accent-gold);
@@ -149,7 +172,6 @@
             letter-spacing: 1px;
         }
 
-        /* CABECERA ESTILO IMAGEN 1 */
         .sheet-top-grid {
             display: grid;
             grid-template-columns: 280px 1fr;
@@ -226,7 +248,6 @@
             word-break: break-word;
         }
 
-        /* ESTADÍSTICAS VITALES (SOLO HUMANIDAD Y POTENCIA ARRIBA) */
         .stats-pools-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -247,7 +268,6 @@
             color: var(--accent-gold);
         }
 
-        /* TRACKERS INTEGRADOS DEBAJO DE ATRIBUTOS (ESTILO OFICIAL V5) */
         .trackers-under-attr {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -287,7 +307,6 @@
             border-color: var(--accent-crimson);
         }
 
-        /* 3 COLUMNAS PARA ATRIBUTOS Y HABILIDADES */
         .three-columns-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -339,7 +358,6 @@
             margin-top: 10px;
         }
 
-        /* BOTONES FLOTANTES */
         .floating-btn-container {
             position: fixed; bottom: 25px; right: 25px;
             display: flex; flex-direction: column; gap: 12px; z-index: 9999;
@@ -381,6 +399,90 @@
             margin-top: 40px; font-size: 0.8rem;
             color: var(--text-muted);
         }
+
+        /* ESTILOS DE IMPRESIÓN FORMATO A4 (FICHA2) */
+        @media print {
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+
+            body {
+                background-color: transparent !important;
+                color: #000000 !important;
+                font-size: 10pt;
+                padding: 0 !important;
+            }
+
+            header, footer, .floating-btn-container, .back-link-header, .header-actions-right {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .sheet-section {
+                background-color: transparent !important;
+                border: 1px solid #000000 !important;
+                box-shadow: none !important;
+                break-inside: avoid;
+                margin-bottom: 10px !important;
+                padding: 10px !important;
+            }
+
+            .sheet-section::before {
+                display: none !important;
+            }
+
+            .section-title, .column-group h4 {
+                color: #000000 !important;
+                border-bottom: 1px solid #000000 !important;
+                font-weight: bold;
+            }
+
+            .sheet-name, .sheet-clan, .info-val, .pool-num, .stat-name {
+                color: #000000 !important;
+            }
+
+            .info-box, .pool-card, .stat-row {
+                background-color: transparent !important;
+                border-color: #444444 !important;
+            }
+
+            .card-notes {
+                background-color: transparent !important;
+                border: 1px solid #000000 !important;
+                color: #000000 !important;
+            }
+
+            .dot {
+                border: 1px solid #000000 !important;
+                background-color: #ffffff !important;
+            }
+
+            .dot.filled {
+                background-color: #cc0000 !important;
+                border-color: #cc0000 !important;
+            }
+
+            .t-box {
+                border: 1px solid #000000 !important;
+                background-color: #ffffff !important;
+            }
+            .t-box.filled {
+                background-color: #cc0000 !important;
+                border-color: #cc0000 !important;
+            }
+
+            .portrait-container {
+                border: 1px solid #000000 !important;
+                filter: grayscale(100%);
+            }
+        }
     </style>
 </head>
 <body>
@@ -388,7 +490,10 @@
 <div class="container">
     <header>
         <a href="index.html" class="back-link-header"><i class="fa-solid fa-arrow-left"></i> Censo</a>
-        <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema"><i class="fa-solid fa-moon"></i></button>
+        <div class="header-actions-right">
+            <button class="header-action-btn" onclick="window.print()" title="Imprimir Ficha A4"><i class="fa-solid fa-print"></i> Imprimir</button>
+            <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema"><i class="fa-solid fa-moon"></i></button>
+        </div>
         <h1 class="cabecera-principal">Ficha Técnica Oficial V5</h1>
     </header>
 
@@ -396,7 +501,7 @@
 
     <div id="sheetContent" style="display: none;">
         
-        <!-- CABECERA ESTILO IMAGEN 1 -->
+        <!-- CABECERA -->
         <div class="sheet-section">
             <div class="sheet-top-grid" style="margin-bottom: 0;">
                 <div class="portrait-container">
@@ -427,7 +532,7 @@
             </div>
         </div>
 
-        <!-- ESTADÍSTICAS VITALES (HUMANIDAD Y POTENCIA) -->
+        <!-- ESTADÍSTICAS VITALES -->
         <div class="sheet-section">
             <div class="section-title"><i class="fa-solid fa-heart-pulse"></i> Estadísticas Vitales</div>
             <div class="stats-pools-grid">
@@ -436,7 +541,7 @@
             </div>
         </div>
 
-        <!-- ATRIBUTOS CON SALUD Y VOLUNTAD DEBAJO -->
+        <!-- ATRIBUTOS Y TRACKERS -->
         <div class="sheet-section">
             <div class="section-title"><i class="fa-solid fa-chart-bar"></i> Atributos</div>
             <div class="three-columns-grid">
@@ -454,7 +559,6 @@
                 </div>
             </div>
 
-            <!-- SALUD Y FUERZA DE VOLUNTAD INTEGRADOS DEBAJO DE LOS ATRIBUTOS -->
             <div class="trackers-under-attr">
                 <div class="tracker-item">
                     <div class="tracker-label">Salud</div>
@@ -514,7 +618,6 @@
     </footer>
 </div>
 
-<!-- MENÚ FLOTANTE -->
 <div class="floating-btn-container">
     <a href="https://werkstoff747.github.io/vtm-consulta/chicago/" class="floating-action-btn" title="Ir al Censo de Chicago"><i class="fa-solid fa-house"></i></a>
     <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir"><i class="fa-solid fa-arrow-up"></i></button>
