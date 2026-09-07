@@ -400,7 +400,7 @@
             color: var(--text-muted);
         }
 
-        /* ESTILOS DE IMPRESIÓN FORMATO A4 (FICHA2) */
+        /* ESTILOS DE IMPRESIÓN FORMATO A4 OPTIMIZADOS PARA LETRA GRANDE Y VERTICAL */
         @media print {
             @page {
                 size: A4;
@@ -410,7 +410,7 @@
             body {
                 background-color: transparent !important;
                 color: #000000 !important;
-                font-size: 10pt;
+                font-size: 12pt !important;
                 padding: 0 !important;
             }
 
@@ -419,19 +419,19 @@
             }
 
             .container {
-                max-width: 100% !important;
-                width: 100% !important;
-                margin: 0 !important;
+                max-width: 86% !important;
+                width: 86% !important;
+                margin: 0 auto !important;
                 padding: 0 !important;
             }
 
             .sheet-section {
                 background-color: transparent !important;
-                border: 1px solid #000000 !important;
+                border: 1.5px solid #000000 !important;
                 box-shadow: none !important;
                 break-inside: avoid;
-                margin-bottom: 10px !important;
-                padding: 10px !important;
+                margin-bottom: 14px !important;
+                padding: 14px !important;
             }
 
             .sheet-section::before {
@@ -440,27 +440,38 @@
 
             .section-title, .column-group h4 {
                 color: #000000 !important;
-                border-bottom: 1px solid #000000 !important;
+                border-bottom: 1.5px solid #000000 !important;
                 font-weight: bold;
+                font-size: 11pt !important;
+                margin-bottom: 8px !important;
             }
 
-            .sheet-name, .sheet-clan, .info-val, .pool-num, .stat-name {
+            .sheet-name {
+                font-size: 1.6rem !important;
+            }
+
+            .sheet-clan, .info-val, .pool-num, .stat-name {
                 color: #000000 !important;
+                font-size: 10.5pt !important;
             }
 
             .info-box, .pool-card, .stat-row {
                 background-color: transparent !important;
-                border-color: #444444 !important;
+                border-color: #333333 !important;
+                padding: 6px 8px !important;
             }
 
             .card-notes {
                 background-color: transparent !important;
                 border: 1px solid #000000 !important;
                 color: #000000 !important;
+                font-size: 10pt !important;
             }
 
             .dot {
-                border: 1px solid #000000 !important;
+                width: 15px !important;
+                height: 15px !important;
+                border: 1.5px solid #000000 !important;
                 background-color: #ffffff !important;
             }
 
@@ -470,7 +481,9 @@
             }
 
             .t-box {
-                border: 1px solid #000000 !important;
+                width: 22px !important;
+                height: 22px !important;
+                border: 1.5px solid #000000 !important;
                 background-color: #ffffff !important;
             }
             .t-box.filled {
@@ -479,8 +492,9 @@
             }
 
             .portrait-container {
-                border: 1px solid #000000 !important;
+                border: 1.5px solid #000000 !important;
                 filter: grayscale(100%);
+                height: 320px !important;
             }
         }
     </style>
