@@ -245,7 +245,6 @@
             font-size: 1rem;
         }
 
-        /* 3 COLUMNAS PARA DISCIPLINAS EN TARJETAS CON VALOR NUMÉRICO */
         .disciplines-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -305,18 +304,79 @@
 
         footer { text-align: center; padding: 20px; border-top: 1px solid var(--card-border); }
 
+        /* ESTILOS DE IMPRESIÓN A4 OPTIMIZADOS (AMPLIOS Y LEGIBLES) */
         @media print {
-            @page { size: A4; margin: 1cm; }
-            body { background-color: transparent !important; color: #000000 !important; font-size: 10pt; padding: 0 !important; }
-            header, footer, .back-btn, .header-actions-right { display: none !important; }
-            .container { max-width: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .sheet-container { background-color: transparent !important; border: 1px solid #000000 !important; box-shadow: none !important; display: block !important; padding: 15px !important; }
-            .sheet-container::before { display: none !important; }
-            .section-title { color: #000000 !important; border-bottom: 1px solid #000000 !important; font-weight: bold; }
-            .sheet-title, .sheet-clan, .info-value, .pool-col-label, .pool-col-value, .discipline-card, .secrets-box { color: #000000 !important; }
-            .info-block, .pool-col-box, .discipline-card { background-color: transparent !important; border: 1px solid #444444 !important; }
-            .secrets-box { background-color: transparent !important; border: 1px solid #000000 !important; }
-            .sheet-img-box { border: 1px solid #000000 !important; filter: grayscale(100%); }
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+
+            body {
+                background-color: transparent !important;
+                color: #000000 !important;
+                font-size: 11.5pt !important;
+                padding: 0 !important;
+            }
+
+            header, footer, .back-btn, .header-actions-right {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 88% !important;
+                width: 88% !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+            }
+
+            .sheet-container {
+                background-color: transparent !important;
+                border: 1.5px solid #000000 !important;
+                box-shadow: none !important;
+                display: grid !important;
+                grid-template-columns: 260px 1fr !important;
+                gap: 20px !important;
+                padding: 15px !important;
+            }
+
+            .sheet-container::before {
+                display: none !important;
+            }
+
+            .section-title {
+                color: #000000 !important;
+                border-bottom: 1.5px solid #000000 !important;
+                font-weight: bold;
+                font-size: 10.5pt !important;
+                margin-top: 12px !important;
+            }
+
+            .sheet-title {
+                font-size: 1.6rem !important;
+                color: #000000 !important;
+                border-bottom: 1px solid #000000 !important;
+            }
+
+            .sheet-clan, .info-value, .pool-col-label, .pool-col-value, .discipline-card, .secrets-box, .info-label {
+                color: #000000 !important;
+            }
+
+            .info-block, .pool-col-box, .discipline-card {
+                background-color: transparent !important;
+                border: 1.5px solid #444444 !important;
+                padding: 7px 10px !important;
+            }
+
+            .secrets-box {
+                background-color: transparent !important;
+                border: 1.5px solid #000000 !important;
+            }
+
+            .sheet-img-box {
+                border: 1.5px solid #000000 !important;
+                filter: grayscale(100%);
+                height: 350px !important;
+            }
         }
     </style>
 </head>
@@ -402,7 +462,6 @@
         return html;
     }
 
-    // Parsea disciplinas estructuradas en tarjetas de 3 columnas mostrando el nivel en número
     function renderDisciplinas(textoDisciplinas) {
         if (!textoDisciplinas || textoDisciplinas.trim() === '-' || textoDisciplinas.trim() === '') {
             return '<span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; grid-column: span 3;">Sin disciplinas registradas.</span>';
