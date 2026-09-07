@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Personaje - La Cloaca Carmesí</title>
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="./iconos/drRol.png">
+    
+    <!-- FUENTES OFICIALES V5 (Google Fonts: Cinzel) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome para los iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Librería para procesar CSV de Google Sheets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #0f0f12;
+            --card-bg: #18181c;
+            --card-border: #2a2a32;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #c5a059;
+            --text-main: #e1e1e6;
+            --text-muted: #a0a0b0;
+            --tag-bg: #25252e;
+            --input-bg: #0f0f12;
+            --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
+            --header-border: #8b0000;
+        }
+
+        body.light-mode {
+            --bg-color: #a8a7a4;
+            --card-bg: #ffffff;
+            --card-border: #bcaba0;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #8d6722;
+            --text-main: #1f1f22;
+            --text-muted: #555459;
+            --tag-bg: #f2f0eb;
+            --input-bg: #ffffff;            
+            --header-bg: #2b0408;
+            --header-border: #7a0000;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; width: 100%; }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--header-border);
+            margin-bottom: 25px;
+            background: var(--header-bg);
+            border-radius: 8px;
+        }
+
+        .back-btn {
+            background: var(--tag-bg);
+            border: 1px solid var(--card-border);
+            color: var(--accent-gold);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        h1.cabecera-principal {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .sheet-container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .sheet-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background-color: var(--accent-red);
+            z-index: 5;
+        }
+
+        .sheet-img-box {
+            width: 100%;
+            height: 380px;
+            background: #000;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+
+        .sheet-img-box img {
+            width: 100%; height: 100%; object-fit: cover; object-position: top;
+        }
+
+        .sheet-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .sheet-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--card-title-color, #fff);
+            border-bottom: 1px dashed var(--card-border);
+            padding-bottom: 8px;
+        }
+
+        .sheet-grid-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .info-block {
+            font-size: 0.88rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--card-border);
+        }
+
+        .info-label { color: var(--text-muted); font-weight: 600; }
+        .info-value { font-weight: 600; text-align: right; color: var(--text-main); }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            font-size: 1rem;
+            margin-top: 10px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 4px;
+        }
+
+        .pools-box, .secrets-box {
+            background: rgba(139, 0, 0, 0.08);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        #loading, #error-msg {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            padding: 40px;
+            font-family: 'Cinzel', serif;
+        }
+
+        footer { text-align: center; padding: 20px; border-top: 1px solid var(--card-border); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Volver al Censo</a>
+        <h1 class="cabecera-principal">Ficha de Personaje — La Cloaca Carmesí</h1>
+    </header>
+
+    <div id="loading">Cargando datos de la ficha...</div>
+    <div id="error-msg" style="display:none;">Personaje no encontrado en los archivos de la Cloaca Carmesí.</div>
+    
+    <div id="sheetContent" style="display: none;" class="sheet-container">
+        <!-- Contenido dinámico inyectado por JS -->
+    </div>
+
+    <footer>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Vampiro: La Mascarada (5ª Edición) — Archivos de la Cloaca</p>
+    </footer>
+</div>
+
+<script>
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=1319625641&single=true&output=csv';
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const personajeId = urlParams.get('id');
+
+        if (!personajeId) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error-msg').style.display = 'block';
+            return;
+        }
+
+        Papa.parse(SHEET_CSV_URL, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                document.getElementById('loading').style.display = 'none';
+                
+                const personaje = results.data.find(v => String(v["ID"]).trim() === String(personajeId).trim());
+
+                if (personaje) {
+                    renderFicha(personaje);
+                } else {
+                    document.getElementById('error-msg').style.display = 'block';
+                }
+            }
+        });
+    });
+
+    function renderFicha(v) {
+        const container = document.getElementById('sheetContent');
+        container.style.display = 'grid';
+
+        const id = v["ID"] || "";
+        const nombre = v["Nombre_Personaje"] || "Desconocido";
+        const clan = v["Clan"] || "Desconocido";
+        const apodoRango = v["Apodo_o_Rango"] || "";
+        const sire = v["Sire"] || "Desconocido";
+        const abrazo = v["Abrazo"] || "";
+        const ambicion = v["Ambicion"] || "";
+        const convicciones = v["Convicciones"] || "";
+        const piedrasToque = v["Piedras_de_Toque"] || "";
+        const humanidad = v["Humanidad"] || "";
+        const generacion = v["Generacion"] || "";
+        const potenciaSangre = v["Potencia_de_Sangre"] || "";
+        const salud = v["Salud"] || "";
+        const fuerzaVoluntad = v["Fuerza_de_Voluntad"] || "";
+        
+        const poolFisicos = v["Pool_Fisicos"] || "";
+        const poolSociales = v["Pool_Sociales"] || "";
+        const poolMentales = v["Pool_Mentales"] || "";
+        const poolDisciplinas = v["Pool_Disciplinas"] || "";
+        const reservasExcepcionales = v["Reservas_Excepcionales"] || "";
+        const disciplinasVentajas = v["DisciplinasVentajas_y_Defectos"] || "";
+        const secretos = v["Secretos"] || "";
+
+        const cleanId = String(id).trim();
+        const imagenLimpia = v["Archivo de Imagen"] || (cleanId ? `${cleanId}.jpg` : 'silueta.jpg');
+
+        container.innerHTML = `
+            <div>
+                <div class="sheet-img-box">
+                    <img src="./retratos/${imagenLimpia}" alt="${nombre}" onerror="this.onerror=null; this.src='./retratos/silueta.jpg';">
+                </div>
+            </div>
+            <div class="sheet-details">
+                <div class="sheet-title">${nombre}</div>
+                
+                <div class="sheet-grid-info">
+                    <div class="info-block"><span class="info-label">Clan:</span><span class="info-value">${clan}</span></div>
+                    <div class="info-block"><span class="info-label">Apodo / Rango:</span><span class="info-value">${apodoRango}</span></div>
+                    <div class="info-block"><span class="info-label">Sire:</span><span class="info-value">${sire}</span></div>
+                    <div class="info-block"><span class="info-label">Abrazo:</span><span class="info-value">${abrazo}</span></div>
+                    <div class="info-block"><span class="info-label">Generación:</span><span class="info-value">${generacion}</span></div>
+                    <div class="info-block"><span class="info-label">Potencia de Sangre:</span><span class="info-value">${potenciaSangre}</span></div>
+                    <div class="info-block"><span class="info-label">Humanidad:</span><span class="info-value">${humanidad}</span></div>
+                    <div class="info-block"><span class="info-label">Salud / Voluntad:</span><span class="info-value">${salud} / ${fuerzaVoluntad}</span></div>
+                </div>
+
+                <div class="section-title">Crónica y Moral</div>
+                <div class="sheet-grid-info">
+                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Ambición:</span><span class="info-value">${ambicion}</span></div>
+                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Convicciones:</span><span class="info-value">${convicciones}</span></div>
+                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Piedras de Toque:</span><span class="info-value">${piedrasToque}</span></div>
+                </div>
+
+                <div class="section-title">Reservas de Dados y Disciplinas</div>
+                <div class="pools-box">
+                    <p><strong>Físicos:</strong> ${poolFisicos}</p>
+                    <p><strong>Sociales:</strong> ${poolSociales}</p>
+                    <p><strong>Mentales:</strong> ${poolMentales}</p>
+                    <p><strong>Disciplinas:</strong> ${poolDisciplinas}</p>
+                    ${reservasExcepcionales ? `<p><strong>Excepcionales:</strong> ${reservasExcepcionales}</p>` : ''}
+                    ${disciplinasVentajas ? `<p><strong>Ventajas / Defectos:</strong> ${disciplinasVentajas}</p>` : ''}
+                </div>
+
+                ${secretos ? `
+                    <div class="section-title">Secretos de Narrador</div>
+                    <div class="secrets-box">
+                        🦇 <strong>Secretos:</strong> ${secretos}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
