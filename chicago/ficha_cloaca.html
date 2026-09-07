@@ -81,48 +81,6 @@
             text-align: center;
         }
 
-        .back-btn {
-            position: absolute;
-            top: 15px; left: 15px;
-            background: var(--tag-bg);
-            border: 1px solid var(--card-border);
-            color: var(--accent-gold);
-            padding: 8px 14px;
-            border-radius: 6px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            font-weight: 700;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .back-btn:hover { opacity: 0.8; }
-
-        .header-actions-right {
-            position: absolute;
-            top: 12px; right: 15px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .header-action-btn {
-            background-color: rgba(0, 0, 0, 0.35);
-            border: 1px solid var(--accent-gold);
-            color: var(--accent-gold);
-            padding: 7px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex; align-items: center; gap: 6px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.78rem;
-            font-weight: 700;
-            text-decoration: none;
-        }
-        .header-action-btn:hover { background: rgba(197, 160, 89, 0.15); }
-
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
@@ -303,110 +261,12 @@
         }
 
         footer { text-align: center; padding: 20px; border-top: 1px solid var(--card-border); }
-
-        /* ESTILOS DE IMPRESIÓN A4 AMPLIADOS Y CENTRADOS SIN CORTES */
-        @media print {
-            @page {
-                size: A4;
-                margin: 1cm;
-            }
-        
-            body {
-                background-color: transparent !important;
-                color: #000000 !important;
-                font-size: 10.5pt !important;
-                padding: 0 !important;
-            }
-        
-            header, footer, .back-btn, .header-actions-right {
-                display: none !important;
-            }
-        
-            .container {
-                max-width: 100% !important;
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-        
-            /* Rompemos el grid lateral para que fluya en columna vertical perfecta sin descolgarse */
-            .sheet-container {
-                background-color: transparent !important;
-                border: 1.5px solid #000000 !important;
-                box-shadow: none !important;
-                display: block !important;
-                padding: 15px !important;
-                margin: 0 !important;
-            }
-        
-            .sheet-container::before {
-                display: none !important;
-            }
-        
-            /* Alineamos la caja de la imagen de forma limpia arriba sin forzar anchos laterales */
-            .sheet-img-box {
-                width: 150px !important;
-                height: 190px !important;
-                float: left !important;
-                margin-right: 15px !important;
-                margin-bottom: 10px !important;
-                border: 1.5px solid #000000 !important;
-                filter: grayscale(100%);
-            }
-        
-            .sheet-title {
-                font-size: 1.5rem !important;
-                color: #000000 !important;
-                border-bottom: 1.5px solid #000000 !important;
-                padding-bottom: 4px !important;
-                margin-bottom: 8px !important;
-            }
-        
-            .section-title {
-                color: #000000 !important;
-                border-bottom: 1.5px solid #000000 !important;
-                font-weight: bold;
-                font-size: 10pt !important;
-                margin-top: 12px !important;
-                margin-bottom: 6px !important;
-                clear: both; /* Evita que flote mal con la imagen */
-            }
-        
-            .sheet-grid-info {
-                gap: 6px !important;
-                margin-bottom: 8px !important;
-            }
-        
-            .sheet-clan, .info-value, .pool-col-label, .pool-col-value, .discipline-card, .secrets-box, .info-label {
-                color: #000000 !important;
-            }
-        
-            .info-block, .pool-col-box, .discipline-card {
-                background-color: transparent !important;
-                border: 1.5px solid #333333 !important;
-                padding: 5px 8px !important;
-            }
-        
-            .three-cols-grid, .disciplines-grid {
-                gap: 8px !important;
-            }
-        
-            .secrets-box {
-                background-color: transparent !important;
-                border: 1.5px solid #000000 !important;
-                padding: 8px !important;
-            }
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Volver al Censo</a>
-        <div class="header-actions-right">
-            <button class="header-action-btn" onclick="window.print()" title="Imprimir Ficha A4"><i class="fa-solid fa-print"></i> Imprimir</button>
-        </div>
         <h1 class="cabecera-principal">Ficha de Personaje — La Cloaca Carmesí</h1>
     </header>
 
