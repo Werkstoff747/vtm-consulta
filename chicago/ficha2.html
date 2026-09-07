@@ -401,100 +401,110 @@
         }
 
         /* ESTILOS DE IMPRESIÓN FORMATO A4 OPTIMIZADOS PARA LETRA GRANDE Y VERTICAL */
-        @media print {
+               @media print {
             @page {
                 size: A4;
-                margin: 1cm;
+                margin: 0.8cm;
             }
-
+        
             body {
                 background-color: transparent !important;
                 color: #000000 !important;
-                font-size: 12pt !important;
+                font-size: 10.5pt !important;
                 padding: 0 !important;
             }
-
+        
             header, footer, .floating-btn-container, .back-link-header, .header-actions-right {
                 display: none !important;
             }
-
+        
             .container {
-                max-width: 86% !important;
-                width: 86% !important;
-                margin: 0 auto !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
                 padding: 0 !important;
             }
-
+        
             .sheet-section {
                 background-color: transparent !important;
                 border: 1.5px solid #000000 !important;
                 box-shadow: none !important;
                 break-inside: avoid;
-                margin-bottom: 14px !important;
-                padding: 14px !important;
+                margin-bottom: 10px !important;
+                padding: 12px !important;
             }
-
+        
             .sheet-section::before {
                 display: none !important;
             }
-
+        
             .section-title, .column-group h4 {
                 color: #000000 !important;
                 border-bottom: 1.5px solid #000000 !important;
                 font-weight: bold;
-                font-size: 11pt !important;
+                font-size: 10.5pt !important;
                 margin-bottom: 8px !important;
             }
-
-            .sheet-name {
-                font-size: 1.6rem !important;
+        
+            /* Ajuste perfecto de la cabecera superior (foto + datos) */
+            .sheet-top-grid {
+                display: grid !important;
+                grid-template-columns: 200px 1fr !important;
+                gap: 15px !important;
+                margin-bottom: 0 !important;
             }
-
+        
+            .portrait-container {
+                width: 100% !important;
+                height: 240px !important;
+                border: 1.5px solid #000000 !important;
+                filter: grayscale(100%);
+            }
+        
+            .sheet-name {
+                font-size: 1.5rem !important;
+                color: #000000 !important;
+            }
+        
             .sheet-clan, .info-val, .pool-num, .stat-name {
                 color: #000000 !important;
-                font-size: 10.5pt !important;
             }
-
+        
             .info-box, .pool-card, .stat-row {
                 background-color: transparent !important;
                 border-color: #333333 !important;
-                padding: 6px 8px !important;
+                padding: 5px 8px !important;
             }
-
+        
             .card-notes {
                 background-color: transparent !important;
-                border: 1px solid #000000 !important;
+                border: 1.5px solid #000000 !important;
                 color: #000000 !important;
-                font-size: 10pt !important;
             }
-
+        
+            /* Esferas de atributos y habilidades */
             .dot {
-                width: 15px !important;
-                height: 15px !important;
+                width: 13px !important;
+                height: 13px !important;
                 border: 1.5px solid #000000 !important;
                 background-color: #ffffff !important;
             }
-
+        
             .dot.filled {
                 background-color: #cc0000 !important;
                 border-color: #cc0000 !important;
             }
-
+        
+            /* Casillas de salud y fuerza de voluntad */
             .t-box {
-                width: 22px !important;
-                height: 22px !important;
+                width: 18px !important;
+                height: 18px !important;
                 border: 1.5px solid #000000 !important;
                 background-color: #ffffff !important;
             }
             .t-box.filled {
                 background-color: #cc0000 !important;
                 border-color: #cc0000 !important;
-            }
-
-            .portrait-container {
-                border: 1.5px solid #000000 !important;
-                filter: grayscale(100%);
-                height: 320px !important;
             }
         }
     </style>
