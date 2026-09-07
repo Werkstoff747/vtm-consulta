@@ -130,9 +130,7 @@
             font-weight: 700;
             text-decoration: none;
         }
-        .header-action-btn:hover {
-            background: rgba(197, 160, 89, 0.15);
-        }
+        .header-action-btn:hover { background: rgba(197, 160, 89, 0.15); }
 
         .theme-btn-header {
             width: 36px; height: 36px;
@@ -268,44 +266,89 @@
             color: var(--accent-gold);
         }
 
-        .pools-list-box {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        /* 3 COLUMNAS PARA RESERVAS SUPERIORES Y EXCEPCIONALES */
+        .three-cols-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
         }
-        .pool-row-item {
+        @media (max-width: 750px) {
+            .three-cols-grid { grid-template-columns: 1fr; }
+        }
+
+        .pool-col-box {
             background: var(--card-notes-bg);
             border: 1px solid var(--card-border);
-            padding: 10px 14px;
+            padding: 8px 12px;
             border-radius: 6px;
-            font-size: 0.95rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .pool-row-label {
+        .pool-col-label {
             font-weight: 600;
             color: var(--accent-gold);
             font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
         }
-        
+
+        /* GRUPOS DE BOLAS EN DOS BLOQUES DE 5 */
         .dots-container-group {
             display: flex;
-            gap: 10px;
+            gap: 6px;
             align-items: center;
         }
         .dots-block-5 {
             display: flex;
-            gap: 4px;
+            gap: 3px;
         }
         .dot {
-            width: 14px; height: 14px;
+            width: 12px; height: 12px;
             border-radius: 50%;
             border: 1px solid var(--accent-gold);
             background-color: transparent;
         }
         .dot.filled {
             background-color: var(--accent-gold);
+        }
+
+        /* ESTILO PARA BLOQUES DE DISCIPLINAS EN 3 COLUMNAS */
+        .disciplines-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        @media (max-width: 850px) {
+            .disciplines-grid { grid-template-columns: 1fr; }
+        }
+
+        .discipline-card {
+            background: var(--card-notes-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 12px;
+        }
+        .discipline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--card-border);
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: var(--accent-gold);
+            font-size: 0.95rem;
+        }
+        .discipline-powers-list {
+            list-style-type: disc;
+            padding-left: 18px;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
         }
 
         .card-notes {
@@ -363,77 +406,19 @@
 
         /* ESTILOS DE IMPRESIÓN FORMATO A4 */
         @media print {
-            @page {
-                size: A4;
-                margin: 1cm;
-            }
-
-            body {
-                background-color: transparent !important;
-                color: #000000 !important;
-                font-size: 10.5pt;
-                padding: 0 !important;
-            }
-
-            header, footer, .floating-btn-container, .back-link-header, .header-actions-right {
-                display: none !important;
-            }
-
-            .container {
-                max-width: 100% !important;
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            .sheet-section {
-                background-color: transparent !important;
-                border: 1px solid #000000 !important;
-                box-shadow: none !important;
-                break-inside: avoid;
-                margin-bottom: 12px !important;
-                padding: 12px !important;
-            }
-
-            .sheet-section::before {
-                display: none !important;
-            }
-
-            .section-title {
-                color: #000000 !important;
-                border-bottom: 1px solid #000000 !important;
-                font-weight: bold;
-            }
-
-            .sheet-name, .sheet-clan, .info-val, .pool-num, .pool-row-label {
-                color: #000000 !important;
-            }
-
-            .info-box, .pool-card, .pool-row-item {
-                background-color: transparent !important;
-                border: 1px solid #444444 !important;
-            }
-
-            .card-notes {
-                background-color: transparent !important;
-                border: 1px solid #000000 !important;
-                color: #000000 !important;
-            }
-
-            .dot {
-                border: 1px solid #000000 !important;
-                background-color: #ffffff !important;
-            }
-
-            .dot.filled {
-                background-color: #cc0000 !important;
-                border-color: #cc0000 !important;
-            }
-
-            .portrait-container {
-                border: 1px solid #000000 !important;
-                filter: grayscale(100%);
-            }
+            @page { size: A4; margin: 1cm; }
+            body { background-color: transparent !important; color: #000000 !important; font-size: 10pt; padding: 0 !important; }
+            header, footer, .floating-btn-container, .back-link-header, .header-actions-right { display: none !important; }
+            .container { max-width: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .sheet-section { background-color: transparent !important; border: 1px solid #000000 !important; box-shadow: none !important; break-inside: avoid; margin-bottom: 10px !important; padding: 10px !important; }
+            .sheet-section::before { display: none !important; }
+            .section-title, .discipline-header { color: #000000 !important; border-bottom: 1px solid #000000 !important; font-weight: bold; }
+            .sheet-name, .sheet-clan, .info-val, .pool-col-label, .discipline-powers-list { color: #000000 !important; }
+            .info-box, .pool-col-box, .discipline-card { background-color: transparent !important; border: 1px solid #444444 !important; }
+            .card-notes { background-color: transparent !important; border: 1px solid #000000 !important; color: #000000 !important; }
+            .dot { border: 1px solid #000000 !important; background-color: #ffffff !important; }
+            .dot.filled { background-color: #cc0000 !important; border-color: #cc0000 !important; }
+            .portrait-container { border: 1px solid #000000 !important; filter: grayscale(100%); }
         }
     </style>
 </head>
@@ -497,16 +482,35 @@
             </div>
         </div>
 
-        <!-- RESERVAS Y POOLS CON BOLAS (HASTA 10 EN 2 BLOQUES DE 5) -->
+        <!-- RESERVAS Y POOLS (3 COLUMNAS: Superiores + Excepcionales) -->
         <div class="sheet-section">
-            <div class="section-title"><i class="fa-solid fa-dice"></i> Reservas de Dados y Disciplinas</div>
-            <div class="pools-list-box">
-                <div class="pool-row-item"><span class="pool-row-label">Físicos:</span> <span id="valPoolFisicos">-</span></div>
-                <div class="pool-row-item"><span class="pool-row-label">Sociales:</span> <span id="valPoolSociales">-</span></div>
-                <div class="pool-row-item"><span class="pool-row-label">Mentales:</span> <span id="valPoolMentales">-</span></div>
-                <div class="pool-row-item"><span class="pool-row-label">Disciplinas:</span> <span id="valPoolDisciplinas">-</span></div>
-                <div class="pool-row-item"><span class="pool-row-label">Reservas Excepcionales:</span> <span id="valPoolExcepcionales">-</span></div>
-                <div class="pool-row-item"><span class="pool-row-label">Ventajas y Defectos:</span> <span id="valVentajas" style="font-weight: normal; font-style: italic; color: var(--text-muted);">-</span></div>
+            <div class="section-title"><i class="fa-solid fa-dice"></i> Reservas de Dados</div>
+            
+            <!-- Superiores en 3 columnas -->
+            <div class="three-cols-grid" id="superioresPoolsContainer">
+                <div class="pool-col-box"><span class="pool-col-label">Físicos:</span> <span id="valPoolFisicos">-</span></div>
+                <div class="pool-col-box"><span class="pool-col-label">Sociales:</span> <span id="valPoolSociales">-</span></div>
+                <div class="pool-col-box"><span class="pool-col-label">Mentales:</span> <span id="valPoolMentales">-</span></div>
+            </div>
+
+            <div style="font-family: 'Cinzel', serif; color: var(--accent-gold); font-size: 0.9rem; margin: 15px 0 8px 0; border-bottom: 1px dashed var(--card-border); padding-bottom: 4px;">Reservas Excepcionales</div>
+            
+            <!-- Excepcionales en rejilla de 3 columnas dinámicas -->
+            <div class="three-cols-grid" id="excepcionalesContainer">
+                <!-- Se inyecta por JS -->
+            </div>
+
+            <div style="margin-top: 15px;">
+                <strong style="color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 0.85rem;">Ventajas y Defectos:</strong>
+                <p id="valVentajas" style="margin-top: 4px; font-size: 0.95rem; font-style: italic; color: var(--text-muted);">-</p>
+            </div>
+        </div>
+
+        <!-- DISCIPLINAS PARSEADAS EN 3 BLOQUES -->
+        <div class="sheet-section">
+            <div class="section-title"><i class="fa-solid fa-bolt"></i> Disciplinas y Poderes</div>
+            <div class="disciplines-grid" id="disciplinesContainer">
+                <!-- Se inyecta dinámicamente por JS -->
             </div>
         </div>
 
@@ -525,7 +529,6 @@
     </footer>
 </div>
 
-<!-- MENÚ FLOTANTE -->
 <div class="floating-btn-container">
     <a href="https://werkstoff747.github.io/vtm-consulta/chicago/" class="floating-action-btn" title="Ir al Censo de Chicago"><i class="fa-solid fa-house"></i></a>
     <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir"><i class="fa-solid fa-arrow-up"></i></button>
@@ -552,6 +555,7 @@
         document.getElementById('themeToggleBtn').innerHTML = isLight ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
     }
 
+    // Renderiza el valor numérico en dos bloques de 5 esferas
     function renderPoolDots(value) {
         const match = String(value || "").trim().match(/\d+/);
         let val = match ? parseInt(match[0], 10) : 0;
@@ -559,23 +563,103 @@
         if (val < 0) val = 0;
 
         let html = '<div class="dots-container-group">';
-        
-        // Bloque 1 (1 al 5)
         html += '<div class="dots-block-5">';
         for (let i = 1; i <= 5; i++) {
             html += `<div class="dot ${i <= val ? 'filled' : ''}"></div>`;
         }
         html += '</div>';
-
-        // Bloque 2 (6 al 10)
         html += '<div class="dots-block-5">';
         for (let i = 6; i <= 10; i++) {
             html += `<div class="dot ${i <= val ? 'filled' : ''}"></div>`;
         }
         html += '</div>';
-
         html += '</div>';
         return html;
+    }
+
+    // Parsea reservas excepcionales tipo "Supervivencia 8, Callejeo 7, Consciencia 6"
+    function renderExcepcionales(textoExcepcionales) {
+        const container = document.getElementById('excepcionalesContainer');
+        container.innerHTML = '';
+
+        if (!textoExcepcionales || textoExcepcionales.trim() === '-' || textoExcepcionales.trim() === '') {
+            container.innerHTML = '<span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Sin reservas excepcionales registradas.</span>';
+            return;
+        }
+
+        // Separa por comas
+        const items = textoExcepcionales.split(',');
+        items.forEach(item => {
+            const parts = item.trim().match(/^(.+?)\s+(\d+)$/);
+            let nombrePool = item.trim();
+            let valorPool = 0;
+
+            if (parts) {
+                nombrePool = parts[1].trim();
+                valorPool = parseInt(parts[2], 10);
+            }
+
+            const box = document.createElement('div');
+            box.className = 'pool-col-box';
+            box.innerHTML = `
+                <span class="pool-col-label">${nombrePool}:</span>
+                ${renderPoolDots(valorPool)}
+            `;
+            container.appendChild(box);
+        });
+    }
+
+    // Parsea disciplinas complejas tipo "Auspex 3 (Sentidos Agudizados, Premonición)..."
+    function renderDisciplinas(textoDisciplinas) {
+        const container = document.getElementById('disciplinesContainer');
+        container.innerHTML = '';
+
+        if (!textoDisciplinas || textoDisciplinas.trim() === '-' || textoDisciplinas.trim() === '') {
+            container.innerHTML = '<span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Sin disciplinas registradas.</span>';
+            return;
+        }
+
+        // Expresión regular para separar cada disciplina: Nombre + Nivel seguido opcionalmente de paréntesis con poderes
+        // Ejemplo match: "Auspex 3 (Poder 1, Poder 2)"
+        const regex = /([A-Za-zñÑáéíóúÁÉÍÓÚ\s]+?)\s*(\d+)(?:\s*\((.*?)\))?/g;
+        let match;
+        let count = 0;
+
+        while ((match = regex.exec(textoDisciplinas)) !== null) {
+            count++;
+            const nombreDisc = match[1].trim();
+            const nivelDisc = match[2].trim();
+            const poderesRaw = match[3] ? match[3].trim() : "";
+            const poderesList = poderesRaw ? poderesRaw.split(',').map(p => p.trim()) : [];
+
+            const card = document.createElement('div');
+            card.className = 'discipline-card';
+
+            let poderesHtml = '';
+            if (poderesList.length > 0) {
+                poderesHtml = '<ul class="discipline-powers-list">';
+                poderesList.forEach(pod => {
+                    poderesHtml += `<li>${pod}</li>`;
+                });
+                poderesHtml += '</ul>';
+            } else {
+                poderesHtml = '<span style="font-size: 0.82rem; color: var(--text-muted); font-style: italic;">Sin poderes específicos detallados.</span>';
+            }
+
+            card.innerHTML = `
+                <div class="discipline-header">
+                    <span>${nombreDisc}</span>
+                    ${renderPoolDots(nivelDisc)}
+                </div>
+                ${poderesHtml}
+            `;
+            container.appendChild(card);
+        }
+
+        if (count === 0) {
+            // Si el formato es plano sin regex perfecta, lo mostramos como texto seguro
+            container.innerHTML = `<span style="font-size: 0.9rem; color: var(--text-main);">${textoDisciplinas}</span>`;
+        }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -627,8 +711,8 @@
                 const poolFisicos = personaje["Pool_Fisicos"] || "0";
                 const poolSociales = personaje["Pool_Sociales"] || "0";
                 const poolMentales = personaje["Pool_Mentales"] || "0";
-                const poolDisciplinas = personaje["Pool_Disciplinas"] || "0";
-                const poolExcepcionales = personaje["Reservas_Excepcionales"] || "0";
+                const poolExcepcionales = personaje["Reservas_Excepcionales"] || "";
+                const textoDisciplinas = personaje["Pool_Disciplinas"] || personaje["Disciplinas"] || "";
                 const ventajas = personaje["DisciplinasVentajas_y_Defectos"] || "-";
                 const secretos = personaje["Secretos"] || "Sin registros clasificados.";
 
@@ -655,12 +739,17 @@
                 document.getElementById('valSalud').textContent = salud;
                 document.getElementById('valVoluntad').textContent = voluntad;
 
+                // Superiores en 3 columnas
                 document.getElementById('valPoolFisicos').innerHTML = renderPoolDots(poolFisicos);
                 document.getElementById('valPoolSociales').innerHTML = renderPoolDots(poolSociales);
                 document.getElementById('valPoolMentales').innerHTML = renderPoolDots(poolMentales);
-                document.getElementById('valPoolDisciplinas').innerHTML = renderPoolDots(poolDisciplinas);
-                document.getElementById('valPoolExcepcionales').innerHTML = renderPoolDots(poolExcepcionales);
-                
+
+                // Excepcionales dinámicos en filas de 3 columnas
+                renderExcepcionales(poolExcepcionales);
+
+                // Disciplinas parseadas en bloques de 3 columnas
+                renderDisciplinas(textoDisciplinas);
+
                 document.getElementById('valVentajas').textContent = ventajas;
                 document.getElementById('valSecretos').innerHTML = `🦇 <strong>Secretos:</strong> ${secretos}`;
                 
