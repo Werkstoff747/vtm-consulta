@@ -405,20 +405,152 @@
         }
 
         /* ESTILOS DE IMPRESIÓN FORMATO A4 */
-        @media print {
-            @page { size: A4; margin: 1cm; }
-            body { background-color: transparent !important; color: #000000 !important; font-size: 10pt; padding: 0 !important; }
-            header, footer, .floating-btn-container, .back-link-header, .header-actions-right { display: none !important; }
-            .container { max-width: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
-            .sheet-section { background-color: transparent !important; border: 1px solid #000000 !important; box-shadow: none !important; break-inside: avoid; margin-bottom: 10px !important; padding: 10px !important; }
-            .sheet-section::before { display: none !important; }
-            .section-title, .discipline-header { color: #000000 !important; border-bottom: 1px solid #000000 !important; font-weight: bold; }
-            .sheet-name, .sheet-clan, .info-val, .pool-col-label, .discipline-powers-list { color: #000000 !important; }
-            .info-box, .pool-col-box, .discipline-card { background-color: transparent !important; border: 1px solid #444444 !important; }
-            .card-notes { background-color: transparent !important; border: 1px solid #000000 !important; color: #000000 !important; }
-            .dot { border: 1px solid #000000 !important; background-color: #ffffff !important; }
-            .dot.filled { background-color: #cc0000 !important; border-color: #cc0000 !important; }
-            .portrait-container { border: 1px solid #000000 !important; filter: grayscale(100%); }
+               @media print {
+            @page {
+                size: A4;
+                margin: 0.4cm 0.6cm;
+            }
+        
+            body {
+                background-color: transparent !important;
+                color: #000000 !important;
+                font-size: 8.5pt !important;
+                line-height: 1.3 !important;
+                padding: 0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        
+            header, footer, .back-btn, .header-actions-right {
+                display: none !important;
+            }
+        
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        
+            .sheet-container {
+                background-color: transparent !important;
+                border: 1.5px solid #000000 !important;
+                box-shadow: none !important;
+                display: grid !important;
+                grid-template-columns: 140px 1fr !important;
+                gap: 10px !important;
+                padding: 10px !important;
+                margin: 0 !important;
+            }
+        
+            .sheet-container::before {
+                display: none !important;
+            }
+        
+            .sheet-img-box {
+                width: 100% !important;
+                height: 180px !important;
+                border: 1.5px solid #000000 !important;
+                filter: grayscale(100%);
+            }
+        
+            .sheet-details {
+                gap: 6px !important;
+            }
+        
+            .sheet-title {
+                font-size: 1.2rem !important;
+                color: #000000 !important;
+                font-weight: 700 !important;
+                border-bottom: 1.5px solid #000000 !important;
+                padding-bottom: 2px !important;
+                margin-bottom: 2px !important;
+            }
+        
+            .sheet-grid-info {
+                gap: 4px !important;
+            }
+        
+            .info-block {
+                background-color: transparent !important;
+                border: 1px solid #000000 !important;
+                padding: 3px 6px !important;
+            }
+        
+            .info-label {
+                font-size: 6.5pt !important;
+                color: #000000 !important;
+                font-weight: 700 !important;
+            }
+        
+            .info-value, .pool-col-label, .pool-col-value, .discipline-header, .secrets-box, span, div, p {
+                color: #000000 !important;
+            }
+        
+            .info-value {
+                font-size: 8.5pt !important;
+                font-weight: 600 !important;
+            }
+        
+            .section-title {
+                color: #000000 !important;
+                border-bottom: 1.5px solid #000000 !important;
+                font-weight: 700 !important;
+                font-size: 9.5pt !important;
+                margin-top: 8px !important;
+                margin-bottom: 4px !important;
+                padding-bottom: 2px !important;
+                text-transform: uppercase;
+                grid-column: span 3;
+            }
+        
+            .three-cols-grid, .disciplines-grid {
+                display: grid !important;
+                grid-template-columns: repeat(3, 1fr) !important;
+                gap: 8px !important;
+                width: 100% !important;
+            }
+        
+            .pool-col-box, .discipline-card {
+                background-color: transparent !important;
+                border: 1px solid #000000 !important;
+                padding: 5px 8px !important;
+            }
+        
+            .discipline-header {
+                border-bottom: 0.5px solid #666666 !important;
+                font-weight: 700 !important;
+                padding-bottom: 3px !important;
+                margin-bottom: 4px !important;
+            }
+        
+            .discipline-powers-list {
+                font-size: 7.5pt !important;
+                color: #000000 !important;
+                padding-left: 12px !important;
+            }
+        
+            /* Esferas adaptadas en negro puro para impresión nítida */
+            .dot {
+                width: 9px !important;
+                height: 9px !important;
+                border: 1px solid #000000 !important;
+                background-color: #ffffff !important;
+            }
+        
+            .dot.filled {
+                background-color: #000000 !important;
+                border-color: #000000 !important;
+            }
+        
+            .secrets-box {
+                background-color: transparent !important;
+                border: 1.5px solid #000000 !important;
+                padding: 6px 8px !important;
+                font-size: 8pt !important;
+                font-style: normal !important;
+                font-weight: 600 !important;
+            }
         }
     </style>
 </head>
