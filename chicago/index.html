@@ -238,9 +238,9 @@
         }
 
         /* ELEMENTOS EXCLUSIVOS DE NARRADOR EN TARJETA */
-        .id-badge, .estaus-badge-wrapper, .narrator-source-badge { display: none; }
+        .id-badge, .estatus-badge, .narrator-source-badge { display: none; }
         body.narrator-mode .id-badge { display: block; }
-        body.narrator-mode .estaus-badge-wrapper { display: block; }
+        body.narrator-mode .estatus-badge { display: block; }
         body.narrator-mode .narrator-source-badge { display: block; }
 
         .id-badge {
@@ -257,7 +257,7 @@
             z-index: 10;
         }
 
-        /* ETIQUETA DE ORIGEN EXCLUSIVA PARA NARRADOR (ESQUINA INFERIOR SOBRE LA IMAGEN O BLOQUE) */
+        /* ETIQUETA DE ORIGEN EXCLUSIVA PARA NARRADOR */
         .narrator-source-badge {
             position: absolute;
             bottom: 10px; left: 12px;
@@ -852,10 +852,8 @@
             const id = v["ID"] || "";
             const formattedId = id ? String(id).padStart(2, '0') : "00";
             
-            // COLUMNA C: ALIAS / COLUMNA D: NOMBRE REAL
             const alias = (v["Alias"] || "").trim();
             const nombreReal = (v["Nombre del Personaje"] || "").trim();
-            
             const nombrePrincipal = alias !== "" ? alias : nombreReal;
             
             const clan = v["Clan"] || "Desconocido";
@@ -865,7 +863,7 @@
             const sire = v["Sire / Creador"] || "";
             const menciones = v["Menciones"] || "";
             const secret = v["Secretos"] || "";
-            const consejosIntegracion = v["Consejos_integracion_Chicago_Nocturno"] || ""; // COLUMNA N
+            const consejosIntegracion = v["Consejos_integracion_Chicago_Nocturno"] || ""; 
             const cargoOficial = v["Cargo_Oficial"] || "";
             const fuente = (v["Fuente"] || "").trim();
             const estatus = (v["Estatus"] || "Interactuado").trim();
@@ -877,12 +875,20 @@
 
             const tieneCargoReal = cargoOficial && cargoOficial.trim() !== "" && cargoOficial.trim() !== "-";
 
-            if (!esNarrator && (estatus.toLowerCase().includes("oculto") || estatus.toLowerCase().includes("desconocido"))) {
-                return; 
+            // REGLA: Si tiene cargo oficial, es público y NUNCA se oculta a los jugadores
+            if (!esNarrator) {
+                const estatusLower = estatus.toLowerCase();
+                const esOcultoODesconocido = estatusLower.includes("oculto") || estatusLower.includes("desconocido");
+                if (esOcultoODesconocido && !tieneCargoReal) {
+                    return; 
+                }
             }
 
+            // Forzar estatus visual a interactuado si tiene cargo oficial pero estaba oculto/desconocido
+            const estatusEfectivo = (tieneCargoReal && (estatus.toLowerCase().includes("oculto") || estatus.toLowerCase().includes("desconocido"))) ? "Interactuado" : estatus;
+
             let estatusClase = "estatus-interactuado";
-            const estatusLower = estatus.toLowerCase();
+            const estatusLower = estatusEfectivo.toLowerCase();
             const esConocidoOidas = estatusLower.includes("oídas") || estatusLower.includes("oidas");
 
             if (esConocidoOidas) {
@@ -895,14 +901,14 @@
             const ubicacionMostrada = (esConocidoOidas && !esPublicoPorCargo) ? "Dominio desconocido" : ubicacion;
             const imagenMostrada = (esConocidoOidas && !esPublicoPorCargo) ? "./retratos/silueta.jpg" : `./retratos/${imagenLimpia}`;
 
-            // Determinar etiqueta de origen para el Narrador
+            // ETIQUETA DE ORIGEN EXCLUSIVA PARA NARRADOR SEGÚN FUENTE
             const esCloacaFuente = fuente.toLowerCase().includes("cloaca");
             const textoFuente = fuente !== "" ? fuente : (esCloacaFuente ? "La Cloaca Carmesí" : "Chicago Nocturno");
             const fuenteClase = esCloacaFuente ? "narrator-source-badge source-cloaca" : "narrator-source-badge";
 
             const card = document.createElement('div');
             card.className = 'card';
-            card.setAttribute('data-search', `${formattedId} ${alias} ${nombreReal} ${clan} ${ocupacion} ${cargoOficial} ${ubicacion} ${faccion} ${sire} ${menciones} ${secret} ${consejosIntegracion} ${estatus} ${fuente}`.toLowerCase());
+            card.setAttribute('data-search', `${formattedId} ${alias} ${nombreReal} ${clan} ${ocupacion} ${cargoOficial} ${ubicacion} ${faccion} ${sire} ${menciones} ${secret} ${consejosIntegracion} ${estatusEfectivo} ${fuente}`.toLowerCase());
             card.setAttribute('data-faccion', faccion.toLowerCase());
 
             const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
@@ -910,7 +916,7 @@
             if (!esNarrator && estatusLower.includes("rumor")) {
                 card.innerHTML = `
                     <div class="id-badge">#${formattedId}</div>
-                    <div class="estatus-badge-wrapper"><div class="estatus-badge ${estatusClase}">${estatus}</div></div>
+                    <div class="estatus-badge ${estatusClase}">${estatusEfectivo}</div>
                     <div class="card-body-content" style="padding-top: 40px; text-align: center;">
                         <div class="card-title" style="margin-bottom: 10px;">${nombrePrincipal}</div>
                         <p class="rumor-text" style="color: var(--text-muted); font-style: italic;">Se oye un rumor en las calles...</p>
@@ -919,7 +925,7 @@
             } else {
                 card.innerHTML = `
                     <div class="id-badge">#${formattedId}</div>
-                    <div class="estatus-badge-wrapper"><div class="estatus-badge ${estatusClase}">${estatus}</div></div>
+                    <div class="estatus-badge ${estatusClase}">${estatusEfectivo}</div>
                     
                     <div class="card-img-container">
                         <img src="${imagenMostrada}" alt="${nombrePrincipal}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
