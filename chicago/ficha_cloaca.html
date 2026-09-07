@@ -217,7 +217,6 @@
             letter-spacing: 1px;
         }
 
-        /* 3 COLUMNAS PARA POOLS Y EXCEPCIONALES (NUMERALES) */
         .three-cols-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -250,43 +249,19 @@
             font-size: 1rem;
         }
 
-        /* 3 COLUMNAS PARA DISCIPLINAS */
-        .disciplines-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-top: 8px;
-        }
-        @media (max-width: 750px) {
-            .disciplines-grid { grid-template-columns: 1fr; }
-        }
-
-        .discipline-card {
-            background: var(--card-notes-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 6px;
-            padding: 10px;
-        }
-        .discipline-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px dashed var(--card-border);
-            padding-bottom: 5px;
-            margin-bottom: 6px;
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            color: var(--accent-gold);
-            font-size: 0.9rem;
-        }
-        .discipline-powers-list {
-            list-style-type: disc;
-            padding-left: 16px;
-            font-size: 0.82rem;
-            color: var(--text-main);
+        .disciplines-stack {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .discipline-row-item {
+            background: var(--card-notes-bg);
+            border: 1px solid var(--card-border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            color: var(--text-main);
         }
 
         .secrets-box {
@@ -310,7 +285,6 @@
 
         footer { text-align: center; padding: 20px; border-top: 1px solid var(--card-border); }
 
-        /* ESTILOS DE IMPRESIÓN FORMATO A4 */
         @media print {
             @page { size: A4; margin: 1cm; }
             body { background-color: transparent !important; color: #000000 !important; font-size: 10pt; padding: 0 !important; }
@@ -318,9 +292,9 @@
             .container { max-width: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
             .sheet-container { background-color: transparent !important; border: 1px solid #000000 !important; box-shadow: none !important; display: block !important; padding: 15px !important; }
             .sheet-container::before { display: none !important; }
-            .section-title, .discipline-header { color: #000000 !important; border-bottom: 1px solid #000000 !important; font-weight: bold; }
-            .sheet-title, .sheet-clan, .info-value, .pool-col-label, .pool-col-value, .discipline-powers-list, .secrets-box { color: #000000 !important; }
-            .info-block, .pool-col-box, .discipline-card { background-color: transparent !important; border: 1px solid #444444 !important; }
+            .section-title { color: #000000 !important; border-bottom: 1px solid #000000 !important; font-weight: bold; }
+            .sheet-title, .sheet-clan, .info-value, .pool-col-label, .pool-col-value, .discipline-row-item, .secrets-box { color: #000000 !important; }
+            .info-block, .pool-col-box, .discipline-row-item { background-color: transparent !important; border: 1px solid #444444 !important; }
             .secrets-box { background-color: transparent !important; border: 1px solid #000000 !important; }
             .sheet-img-box { border: 1px solid #000000 !important; filter: grayscale(100%); }
         }
@@ -340,9 +314,7 @@
     <div id="loading">Cargando datos de la ficha...</div>
     <div id="error-msg" style="display:none;">Personaje no encontrado en los archivos de la Cloaca Carmesí o parámetro ID ausente.</div>
     
-    <div id="sheetContent" style="display: none;" class="sheet-container">
-        <!-- Contenido dinámico inyectado por JS -->
-    </div>
+    <div id="sheetContent" style="display: none;" class="sheet-container"></div>
 
     <footer>
         <p style="font-size: 0.85rem; color: var(--text-muted);">Vampiro: La Mascarada (5ª Edición) — Archivos de la Cloaca</p>
@@ -368,9 +340,7 @@
             skipEmptyLines: true,
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
-                
                 const personaje = results.data.find(v => String(v["ID"] || "").trim() === String(personajeId).trim());
-
                 if (personaje) {
                     renderFicha(personaje);
                 } else {
@@ -385,7 +355,6 @@
         });
     });
 
-    // Parsea reservas excepcionales numéricas en formato de 3 columnas
     function renderExcepcionales(textoExcepcionales) {
         if (!textoExcepcionales || textoExcepcionales.trim() === '-' || textoExcepcionales.trim() === '') {
             return '<span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; grid-column: span 3;">Sin reservas excepcionales registradas.</span>';
@@ -413,49 +382,21 @@
         return html;
     }
 
-    // Parsea disciplinas complejas tipo "Auspex 3 (Sentidos Agudizados, Premonición)..." en 3 columnas
-    function renderDisciplinas(textoDisciplinas) {
+    // Renderiza cada disciplina obtenida de la columna "Disciplinas" en líneas independientes
+    function renderDisciplinasPorLinea(textoDisciplinas) {
         if (!textoDisciplinas || textoDisciplinas.trim() === '-' || textoDisciplinas.trim() === '') {
-            return '<span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; grid-column: span 3;">Sin disciplinas registradas.</span>';
+            return '<span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;">Sin disciplinas registradas.</span>';
         }
 
-        const regex = /([A-Za-zñÑáéíóúÁÉÍÓÚ\s]+?)\s*(\d+)(?:\s*\((.*?)\))?/g;
-        let match;
         let html = '';
-        let count = 0;
-
-        while ((match = regex.exec(textoDisciplinas)) !== null) {
-            count++;
-            const nombreDisc = match[1].trim();
-            const nivelDisc = match[2].trim();
-            const poderesRaw = match[3] ? match[3].trim() : "";
-            const poderesList = poderesRaw ? poderesRaw.split(',').map(p => p.trim()) : [];
-
-            let poderesHtml = '';
-            if (poderesList.length > 0) {
-                poderesHtml = '<ul class="discipline-powers-list">';
-                poderesList.forEach(pod => {
-                    poderesHtml += `<li>${pod}</li>`;
-                });
-                poderesHtml += '</ul>';
-            } else {
-                poderesHtml = '<span style="font-size: 0.82rem; color: var(--text-muted); font-style: italic;">Sin poderes específicos detallados.</span>';
+        const lineas = textoDisciplinas.split(/,(?=[^\)]*(?:\(|$))/);
+        
+        lineas.forEach(linea => {
+            const textoLimpio = linea.trim();
+            if (textoLimpio) {
+                html += `<div class="discipline-row-item"><strong>${textoLimpio}</strong></div>`;
             }
-
-            html += `
-                <div class="discipline-card">
-                    <div class="discipline-header">
-                        <span>${nombreDisc}</span>
-                        <span class="pool-col-value">${nivelDisc}</span>
-                    </div>
-                    ${poderesHtml}
-                </div>
-            `;
-        }
-
-        if (count === 0) {
-            return `<span style="font-size: 0.9rem; color: var(--text-main); grid-column: span 3;">${textoDisciplinas}</span>`;
-        }
+        });
 
         return html;
     }
@@ -482,7 +423,9 @@
         const poolFisicos = v["Pool_Fisicos"] || "-";
         const poolSociales = v["Pool_Sociales"] || "-";
         const poolMentales = v["Pool_Mentales"] || "-";
-        const textoDisciplinas = v["Pool_Disciplinas"] || "";
+        
+        // Extracción directa de la columna "Disciplinas"
+        const textoDisciplinas = v["Disciplinas"] || "";
         const reservasExcepcionales = v["Reservas_Excepcionales"] || "";
         const disciplinasVentajas = v["DisciplinasVentajas_y_Defectos"] || "";
         const secretos = v["Secretos"] || "";
@@ -531,8 +474,8 @@
                 </div>
 
                 <div class="section-title">Disciplinas y Poderes</div>
-                <div class="disciplines-grid">
-                    ${renderDisciplinas(textoDisciplinas)}
+                <div class="disciplines-stack">
+                    ${renderDisciplinasPorLinea(textoDisciplinas)}
                 </div>
 
                 ${disciplinasVentajas ? `
