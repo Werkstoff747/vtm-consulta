@@ -875,7 +875,7 @@
 
             const tieneCargoReal = cargoOficial && cargoOficial.trim() !== "" && cargoOficial.trim() !== "-";
 
-            // REGLA: Si tiene cargo oficial, es público y NUNCA se oculta a los jugadores
+            // REGLA: Si no es narrador, filtramos los ocultos (salvo que tengan cargo oficial)
             if (!esNarrator) {
                 const estatusLower = estatus.toLowerCase();
                 const esOcultoODesconocido = estatusLower.includes("oculto") || estatusLower.includes("desconocido");
