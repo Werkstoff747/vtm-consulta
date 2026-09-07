@@ -237,6 +237,11 @@
             border-color: rgba(201, 42, 42, 0.4);
         }
 
+        /* ELEMENTOS EXCLUSIVOS DE NARRADOR EN TARJETA */
+        .id-badge, .estaus-badge-wrapper { display: none; }
+        body.narrator-mode .id-badge { display: block; }
+        body.narrator-mode .estaus-badge-wrapper { display: block; }
+
         .id-badge {
             position: absolute;
             top: 10px; left: 12px;
@@ -251,7 +256,6 @@
             z-index: 10;
         }
 
-        /* ETIQUETAS DE ESTATUS */
         .estatus-badge {
             position: absolute;
             top: 10px; right: 12px;
@@ -524,7 +528,7 @@
     <div class="controls">
         <div class="controls-main-group">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar por ID (#), nombre, clan, ocupación..." oninput="applyFilters()">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre, alias, clan, ocupación..." oninput="applyFilters()">
             </div>
             <div class="filter-box">
                 <select id="factionFilter" onchange="applyFilters()">
@@ -533,6 +537,7 @@
                     <option value="Anarquistas">Anarquistas</option>
                     <option value="Independiente">Independiente</option>
                     <option value="Hecata">Hecata</option>
+                    <option value="Autarcas">Autarcas</option>
                 </select>
             </div>
         </div>
@@ -639,7 +644,7 @@
                 <li><strong>Oculto / Desconocido:</strong> Información clasificada o fuera de radar (La tarjeta no se muestra a los jugadores).</li>
             </ul>
             <h4>Modo Narrador</h4>
-            <p>Pulsa la llave flotante e introduce la clave del Narrator para desbloquear la visión absoluta de todos los secretos y personajes ocultos.</p>
+            <p>Pulsa la llave flotante e introduce la clave del Narrator para desbloquear la visión absoluta de IDs, estatus y secretos ocultos.</p>
         </div>
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-cancel" onclick="cerrarModalReadme()">Cerrar</button>
@@ -800,17 +805,38 @@
 
         const esNarrator = document.body.classList.contains('narrator-mode');
 
+        // ORDEN INTELIGENTE: 1º Cargos oficiales arriba, 2º Alfabético por nombre principal
         datos.sort((a, b) => {
-            let idA = parseInt(a["ID"]) || 0;
-            let idB = parseInt(b["ID"]) || 0;
-            return idA - idB;
+            const cargoA = (a["Cargo_Oficial"] || "").trim();
+            const cargoB = (b["Cargo_Oficial"] || "").trim();
+            
+            const tieneCargoA = cargoA !== "" && cargoA !== "-";
+            const tieneCargoB = cargoB !== "" && cargoB !== "-";
+
+            if (tieneCargoA && !tieneCargoB) return -1;
+            if (!tieneCargoA && tieneCargoB) return 1;
+
+            const aliasA = (a["Alias"] || "").trim();
+            const nombreA = (a["Nombre del Personaje"] || "").trim();
+            const principalA = (aliasA !== "" ? aliasA : nombreA).toLowerCase();
+
+            const aliasB = (b["Alias"] || "").trim();
+            const nombreB = (b["Nombre del Personaje"] || "").trim();
+            const principalB = (aliasB !== "" ? aliasB : nombreB).toLowerCase();
+
+            return principalA.localeCompare(principalB);
         });
 
         datos.forEach(v => {
             const id = v["ID"] || "";
             const formattedId = id ? String(id).padStart(2, '0') : "00";
             
-            const nombre = v["Nombre del Personaje"] || "Desconocido";
+            // COLUMNA C: ALIAS / COLUMNA D: NOMBRE REAL
+            const alias = (v["Alias"] || "").trim();
+            const nombreReal = (v["Nombre del Personaje"] || "").trim();
+            
+            const nombrePrincipal = alias !== "" ? alias : nombreReal;
+            
             const clan = v["Clan"] || "Desconocido";
             const ocupacion = v["Profesion_Ocupacion"] || "";
             const ubicacion = v["Ubicación / Dominio habitual"] || "Desconocida";
@@ -818,12 +844,14 @@
             const sire = v["Sire / Creador"] || "";
             const menciones = v["Menciones"] || "";
             const secret = v["Secretos"] || "";
+            const consejosIntegracion = v["Consejos_integracion_Chicago_Nocturno"] || ""; // COLUMNA N
             const cargoOficial = v["Cargo_Oficial"] || "";
+            const fuente = v["Fuente"] || "";
             const estatus = (v["Estatus"] || "Interactuado").trim();
             
             const cleanId = String(id).trim();
             const imagenPorId = cleanId ? `${cleanId}.jpg` : '';
-            const imagenPorNombre = nombre.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
+            const imagenPorNombre = nombreReal.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
             const imagenLimpia = v["Archivo de Imagen"] || imagenPorId || imagenPorNombre;
 
             const tieneCargoReal = cargoOficial && cargoOficial.trim() !== "" && cargoOficial.trim() !== "-";
@@ -842,14 +870,13 @@
                 estatusClase = "estatus-rumor";
             }
 
-            // REGLA: Si tiene cargo real o eres Narrator, la información (foto y ubicación) es pública
             const esPublicoPorCargo = tieneCargoReal || esNarrator;
             const ubicacionMostrada = (esConocidoOidas && !esPublicoPorCargo) ? "Dominio desconocido" : ubicacion;
             const imagenMostrada = (esConocidoOidas && !esPublicoPorCargo) ? "./retratos/silueta.jpg" : `./retratos/${imagenLimpia}`;
 
             const card = document.createElement('div');
             card.className = 'card';
-            card.setAttribute('data-search', `${formattedId} ${nombre} ${clan} ${ocupacion} ${cargoOficial} ${ubicacion} ${faccion} ${sire} ${menciones} ${secret} ${estatus}`.toLowerCase());
+            card.setAttribute('data-search', `${formattedId} ${alias} ${nombreReal} ${clan} ${ocupacion} ${cargoOficial} ${ubicacion} ${faccion} ${sire} ${menciones} ${secret} ${consejosIntegracion} ${estatus}`.toLowerCase());
             card.setAttribute('data-faccion', faccion.toLowerCase());
 
             const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
@@ -857,29 +884,32 @@
             if (!esNarrator && estatusLower.includes("rumor")) {
                 card.innerHTML = `
                     <div class="id-badge">#${formattedId}</div>
-                    <div class="estatus-badge ${estatusClase}">${estatus}</div>
+                    <div class="estatus-badge-wrapper"><div class="estatus-badge ${estatusClase}">${estatus}</div></div>
                     <div class="card-body-content" style="padding-top: 40px; text-align: center;">
-                        <div class="card-title" style="margin-bottom: 10px;">${nombre}</div>
+                        <div class="card-title" style="margin-bottom: 10px;">${nombrePrincipal}</div>
                         <p class="rumor-text" style="color: var(--text-muted); font-style: italic;">Se oye un rumor en las calles...</p>
                     </div>
                 `;
             } else {
                 card.innerHTML = `
                     <div class="id-badge">#${formattedId}</div>
-                    <div class="estatus-badge ${estatusClase}">${estatus}</div>
+                    <div class="estatus-badge-wrapper"><div class="estatus-badge ${estatusClase}">${estatus}</div></div>
                     
                     <div class="card-img-container">
-                        <img src="${imagenMostrada}" alt="${nombre}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
+                        <img src="${imagenMostrada}" alt="${nombrePrincipal}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
                     </div>
                     
                     <div class="card-body-content">
                         <div class="card-header-vamp">
                             ${iconPath ? `<img src="${iconPath}" class="clan-symbol" alt="${clan}">` : ''}
                             <div class="vamp-titles-box">
-                                <div class="card-title">${nombre}</div>
+                                <div class="card-title">${nombrePrincipal}</div>
                                 <div class="card-clan-tag">${clan}</div>
                             </div>
                         </div>
+                        
+                        <!-- NOMBRE REAL OCULTO (SOLO VISIBLE EN MODO NARRADOR SI HAY ALIAS) -->
+                        ${alias !== "" ? `<div class="info-block narrator-only" style="background: rgba(139,0,0,0.12); border-color: rgba(139,0,0,0.4);"><span class="info-label"><i class="fa-solid fa-user-secret"></i> Identidad Real:</span><span class="info-value" style="color: var(--accent-gold);">${nombreReal}</span></div>` : ''}
                         
                         ${tieneCargoReal ? `<div class="info-block cargo-block"><span class="info-label"><i class="fa-solid fa-crown"></i> Cargo:</span><span class="info-value" style="color: var(--accent-gold); max-width: 100%;">${cargoOficial}</span></div>` : ''}
                         
@@ -889,8 +919,17 @@
 
                         ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire / Creador:</span><span class="info-value">${sire}</span></div>` : ''}
                         ${menciones ? `<div class="info-block narrator-only"><span class="info-label">Menciones:</span><span class="info-value">${menciones}</span></div>` : ''}
-                        ${nombre ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="ficha.html?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> Ver Ficha</a></span></div>` : ''}
+                        
+                        <!-- ENRUTAMIENTO DINÁMICO DE FICHA (STANDAR VS CLOACA) -->
+                        ${(() => {
+                            const esCloaca = fuente.toLowerCase().includes("cloaca");
+                            const archivoFicha = esCloaca ? "ficha_cloaca.html" : "ficha.html";
+                            const etiquetaFicha = esCloaca ? "Ver Ficha (Cloaca)" : "Ver Ficha";
+                            return nombrePrincipal ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="${archivoFicha}?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> ${etiquetaFicha}</a></span></div>` : '';
+                        })()}
+
                         ${secret ? `<div class="card-notes narrator-only">🦇 <strong>Secretos:</strong> ${secret}</div>` : ''}
+                        ${consejosIntegracion ? `<div class="card-notes narrator-only" style="background-color: rgba(197, 160, 89, 0.08); border-color: rgba(197, 160, 89, 0.3); color: var(--accent-gold);">💡 <strong>Consejos de Integración:</strong> ${consejosIntegracion}</div>` : ''}
                     </div>
                 `;
             }
