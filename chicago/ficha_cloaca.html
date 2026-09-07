@@ -305,98 +305,98 @@
         footer { text-align: center; padding: 20px; border-top: 1px solid var(--card-border); }
 
         /* ESTILOS DE IMPRESIÓN A4 AMPLIADOS Y CENTRADOS SIN CORTES */
-            @media print {
-        @page {
-            size: A4;
-            margin: 1cm;
+        @media print {
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+        
+            body {
+                background-color: transparent !important;
+                color: #000000 !important;
+                font-size: 10.5pt !important;
+                padding: 0 !important;
+            }
+        
+            header, footer, .back-btn, .header-actions-right {
+                display: none !important;
+            }
+        
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        
+            /* Rompemos el grid lateral para que fluya en columna vertical perfecta sin descolgarse */
+            .sheet-container {
+                background-color: transparent !important;
+                border: 1.5px solid #000000 !important;
+                box-shadow: none !important;
+                display: block !important;
+                padding: 15px !important;
+                margin: 0 !important;
+            }
+        
+            .sheet-container::before {
+                display: none !important;
+            }
+        
+            /* Alineamos la caja de la imagen de forma limpia arriba sin forzar anchos laterales */
+            .sheet-img-box {
+                width: 150px !important;
+                height: 190px !important;
+                float: left !important;
+                margin-right: 15px !important;
+                margin-bottom: 10px !important;
+                border: 1.5px solid #000000 !important;
+                filter: grayscale(100%);
+            }
+        
+            .sheet-title {
+                font-size: 1.5rem !important;
+                color: #000000 !important;
+                border-bottom: 1.5px solid #000000 !important;
+                padding-bottom: 4px !important;
+                margin-bottom: 8px !important;
+            }
+        
+            .section-title {
+                color: #000000 !important;
+                border-bottom: 1.5px solid #000000 !important;
+                font-weight: bold;
+                font-size: 10pt !important;
+                margin-top: 12px !important;
+                margin-bottom: 6px !important;
+                clear: both; /* Evita que flote mal con la imagen */
+            }
+        
+            .sheet-grid-info {
+                gap: 6px !important;
+                margin-bottom: 8px !important;
+            }
+        
+            .sheet-clan, .info-value, .pool-col-label, .pool-col-value, .discipline-card, .secrets-box, .info-label {
+                color: #000000 !important;
+            }
+        
+            .info-block, .pool-col-box, .discipline-card {
+                background-color: transparent !important;
+                border: 1.5px solid #333333 !important;
+                padding: 5px 8px !important;
+            }
+        
+            .three-cols-grid, .disciplines-grid {
+                gap: 8px !important;
+            }
+        
+            .secrets-box {
+                background-color: transparent !important;
+                border: 1.5px solid #000000 !important;
+                padding: 8px !important;
+            }
         }
-    
-        body {
-            background-color: transparent !important;
-            color: #000000 !important;
-            font-size: 10.5pt !important;
-            padding: 0 !important;
-        }
-    
-        header, footer, .back-btn, .header-actions-right {
-            display: none !important;
-        }
-    
-        .container {
-            max-width: 100% !important;
-            width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-    
-        /* Rompemos el grid lateral para que fluya en columna vertical perfecta sin descolgarse */
-        .sheet-container {
-            background-color: transparent !important;
-            border: 1.5px solid #000000 !important;
-            box-shadow: none !important;
-            display: block !important;
-            padding: 15px !important;
-            margin: 0 !important;
-        }
-    
-        .sheet-container::before {
-            display: none !important;
-        }
-    
-        /* Alineamos la caja de la imagen de forma limpia arriba sin forzar anchos laterales */
-        .sheet-img-box {
-            width: 150px !important;
-            height: 190px !important;
-            float: left !important;
-            margin-right: 15px !important;
-            margin-bottom: 10px !important;
-            border: 1.5px solid #000000 !important;
-            filter: grayscale(100%);
-        }
-    
-        .sheet-title {
-            font-size: 1.5rem !important;
-            color: #000000 !important;
-            border-bottom: 1.5px solid #000000 !important;
-            padding-bottom: 4px !important;
-            margin-bottom: 8px !important;
-        }
-    
-        .section-title {
-            color: #000000 !important;
-            border-bottom: 1.5px solid #000000 !important;
-            font-weight: bold;
-            font-size: 10pt !important;
-            margin-top: 12px !important;
-            margin-bottom: 6px !important;
-            clear: both; /* Evita que flote mal con la imagen */
-        }
-    
-        .sheet-grid-info {
-            gap: 6px !important;
-            margin-bottom: 8px !important;
-        }
-    
-        .sheet-clan, .info-value, .pool-col-label, .pool-col-value, .discipline-card, .secrets-box, .info-label {
-            color: #000000 !important;
-        }
-    
-        .info-block, .pool-col-box, .discipline-card {
-            background-color: transparent !important;
-            border: 1.5px solid #333333 !important;
-            padding: 5px 8px !important;
-        }
-    
-        .three-cols-grid, .disciplines-grid {
-            gap: 8px !important;
-        }
-    
-        .secrets-box {
-            background-color: transparent !important;
-            border: 1.5px solid #000000 !important;
-            padding: 8px !important;
-        }
-    }
     </style>
 </head>
 <body>
