@@ -304,17 +304,17 @@
 
         footer { text-align: center; padding: 20px; border-top: 1px solid var(--card-border); }
 
-        /* ESTILOS DE IMPRESIÓN A4 OPTIMIZADOS (AMPLIOS Y LEGIBLES) */
+        /* ESTILOS DE IMPRESIÓN A4 AMPLIADOS Y CENTRADOS SIN CORTES */
         @media print {
             @page {
                 size: A4;
-                margin: 1cm;
+                margin: 0.6cm;
             }
 
             body {
                 background-color: transparent !important;
                 color: #000000 !important;
-                font-size: 11.5pt !important;
+                font-size: 10.5pt !important;
                 padding: 0 !important;
             }
 
@@ -323,9 +323,9 @@
             }
 
             .container {
-                max-width: 88% !important;
-                width: 88% !important;
-                margin: 0 auto !important;
+                max-width: 100% !important;
+                width: 100% !important;
+                margin: 0 !important;
                 padding: 0 !important;
             }
 
@@ -334,9 +334,10 @@
                 border: 1.5px solid #000000 !important;
                 box-shadow: none !important;
                 display: grid !important;
-                grid-template-columns: 260px 1fr !important;
-                gap: 20px !important;
-                padding: 15px !important;
+                grid-template-columns: 240px 1fr !important;
+                gap: 15px !important;
+                padding: 10px !important;
+                margin: 0 !important;
             }
 
             .sheet-container::before {
@@ -347,14 +348,20 @@
                 color: #000000 !important;
                 border-bottom: 1.5px solid #000000 !important;
                 font-weight: bold;
-                font-size: 10.5pt !important;
-                margin-top: 12px !important;
+                font-size: 10pt !important;
+                margin-top: 8px !important;
+                margin-bottom: 4px !important;
             }
 
             .sheet-title {
-                font-size: 1.6rem !important;
+                font-size: 1.4rem !important;
                 color: #000000 !important;
                 border-bottom: 1px solid #000000 !important;
+                padding-bottom: 4px !important;
+            }
+
+            .sheet-grid-info {
+                gap: 4px !important;
             }
 
             .sheet-clan, .info-value, .pool-col-label, .pool-col-value, .discipline-card, .secrets-box, .info-label {
@@ -363,19 +370,24 @@
 
             .info-block, .pool-col-box, .discipline-card {
                 background-color: transparent !important;
-                border: 1.5px solid #444444 !important;
-                padding: 7px 10px !important;
+                border: 1.5px solid #333333 !important;
+                padding: 5px 8px !important;
+            }
+
+            .disciplines-grid {
+                gap: 8px !important;
             }
 
             .secrets-box {
                 background-color: transparent !important;
                 border: 1.5px solid #000000 !important;
+                padding: 6px 8px !important;
             }
 
             .sheet-img-box {
                 border: 1.5px solid #000000 !important;
                 filter: grayscale(100%);
-                height: 350px !important;
+                height: 320px !important;
             }
         }
     </style>
