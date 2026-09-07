@@ -131,6 +131,25 @@
             text-transform: uppercase;
         }
 
+        /* AVISO DE MODO JUGADOR */
+        .player-mode-banner {
+            background: rgba(197, 160, 89, 0.08);
+            border: 1px dashed rgba(197, 160, 89, 0.3);
+            color: var(--text-muted);
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.88rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .player-mode-banner i { color: var(--accent-gold); }
+        /* Se oculta automáticamente cuando se activa el modo narrador */
+        body.narrator-mode .player-mode-banner { display: none; }
+
         /* BARRA DE CONTROLES */
         .controls {
             background: var(--card-bg);
@@ -164,7 +183,7 @@
         }
 
         .search-box { flex: 2; min-width: 160px; }
-        .filter-box { flex: 1; min-width: 110px; } /* Reducido de tamaño */
+        .filter-box { flex: 1; min-width: 110px; }
 
         .search-box input, .filter-box select {
             width: 100%;
@@ -392,7 +411,6 @@
         .narrator-only { display: none !important; }
         body.narrator-mode .narrator-only { display: flex !important; }
         
-        /* Selector de fuente exclusivo de narrador */
         #sourceFilter { display: none; }
         body.narrator-mode #sourceFilter { display: block; }
 
@@ -556,13 +574,17 @@
         </div>
     </header>
 
+    <!-- AVISO DE MODO JUGADOR -->
+    <div class="player-mode-banner">
+        <i class="fa-solid fa-circle-info"></i> Estás visualizando el censo en <strong>Modo Jugador</strong>. Para acceder a los secretos y herramientas de control, pulsa el icono de la llave <i class="fa-solid fa-key" style="color: var(--accent-gold);"></i> en el menú flotante inferior derecho.
+    </div>
+
     <!-- BARRA DE CONTROLES -->
     <div class="controls">
         <div class="controls-main-group">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Buscar por nombre, alias, clan..." oninput="applyFilters()">
             </div>
-            <!-- Selector de Facciones (Reducido) -->
             <div class="filter-box">
                 <select id="factionFilter" onchange="applyFilters()">
                     <option value="">Facciones</option>
@@ -573,7 +595,6 @@
                     <option value="Autarcas">Autarcas</option>
                 </select>
             </div>
-            <!-- NUEVO SELECTOR DE FUENTES (EXCLUSIVO NARRADOR) -->
             <div class="filter-box" id="sourceFilter">
                 <select id="sourceSelectFilter" onchange="applyFilters()">
                     <option value="">Fuentes</option>
@@ -809,7 +830,7 @@
             localStorage.setItem('vtm-narrator-mode', 'false');
             ordenarPorIdActivo = false;
             document.getElementById('sortIdBtn').classList.remove('active-sort');
-            document.getElementById('sourceSelectFilter').value = ""; // Resetear filtro de fuente
+            document.getElementById('sourceSelectFilter').value = "";
             const btnNarrator = document.getElementById('narratorToggleBtn');
             btnNarrator.classList.remove('narrator-active');
             btnNarrator.title = "Modo Narrador";
@@ -872,7 +893,6 @@
 
         const esNarrator = document.body.classList.contains('narrator-mode');
 
-        // ORDEN JERÁRQUICO ESTRICTO DE LA CAMARILLA + ALFABÉTICO
         datos.sort((a, b) => {
             if (esNarrator && ordenarPorIdActivo) {
                 let idA = parseInt(a["ID"]) || 0;
@@ -971,7 +991,7 @@
             card.className = 'card';
             card.setAttribute('data-search', `${formattedId} ${alias} ${nombreReal} ${clan} ${ocupacion} ${cargoOficial} ${ubicacion} ${faccion} ${sire} ${menciones} ${secret} ${consejosIntegracion} ${estatusEfectivo} ${fuente}`.toLowerCase());
             card.setAttribute('data-faccion', faccion.toLowerCase());
-            card.setAttribute('data-source', textoFuente.toLowerCase()); // Atributo para filtrar por fuente
+            card.setAttribute('data-source', textoFuente.toLowerCase());
 
             const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
 
