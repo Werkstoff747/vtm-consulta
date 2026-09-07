@@ -186,6 +186,9 @@
             padding: 10px 12px;
             border-radius: 6px;
             font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         #loading, #error-msg {
@@ -208,7 +211,7 @@
     </header>
 
     <div id="loading">Cargando datos de la ficha...</div>
-    <div id="error-msg" style="display:none;">Personaje no encontrado en los archivos de la Cloaca Carmesí.</div>
+    <div id="error-msg" style="display:none;">Personaje no encontrado en los archivos de la Cloaca Carmesí o parámetro ID ausente.</div>
     
     <div id="sheetContent" style="display: none;" class="sheet-container">
         <!-- Contenido dinámico inyectado por JS -->
@@ -239,13 +242,19 @@
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
                 
-                const personaje = results.data.find(v => String(v["ID"]).trim() === String(personajeId).trim());
+                // Buscamos el personaje comprobando el ID (con limpieza de espacios)
+                const personaje = results.data.find(v => String(v["ID"] || "").trim() === String(personajeId).trim());
 
                 if (personaje) {
                     renderFicha(personaje);
                 } else {
                     document.getElementById('error-msg').style.display = 'block';
                 }
+            },
+            error: function(err) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-msg').textContent = "Error al conectar con los datos de la Cloaca.";
+                document.getElementById('error-msg').style.display = 'block';
             }
         });
     });
@@ -255,10 +264,10 @@
         container.style.display = 'grid';
 
         const id = v["ID"] || "";
-        const nombre = v["Nombre_Personaje"] || "Desconocido";
+        const nombre = v["Nombre_Personaje"] || v["Nombre del Personaje"] || "Desconocido";
         const clan = v["Clan"] || "Desconocido";
         const apodoRango = v["Apodo_o_Rango"] || "";
-        const sire = v["Sire"] || "Desconocido";
+        const sire = v["Sire"] || "";
         const abrazo = v["Abrazo"] || "";
         const ambicion = v["Ambicion"] || "";
         const convicciones = v["Convicciones"] || "";
@@ -278,7 +287,8 @@
         const secretos = v["Secretos"] || "";
 
         const cleanId = String(id).trim();
-        const imagenLimpia = v["Archivo de Imagen"] || (cleanId ? `${cleanId}.jpg` : 'silueta.jpg');
+        const imagenPorId = cleanId ? `${cleanId}.jpg` : '';
+        const imagenLimpia = v["Archivo de Imagen"] || v["Archivo_de_Imagen"] || imagenPorId || 'silueta.jpg';
 
         container.innerHTML = `
             <div>
@@ -292,35 +302,35 @@
                 <div class="sheet-grid-info">
                     <div class="info-block"><span class="info-label">Clan:</span><span class="info-value">${clan}</span></div>
                     <div class="info-block"><span class="info-label">Apodo / Rango:</span><span class="info-value">${apodoRango}</span></div>
-                    <div class="info-block"><span class="info-label">Sire:</span><span class="info-value">${sire}</span></div>
-                    <div class="info-block"><span class="info-label">Abrazo:</span><span class="info-value">${abrazo}</span></div>
-                    <div class="info-block"><span class="info-label">Generación:</span><span class="info-value">${generacion}</span></div>
-                    <div class="info-block"><span class="info-label">Potencia de Sangre:</span><span class="info-value">${potenciaSangre}</span></div>
-                    <div class="info-block"><span class="info-label">Humanidad:</span><span class="info-value">${humanidad}</span></div>
-                    <div class="info-block"><span class="info-label">Salud / Voluntad:</span><span class="info-value">${salud} / ${fuerzaVoluntad}</span></div>
+                    <div class="info-block"><span class="info-label">Sire:</span><span class="info-value">${sire || "-"}</span></div>
+                    <div class="info-block"><span class="info-label">Abrazo:</span><span class="info-value">${abrazo || "-"}</span></div>
+                    <div class="info-block"><span class="info-label">Generación:</span><span class="info-value">${generacion || "-"}</span></div>
+                    <div class="info-block"><span class="info-label">Potencia de Sangre:</span><span class="info-value">${potenciaSangre || "-"}</span></div>
+                    <div class="info-block"><span class="info-label">Humanidad:</span><span class="info-value">${humanidad || "-"}</span></div>
+                    <div class="info-block"><span class="info-label">Salud / Voluntad:</span><span class="info-value">${salud || "-"} / ${fuerzaVoluntad || "-"}</span></div>
                 </div>
 
                 <div class="section-title">Crónica y Moral</div>
                 <div class="sheet-grid-info">
-                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Ambición:</span><span class="info-value">${ambicion}</span></div>
-                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Convicciones:</span><span class="info-value">${convicciones}</span></div>
-                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Piedras de Toque:</span><span class="info-value">${piedrasToque}</span></div>
+                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Ambición:</span><span class="info-value">${ambicion || "-"}</span></div>
+                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Convicciones:</span><span class="info-value">${convicciones || "-"}</span></div>
+                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Piedras de Toque:</span><span class="info-value">${piedrasToque || "-"}</span></div>
                 </div>
 
                 <div class="section-title">Reservas de Dados y Disciplinas</div>
                 <div class="pools-box">
-                    <p><strong>Físicos:</strong> ${poolFisicos}</p>
-                    <p><strong>Sociales:</strong> ${poolSociales}</p>
-                    <p><strong>Mentales:</strong> ${poolMentales}</p>
-                    <p><strong>Disciplinas:</strong> ${poolDisciplinas}</p>
-                    ${reservasExcepcionales ? `<p><strong>Excepcionales:</strong> ${reservasExcepcionales}</p>` : ''}
-                    ${disciplinasVentajas ? `<p><strong>Ventajas / Defectos:</strong> ${disciplinasVentajas}</p>` : ''}
+                    ${poolFisicos ? `<p><strong>Físicos:</strong> <span>${poolFisicos}</span></p>` : ''}
+                    ${poolSociales ? `<p><strong>Sociales:</strong> <span>${poolSociales}</span></p>` : ''}
+                    ${poolMentales ? `<p><strong>Mentales:</strong> <span>${poolMentales}</span></p>` : ''}
+                    ${poolDisciplinas ? `<p><strong>Disciplinas:</strong> <span>${poolDisciplinas}</span></p>` : ''}
+                    ${reservasExcepcionales ? `<p><strong>Excepcionales:</strong> <span>${reservasExcepcionales}</span></p>` : ''}
+                    ${disciplinasVentajas ? `<p><strong>Ventajas / Defectos:</strong> <span>${disciplinasVentajas}</span></p>` : ''}
                 </div>
 
                 ${secretos ? `
                     <div class="section-title">Secretos de Narrador</div>
-                    <div class="secrets-box">
-                        🦇 <strong>Secretos:</strong> ${secretos}
+                    <div class="secrets-box" style="background: rgba(139, 0, 0, 0.08); border: 1px solid rgba(139, 0, 0, 0.3);">
+                        🦇 <strong>Secretos:</strong> <span>${secretos}</span>
                     </div>
                 ` : ''}
             </div>
