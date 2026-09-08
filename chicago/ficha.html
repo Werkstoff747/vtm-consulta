@@ -21,7 +21,7 @@
     <!-- FUENTES OFICIALES V5 (Google Fonts: Cinzel) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- FontAwesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -73,7 +73,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.6;
@@ -86,7 +86,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1050px;
             margin: 0 auto;
             width: 100%;
         }
@@ -97,9 +97,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px 20px;
             border-bottom: 2px solid var(--header-border);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             background: var(--header-bg);
             border-radius: 8px;
             text-align: center;
@@ -108,95 +108,172 @@
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             color: var(--accent-gold);
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
-        .ficha-layout {
-            background: var(--card-bg);
+        .sheet-container {
+            background-color: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 8px;
-            padding: 30px;
+            padding: 25px;
             display: grid;
             grid-template-columns: 280px 1fr;
-            gap: 30px;
+            gap: 25px;
             position: relative;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             margin-bottom: 40px;
         }
 
-        .ficha-layout::before {
+        .sheet-container::before {
             content: '';
             position: absolute;
             top: 0; left: 0;
             width: 4px; height: 100%;
             background-color: var(--accent-red);
+            z-index: 5;
         }
 
-        .ficha-img-container {
+        .sheet-img-box {
             width: 100%;
-            height: 360px;
-            background-color: #000;
+            height: 380px;
+            background: #000;
             border-radius: 6px;
             overflow: hidden;
             border: 1px solid var(--card-border);
         }
 
-        .ficha-img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top;
+        .sheet-img-box img {
+            width: 100%; height: 100%; object-fit: cover; object-position: top;
         }
 
-        .ficha-details {
+        .sheet-details {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .ficha-title {
+        .sheet-title {
             font-family: 'Cinzel', serif;
-            font-weight: 700;
             font-size: 1.8rem;
-            color: var(--card-title-color);
+            font-weight: 700;
+            color: var(--card-title-color, #fff);
             border-bottom: 1px dashed var(--card-border);
-            padding-bottom: 10px;
+            padding-bottom: 8px;
+            text-transform: uppercase;
         }
 
-        .ficha-info-row {
+        .sheet-grid-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .info-block {
+            font-size: 0.88rem;
             display: flex;
             justify-content: space-between;
-            font-size: 0.95rem;
+            align-items: center;
             background: var(--card-notes-bg);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             border: 1px solid var(--card-border);
         }
 
-        .ficha-label { color: var(--text-muted); font-weight: 600; }
-        .ficha-value { font-weight: 600; color: var(--text-main); text-align: right; }
+        .info-label { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        .info-value { font-weight: 600; text-align: right; color: var(--text-main); }
 
-        .ficha-section-title {
+        .section-title {
             font-family: 'Cinzel', serif;
             color: var(--accent-gold);
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin-top: 15px;
-            margin-bottom: 5px;
             border-bottom: 1px solid var(--card-border);
             padding-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .ficha-notes-box {
+        .three-cols-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 8px;
+        }
+        @media (max-width: 750px) {
+            .three-cols-grid { grid-template-columns: 1fr; }
+        }
+
+        .pool-col-box {
+            background: var(--card-notes-bg);
+            border: 1px solid var(--card-border);
+            padding: 8px 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.88rem;
+        }
+        .pool-col-label {
+            font-weight: 600;
+            color: var(--accent-gold);
+            font-family: 'Cinzel', serif;
+        }
+        .pool-col-value {
+            font-weight: 700;
+            color: var(--card-title-color, #fff);
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+        }
+
+        .disciplines-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 8px;
+        }
+        @media (max-width: 750px) {
+            .disciplines-grid { grid-template-columns: 1fr; }
+        }
+
+        .discipline-card {
+            background: var(--card-notes-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            padding: 10px;
+        }
+        .discipline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--card-border);
+            padding-bottom: 5px;
+            margin-bottom: 6px;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+        }
+        .discipline-powers-list {
+            list-style-type: disc;
+            padding-left: 16px;
+            font-size: 0.82rem;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .secrets-box {
             background: rgba(139, 0, 0, 0.08);
             border: 1px solid rgba(139, 0, 0, 0.3);
-            padding: 12px 15px;
+            padding: 10px 12px;
             border-radius: 6px;
             font-size: 0.9rem;
+            margin-top: 8px;
+            color: var(--accent-gold);
             font-style: italic;
-            color: var(--text-main);
         }
 
         #loading, #error-msg {
@@ -206,7 +283,6 @@
             padding: 40px;
             font-family: 'Cinzel', serif;
         }
-        #error-msg { color: var(--accent-crimson); }
 
         /* FLOTANTES */
         .floating-btn-container {
@@ -227,17 +303,6 @@
         }
 
         footer { text-align: center; padding: 20px; border-top: 1px solid var(--card-border); }
-
-        @media (max-width: 768px) {
-            .ficha-layout {
-                grid-template-columns: 1fr;
-            }
-            .ficha-img-container {
-                height: 300px;
-                max-width: 250px;
-                margin: 0 auto;
-            }
-        }
     </style>
 </head>
 <body>
@@ -255,11 +320,12 @@
     </div>
 
     <div id="loading">Cargando expediente del vástago...</div>
-    <div id="error-msg" style="display:none;">No se ha encontrado el expediente solicitado.</div>
-    <div id="fichaWrapper"></div>
+    <div id="error-msg" style="display:none;">Personaje no encontrado en los archivos o parámetro ID ausente.</div>
+    
+    <div id="sheetContent" style="display: none;" class="sheet-container"></div>
 
     <footer>
-        <p style="font-size: 0.85rem; color: var(--text-muted);">Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Vampiro: La Mascarada (5ª Edición) — Censo de Chicago</p>
     </footer>
 </div>
 
@@ -301,91 +367,202 @@
         const urlParams = new URLSearchParams(window.location.search);
         const vampId = urlParams.get('id');
 
+        if (vampId) {
+            const switchBtn = document.getElementById('switchFichaBtn');
+            if (switchBtn) {
+                switchBtn.href = `ficha2.html?id=${vampId}`;
+            }
+        }
+
         if (!vampId) {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('error-msg').style.display = 'block';
             return;
         }
 
-        // Actualizar el botón de cambio de ficha con el ID actual conservado
-        const switchBtn = document.getElementById('switchFichaBtn');
-        if (switchBtn) {
-            switchBtn.href = `ficha2.html?id=${vampId}`;
-        }
-
         Papa.parse(SHEET_CSV_URL, {
-            download: true, header: true, skipEmptyLines: true,
+            download: true,
+            header: true,
+            skipEmptyLines: true,
             complete: function(results) {
                 document.getElementById('loading').style.display = 'none';
-                const datos = results.data;
-                
-                const vampiro = datos.find(v => String(v["ID"]).trim() === String(vampId).trim());
-
-                if (!vampiro) {
+                const personaje = results.data.find(v => String(v["ID"] || "").trim() === String(vampId).trim());
+                if (personaje) {
+                    renderFicha(personaje);
+                } else {
                     document.getElementById('error-msg').style.display = 'block';
-                    return;
                 }
-
-                renderFicha(vampiro);
+            },
+            error: function(err) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-msg').textContent = "Error al conectar con los datos del censo.";
+                document.getElementById('error-msg').style.display = 'block';
             }
         });
     });
 
+    function renderExcepcionales(textoExcepcionales) {
+        if (!textoExcepcionales || textoExcepcionales.trim() === '-' || textoExcepcionales.trim() === '') {
+            return '<span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; grid-column: span 3;">Sin reservas excepcionales registradas.</span>';
+        }
+
+        let html = '';
+        const items = textoExcepcionales.split(',');
+        items.forEach(item => {
+            const parts = item.trim().match(/^(.+?)\s+(\d+)$/);
+            let nombrePool = item.trim();
+            let valorPool = "-";
+
+            if (parts) {
+                nombrePool = parts[1].trim();
+                valorPool = parts[2].trim();
+            }
+
+            html += `
+                <div class="pool-col-box">
+                    <span class="pool-col-label">${nombrePool}:</span>
+                    <span class="pool-col-value">${valorPool}</span>
+                </div>
+            `;
+        });
+        return html;
+    }
+
+    function renderDisciplinas(textoDisciplinas) {
+        if (!textoDisciplinas || textoDisciplinas.trim() === '-' || textoDisciplinas.trim() === '') {
+            return '<span style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; grid-column: span 3;">Sin disciplinas registradas.</span>';
+        }
+
+        const regex = /([A-Za-zñÑáéíóúÁÉÍÓÚ\s]+?)\s*(\d+)(?:\s*\((.*?)\))?/g;
+        let match;
+        let html = '';
+        let count = 0;
+
+        while ((match = regex.exec(textoDisciplinas)) !== null) {
+            count++;
+            const nombreDisc = match[1].trim();
+            const nivelDisc = match[2].trim();
+            const poderesRaw = match[3] ? match[3].trim() : "";
+            const poderesList = poderesRaw ? poderesRaw.split(',').map(p => p.trim()) : [];
+
+            let poderesHtml = '';
+            if (poderesList.length > 0) {
+                poderesHtml = '<ul class="discipline-powers-list">';
+                poderesList.forEach(pod => {
+                    poderesHtml += `<li>${pod}</li>`;
+                });
+                poderesHtml += '</ul>';
+            } else {
+                poderesHtml = '<span style="font-size: 0.82rem; color: var(--text-muted); font-style: italic;">Sin poderes específicos detallados.</span>';
+            }
+
+            html += `
+                <div class="discipline-card">
+                    <div class="discipline-header">
+                        <span>${nombreDisc}</span>
+                        <span class="pool-col-value">${nivelDisc}</span>
+                    </div>
+                    ${poderesHtml}
+                </div>
+            `;
+        }
+
+        if (count === 0) {
+            return `<span style="font-size: 0.9rem; color: var(--text-main); grid-column: span 3;">${textoDisciplinas}</span>`;
+        }
+
+        return html;
+    }
+
     function renderFicha(v) {
-        const wrapper = document.getElementById('fichaWrapper');
-        
+        const container = document.getElementById('sheetContent');
+        container.style.display = 'grid';
+
         const id = v["ID"] || "";
-        const formattedId = id ? String(id).padStart(2, '0') : "00";
-        const alias = (v["Alias"] || "").trim();
-        const nombreReal = (v["Nombre del Personaje"] || "").trim();
-        const nombrePrincipal = alias !== "" ? alias : nombreReal;
-        
+        const nombre = v["Nombre_Personaje"] || v["Nombre del Personaje"] || "Desconocido";
         const clan = v["Clan"] || "Desconocido";
-        const ocupacion = v["Profesion_Ocupacion"] || "Desconocida";
-        const ubicacion = v["Ubicación / Dominio habitual"] || "Desconocida";
-        const faccion = v["Facción"] || "Desconocida";
-        const sire = v["Sire / Creador"] || "Desconocido";
-        const menciones = v["Menciones"] || "Ninguna";
-        const secret = v["Secretos"] || "Sin información restringida.";
-        const consejosIntegracion = v["Consejos_integracion_Chicago_Nocturno"] || ""; 
-        const cargoOficial = v["Cargo_Oficial"] || "";
-        const fuente = (v["FUENTE"] || v["Fuente"] || "Chicago Nocturno").trim();
-        const estatus = (v["Estatus"] || "Interactuado").trim();
+        const apodoRango = v["Apodo_o_Rango"] || "";
+        const sire = v["Sire / Creador"] || v["Sire"] || "";
+        const abrazo = v["Abrazo"] || "";
+        const ambicion = v["Ambicion"] || "";
+        const convicciones = v["Convicciones"] || "";
+        const piedrasToque = v["Piedras_de_Toque"] || "";
+        const humanidad = v["Humanidad"] || "";
+        const generacion = v["Generacion"] || "";
+        const potenciaSangre = v["Potencia_de_Sangre"] || "";
+        const salud = v["Salud"] || "";
+        const fuerzaVoluntad = v["Fuerza_de_Voluntad"] || "";
+        
+        const poolFisicos = v["Pool_Fisicos"] || "-";
+        const poolSociales = v["Pool_Sociales"] || "-";
+        const poolMentales = v["Pool_Mentales"] || "-";
+        
+        const textoDisciplinas = v["Disciplinas"] || "";
+        const reservasExcepcionales = v["Reservas_Excepcionales"] || "";
+        const disciplinasVentajas = v["DisciplinasVentajas_y_Defectos"] || "";
+        const secretos = v["Secretos"] || "";
 
         const cleanId = String(id).trim();
         const imagenPorId = cleanId ? `${cleanId}.jpg` : '';
-        const imagenPorNombre = nombreReal.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
-        const imagenLimpia = v["Archivo de Imagen"] || imagenPorId || imagenPorNombre;
+        const imagenLimpia = v["Archivo de Imagen"] || v["Archivo_de_Imagen"] || imagenPorId || 'silueta.jpg';
 
-        wrapper.innerHTML = `
-            <div class="ficha-layout">
-                <div class="ficha-img-container">
-                    <img src="./retratos/${imagenLimpia}" alt="${nombrePrincipal}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
+        container.innerHTML = `
+            <div>
+                <div class="sheet-img-box">
+                    <img src="./retratos/${imagenLimpia}" alt="${nombre}" onerror="this.onerror=null; this.src='./retratos/silueta.jpg';">
                 </div>
+            </div>
+            <div class="sheet-details">
+                <div class="sheet-title">${nombre}</div>
                 
-                <div class="ficha-details">
-                    <div style="font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--accent-gold);">ID: #${formattedId} | Fuente: ${fuente}</div>
-                    <div class="ficha-title">${nombrePrincipal}</div>
-                    
-                    ${alias !== "" ? `<div class="ficha-info-row"><span class="ficha-label">Identidad Real:</span><span class="ficha-value" style="color: var(--accent-gold);">${nombreReal}</span></div>` : ''}
-                    ${cargoOficial && cargoOficial !== "-" ? `<div class="ficha-info-row" style="background: rgba(197, 160, 89, 0.12); border-color: rgba(197, 160, 89, 0.4);"><span class="ficha-label"><i class="fa-solid fa-crown"></i> Cargo Oficial:</span><span class="ficha-value" style="color: var(--accent-gold);">${cargoOficial}</span></div>` : ''}
-                    
-                    <div class="ficha-info-row"><span class="ficha-label">Clan:</span><span class="ficha-value">${clan}</span></div>
-                    <div class="ficha-info-row"><span class="ficha-label">Ocupación:</span><span class="ficha-value">${ocupacion}</span></div>
-                    <div class="ficha-info-row"><span class="ficha-label">Ubicación / Dominio:</span><span class="ficha-value">${ubicacion}</span></div>
-                    <div class="ficha-info-row"><span class="ficha-label">Facción:</span><span class="ficha-value">${faccion}</span></div>
-                    <div class="ficha-info-row"><span class="ficha-label">Sire / Creador:</span><span class="ficha-value">${sire}</span></div>
-                    <div class="ficha-info-row"><span class="ficha-label">Estatus:</span><span class="ficha-value">${estatus}</span></div>
-                    <div class="ficha-info-row"><span class="ficha-label">Menciones:</span><span class="ficha-value">${menciones}</span></div>
-
-                    <div class="ficha-section-title">Secretos del Vástago</div>
-                    <div class="ficha-notes-box">🦇 ${secret}</div>
-
-                    ${consejosIntegracion ? `
-                        <div class="ficha-section-title" style="color: var(--accent-gold);">Consejos de Integración</div>
-                        <div class="ficha-notes-box" style="background-color: rgba(197, 160, 89, 0.08); border-color: rgba(197, 160, 89, 0.3); color: var(--accent-gold);">💡 ${consejosIntegracion}</div>
-                    ` : ''}
+                <div class="sheet-grid-info">
+                    <div class="info-block"><span class="info-label">Clan:</span><span class="info-value">${clan}</span></div>
+                    <div class="info-block"><span class="info-label">Apodo / Rango:</span><span class="info-value">${apodoRango}</span></div>
+                    <div class="info-block"><span class="info-label">Sire:</span><span class="info-value">${sire || "-"}</span></div>
+                    <div class="info-block"><span class="info-label">Abrazo:</span><span class="info-value">${abrazo || "-"}</span></div>
+                    <div class="info-block"><span class="info-label">Generación:</span><span class="info-value">${generacion || "-"}</span></div>
+                    <div class="info-block"><span class="info-label">Potencia de Sangre:</span><span class="info-value">${potenciaSangre || "-"}</span></div>
+                    <div class="info-block"><span class="info-label">Humanidad:</span><span class="info-value">${humanidad || "-"}</span></div>
+                    <div class="info-block"><span class="info-label">Salud / Voluntad:</span><span class="info-value">${salud || "-"} / ${fuerzaVoluntad || "-"}</span></div>
                 </div>
+
+                <div class="section-title">Crónica y Moral</div>
+                <div class="sheet-grid-info">
+                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Ambición:</span><span class="info-value">${ambicion || "-"}</span></div>
+                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Convicciones:</span><span class="info-value">${convicciones || "-"}</span></div>
+                    <div class="info-block" style="grid-column: span 2;"><span class="info-label">Piedras de Toque:</span><span class="info-value">${piedrasToque || "-"}</span></div>
+                </div>
+
+                <div class="section-title">Reservas de Dados (Físicos, Sociales, Mentales)</div>
+                <div class="three-cols-grid">
+                    <div class="pool-col-box"><span class="pool-col-label">Físicos:</span> <span class="pool-col-value">${poolFisicos}</span></div>
+                    <div class="pool-col-box"><span class="pool-col-label">Sociales:</span> <span class="pool-col-value">${poolSociales}</span></div>
+                    <div class="pool-col-box"><span class="pool-col-label">Mentales:</span> <span class="pool-col-value">${poolMentales}</span></div>
+                </div>
+
+                <div class="section-title">Reservas Excepcionales</div>
+                <div class="three-cols-grid">
+                    ${renderExcepcionales(reservasExcepcionales)}
+                </div>
+
+                <div class="section-title">Disciplinas y Poderes</div>
+                <div class="disciplines-grid">
+                    ${renderDisciplinas(textoDisciplinas)}
+                </div>
+
+                ${disciplinasVentajas ? `
+                    <div class="section-title">Ventajas y Defectos</div>
+                    <div class="info-block" style="background: var(--card-notes-bg); display: block; padding: 8px 12px;">
+                        <span class="info-value" style="text-align: left; display: block; font-weight: normal; font-style: italic;">${disciplinasVentajas}</span>
+                    </div>
+                ` : ''}
+
+                ${secretos ? `
+                    <div class="section-title">Secretos de Narrador</div>
+                    <div class="secrets-box">
+                        🦇 <strong>Secretos:</strong> <span>${secretos}</span>
+                    </div>
+                ` : ''}
             </div>
         `;
     }
