@@ -3,30 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Censo de Vampiros de Chicago - V:TM V5</title>
+    <title>Censo de Chicago y La Cloaca Carmesí</title>
 
-    <!-- Google Tag Manager -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0REGNEJC1G"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-0REGNEJC1G');
-    </script>
-    <!-- End Google Tag Manager -->
-    
-    <!-- FAVICON -->
     <link rel="icon" type="image/png" href="./iconos/drRol.png">
     
-    <!-- FUENTES OFICIALES V5 (Google Fonts: Cinzel) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Librería para procesar CSV de Google Sheets -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
@@ -35,18 +20,9 @@
             --card-bg: #18181c;
             --card-border: #2a2a32;
             --accent-red: #8b0000;
-            --accent-crimson: #c92a2a;
             --accent-gold: #c5a059;
             --text-main: #e1e1e6;
             --text-muted: #a0a0b0;
-            --tag-bg: #25252e;
-            --input-bg: #0f0f12;
-            --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
-            --header-border: #8b0000;
-            --card-title-color: #ffffff;
-            --card-notes-bg: rgba(255, 255, 255, 0.03);
-            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
-            --clan-icon-filter: brightness(0) invert(1);
         }
 
         body.light-mode {
@@ -54,1031 +30,216 @@
             --card-bg: #ffffff;
             --card-border: #bcaba0;
             --accent-red: #8b0000;
-            --accent-crimson: #c92a2a;
             --accent-gold: #8d6722;
             --text-main: #1f1f22;
             --text-muted: #555459;
-            --tag-bg: #f2f0eb;
-            --input-bg: #ffffff;            
-            --header-bg: #2b0408;
-            --header-border: #7a0000;
-            --card-title-color: #111115;
-            --card-notes-bg: #f9f8f5;
-            --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
-            --clan-icon-filter: none;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            line-height: 1.6;
             padding: 20px;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            width: 100%;
-        }
+        .container { max-width: 1100px; margin: 0 auto; }
 
         header {
-            position: relative;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            padding: 25px 20px 20px 20px;
-            border-bottom: 2px solid var(--header-border);
-            margin-bottom: 25px;
-            background: var(--header-bg);
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--accent-red);
+            margin-bottom: 20px;
+            background: var(--card-bg);
             border-radius: 8px;
-            text-align: center;
         }
 
-        .header-logos {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 12px;
-        }
-
-        .header-ank-logo, .header-main-logo {
-            filter: var(--logo-filter);
-            object-fit: contain;
-        }
-        .header-ank-logo { height: 55px; width: auto; }
-        .header-main-logo { height: 95px; max-width: 85vw; width: auto; }
-
-        h1.cabecera-principal {
+        .home-btn {
+            color: var(--accent-gold);
+            text-decoration: none;
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
             color: var(--accent-gold);
-            letter-spacing: 2px;
+            font-size: 1.2rem;
             text-transform: uppercase;
         }
 
-        /* AVISO DE MODO JUGADOR */
-        .player-mode-banner {
-            background: rgba(197, 160, 89, 0.08);
-            border: 1px dashed rgba(197, 160, 89, 0.3);
-            color: var(--text-muted);
-            padding: 10px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.88rem;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .player-mode-banner i { color: var(--accent-gold); }
-        /* Se oculta automáticamente cuando se activa el modo narrador */
-        body.narrator-mode .player-mode-banner { display: none; }
-
-        /* BARRA DE CONTROLES */
-        .controls {
+        /* PANEL DE NARRADOR Y FILTROS */
+        .narrator-panel {
             background: var(--card-bg);
-            padding: 15px 20px;
+            border: 1px solid var(--card-border);
+            padding: 15px;
             border-radius: 8px;
-            border: 1px solid var(--card-border);
             margin-bottom: 20px;
+            display: none;
+        }
+        .narrator-panel.active {
+            display: block;
+        }
+
+        .filters-group {
             display: flex;
+            gap: 15px;
             align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .controls-main-group {
-            display: flex;
-            gap: 12px;
-            flex: 3;
-            min-width: 280px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .controls-actions-group {
-            display: flex;
-            gap: 10px;
-            flex: 1;
-            min-width: 220px;
-            justify-content: flex-end;
-            flex-wrap: wrap;
-        }
-
-        .search-box { flex: 2; min-width: 160px; }
-        .filter-box { flex: 1; min-width: 110px; }
-
-        .search-box input, .filter-box select {
-            width: 100%;
-            padding: 9px 12px;
-            background-color: var(--input-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 6px;
-            color: var(--text-main);
+            margin-top: 10px;
             font-size: 0.9rem;
-            outline: none;
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
         }
 
-        .action-control-btn {
-            background: var(--tag-bg);
-            border: 1px solid var(--card-border);
-            color: var(--accent-gold);
-            padding: 9px 14px;
-            border-radius: 6px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            font-weight: 700;
+        .filters-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-            white-space: nowrap;
         }
 
-        .action-control-btn:hover {
-            background: rgba(197, 160, 89, 0.15);
-            border-color: var(--accent-gold);
-        }
-
-        #sortIdBtn { display: none; }
-        body.narrator-mode #sortIdBtn { display: flex; }
-        #sortIdBtn.active-sort {
-            background: rgba(197, 160, 89, 0.25);
-            border-color: var(--accent-gold);
-        }
-
-        .results-counter {
-            font-size: 0.9rem;
-            color: var(--accent-gold);
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-
-        .grid {
+        /* LISTADO DE PERSONAJES */
+        .roster-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
         }
 
-        .card {
-            background-color: var(--card-bg);
+        .character-card {
+            background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            transition: transform 0.2s, border-color 0.2s;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 4px; height: 100%;
-            background-color: var(--accent-red);
-            z-index: 5;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(201, 42, 42, 0.4);
-        }
-
-        /* ELEMENTOS EXCLUSIVOS DE NARRADOR EN TARJETA */
-        .id-badge, .estatus-badge, .narrator-source-badge { display: none; }
-        body.narrator-mode .id-badge { display: block; }
-        body.narrator-mode .estatus-badge { display: block; }
-        body.narrator-mode .narrator-source-badge { display: block; }
-
-        .id-badge {
-            position: absolute;
-            top: 10px; left: 12px;
-            background: rgba(15, 15, 18, 0.85);
-            color: var(--accent-gold);
-            border: 1px solid var(--accent-gold);
-            padding: 0.2rem 0.5rem;
-            font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            font-weight: 700;
-            border-radius: 4px;
-            z-index: 10;
-        }
-
-        .narrator-source-badge {
-            position: absolute;
-            bottom: 10px; left: 12px;
-            background: rgba(15, 15, 18, 0.85);
-            color: var(--text-muted);
-            border: 1px solid var(--card-border);
-            padding: 0.15rem 0.5rem;
-            font-size: 0.7rem;
-            font-weight: 600;
-            border-radius: 4px;
-            z-index: 10;
-            backdrop-filter: blur(4px);
-        }
-        .source-cloaca {
-            color: #d29922;
-            border-color: rgba(210, 153, 34, 0.4);
-        }
-
-        .estatus-badge {
-            position: absolute;
-            top: 10px; right: 12px;
-            padding: 0.2rem 0.6rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 4px;
-            z-index: 10;
-        }
-        .estatus-interactuado {
-            background: rgba(46, 160, 67, 0.2);
-            color: #3fb950;
-            border: 1px solid rgba(46, 160, 67, 0.4);
-        }
-        .estatus-oidas {
-            background: rgba(46, 160, 67, 0.08);
-            color: #85e89d;
-            border: 1px solid rgba(46, 160, 67, 0.2);
-        }
-        .estatus-rumor {
-            background: rgba(110, 118, 129, 0.2);
-            color: #8b949e;
-            border: 1px solid rgba(110, 118, 129, 0.4);
-        }
-
-        .card-img-container {
-            width: 100%;
-            height: 280px;
-            background-color: #000;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .card-img-container img {
-            width: 100%; height: 100%;
-            object-fit: cover; object-position: top;
-            transition: transform 0.4s ease;
-        }
-
-        .card:hover .card-img-container img { transform: scale(1.04); }
-
-        .card-body-content {
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex-grow: 1;
-        }
-
-        .card-header-vamp {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px dashed var(--card-border);
-            padding-bottom: 10px;
-        }
-
-        .clan-symbol {
-            width: 42px; height: 42px; object-fit: contain;
-            filter: var(--clan-icon-filter);
-            flex-shrink: 0;
-        }
-
-        .vamp-titles-box { display: flex; flex-direction: column; flex-grow: 1; }
-
-        .card-title {
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: var(--card-title-color);
-        }
-
-        .card-clan-tag {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-style: italic;
-            font-weight: 600;
-        }
-
-        .cargo-block {
-            background: rgba(197, 160, 89, 0.12);
-            border: 1px solid rgba(197, 160, 89, 0.35);
-            color: var(--accent-gold);
-            font-family: 'Cinzel', serif;
-            font-size: 0.82rem;
-            font-weight: 700;
-        }
-        .cargo-block .info-label {
-            color: var(--accent-gold);
-        }
-
-        .info-block {
-            font-size: 0.88rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--card-notes-bg);
-            padding: 6px 10px;
+            padding: 15px;
             border-radius: 6px;
-            border: 1px solid var(--card-border);
-        }
-
-        .info-label { color: var(--text-muted); font-weight: 600; }
-        .info-value { font-weight: 600; text-align: right; max-width: 65%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-        .narrator-only { display: none !important; }
-        body.narrator-mode .narrator-only { display: flex !important; }
-        
-        #sourceFilter { display: none; }
-        body.narrator-mode #sourceFilter { display: block; }
-
-        .card-notes {
-            font-size: 0.85rem;
-            color: var(--text-main);
-            font-style: italic;
-            padding: 8px 10px;
-            background-color: rgba(139, 0, 0, 0.08);
-            border-radius: 6px;
-            border: 1px solid rgba(139, 0, 0, 0.3);
+            text-decoration: none;
+            color: inherit;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 5px;
         }
-
-        .badge {
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            border-radius: 4px;
-            background-color: var(--tag-bg);
-            color: var(--text-muted);
-            border: 1px solid var(--card-border);
+        .character-card:hover {
+            border-color: var(--accent-gold);
         }
-
-        #loading {
-            text-align: center;
-            font-size: 1.1rem;
-            color: var(--accent-gold);
-            padding: 40px;
+        .card-name {
             font-family: 'Cinzel', serif;
-        }
-
-        /* FLOTANTES */
-        .floating-btn-container {
-            position: fixed; bottom: 25px; right: 25px;
-            display: flex; flex-direction: column; gap: 12px; z-index: 9999;
-        }
-
-        .floating-action-btn, .scroll-top-btn {
-            width: 45px; height: 45px; border-radius: 50%;
-            background-color: var(--accent-red); color: #fff;
-            border: 1px solid var(--accent-crimson); font-size: 1.1rem;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5); text-decoration: none;
-            transition: transform 0.2s;
-        }
-
-        .floating-action-btn:hover, .scroll-top-btn:hover {
-            transform: translateY(-3px); background-color: var(--accent-crimson);
-        }
-
-        .scroll-top-btn { opacity: 0; visibility: hidden; transition: opacity 0.3s; }
-        .scroll-top-btn.show { opacity: 1; visibility: visible; }
-        .floating-action-btn.narrator-active { border-color: var(--accent-gold); box-shadow: 0 0 10px var(--accent-gold); }
-
-        /* MODALES GENERALES */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); display: none; align-items: center; justify-content: center; z-index: 10000;
-        }
-        .modal-content {
-            background: var(--card-bg); border: 2px solid var(--accent-gold);
-            padding: 30px; border-radius: 10px; width: 90%; max-width: 450px; text-align: center;
-        }
-        .modal-content h3 { font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 15px; }
-        .modal-content input {
-            width: 100%; padding: 10px; background: var(--input-bg);
-            border: 1px solid var(--card-border); color: var(--text-main); border-radius: 5px; text-align: center; margin-bottom: 15px; outline: none;
-        }
-        .modal-buttons { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-        .modal-btn { padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; border: none; }
-        .modal-btn-confirm { background: var(--accent-red); color: #fff; border: 1px solid var(--accent-crimson); }
-        .modal-btn-cancel { background: var(--tag-bg); color: var(--text-muted); border: 1px solid var(--card-border); }
-
-        /* ESTILOS DEL ORGANIGRAMA PIRAMIDAL DE TEXTO */
-        .modal-large { max-width: 700px; text-align: left; max-height: 85vh; overflow-y: auto; }
-        .pyramid-text-chart {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 0;
-            font-family: 'Cinzel', serif;
-        }
-        .pyramid-node {
-            background: var(--input-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 6px;
-            padding: 10px 15px;
-            text-align: center;
-            width: 100%;
-            max-width: 320px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-        .prince-node {
-            background: rgba(197, 160, 89, 0.15);
-            border: 2px solid var(--accent-gold);
-            max-width: 360px;
-        }
-        .branch-node { max-width: 220px; }
-        .base-node {
-            max-width: 420px;
-            background: rgba(139, 0, 0, 0.1);
-            border-color: rgba(139, 0, 0, 0.4);
-        }
-        .pyramid-row {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            width: 100%;
-            flex-wrap: wrap;
-        }
-        .p-title {
-            display: block;
-            font-size: 0.95rem;
             font-weight: 700;
             color: var(--accent-gold);
         }
-        .p-desc {
-            display: block;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-family: 'Segoe UI', sans-serif;
-            margin-top: 2px;
-        }
-        .p-label {
-            display: block;
-            font-size: 0.7rem;
-            color: var(--accent-crimson);
-            margin-bottom: 2px;
-            font-weight: bold;
-        }
-        .p-line-vertical, .p-line-split, .p-line-converge {
-            color: var(--accent-gold);
-            font-weight: bold;
-            font-size: 1rem;
-            line-height: 1;
-        }
-        .p-line-split, .p-line-converge {
-            display: flex;
-            gap: 120px;
-        }
-        .markdown-viewer { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
-        .markdown-viewer h4 { color: var(--accent-gold); font-family: 'Cinzel', serif; margin: 12px 0 6px 0; }
-        .markdown-viewer ul { padding-left: 20px; margin-bottom: 10px; }
-
-        footer { text-align: center; padding: 30px 20px; border-top: 1px solid var(--card-border); margin-top: 50px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <div class="header-logos">
-            <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM">
-            <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada">
-        </div>
-        <div class="header-text">
-            <h1 class="cabecera-principal">Censo de Vástagos — Chicago</h1>
-        </div>
+        <a href="https://werkstoff747.github.io/vtm-consulta" class="home-btn"><i class="fa-solid fa-house"></i> Menú Principal</a>
+        <h1>Censo de Vástagos</h1>
+        <button onclick="toggleNarratorMode()" style="background:none; border:1px solid var(--accent-gold); color:var(--accent-gold); padding:5px 10px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-key"></i></button>
     </header>
 
-    <!-- AVISO DE MODO JUGADOR -->
-    <div class="player-mode-banner">
-        <i class="fa-solid fa-circle-info"></i> Estás visualizando el censo en <strong>Modo Jugador</strong>. Para acceder a los secretos y herramientas de control, pulsa el icono de la llave <i class="fa-solid fa-key" style="color: var(--accent-gold);"></i> en el menú flotante inferior derecho.
-    </div>
-
-    <!-- BARRA DE CONTROLES -->
-    <div class="controls">
-        <div class="controls-main-group">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar por nombre, alias, clan..." oninput="applyFilters()">
-            </div>
-            <div class="filter-box">
-                <select id="factionFilter" onchange="applyFilters()">
-                    <option value="">Facciones</option>
-                    <option value="Camarilla">Camarilla</option>
-                    <option value="Anarquistas">Anarquistas</option>
-                    <option value="Independiente">Independiente</option>
-                    <option value="Hecata">Hecata</option>
-                    <option value="Autarcas">Autarcas</option>
-                </select>
-            </div>
-            <div class="filter-box" id="sourceFilter">
-                <select id="sourceSelectFilter" onchange="applyFilters()">
-                    <option value="">Fuentes</option>
-                    <option value="Chicago Nocturno">Chicago Nocturno</option>
-                    <option value="La Cloaca Carmesí">La Cloaca Carmesí</option>
-                </select>
-            </div>
-        </div>
-        <div class="controls-actions-group">
-            <button class="action-control-btn" id="sortIdBtn" onclick="toggleSortById()" title="Alternar orden por ID numérico"><i class="fa-solid fa-arrow-down-1-9"></i> ID</button>
-            <button class="action-control-btn" onclick="abrirModalPoder()"><i class="fa-solid fa-sitemap"></i> Poder</button>
-            <button class="action-control-btn" onclick="abrirModalReadme()"><i class="fa-solid fa-book-open"></i> Guía</button>
+    <!-- PANEL EXCLUSIVO NARRADOR CON CHECKBOXES DE FUENTES -->
+    <div id="narratorPanel" class="narrator-panel">
+        <strong style="font-family: 'Cinzel', serif; color: var(--accent-gold);">Panel de Narrador - Filtrar Fuentes:</strong>
+        <div class="filters-group">
+            <label><input type="checkbox" id="checkCN" checked onchange="saveFiltersAndRender()"> CN (Chicago Nocturno)</label>
+            <label><input type="checkbox" id="checkCC" checked onchange="saveFiltersAndRender()"> CC (Cloaca Carmesí)</label>
         </div>
     </div>
 
-    <div id="resultsCounter" class="results-counter"></div>
-    <div id="loading">Cargando censo de vástagos desde Google Sheets...</div>
-    <div id="vampiresWrapper" class="grid"></div>
-
-    <footer>
-        <div style="max-width: 850px; margin: 0 auto; display: flex; align-items: center; gap: 20px; text-align: left; justify-content: center; flex-wrap: wrap;">
-            <div>
-                <img src="./iconos/darkpack_logo2.webp" alt="Dark Pack Logo" style="max-height: 65px; width: auto;" class="darkpack-logo">
-            </div>
-            <div>
-                <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)</div>
-                <p style="margin-bottom: 0; font-size: 0.85rem;">Consigue los libros oficiales en <a href="https://www.nosolorol.com" target="_blank" style="color: var(--accent-gold);">Nosolorol</a>.</p>
-            </div>
-        </div>
-    </footer>
-</div>
-
-<!-- MODAL CONTRASEÑA NARRADOR -->
-<div id="narratorModal" class="modal-overlay">
-    <div class="modal-content">
-        <h3>Acceso de Narrador</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Introduce la palabra de pase:</p>
-        <input type="password" id="narratorPasswordInput" placeholder="Contraseña...">
-        <div class="modal-buttons">
-            <button class="modal-btn modal-btn-confirm" onclick="verificarPassword()">Desbloquear</button>
-            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalNarrador()">Cancelar</button>
-        </div>
+    <div id="rosterList" class="roster-grid">
+        <p style="color: var(--text-muted);">Cargando censo...</p>
     </div>
 </div>
-
-<!-- MODAL ESTRUCTURA DE PODER -->
-<div id="powerModal" class="modal-overlay">
-    <div class="modal-content modal-large">
-        <h3>Estructura de Poder — La Camarilla de Chicago</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; text-align: center;">Jerarquía oficial y líneas de autoridad en la Jyhad local.</p>
-        
-        <div class="pyramid-text-chart">
-            <div class="pyramid-node prince-node">
-                <span class="p-title">Príncipe de Chicago</span>
-                <span class="p-desc">Autoridad Suprema de la Camarilla</span>
-            </div>
-
-            <div class="p-line-vertical">│</div>
-
-            <div class="pyramid-node">
-                <span class="p-title">Senescal</span>
-                <span class="p-desc">Mano derecha y administración de la ciudad</span>
-            </div>
-
-            <div class="p-line-split">
-                <span>↙</span><span>↘</span>
-            </div>
-
-            <div class="pyramid-row">
-                <div class="pyramid-node branch-node">
-                    <span class="p-label">[ Poder Político ]</span>
-                    <span class="p-title">Primogenitura</span>
-                    <span class="p-desc">Líderes de Clan (Ventrue, Toreador, etc.)</span>
-                </div>
-                <div class="pyramid-node branch-node">
-                    <span class="p-label">[ Poder Ejecutivo ]</span>
-                    <span class="p-title">Sheriff</span>
-                    <span class="p-desc">Brazo armado y ejecución de la Mascarada</span>
-                </div>
-            </div>
-
-            <div class="p-line-converge">
-                <span>↘</span><span>↙</span>
-            </div>
-
-            <div class="pyramid-node base-node">
-                <span class="p-title">Vástagos de la Ciudad</span>
-                <span class="p-desc">Ancillae, Neonatos y población sujeta al Censo</span>
-            </div>
-        </div>
-
-        <div class="modal-buttons" style="margin-top: 25px;">
-            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalPoder()">Cerrar</button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL GUÍA / README -->
-<div id="readmeModal" class="modal-overlay">
-    <div class="modal-content modal-large">
-        <h3>Guía del Censo (Funcionamiento)</h3>
-        <div class="markdown-viewer">
-            <h4>Funcionamiento del Directorio</h4>
-            <p>Este censo simula el flujo de información de la Camarilla en Chicago. Los datos se actualizan en tiempo real desde Google Sheets.</p>
-            <h4>Niveles de Estatus y Visibilidad</h4>
-            <ul>
-                <li><strong>Interactuado:</strong> Ficha completa disponible, retrato real y ubicación visible (Etiqueta verde).</li>
-                <li><strong>Conocido de Oídas:</strong> Referencias generales, silueta misteriosa en lugar de foto y ubicación oculta, a menos que el PNJ posea un Cargo Oficial público (Etiqueta verde sutil).</li>
-                <li><strong>Rumor:</strong> Nivel mínimo de corrillo callejero; solo se muestra el nombre en una tarjeta minimalista (Etiqueta gris).</li>
-                <li><strong>Oculto / Desconocido:</strong> Información clasificada o fuera de radar (La tarjeta no se muestra a los jugadores).</li>
-            </ul>
-            <h4>Modo Narrador</h4>
-            <p>Pulsa la llave flotante e introduce la clave del Narrator para desbloquear la visión absoluta de IDs, estatus y secretos ocultos.</p>
-        </div>
-        <div class="modal-buttons">
-            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalReadme()">Cerrar</button>
-        </div>
-    </div>
-</div>
-
-<!-- BOTONES FLOTANTES -->
-<div class="floating-btn-container">
-    <a href="https://werkstoff747.github.io/vtm-consulta/chicago/" class="floating-action-btn" title="Ir al Censo de Chicago"><i class="fa-solid fa-house"></i></a>
-    <button class="floating-action-btn" id="narratorToggleBtn" onclick="abrirModalNarrador()" title="Modo Narrador"><i class="fa-solid fa-key"></i></button>
-    <button class="floating-action-btn theme-toggle-btn" title="Cambiar tema"><i class="fa-solid fa-moon"></i></button>
-    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir"><i class="fa-solid fa-arrow-up"></i></button>
-</div>
-
-<!-- VARIABLES GLOBALES DE DATOS Y ESTADO -->
-<script>
-    let globalVampirosData = [];
-    let ordenarPorIdActivo = false;
-</script>
-
-<!-- IMPORTAR FIREBASE REALTIME DATABASE -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-    const firebaseConfig = {
-        apiKey: "TU_API_KEY",
-        authDomain: "drrol-chat.firebaseapp.com",
-        databaseURL: "https://drrol-chat-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "drrol-chat",
-        storageBucket: "drrol-chat.appspot.com",
-        messagingSenderId: "TID",
-        appId: "APP_ID"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    window.verificarPassword = async function() {
-        const passIngresada = document.getElementById('narratorPasswordInput').value.trim();
-        if (!passIngresada) { alert("Por favor, introduce una contraseña."); return; }
-
-        try {
-            const passwordRef = ref(db, 'password_narrador');
-            const snapshot = await get(passwordRef);
-            if (snapshot.exists()) {
-                const passReal = snapshot.val();
-                if (passIngresada === passReal) {
-                    document.body.classList.add('narrator-mode');
-                    localStorage.setItem('vtm-narrator-mode', 'true');
-                    const btnNarrator = document.getElementById('narratorToggleBtn');
-                    btnNarrator.classList.add('narrator-active');
-                    btnNarrator.title = "Modo Narrador Activo";
-                    btnNarrator.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i>';
-                    cerrarModalNarrador();
-                    if(globalVampirosData.length > 0) renderVampiros(globalVampirosData);
-                } else { alert("Contraseña incorrecta. Acceso denegado."); }
-            } else { alert("Error: No se encuentra 'password_narrador' en Firebase."); }
-        } catch (error) { console.error("Error:", error); alert("Error de conexión con la base de datos."); }
-    };
-</script>
 
 <script>
-    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=0&single=true&output=csv';
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vShpjd_tcI1PIo1fdPGcBrsvkGw9NHvKv6YkDlMF7NaU_2F8W18YsqaTkGV8yPO2lPIZZVjKet_haOd/pub?gid=1319625641&single=true&output=csv';
+    let globalCharactersData = [];
 
-    const CLAN_ICONS = {
-        "banu haqim": "./iconos/clanes/Banu_Haqim_Symbol.png",
-        "brujah": "./iconos/clanes/Brujah_symbol.png",
-        "caitiff": "./iconos/clanes/Caitiff_symbol.png",
-        "gangrel": "./iconos/clanes/Gangrel_symbol.png",
-        "hecata": "./iconos/clanes/Hecata_symbol.png",
-        "lasombra": "./iconos/clanes/Lasombra_symbol.png",
-        "malkavian": "./iconos/clanes/Malkavian_symbol.png",
-        "ministry": "./iconos/clanes/Ministry_symbol.png",
-        "el ministerio": "./iconos/clanes/Ministry_symbol.png",
-        "nosferatu": "./iconos/clanes/Nosferatu_symbol.png",
-        "toreador": "./iconos/clanes/Toreador_symbol.png",
-        "tremere": "./iconos/clanes/Tremere_symbol.png",
-        "tzimisce": "./iconos/clanes/Tzimisce_symbol.png",
-        "ventrue": "./iconos/clanes/Ventrue_symbol.png",
-        "ravnos": "./iconos/clanes/Ravnos_symbol.png",
-        "sangre débil": "./iconos/clanes/Thinblood_symbol.png",
-        "hecata": "./iconos/clanes/Hecata_symbol.png",
-        "salubri": "./iconos/clanes/Salubri_symbol.png"
+    // Comprobar estado inicial del Narrador
+    function initNarratorMode() {
+        const isNarrator = localStorage.getItem('vtm-narrator') === 'true';
+        if (isNarrator) {
+            document.getElementById('narratorPanel').classList.add('active');
+        }
         
-    };
-
-    const themeToggleBtns = document.querySelectorAll(".theme-toggle-btn");
-
-    function actualizarIconoTema() {
-        const esClaro = document.body.classList.contains("light-mode");
-        themeToggleBtns.forEach(btn => {
-            btn.innerHTML = esClaro ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
-        });
+        // Cargar preferencias de fuentes guardadas
+        const savedCN = localStorage.getItem('vtm-filter-cn');
+        const savedCC = localStorage.getItem('vtm-filter-cc');
+        
+        if (savedCN !== null) document.getElementById('checkCN').checked = (savedCN === 'true');
+        if (savedCC !== null) document.getElementById('checkCC').checked = (savedCC === 'true');
     }
 
-    function initTheme() {
-        const savedTheme = localStorage.getItem('vtm-theme');
-        if (savedTheme === 'light') document.body.classList.add('light-mode');
-        actualizarIconoTema();
-
-        if (localStorage.getItem('vtm-narrator-mode') === 'true') {
-            document.body.classList.add('narrator-mode');
-            const btnNarrator = document.getElementById('narratorToggleBtn');
-            if(btnNarrator) {
-                btnNarrator.classList.add('narrator-active');
-                btnNarrator.title = "Modo Narrador Activo";
-                btnNarrator.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i>';
-            }
-        }
+    function toggleNarratorMode() {
+        const panel = document.getElementById('narratorPanel');
+        const isActive = panel.classList.toggle('active');
+        localStorage.setItem('vtm-narrator', isActive);
     }
 
-    themeToggleBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            document.body.classList.toggle("light-mode");
-            localStorage.setItem('vtm-theme', document.body.classList.contains("light-mode") ? 'light' : 'dark');
-            actualizarIconoTema();
-        });
-    });
+    function saveFiltersAndRender() {
+        const showCN = document.getElementById('checkCN').checked;
+        const showCC = document.getElementById('checkCC').checked;
+        
+        localStorage.setItem('vtm-filter-cn', showCN);
+        localStorage.setItem('vtm-filter-cc', showCC);
 
-    function abrirModalNarrador() {
-        if (document.body.classList.contains('narrator-mode')) {
-            document.body.classList.remove('narrator-mode');
-            localStorage.setItem('vtm-narrator-mode', 'false');
-            ordenarPorIdActivo = false;
-            document.getElementById('sortIdBtn').classList.remove('active-sort');
-            document.getElementById('sourceSelectFilter').value = "";
-            const btnNarrator = document.getElementById('narratorToggleBtn');
-            btnNarrator.classList.remove('narrator-active');
-            btnNarrator.title = "Modo Narrador";
-            btnNarrator.innerHTML = '<i class="fa-solid fa-key"></i>';
-            alert("Modo Narrador bloqueado.");
-            if(globalVampirosData.length > 0) renderVampiros(globalVampirosData);
-            return;
-        }
-        document.getElementById('narratorModal').style.display = 'flex';
-        document.getElementById('narratorPasswordInput').value = '';
-        document.getElementById('narratorPasswordInput').focus();
+        renderRoster(globalCharactersData);
     }
-    function cerrarModalNarrador() { document.getElementById('narratorModal').style.display = 'none'; }
-
-    function abrirModalPoder() { document.getElementById('powerModal').style.display = 'flex'; }
-    function cerrarModalPoder() { document.getElementById('powerModal').style.display = 'none'; }
-    function abrirModalReadme() { document.getElementById('readmeModal').style.display = 'flex'; }
-    function cerrarModalReadme() { document.getElementById('readmeModal').style.display = 'none'; }
-
-    function toggleSortById() {
-        ordenarPorIdActivo = !ordenarPorIdActivo;
-        const btnSort = document.getElementById('sortIdBtn');
-        if (ordenarPorIdActivo) {
-            btnSort.classList.add('active-sort');
-        } else {
-            btnSort.classList.remove('active-sort');
-        }
-        if(globalVampirosData.length > 0) {
-            renderVampiros(globalVampirosData);
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const passInput = document.getElementById('narratorPasswordInput');
-        if (passInput) {
-            passInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') window.verificarPassword();
-            });
-        }
-    });
 
     window.addEventListener('DOMContentLoaded', () => {
-        initTheme();
-        Papa.parse(SHEET_CSV_URL, {
-            download: true, header: true, skipEmptyLines: true,
+        initNarratorMode();
+
+        Papa.parse(SHEET_URL, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
             complete: function(results) {
-                document.getElementById('loading').style.display = 'none';
-                globalVampirosData = results.data;
-                renderVampiros(globalVampirosData);
+                globalCharactersData = results.data;
+                renderRoster(globalCharactersData);
+            },
+            error: function(err) {
+                document.getElementById('rosterList').innerHTML = '<p style="color:red;">Error al cargar el censo.</p>';
             }
-        });
-        window.addEventListener('scroll', () => {
-            document.getElementById("scrollTopBtn").classList.toggle("show", window.scrollY > 300);
         });
     });
 
-    function renderVampiros(datos) {
-        const wrapper = document.getElementById('vampiresWrapper');
-        wrapper.innerHTML = '';
+    function renderRoster(data) {
+        const container = document.getElementById('rosterList');
+        container.innerHTML = '';
 
-        const esNarrator = document.body.classList.contains('narrator-mode');
+        const showCN = document.getElementById('checkCN').checked;
+        const showCC = document.getElementById('checkCC').checked;
+        const isNarrator = document.getElementById('narratorPanel').classList.contains('active');
 
-        datos.sort((a, b) => {
-            if (esNarrator && ordenarPorIdActivo) {
-                let idA = parseInt(a["ID"]) || 0;
-                let idB = parseInt(b["ID"]) || 0;
-                return idA - idB;
+        data.forEach(v => {
+            const fuente = (v["Fuente"] || "CN").trim().toUpperCase(); // Asumiendo columna "Fuente" en el CSV (CN o CC)
+
+            // Si el modo narrador está activo, filtramos según los checkboxes
+            if (isNarrator) {
+                if (fuente === 'CN' && !showCN) return;
+                if (fuente === 'CC' && !showCC) return;
             }
 
-            const cargoA = (a["Cargo_Oficial"] || "").trim().toLowerCase();
-            const cargoB = (b["Cargo_Oficial"] || "").trim().toLowerCase();
-            
-            const tieneCargoA = cargoA !== "" && cargoA !== "-";
-            const tieneCargoB = cargoB !== "" && cargoB !== "-";
-
-            function obtenerPesoCargo(cargo) {
-                if (cargo.includes("príncipe") || cargo.includes("principe")) return 1;
-                if (cargo.includes("senescal")) return 2;
-                if (cargo.includes("sheriff")) return 3;
-                if (cargo.includes("primogénito") || cargo.includes("primogenito") || cargo.includes("primogenitura")) return 4;
-                return 5;
-            }
-
-            const pesoA = tieneCargoA ? obtenerPesoCargo(cargoA) : 6;
-            const pesoB = tieneCargoB ? obtenerPesoCargo(cargoB) : 6;
-
-            if (pesoA !== pesoB) {
-                return pesoA - pesoB;
-            }
-
-            const aliasA = (a["Alias"] || "").trim();
-            const nombreA = (a["Nombre del Personaje"] || "").trim();
-            const principalA = (aliasA !== "" ? aliasA : nombreA).toLowerCase();
-
-            const aliasB = (b["Alias"] || "").trim();
-            const nombreB = (b["Nombre del Personaje"] || "").trim();
-            const principalB = (aliasB !== "" ? aliasB : nombreB).toLowerCase();
-
-            return principalA.localeCompare(principalB);
-        });
-
-        datos.forEach(v => {
-            const id = v["ID"] || "";
-            const formattedId = id ? String(id).padStart(2, '0') : "00";
-            
-            const alias = (v["Alias"] || "").trim();
-            const nombreReal = (v["Nombre del Personaje"] || "").trim();
-            const nombrePrincipal = alias !== "" ? alias : nombreReal;
-            
+            const nombre = v["Nombre_Personaje"] || v["Nombre del Personaje"] || "Sin Nombre";
             const clan = v["Clan"] || "Desconocido";
-            const ocupacion = v["Profesion_Ocupacion"] || "";
-            const ubicacion = v["Ubicación / Dominio habitual"] || "Desconocida";
-            const faccion = v["Facción"] || "";
-            const sire = v["Sire / Creador"] || "";
-            const menciones = v["Menciones"] || "";
-            const secret = v["Secretos"] || "";
-            const consejosIntegracion = v["Consejos_integracion_Chicago_Nocturno"] || ""; 
-            const cargoOficial = v["Cargo_Oficial"] || "";
-            const fuente = (v["FUENTE"] || v["Fuente"] || "").trim();
-            const estatus = (v["Estatus"] || "Interactuado").trim();
-            
-            const cleanId = String(id).trim();
-            const imagenPorId = cleanId ? `${cleanId}.jpg` : '';
-            const imagenPorNombre = nombreReal.replace(/["']/g, "").replace(/\s+/g, "_") + ".jpg";
-            const imagenLimpia = v["Archivo de Imagen"] || imagenPorId || imagenPorNombre;
+            const id = v["ID"] || "";
+            const isCloaca = fuente === 'CC';
 
-            const tieneCargoReal = cargoOficial && cargoOficial.trim() !== "" && cargoOficial.trim() !== "-";
-
-            if (!esNarrator) {
-                const estatusLower = estatus.toLowerCase();
-                const esOcultoODesconocido = estatusLower.includes("oculto") || estatusLower.includes("desconocido");
-                if (esOcultoODesconocido && !tieneCargoReal) {
-                    return; 
-                }
-            }
-
-            const estatusEfectivo = (tieneCargoReal && (estatus.toLowerCase().includes("oculto") || estatus.toLowerCase().includes("desconocido"))) ? "Interactuado" : estatus;
-
-            let estatusClase = "estatus-interactuado";
-            const estatusLower = estatusEfectivo.toLowerCase();
-            const esConocidoOidas = estatusLower.includes("oídas") || estatusLower.includes("oidas");
-
-            if (esConocidoOidas) {
-                estatusClase = "estatus-oidas";
-            } else if (estatusLower.includes("rumor")) {
-                estatusClase = "estatus-rumor";
-            }
-
-            const esPublicoPorCargo = tieneCargoReal || esNarrator;
-            const ubicacionMostrada = (esConocidoOidas && !esPublicoPorCargo) ? "Dominio desconocido" : ubicacion;
-            const imagenMostrada = (esConocidoOidas && !esPublicoPorCargo) ? "./retratos/silueta.jpg" : `./retratos/${imagenLimpia}`;
-
-            const esCloacaFuente = fuente.toLowerCase().includes("cloaca");
-            const textoFuente = fuente !== "" ? fuente : (esCloacaFuente ? "La Cloaca Carmesí" : "Chicago Nocturno");
-            const fuenteClase = esCloacaFuente ? "narrator-source-badge source-cloaca" : "narrator-source-badge";
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.setAttribute('data-search', `${formattedId} ${alias} ${nombreReal} ${clan} ${ocupacion} ${cargoOficial} ${ubicacion} ${faccion} ${sire} ${menciones} ${secret} ${consejosIntegracion} ${estatusEfectivo} ${fuente}`.toLowerCase());
-            card.setAttribute('data-faccion', faccion.toLowerCase());
-            card.setAttribute('data-source', textoFuente.toLowerCase());
-
-            const iconPath = CLAN_ICONS[clan.toLowerCase().trim()] || '';
-
-            if (!esNarrator && estatusLower.includes("rumor")) {
-                card.innerHTML = `
-                    <div class="id-badge">#${formattedId}</div>
-                    <div class="estatus-badge ${estatusClase}">${estatusEfectivo}</div>
-                    <div class="card-body-content" style="padding-top: 40px; text-align: center;">
-                        <div class="card-title" style="margin-bottom: 10px;">${nombrePrincipal}</div>
-                        <p class="rumor-text" style="color: var(--text-muted); font-style: italic;">Se oye un rumor en las calles...</p>
-                    </div>
-                `;
-            } else {
-                card.innerHTML = `
-                    <div class="id-badge">#${formattedId}</div>
-                    <div class="estatus-badge ${estatusClase}">${estatusEfectivo}</div>
-                    
-                    <div class="card-img-container">
-                        <img src="${imagenMostrada}" alt="${nombrePrincipal}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
-                        <div class="${fuenteClase}">${textoFuente}</div>
-                    </div>
-                    
-                    <div class="card-body-content">
-                        <div class="card-header-vamp">
-                            ${iconPath ? `<img src="${iconPath}" class="clan-symbol" alt="${clan}">` : ''}
-                            <div class="vamp-titles-box">
-                                <div class="card-title">${nombrePrincipal}</div>
-                                <div class="card-clan-tag">${clan}</div>
-                            </div>
-                        </div>
-                        
-                        ${alias !== "" ? `<div class="info-block narrator-only" style="background: rgba(139,0,0,0.12); border-color: rgba(139,0,0,0.4);"><span class="info-label"><i class="fa-solid fa-user-secret"></i> Identidad Real:</span><span class="info-value" style="color: var(--accent-gold);">${nombreReal}</span></div>` : ''}
-                        
-                        ${tieneCargoReal ? `<div class="info-block cargo-block"><span class="info-label"><i class="fa-solid fa-crown"></i> Cargo:</span><span class="info-value" style="color: var(--accent-gold); max-width: 100%;">${cargoOficial}</span></div>` : ''}
-                        
-                        <div class="info-block"><span class="info-label">Ocupación:</span><span class="info-value">${ocupacion}</span></div>
-                        <div class="info-block"><span class="info-label">Ubicación:</span><span class="info-value">${ubicacionMostrada}</span></div>
-                        ${faccion ? `<div class="info-block"><span class="info-label">Facción:</span><span class="info-value"><span class="badge">${faccion}</span></span></div>` : ''}
-
-                        ${sire ? `<div class="info-block narrator-only"><span class="info-label">Sire / Creador:</span><span class="info-value">${sire}</span></div>` : ''}
-                        ${menciones ? `<div class="info-block narrator-only"><span class="info-label">Menciones:</span><span class="info-value">${menciones}</span></div>` : ''}
-                        
-                        ${(() => {
-                            const esCloaca = fuente.toLowerCase().includes("cloaca");
-                            const archivoFicha = esCloaca ? "ficha_cloaca.html" : "ficha.html";
-                            const etiquetaFicha = esCloaca ? "Ver Ficha (Cloaca)" : "Ver Ficha";
-                            return nombrePrincipal ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="${archivoFicha}?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> ${etiquetaFicha}</a></span></div>` : '';
-                        })()}
-
-                        ${secret ? `<div class="card-notes narrator-only">🦇 <strong>Secretos:</strong><span>${secret}</span></div>` : ''}
-                        ${consejosIntegracion ? `<div class="card-notes narrator-only" style="background-color: rgba(197, 160, 89, 0.08); border-color: rgba(197, 160, 89, 0.3); color: var(--accent-gold);">💡 <strong>Consejos de Integración:</strong><span>${consejosIntegracion}</span></div>` : ''}
-                    </div>
-                `;
-            }
-            wrapper.appendChild(card);
+            const card = document.createElement('a');
+            card.className = 'character-card';
+            // Dependiendo de si es de la Cloaca o de Chicago, redirige a su respectiva plantilla
+            card.href = isCloaca ? `ficha_cloaca2.html?id=${id}` : `ficha_cloaca.html?id=${id}`;
+            card.innerHTML = `
+                <div class="card-name">${nombre}</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">${clan} [${fuente}]</div>
+            `;
+            container.appendChild(card);
         });
-        applyFilters();
-    }
-
-    function applyFilters() {
-        const query = document.getElementById('searchInput').value.toLowerCase().trim();
-        const factionQuery = document.getElementById('factionFilter').value.toLowerCase().trim();
-        const sourceQuery = document.getElementById('sourceSelectFilter').value.toLowerCase().trim();
-        let visibleCount = 0;
-
-        document.querySelectorAll('.card').forEach(card => {
-            const matchesSearch = !query || card.getAttribute('data-search').includes(query);
-            const matchesFaction = !factionQuery || card.getAttribute('data-faccion').includes(factionQuery);
-            const matchesSource = !sourceQuery || card.getAttribute('data-source').includes(sourceQuery);
-
-            if (matchesSearch && matchesFaction && matchesSource) {
-                card.style.display = 'flex';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-        document.getElementById('resultsCounter').textContent = `Mostrando ${visibleCount} vástago${visibleCount === 1 ? '' : 's'}`;
-    }
-
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 
