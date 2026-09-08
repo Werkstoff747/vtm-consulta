@@ -1051,7 +1051,7 @@
                         
                         ${(() => {
                             const esCloaca = fuente.toLowerCase().includes("cloaca");
-                            const archivoFicha = esCloaca ? "ficha_cloaca2.html" : "ficha.html";
+                            const archivoFicha = esCloaca ? "ficha_cloaca.html" : "ficha.html";
                             const etiquetaFicha = esCloaca ? "Ver Ficha (Cloaca)" : "Ver Ficha";
                             return nombrePrincipal ? `<div class="info-block narrator-only"><span class="info-label">Ficha / Perfil:</span><span class="info-value"><a href="${archivoFicha}?id=${id}" style="color: var(--accent-gold); text-decoration: underline; font-weight: bold;"><i class="fa-solid fa-file-lines"></i> ${etiquetaFicha}</a></span></div>` : '';
                         })()}
