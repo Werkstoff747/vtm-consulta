@@ -410,8 +410,9 @@
         .narrator-only { display: none !important; }
         body.narrator-mode .narrator-only { display: flex !important; }
         
-        #sourceCheckboxesContainer { display: none; }
-        body.narrator-mode #sourceCheckboxesContainer { display: flex; }
+        /* OCULTO POR DEFECTO EN MODO JUGADOR, SOLO SE MUESTRA EN NARRADOR */
+        #sourceCheckboxesContainer { display: none !important; }
+        body.narrator-mode #sourceCheckboxesContainer { display: flex !important; }
 
         .card-notes {
             font-size: 0.85rem;
@@ -595,7 +596,7 @@
                 </select>
             </div>
             <!-- CHECKBOXES PERSISTENTES DE FUENTES (EXCLUSIVO MODO NARRADOR) -->
-            <div class="filter-box" id="sourceCheckboxesContainer" style="display: flex; align-items: center; gap: 12px; font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--accent-gold);">
+            <div class="filter-box" id="sourceCheckboxesContainer" style="display: none; align-items: center; gap: 12px; font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--accent-gold);">
                 <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
                     <input type="checkbox" id="checkCN" checked onchange="saveSourceFiltersAndApply()"> CN
                 </label>
