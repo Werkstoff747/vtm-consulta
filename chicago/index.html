@@ -410,8 +410,8 @@
         .narrator-only { display: none !important; }
         body.narrator-mode .narrator-only { display: flex !important; }
         
-        #sourceFilter { display: none; }
-        body.narrator-mode #sourceFilter { display: flex; }
+        #sourceCheckboxesContainer { display: none; }
+        body.narrator-mode #sourceCheckboxesContainer { display: flex; }
 
         .card-notes {
             font-size: 0.85rem;
@@ -594,8 +594,8 @@
                     <option value="Autarcas">Autarcas</option>
                 </select>
             </div>
-            <!-- FILTRO DE FUENTES PERSISTENTE (EXCLUSIVO MODO NARRADOR) -->
-            <div class="filter-box" id="sourceFilter" style="display: none; align-items: center; gap: 12px; font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--accent-gold);">
+            <!-- CHECKBOXES PERSISTENTES DE FUENTES (EXCLUSIVO MODO NARRADOR) -->
+            <div class="filter-box" id="sourceCheckboxesContainer" style="display: flex; align-items: center; gap: 12px; font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--accent-gold);">
                 <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
                     <input type="checkbox" id="checkCN" checked onchange="saveSourceFiltersAndApply()"> CN
                 </label>
@@ -792,7 +792,6 @@
         "ventrue": "./iconos/clanes/Ventrue_symbol.png",
         "ravnos": "./iconos/clanes/Ravnos_symbol.png",
         "sangre débil": "./iconos/clanes/Thinblood_symbol.png",
-        "hecata": "./iconos/clanes/Hecata_symbol.png",
         "salubri": "./iconos/clanes/Salubri_symbol.png"
     };
 
