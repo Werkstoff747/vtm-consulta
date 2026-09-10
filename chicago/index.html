@@ -339,6 +339,7 @@
             width: 100%; height: 100%;
             object-fit: cover; object-position: top;
             transition: transform 0.4s ease;
+            cursor: pointer;
         }
 
         .card:hover .card-img-container img { transform: scale(1.04); }
@@ -410,7 +411,6 @@
         .narrator-only { display: none !important; }
         body.narrator-mode .narrator-only { display: flex !important; }
         
-        /* OCULTO POR DEFECTO EN MODO JUGADOR, SOLO SE MUESTRA EN NARRADOR */
         #sourceCheckboxesContainer { display: none !important; }
         body.narrator-mode #sourceCheckboxesContainer { display: flex !important; }
 
@@ -486,6 +486,12 @@
         .modal-btn-confirm { background: var(--accent-red); color: #fff; border: 1px solid var(--accent-crimson); }
         .modal-btn-cancel { background: var(--tag-bg); color: var(--text-muted); border: 1px solid var(--card-border); }
 
+        /* MODAL AMPLIAR IMAGEN */
+        #imageModal {
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(4px);
+        }
+
         /* ESTILOS DEL ORGANIGRAMA PIRAMIDAL DE TEXTO */
         .modal-large { max-width: 700px; text-align: left; max-height: 85vh; overflow-y: auto; }
         .pyramid-text-chart {
@@ -558,7 +564,7 @@
         .markdown-viewer h4 { color: var(--accent-gold); font-family: 'Cinzel', serif; margin: 12px 0 6px 0; }
         .markdown-viewer ul { padding-left: 20px; margin-bottom: 10px; }
 
-        footer { text-align: center; padding: 30px 20px; border-top: 1px solid var(--card-border); margin-top: 50px; }
+        <footer> { text-align: center; padding: 30px 20px; border-top: 1px solid var(--card-border); margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -717,6 +723,14 @@
     </div>
 </div>
 
+<!-- MODAL POPUP PARA AMPLIAR IMAGEN -->
+<div id="imageModal" class="modal-overlay" onclick="cerrarModalImg()">
+    <div style="position:relative; max-width:90%; max-height:90%; display:flex; align-items:center; justify-content:center;" onclick="event.stopPropagation()">
+        <span onclick="cerrarModalImg()" style="position:absolute; top:-15px; right:-15px; background:#8b0000; color:#fff; width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; border:1px solid #c92a2a; z-index:10001;">&times;</span>
+        <img id="imgModalAmpliada" src="" alt="Retrato Ampliado" style="max-width:100%; max-height:85vh; border-radius:8px; border:2px solid var(--accent-gold); box-shadow: 0 10px 25px rgba(0,0,0,0.8); object-fit: contain;">
+    </div>
+</div>
+
 <!-- BOTONES FLOTANTES -->
 <div class="floating-btn-container">
     <a href="https://werkstoff747.github.io/vtm-consulta" class="floating-action-btn" title="Ir al Menú Principal"><i class="fa-solid fa-house"></i></a>
@@ -820,7 +834,6 @@
             }
         }
 
-        // Cargar preferencias guardadas de los checkboxes de fuentes
         const savedCN = localStorage.getItem('vtm-filter-cn');
         const savedCC = localStorage.getItem('vtm-filter-cc');
         if (savedCN !== null) document.getElementById('checkCN').checked = (savedCN === 'true');
@@ -865,6 +878,18 @@
     function cerrarModalPoder() { document.getElementById('powerModal').style.display = 'none'; }
     function abrirModalReadme() { document.getElementById('readmeModal').style.display = 'flex'; }
     function cerrarModalReadme() { document.getElementById('readmeModal').style.display = 'none'; }
+
+    /* FUNCIONES PARA EL POPUP DE LA IMAGEN */
+    function abrirModalImg(urlImagen) {
+        const modal = document.getElementById('imageModal');
+        const imgAmpliada = document.getElementById('imgModalAmpliada');
+        imgAmpliada.src = urlImagen;
+        modal.style.display = 'flex';
+    }
+    function cerrarModalImg() {
+        const modal = document.getElementById('imageModal');
+        modal.style.display = 'none';
+    }
 
     function toggleSortById() {
         ordenarPorIdActivo = !ordenarPorIdActivo;
@@ -1026,7 +1051,7 @@
                     <div class="estatus-badge ${estatusClase}">${estatusEfectivo}</div>
                     
                     <div class="card-img-container">
-                        <img src="${imagenMostrada}" alt="${nombrePrincipal}" loading="lazy" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
+                        <img src="${imagenMostrada}" alt="${nombrePrincipal}" loading="lazy" onclick="abrirModalImg('${imagenMostrada}')" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=500&q=80';">
                         <div class="${fuenteClase}">${textoFuente}</div>
                     </div>
                     
