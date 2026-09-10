@@ -440,7 +440,6 @@
 </div>
 
 <script>
-    // URL correspondiente al CSV de Conocimiento (puedes ajustar el gid según corresponda)
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=1472804033&single=true&output=csv';
 
     let datosGlobales = [];
@@ -481,14 +480,9 @@
             complete: function(results) {
                 const filas = results.data;
                 
-                // Mapeo adaptado a las columnas indicadas:
-                // Columna A: Ficha de Conocimiento
-                // Columna B: Loresheet (Inglés)
-                // Columna C: Requisitos
-                // Columna D: Concepto Narrativo (Wiki)
-                // Columna E: Beneficios Mecánicos Clave
-                // Columna F: Niveles (1 al 5)
-                // Columna G: Fuente y Páginas
+                // Mapeo adaptado a las columnas (índices desde 0):
+                // A (0): Ficha, B (1): Loresheet, C (2): Requisitos, D (3): Concepto
+                // E (4): Beneficios, F (5): Niveles, G (6): Fuente, H (7): Página
                 datosGlobales = filas.slice(1).map(row => {
                     return {
                         ficha: (row[0] || '').trim(),
@@ -497,7 +491,8 @@
                         concepto: (row[3] || '').trim(),
                         beneficios: (row[4] || '').trim(),
                         niveles: (row[5] || '').trim(),
-                        fuente: (row[6] || '').trim()
+                        fuente: (row[6] || '').trim(),
+                        pagina: (row[7] || '').trim()
                     };
                 }).filter(item => item.ficha && item.ficha.toLowerCase() !== 'ficha de conocimiento');
 
@@ -539,6 +534,12 @@
             card.setAttribute('data-search', (item.ficha + ' ' + item.loresheet + ' ' + item.concepto).toLowerCase());
             card.setAttribute('data-source', item.fuente.toLowerCase());
 
+            // Concatenación de Fuente y Página para la parte inferior
+            let fuenteTexto = item.fuente;
+            if (item.pagina) {
+                fuenteTexto += `, ${item.pagina}`;
+            }
+
             card.innerHTML = `
                 <div>
                     <div class="card-title">${item.ficha}</div>
@@ -548,7 +549,7 @@
                     ${item.beneficios ? `<div style="font-size: 0.85rem; margin-top: 8px;"><strong>Beneficios:</strong> ${item.beneficios}</div>` : ''}
                 </div>
                 <div style="margin-top: 15px; font-size: 0.75rem; color: var(--text-muted); border-top: 1px solid var(--card-border); padding-top: 8px;">
-                    📚 ${item.fuente}
+                    📚 ${fuenteTexto}
                 </div>
             `;
             wrapper.appendChild(card);
