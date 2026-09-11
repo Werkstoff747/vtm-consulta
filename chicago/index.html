@@ -709,7 +709,7 @@
             <p>Este censo simula el flujo de información de la Camarilla en Chicago. Los datos se actualizan en tiempo real desde Google Sheets.</p>
             <h4>Niveles de Estatus y Visibilidad</h4>
             <ul>
-                <li><strong>Interactuado:</strong> Ficha completa disponible, retrato real y ubicación visible (Etiqueta verde).</li>
+                <li><strong>Conocido:</strong> Ficha completa disponible, retrato real y ubicación visible (Etiqueta verde).</li>
                 <li><strong>Conocido de Oídas:</strong> Referencias generales, silueta misteriosa en lugar de foto y ubicación oculta, a menos que el PNJ posea un Cargo Oficial público (Etiqueta verde sutil).</li>
                 <li><strong>Rumor:</strong> Nivel mínimo de corrillo callejero; solo se muestra el nombre en una tarjeta minimalista (Etiqueta gris).</li>
                 <li><strong>Oculto / Desconocido:</strong> Información clasificada o fuera de radar (La tarjeta no se muestra a los jugadores).</li>
@@ -991,7 +991,7 @@
             const consejosIntegracion = v["Consejos_integracion_Chicago_Nocturno"] || ""; 
             const cargoOficial = v["Cargo_Oficial"] || "";
             const fuente = (v["FUENTE"] || v["Fuente"] || "").trim();
-            const estatus = (v["Estatus"] || "Interactuado").trim();
+            const estatus = (v["Estatus"] || "Conocido").trim();
             
             const cleanId = String(id).trim();
             const imagenPorId = cleanId ? `${cleanId}.jpg` : '';
@@ -1008,13 +1008,21 @@
                 }
             }
 
-            const estatusEfectivo = (tieneCargoReal && (estatus.toLowerCase().includes("oculto") || estatus.toLowerCase().includes("desconocido"))) ? "Interactuado" : estatus;
+            // Lógica inteligente de Estatus adaptada
+            let estatusEfectivo = estatus;
+            if (tieneCargoReal && (estatus.toLowerCase().includes("oculto") || estatus.toLowerCase().includes("desconocido"))) {
+                estatusEfectivo = "Cargo Público";
+            } else if (estatus.toLowerCase() === "interactuado" || estatus.toLowerCase() === "" || estatus.toLowerCase() === "conocido") {
+                estatusEfectivo = "Conocido";
+            }
 
             let estatusClase = "estatus-interactuado";
             const estatusLower = estatusEfectivo.toLowerCase();
             const esConocidoOidas = estatusLower.includes("oídas") || estatusLower.includes("oidas");
 
-            if (esConocidoOidas) {
+            if (estatusLower.includes("cargo público") || estatusLower.includes("conocido")) {
+                estatusClase = "estatus-interactuado";
+            } else if (esConocidoOidas) {
                 estatusClase = "estatus-oidas";
             } else if (estatusLower.includes("rumor")) {
                 estatusClase = "estatus-rumor";
