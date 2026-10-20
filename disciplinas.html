@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compendio de Disciplinas - Vampiro: La Mascarada V5</title>
@@ -12,7 +11,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
       gtag('config', 'G-0REGNEJC1G');
     </script>
     <!-- End Google Tag Manager -->
@@ -30,7 +28,7 @@
 
     <style>
         /* =========================================================
-           VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
+            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
            ========================================================= */
 
         /* MODO NOCHE / OSCURO (Predeterminado - "Medianoche Vampírica") */
@@ -72,7 +70,7 @@
             --text-main: #1f1f22;
             --text-muted: #555459;
             --tag-bg: #f2f0eb;
-            --input-bg: #ffffff;           
+            --input-bg: #ffffff;            
             
             --header-bg: #2b0408;
             --header-border: #7a0000;
@@ -622,7 +620,7 @@
             padding: 40px;
         }
 
-        /* BOTONES FLOTANTES INFERIORES (HOME, BACK, SCROLL) */
+        /* BOTONES FLOTANTES INFERIORES */
         .floating-btn-container {
             position: fixed;
             bottom: 25px;
@@ -730,35 +728,26 @@
     <div id="disciplinesWrapper"></div>
 
     <footer>
-        <!-- BLOQUE SUPERIOR: LOGO Y TEXTOS PRINCIPALES (TODO CENTRADO) -->
         <div style="max-width: 850px; margin: 0 auto; display: flex; align-items: center; gap: 20px; text-align: left; justify-content: center; flex-wrap: wrap;">
-            
-            <!-- LOGOTIPO DARK PACK -->
             <div style="flex-shrink: 0;">
                 <img src="./iconos/darkpack_logo2.webp" alt="Dark Pack Logo" style="max-height: 65px; width: auto; object-fit: contain;">
             </div>
-
-            <!-- TEXTOS PRINCIPALES -->
             <div>
                 <div style="font-size: 0.95rem; font-weight: 700; color: var(--accent-gold); margin-bottom: 4px;">
                     Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)
                 </div>
-                
                 <p style="margin-bottom: 0; font-size: 0.85rem;">
                     Consigue los libros y suplementos oficiales en 
                     <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">Nosolorol</a> y 
                     <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
                 </p>
             </div>
-
         </div>
 
-        <!-- TEXTOS LEGALES INFERIORES (CENTRADO) -->
         <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; text-align: center;">
             <p style="margin-bottom: 8px; font-size: 0.82rem; color: var(--text-main); opacity: 0.9; max-width: 900px; margin-left: auto; margin-right: auto;">
                 Esta aplicación es una herramienta/ayuda de juego no oficial para jugadores y Narradores, creada sin ánimo de lucro al amparo de la política Dark Pack de Paradox Interactive.
             </p>
-
             <div style="font-size: 0.73rem; color: var(--text-muted); max-width: 850px; margin: 0 auto; line-height: 1.4; opacity: 0.85;">
                 Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com.
             </div>
@@ -767,15 +756,15 @@
 </div>
 
 <!-- BOTONES FLOTANTES INFERIORES -->
-    <div class="floating-btn-container">
-        <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" style="vertical-align: middle;">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-        </a>
-        <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
-        <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
-    </div>
+<div class="floating-btn-container">
+    <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" style="vertical-align: middle;">
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+    </a>
+    <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
+</div>
 
 <script>
     const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
@@ -797,9 +786,9 @@
     };
 
     let datosGlobales = [];
-    let currentDiscipline = 'all';
+    let selectedDisciplines = new Set(['all']); // Conjunto para selección múltiple de disciplinas
+    let selectedLevels = new Set(['all']);       // Conjunto para selección múltiple de niveles
     let currentCategory = 'all';
-    let currentLevel = 'all';
     let mapaFuentes = {}; 
 
     function initTheme() {
@@ -918,7 +907,7 @@
             const btn = document.createElement('button');
             btn.className = 'filter-btn';
             btn.setAttribute('data-discipline', disc);
-            btn.onclick = () => filterDiscipline(disc);
+            btn.onclick = () => toggleDiscipline(disc);
 
             const nombreArchivo = ICONOS_MAP[disc];
             let imgHTML = '';
@@ -1082,13 +1071,28 @@
         applyFilters();
     }
 
-    function filterDiscipline(discipline) {
-        currentDiscipline = discipline;
-        currentCategory = 'all'; 
-        
+    // LÓGICA DE SELECCIÓN MÚLTIPLE PARA DISCIPLINAS
+    function toggleDiscipline(discipline) {
+        if (discipline === 'all') {
+            selectedDisciplines.clear();
+            selectedDisciplines.add('all');
+        } else {
+            selectedDisciplines.delete('all');
+            if (selectedDisciplines.has(discipline)) {
+                selectedDisciplines.delete(discipline);
+                if (selectedDisciplines.size === 0) {
+                    selectedDisciplines.add('all');
+                }
+            } else {
+                selectedDisciplines.add(discipline);
+            }
+        }
+
+        // Actualizar clases activas visuales
         const buttons = document.querySelectorAll('.filter-btn');
         buttons.forEach(btn => {
-            if (btn.getAttribute('data-discipline') === discipline) {
+            const discAttr = btn.getAttribute('data-discipline');
+            if (selectedDisciplines.has(discAttr)) {
                 btn.classList.add('active');
             } else {
                 btn.classList.remove('active');
@@ -1099,16 +1103,50 @@
         applyFilters();
     }
 
+    // LÓGICA DE SELECCIÓN MÚLTIPLE PARA NIVELES
+    function filterLevel(level) {
+        if (level === 'all') {
+            selectedLevels.clear();
+            selectedLevels.add('all');
+        } else {
+            selectedLevels.delete('all');
+            if (selectedLevels.has(level)) {
+                selectedLevels.delete(level);
+                if (selectedLevels.size === 0) {
+                    selectedLevels.add('all');
+                }
+            } else {
+                selectedLevels.add(level);
+            }
+        }
+
+        // Actualizar clases activas visuales de niveles
+        const buttons = document.querySelectorAll('.level-btn');
+        buttons.forEach(btn => {
+            const lvlAttr = btn.getAttribute('data-level');
+            if (selectedLevels.has(lvlAttr)) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        applyFilters();
+    }
+
     function actualizarBotoneraSubcategorias() {
         const subContainer = document.getElementById('subcategoriesContainer');
         subContainer.innerHTML = '';
 
-        if (currentDiscipline === 'all') {
+        // Si hay más de una disciplina seleccionada o ninguna específica, ocultamos subcategorías por simplicidad
+        if (selectedDisciplines.has('all') || selectedDisciplines.size > 1) {
             subContainer.style.display = 'none';
+            currentCategory = 'all';
             return;
         }
 
-        const poderesDisciplina = datosGlobales.filter(item => item.disciplina === currentDiscipline);
+        const discActual = Array.from(selectedDisciplines)[0];
+        const poderesDisciplina = datosGlobales.filter(item => item.disciplina === discActual);
         const categoriasSet = new Set();
         poderesDisciplina.forEach(item => {
             if (item.categoria && item.categoria !== '-') categoriasSet.add(item.categoria.trim());
@@ -1141,6 +1179,7 @@
             });
         } else {
             subContainer.style.display = 'none';
+            currentCategory = 'all';
         }
     }
 
@@ -1157,24 +1196,26 @@
         applyFilters();
     }
 
-    function filterLevel(level) {
-        currentLevel = level;
-        const buttons = document.querySelectorAll('.level-btn');
-        buttons.forEach(btn => {
-            if (btn.getAttribute('data-level') === level) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
-        });
-        applyFilters();
-    }
-
     function clearAllFilters() {
         document.getElementById('searchInput').value = '';
         document.getElementById('sourceSelect').value = 'all';
-        filterDiscipline('all');
-        filterLevel('all');
+        
+        selectedDisciplines.clear();
+        selectedDisciplines.add('all');
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            if (btn.getAttribute('data-discipline') === 'all') btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+
+        selectedLevels.clear();
+        selectedLevels.add('all');
+        document.querySelectorAll('.level-btn').forEach(btn => {
+            if (btn.getAttribute('data-level') === 'all') btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+
+        actualizarBotoneraSubcategorias();
+        applyFilters();
     }
 
     function applyFilters() {
@@ -1189,20 +1230,24 @@
             const cards = section.querySelectorAll('.card');
             let visibleCardsInSection = 0;
 
-            const matchesDiscipline = (currentDiscipline === 'all' || currentDiscipline === secDiscipline);
+            // Comprobar si la disciplina de la sección está incluida en el conjunto de seleccionadas (o si está 'all')
+            const matchesDiscipline = selectedDisciplines.has('all') || selectedDisciplines.has(secDiscipline);
 
             cards.forEach(card => {
                 const name = card.getAttribute('data-name');
                 const nameEn = card.getAttribute('data-name-en'); 
                 const desc = card.getAttribute('data-desc');
                 const source = card.getAttribute('data-source');
-                const level = card.getAttribute('data-level');
+                const level = card.getAttribute('data-level').trim();
                 const category = card.getAttribute('data-category').toLowerCase();
                 const text = card.textContent.toLowerCase();
 
                 const matchesSearch = !query || name.includes(query) || nameEn.includes(query) || desc.includes(query) || text.includes(query);
                 const matchesSource = (selectedSourceRaw === 'all' || source === selectedSourceRaw || source.includes(selectedSourceRaw));
-                const matchesLevel = (currentLevel === 'all' || level.trim() === currentLevel);
+                
+                // Comprobar si el nivel de la carta está incluido en el conjunto de niveles seleccionados (o si está 'all')
+                const matchesLevel = selectedLevels.has('all') || selectedLevels.has(level);
+                
                 const matchesCategory = (currentCategory === 'all' || category === currentCategory.toLowerCase());
 
                 if (matchesDiscipline && matchesSearch && matchesSource && matchesLevel && matchesCategory) {
