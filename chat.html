@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crónica de Vampiro - Chat Privado y Refugio</title>
+    <title>Crónicas y Refugios - Vampiro: La Mascarada V5</title>
 
     <!-- Google Tag Manager -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0REGNEJC1G"></script>
@@ -30,29 +30,23 @@
         /* =========================================================
             VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
             ========================================================= */
-
-        /* MODO NOCHE / OSCURO (Predeterminado - "Medianoche Vampírica") */
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
             --card-border: #2a2a32;
             --accent-red: #8b0000;
             --accent-crimson: #c92a2a;
-            --accent-gold: #c5a059; /* Dorado Oficial V5 */
+            --accent-gold: #c5a059;
             --text-main: #e1e1e6;
             --text-muted: #a0a0b0;
             --tag-bg: #25252e;
             --input-bg: #0f0f12;
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
-            --header-title-color: #c5a059;
             --card-title-color: #ffffff;
-            --card-notes-bg: rgba(255, 255, 255, 0.03);
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4));
-            --section-title-color: #c5a059;
         }
 
-        /* MODO DÍA / CLARO ("Gris Pizarra / Pergamino Neutro") */
         body.light-mode {
             --bg-color: #a8a7a4;
             --card-bg: #ffffff;
@@ -64,27 +58,13 @@
             --text-muted: #555459;
             --tag-bg: #f2f0eb;
             --input-bg: #ffffff;           
-            
-            /* Cabecera Rojo Sangre Oscuro */
             --header-bg: #2b0408;
             --header-border: #7a0000;
-            --header-title-color: #c5a059; 
             --card-title-color: #111115;
-            
-            --card-notes-bg: #f9f8f5;
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5));
-            --section-title-color: #8b0000;
         }
 
-        /* =========================================================
-            ESTILOS GENERALES Y ESTRUCTURA
-            ========================================================= */
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
@@ -99,15 +79,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* =========================================================
-            CABECERA
-            ========================================================= */
+        .container { max-width: 1300px; margin: 0 auto; width: 100%; }
 
         header {
             position: relative;
@@ -121,84 +93,76 @@
             background: var(--header-bg);
             border-radius: 8px;
             text-align: center;
-            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .header-logos {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 12px;
-            max-width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 12px;
         }
-
-        .header-ank-logo {
-            height: 55px;
-            width: auto;
-            object-fit: contain;
-            filter: var(--logo-filter);
-        }
-
-        .header-main-logo {
-            height: 95px;
-            max-width: 85vw;
-            width: auto;
-            object-fit: contain;
-            filter: var(--logo-filter);
-        }
-
-        .header-text {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        .header-ank-logo { height: 55px; width: auto; object-fit: contain; filter: var(--logo-filter); }
+        .header-main-logo { height: 95px; max-width: 85vw; width: auto; object-fit: contain; filter: var(--logo-filter); }
 
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
             font-weight: 700;
             font-size: 1.35rem;
             color: var(--accent-gold);
-            font-variant: small-caps;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 0px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            line-height: 1.15;
-            transition: color 0.3s ease;
         }
 
         .theme-btn-header {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.35);
-            border: 1px solid var(--accent-gold);
-            color: var(--accent-gold);
-            font-size: 1.1rem;
+            position: absolute; top: 15px; right: 15px; width: 38px; height: 38px;
+            border-radius: 50%; background-color: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--accent-gold); color: var(--accent-gold);
+            font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            z-index: 10; transition: all 0.2s;
+        }
+        .theme-btn-header:hover { background-color: var(--accent-red); color: #fff; transform: scale(1.08); }
+
+        /* VISTAS (LOBBY VS CHAT) */
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+
+        /* LOBBY / SELECTOR DE CRÓNICAS */
+        .lobby-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .lobby-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
             cursor: pointer;
+            transition: all 0.2s;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-            z-index: 10;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .lobby-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        .lobby-card h3 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-gold);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .create-chronicle-card {
+            border: 2px dashed var(--card-border);
+            background: transparent;
+        }
+        .create-chronicle-card:hover {
+            border-color: var(--accent-gold);
+            background: rgba(197, 160, 89, 0.03);
         }
 
-        .theme-btn-header:hover {
-            background-color: var(--accent-red);
-            color: #ffffff;
-            border-color: var(--accent-crimson);
-            transform: scale(1.08);
-        }
-
-        /* =========================================================
-            MAQUETACIÓN DEL CHAT
-            ========================================================= */
-
+        /* CHAT LAYOUT */
         .chat-layout {
             display: grid;
             grid-template-columns: 1fr 320px;
@@ -206,14 +170,8 @@
             min-height: 600px;
             margin-bottom: 40px;
         }
-
         @media (max-width: 850px) {
             .chat-layout { grid-template-columns: 1fr; }
-            header { padding-top: 45px; }
-            .header-ank-logo { height: 44px; }
-            .header-main-logo { height: 65px; }
-            h1.cabecera-principal { font-size: 1.15rem; }
-            .theme-btn-header { top: 10px; right: 10px; }
         }
 
         .chat-panel {
@@ -224,11 +182,6 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-        }
-
-        body.light-mode .chat-panel {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .panel-title {
@@ -253,62 +206,29 @@
 
         .chat-input-box { display: flex; gap: 10px; }
         .chat-input-box input {
-            flex-grow: 1;
-            padding: 10px 15px;
-            background: var(--input-bg);
-            border: 1px solid var(--card-border);
-            color: var(--text-main);
-            border-radius: 6px;
-            outline: none;
-            font-size: 1rem;
-            transition: border-color 0.2s, background-color 0.3s ease, color 0.3s ease;
+            flex-grow: 1; padding: 10px 15px;
+            background: var(--input-bg); border: 1px solid var(--card-border);
+            color: var(--text-main); border-radius: 6px; outline: none;
         }
-        .chat-input-box input:focus {
-            border-color: var(--accent-crimson);
-        }
-
         .chat-send-btn {
-            background: var(--accent-red);
-            color: #fff;
-            border: 1px solid var(--accent-crimson);
-            padding: 0 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            transition: background-color 0.2s;
-        }
-        .chat-send-btn:hover {
-            background: var(--accent-crimson);
+            background: var(--accent-red); color: #fff;
+            border: 1px solid var(--accent-crimson); padding: 0 20px;
+            border-radius: 6px; cursor: pointer; font-family: 'Cinzel', serif; font-weight: 700;
         }
 
         .character-list { display: flex; flex-direction: column; gap: 10px; }
         .character-item {
-            background: var(--input-bg);
-            border: 1px solid var(--card-border);
-            padding: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            background: var(--input-bg); border: 1px solid var(--card-border);
+            padding: 12px; border-radius: 6px; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
             transition: all 0.2s;
         }
-        .character-item:hover {
-            border-color: var(--accent-gold);
-            background: rgba(197, 160, 89, 0.05);
-        }
-        .character-item.active {
-            border-color: var(--accent-gold);
-            background: rgba(197, 160, 89, 0.12);
-        }
+        .character-item:hover { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.05); }
+        .character-item.active { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.12); }
         .character-name { font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; color: var(--card-title-color); }
         .character-clan { font-size: 0.75rem; color: var(--text-muted); font-style: italic; }
 
-        /* =========================================================
-            MODAL
-            ========================================================= */
-
+        /* MODALES */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.8); display: none; align-items: center; justify-content: center; z-index: 10000;
@@ -327,37 +247,20 @@
         .modal-btn-confirm { background: var(--accent-red); color: #fff; border: 1px solid var(--accent-crimson); }
         .modal-btn-cancel { background: var(--tag-bg); color: var(--text-muted); border: 1px solid var(--card-border); }
 
-        /* =========================================================
-            BOTONES FLOTANTES
-            ========================================================= */
-
+        /* BOTONES FLOTANTES */
         .floating-btn-container {
-            position: fixed; bottom: 25px; right: 25px;
-            display: flex; flex-direction: column; gap: 10px; z-index: 100;
+            position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 10px; z-index: 100;
         }
-        .floating-action-btn, .scroll-top-btn {
+        .floating-action-btn {
             width: 45px; height: 45px; border-radius: 50%;
             background-color: var(--accent-red); color: #fff;
             border: 1px solid var(--accent-crimson); font-size: 1.1rem;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5); text-decoration: none;
-            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5); text-decoration: none; transition: transform 0.2s;
         }
-        .scroll-top-btn { display: none; }
-        .floating-action-btn:hover, .scroll-top-btn:hover {
-            transform: translateY(-3px); background-color: var(--accent-crimson);
-        }
+        .floating-action-btn:hover { transform: translateY(-3px); background-color: var(--accent-crimson); }
 
-        /* =========================================================
-            FOOTER
-            ========================================================= */
-
-        footer {
-            text-align: center;
-            padding: 30px 20px;
-            border-top: 1px solid var(--card-border);
-            margin-top: 50px;
-        }
+        footer { text-align: center; padding: 30px 20px; border-top: 1px solid var(--card-border); margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -370,38 +273,54 @@
             <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo.png';">
         </div>
         <div class="header-text">
-            <h1 class="cabecera-principal" id="tituloGrupo">Chat y Refugio — ViernesROL</h1>
+            <h1 class="cabecera-principal" id="tituloHeader">Compendio de Crónicas</h1>
         </div>
     </header>
 
-    <div class="chat-layout">
-        <!-- CANAL GENERAL -->
-        <div class="chat-panel">
-            <div>
-                <div class="panel-title">
-                    <i class="fa-solid fa-comments"></i> Canal General de la Crónica 
-                    <span id="identidadActualBadge" style="font-size: 0.75rem; float: right; color: var(--accent-gold); font-weight: normal; margin-top: 3px;">(Identifícate a la der.)</span>
-                </div>
-                <div class="messages-container" id="generalMessages">
-                    <p style="color: var(--text-muted); text-align: center; font-style: italic; margin-top: 20px;">Cargando mensajes del refugio...</p>
-                </div>
-            </div>
-            <div class="chat-input-box">
-                <input type="text" id="generalInput" placeholder="Selecciona tu personaje a la derecha para hablar..." onkeypress="if(event.key === 'Enter') enviarMensajeGeneral()">
-                <button class="chat-send-btn" onclick="enviarMensajeGeneral()">Enviar</button>
-            </div>
+    <!-- VISTA 1: SELECTOR DE CRÓNICAS (LOBBY) -->
+    <div id="lobbyView" class="view-section active">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="font-family: 'Cinzel', serif; color: var(--accent-gold); font-size: 1.2rem;">Selecciona tu Crónica Activa</h2>
         </div>
+        <div class="lobby-grid" id="lobbyChroniclesList">
+            <p style="color: var(--text-muted); text-align: center; grid-column: 1 / -1;">Cargando crónicas disponibles...</p>
+        </div>
+    </div>
 
-        <!-- LATERAL DE PERSONAJES -->
-        <div class="chat-panel">
-            <div>
-                <div class="panel-title"><i class="fa-solid fa-user-secret"></i> Vástagos y Secretos</div>
-                <div class="character-list" id="characterList">
-                    <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">Cargando lista...</p>
+    <!-- VISTA 2: CHAT DE LA CRÓNICA SELECCIONADA -->
+    <div id="chatView" class="view-section">
+        <div style="margin-bottom: 15px;">
+            <button onclick="volverAlLobby()" class="modal-btn modal-btn-cancel" style="cursor: pointer;"><i class="fa-solid fa-arrow-left"></i> Cambiar de Crónica</button>
+        </div>
+        <div class="chat-layout">
+            <!-- CANAL GENERAL -->
+            <div class="chat-panel">
+                <div>
+                    <div class="panel-title">
+                        <i class="fa-solid fa-comments"></i> <span id="nombreCronicaTitulo">Canal General</span> 
+                        <span id="identidadActualBadge" style="font-size: 0.75rem; float: right; color: var(--accent-gold); font-weight: normal; margin-top: 3px;">(Sin identificar)</span>
+                    </div>
+                    <div class="messages-container" id="generalMessages">
+                        <p style="color: var(--text-muted); text-align: center; font-style: italic; margin-top: 20px;">Cargando mensajes del refugio...</p>
+                    </div>
+                </div>
+                <div class="chat-input-box">
+                    <input type="text" id="generalInput" placeholder="Identifícate a la derecha para poder hablar..." onkeypress="if(event.key === 'Enter') enviarMensajeGeneral()">
+                    <button class="chat-send-btn" onclick="enviarMensajeGeneral()">Enviar</button>
                 </div>
             </div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 15px;" id="infoIdentidad">
-                Haz clic sobre tu nombre e introduce tu contraseña para activar tu identidad.
+
+            <!-- LATERAL DE PERSONAJES -->
+            <div class="chat-panel">
+                <div>
+                    <div class="panel-title"><i class="fa-solid fa-user-secret"></i> Vástagos y Secretos</div>
+                    <div class="character-list" id="characterList">
+                        <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">Cargando personajes...</p>
+                    </div>
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 15px;" id="infoIdentidad">
+                    Haz clic sobre tu nombre e introduce tu contraseña.
+                </div>
             </div>
         </div>
     </div>
@@ -416,25 +335,27 @@
                     Ayudas de Juego - Vampiro: La Mascarada (5ª Edición)
                 </div>
                 <p style="margin-bottom: 0; font-size: 0.85rem;">
-                    Consigue los libros y suplementos oficiales en 
-                    <a href="https://www.nosolorol.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">Nosolorol</a> y 
-                    <a href="https://www.worldofdarkness.com" target="_blank" rel="noopener" style="color: var(--accent-gold); text-decoration: underline;">World of Darkness</a>.
+                    Herramienta no oficial al amparo de la política Dark Pack de Paradox Interactive.
                 </p>
-            </div>
-        </div>
-
-        <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; text-align: center;">
-            <p style="margin-bottom: 8px; font-size: 0.82rem; color: var(--text-main); opacity: 0.9; max-width: 900px; margin-left: auto; margin-right: auto;">
-                Esta aplicación es una herramienta/ayuda de juego no oficial para jugadores y Narradores, creada sin ánimo de lucro al amparo de la política Dark Pack de Paradox Interactive.
-            </p>
-            <div style="font-size: 0.73rem; color: var(--text-muted); max-width: 850px; margin: 0 auto; line-height: 1.4; opacity: 0.85;">
-                Portions of the materials are the copyrights and trademarks of Paradox Interactive AB, and are used with permission. All rights reserved. For more information please visit worldofdarkness.com.
             </div>
         </div>
     </footer>
 </div>
 
-<!-- MODAL CÓDIGO -->
+<!-- MODAL CREAR CRÓNICA -->
+<div id="createChronicleModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Nueva Crónica</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Introduce el nombre para el nuevo grupo o crónica:</p>
+        <input type="text" id="newChronicleNameInput" placeholder="Ej. Sombras de Madrid..." onkeypress="if(event.key === 'Enter') confirmarCrearCronica()">
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-confirm" onclick="confirmarCrearCronica()">Crear</button>
+            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalCronica()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CÓDIGO PERSONAJE -->
 <div id="codeModal" class="modal-overlay">
     <div class="modal-content">
         <h3 id="modalCharacterTitle">Acceso Privado</h3>
@@ -449,27 +370,19 @@
 
 <!-- BOTONES FLOTANTES -->
 <div class="floating-btn-container">
-    <a href="index.html" class="floating-action-btn" title="Volver al Inicio (Hub)">
+    <a href="index.html" class="floating-action-btn" title="Volver al Inicio">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" style="vertical-align: middle;">
             <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
         </svg>
     </a>
-    <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
-    <button id="scrollTopBtn" class="scroll-top-btn" onclick="scrollToTop()" title="Subir arriba">▲</button>
 </div>
 
-<!-- GESTIÓN DE TEMA (DÍA / NOCHE) -->
+<!-- GESTIÓN DE TEMA -->
 <script>
     function updateDarkPackLogo() {
         const logoImg = document.querySelector('.darkpack-logo');
         if (!logoImg) return;
-        
-        const isLightMode = document.body.classList.contains('light-mode');
-        if (isLightMode) {
-            logoImg.src = './iconos/darkpack_logo1.webp'; 
-        } else {
-            logoImg.src = './iconos/darkpack_logo2.webp'; 
-        }
+        logoImg.src = document.body.classList.contains('light-mode') ? './iconos/darkpack_logo1.webp' : './iconos/darkpack_logo2.webp';
     }
 
     function initTheme() {
@@ -489,7 +402,6 @@
         const body = document.body;
         const themeBtn = document.getElementById('themeToggleBtn');
         body.classList.toggle('light-mode');
-
         if (body.classList.contains('light-mode')) {
             themeBtn.textContent = '☀️';
             localStorage.setItem('vtm-theme', 'light');
@@ -500,99 +412,214 @@
         updateDarkPackLogo();
     }
 
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        initTheme();
-        window.addEventListener('scroll', () => {
-            const btn = document.getElementById('scrollTopBtn');
-            if (btn) {
-                btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
-            }
-        });
-    });
+    window.addEventListener('DOMContentLoaded', () => initTheme());
 </script>
 
-<!-- FIREBASE Y LÓGICA DE CHAT -->
+<!-- FIREBASE Y LÓGICA DE CRÓNICAS Y CHAT -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getDatabase, ref, push, onValue, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const firebaseConfig = {
-        apiKey: "AIzaSyAsf5dbiRcyO13C8jbN5GSafraOZLV3W6A",
-        authDomain: "viernesrol-chat.firebaseapp.com",
-        projectId: "viernesrol-chat",
-        storageBucket: "viernesrol-chat.appspot.com",
-        messagingSenderId: "773718239053",
-        appId: "1:773718239053:web:db3443cea04208ab1e7904",
-        databaseURL: "https://viernesrol-chat-default-rtdb.europe-west1.firebasedatabase.app"
+        apiKey: "AIzaSyCDAvjhGUW1W6EdnX7nV--LHWvKEoJztL8",
+        authDomain: "drrol-chat.firebaseapp.com",
+        databaseURL: "https://drrol-chat-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "drrol-chat",
+        storageBucket: "drrol-chat.appspot.com",
+        messagingSenderId: "946325258598",
+        appId: "1:946325258598:web:ae69835eff35570fd88a7",
+        measurementId: "G-0REGNEJC1G"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const grupoActual = 'viernesrol';
 
-    function actualizarInterfazIdentidad() {
-        const identidadGuardada = localStorage.getItem(`vtm-active-character-${grupoActual}`);
-        const badge = document.getElementById('identidadActualBadge');
-        const inputMsg = document.getElementById('generalInput');
-        const infoDiv = document.getElementById('infoIdentidad');
+    let cronicaActual = localStorage.getItem('vtm-active-chronicle') || null;
 
-        if (identidadGuardada) {
-            badge.textContent = `[Activo: ${identidadGuardada}]`;
-            badge.style.color = 'var(--accent-gold)';
-            inputMsg.placeholder = `Escribe como ${identidadGuardada}...`;
-            infoDiv.innerHTML = `Conectado como <b>${identidadGuardada}</b>. <a href="#" onclick="cerrarSesion()" style="color: var(--accent-gold); text-decoration: underline;">Cambiar</a>`;
-        } else {
-            badge.textContent = '(Sin identificar)';
-            badge.style.color = 'var(--accent-crimson)';
-            inputMsg.placeholder = 'Identifícate a la derecha para poder hablar...';
-            infoDiv.textContent = 'Haz clic sobre tu nombre e introduce tu contraseña.';
+    // Control de vistas
+    function cambiarVista(vista) {
+        document.getElementById('lobbyView').classList.remove('active');
+        document.getElementById('chatView').classList.remove('active');
+        
+        if (vista === 'lobby') {
+            document.getElementById('lobbyView').classList.add('active');
+            document.getElementById('tituloHeader').textContent = "Compendio de Crónicas";
+            cargarLobbyCronicas();
+        } else if (vista === 'chat') {
+            document.getElementById('chatView').classList.add('active');
+            document.getElementById('tituloHeader').textContent = `Crónica: ${cronicaActual}`;
+            document.getElementById('nombreCronicaTitulo').textContent = `Refugio — ${cronicaActual}`;
+            inicializarChatCronica(cronicaActual);
         }
     }
 
-    window.cerrarSesion = function() {
-        localStorage.removeItem(`vtm-active-character-${grupoActual}`);
-        actualizarInterfazIdentidad();
-        location.reload();
+    // 1. CARGAR EL LOBBY DE CRÓNICAS DESDE FIREBASE
+    function cargarLobbyCronicas() {
+        const gruposRef = ref(db, 'grupos');
+        onValue(gruposRef, (snapshot) => {
+            const listContainer = document.getElementById('lobbyChroniclesList');
+            listContainer.innerHTML = '';
+
+            // Botón para crear nueva crónica siempre el primero
+            const createCard = document.createElement('div');
+            createCard.className = 'lobby-card create-chronicle-card';
+            createCard.onclick = abrirModalCrearCronica;
+            createCard.innerHTML = `
+                <div>
+                    <h3><i class="fa-solid fa-plus-circle"></i> Nueva Crónica</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Crea un nuevo grupo o refugio para tu mesa de juego.</p>
+                </div>
+                <div style="margin-top: 20px;"><i class="fa-solid fa-feather" style="font-size: 1.5rem; color: var(--accent-gold);"></i></div>
+            `;
+            listContainer.appendChild(createCard);
+
+            if (snapshot.exists()) {
+                const grupos = snapshot.val();
+                Object.keys(grupos).forEach(nombreGrupo => {
+                    const card = document.createElement('div');
+                    card.className = 'lobby-card';
+                    card.onclick = () => seleccionarCronica(nombreGrupo);
+                    card.innerHTML = `
+                        <div>
+                            <h3><i class="fa-solid fa-moon"></i> ${nombreGrupo}</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">Entrar al canal general y gestión de vástagos.</p>
+                        </div>
+                        <div style="margin-top: 20px; font-size: 0.8rem; color: var(--accent-gold); font-weight: bold;">Acceder →</div>
+                    `;
+                    listContainer.appendChild(card);
+                });
+            }
+        }, { onlyOnce: true });
+    }
+
+    window.seleccionarCronica = function(nombre) {
+        cronicaActual = nombre;
+        localStorage.setItem('vtm-active-chronicle', nombre);
+        cambiarVista('chat');
     };
 
-    const mensajesRef = ref(db, `grupos/${grupoActual}/mensajes_generales`);
-    onValue(mensajesRef, (snapshot) => {
-        const container = document.getElementById('generalMessages');
-        container.innerHTML = '';
-        
-        if (!snapshot.exists()) {
-            container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-style: italic; margin-top: 20px;">No hay mensajes todavía en el refugio.</p>';
+    window.volverAlLobby = function() {
+        cronicaActual = null;
+        localStorage.removeItem('vtm-active-chronicle');
+        cambiarVista('lobby');
+    };
+
+    // Modal Crear Crónica
+    window.abrirModalCrearCronica = function() {
+        document.getElementById('newChronicleNameInput').value = '';
+        document.getElementById('createChronicleModal').style.display = 'flex';
+        document.getElementById('newChronicleNameInput').focus();
+    };
+    window.cerrarModalCronica = function() {
+        document.getElementById('createChronicleModal').style.display = 'none';
+    };
+    window.confirmarCrearCronica = function() {
+        let nombre = document.getElementById('newChronicleNameInput').value.trim();
+        if (!nombre) {
+            alert("Escribe un nombre válido para la crónica.");
             return;
         }
+        // Limpiamos espacios para evitar rutas rotas en Firebase
+        nombre = nombre.replace(/\s+/g, '_').toLowerCase();
 
-        const data = snapshot.val();
-        Object.values(data).forEach(msg => {
-            const msgDiv = document.createElement('div');
-            msgDiv.style.cssText = 'margin-bottom: 10px; padding: 10px 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px;';
-            msgDiv.innerHTML = `
-                <div style="font-size: 0.78rem; color: var(--accent-gold); font-family: 'Cinzel', serif; font-weight: bold; margin-bottom: 2px;">${msg.autor || 'Anónimo'}</div>
-                <div style="font-size: 0.9rem; color: var(--text-main);">${msg.texto}</div>
-            `;
-            container.appendChild(msgDiv);
+        const dbRef = ref(db);
+        get(child(dbRef, `grupos/${nombre}`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                alert("Ya existe una crónica con ese nombre.");
+            } else {
+                // Creamos la estructura inicial para esta nueva crónica
+                set(ref(db, `grupos/${nombre}/personajes`), {
+                    narrador: { nombre: "Narrador", clan: " storyteller", password: "123" }
+                });
+                set(ref(db, `grupos/${nombre}/mensajes_generales`), {
+                    msg1: { autor: "Narrador", texto: `La crónica "${nombre}" ha abierto sus puertas.`, timestamp: Date.now() }
+                });
+                cerrarModalCronica();
+                seleccionarCronica(nombre);
+            }
         });
-        container.scrollTop = container.scrollHeight;
-    });
+    };
+
+    // 2. LÓGICA DEL CHAT DE LA CRÓNICA ACTIVA
+    let unsubMensajes = null;
+    let unsubPersonajes = null;
+
+    function inicializarChatCronica(grupo) {
+        actualizarInterfazIdentidad(grupo);
+
+        // Mensajes en tiempo real
+        const mensajesRef = ref(db, `grupos/${grupo}/mensajes_generales`);
+        onValue(mensajesRef, (snapshot) => {
+            const container = document.getElementById('generalMessages');
+            container.innerHTML = '';
+            
+            if (!snapshot.exists()) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-style: italic; margin-top: 20px;">No hay mensajes todavía en el refugio.</p>';
+                return;
+            }
+
+            const data = snapshot.val();
+            Object.values(data).forEach(msg => {
+                const msgDiv = document.createElement('div');
+                msgDiv.style.cssText = 'margin-bottom: 10px; padding: 10px 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px;';
+                msgDiv.innerHTML = `
+                    <div style="font-size: 0.78rem; color: var(--accent-gold); font-family: 'Cinzel', serif; font-weight: bold; margin-bottom: 2px;">${msg.autor || 'Anónimo'}</div>
+                    <div style="font-size: 0.9rem; color: var(--text-main);">${msg.texto}</div>
+                `;
+                container.appendChild(msgDiv);
+            });
+            container.scrollTop = container.scrollHeight;
+        });
+
+        // Personajes en tiempo real
+        const personajesRef = ref(db, `grupos/${grupo}/personajes`);
+        onValue(personajesRef, (snapshot) => {
+            const listContainer = document.getElementById('characterList');
+            listContainer.innerHTML = '';
+
+            if (!snapshot.exists()) {
+                listContainer.innerHTML = '<p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">No hay personajes registrados.</p>';
+                return;
+            }
+
+            const personajes = snapshot.val();
+            const identidadActiva = localStorage.getItem(`vtm-active-character-${grupo}`);
+
+            Object.entries(personajes).forEach(([key, p]) => {
+                const nombreLimpio = p.nombre ? String(p.nombre).replace(/"/g, '') : '';
+                const clanLimpio = p.clan ? String(p.clan).replace(/"/g, '') : 'Vástago';
+                const passLimpa = p.password ? String(p.password).replace(/"/g, '') : '';
+
+                const item = document.createElement('div');
+                item.className = 'character-item';
+                if (identidadActiva === nombreLimpio) item.classList.add('active');
+                
+                item.onclick = () => solicitarCodigo(nombreLimpio, passLimpa, grupo);
+                
+                item.innerHTML = `
+                    <div>
+                        <div class="character-name">${nombreLimpio}</div>
+                        <div class="character-clan">${clanLimpio}</div>
+                    </div>
+                    <i class="fa-solid ${identidadActiva === nombreLimpio ? 'fa-unlock' : 'fa-lock'}" style="color: var(--accent-gold); font-size: 0.8rem;"></i>
+                `;
+                listContainer.appendChild(item);
+            });
+        });
+    }
 
     window.enviarMensajeGeneral = function() {
         const input = document.getElementById('generalInput');
         const texto = input.value.trim();
-        if (!texto) return;
+        if (!texto || !cronicaActual) return;
 
-        const autorActual = localStorage.getItem(`vtm-active-character-${grupoActual}`);
+        const autorActual = localStorage.getItem(`vtm-active-character-${cronicaActual}`);
         if (!autorActual) {
             alert("Debes hacer clic en tu personaje en el panel derecho e introducir tu contraseña antes de escribir.");
             return;
         }
 
+        const mensajesRef = ref(db, `grupos/${cronicaActual}/mensajes_generales`);
         push(mensajesRef, {
             autor: autorActual,
             texto: texto,
@@ -605,49 +632,40 @@
         });
     };
 
-    const personajesRef = ref(db, `grupos/${grupoActual}/personajes`);
-    onValue(personajesRef, (snapshot) => {
-        const listContainer = document.getElementById('characterList');
-        listContainer.innerHTML = '';
+    function actualizarInterfazIdentidad(grupo) {
+        const identidadGuardada = localStorage.getItem(`vtm-active-character-${grupo}`);
+        const badge = document.getElementById('identidadActualBadge');
+        const inputMsg = document.getElementById('generalInput');
+        const infoDiv = document.getElementById('infoIdentidad');
 
-        if (!snapshot.exists()) {
-            listContainer.innerHTML = '<p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">No hay personajes registrados.</p>';
-            return;
+        if (identidadGuardada) {
+            badge.textContent = `[Activo: ${identidadGuardada}]`;
+            badge.style.color = 'var(--accent-gold)';
+            inputMsg.placeholder = `Escribe como ${identidadGuardada}...`;
+            infoDiv.innerHTML = `Conectado como <b>${identidadGuardada}</b>. <a href="#" onclick="cerrarSesion('${grupo}')" style="color: var(--accent-gold); text-decoration: underline;">Cambiar</a>`;
+        } else {
+            badge.textContent = '(Sin identificar)';
+            badge.style.color = 'var(--accent-crimson)';
+            inputMsg.placeholder = 'Identifícate a la derecha para poder hablar...';
+            infoDiv.textContent = 'Haz clic sobre tu nombre e introduce tu contraseña.';
         }
+    }
 
-        const personajes = snapshot.val();
-        const identidadActiva = localStorage.getItem(`vtm-active-character-${grupoActual}`);
+    window.cerrarSesion = function(grupo) {
+        localStorage.removeItem(`vtm-active-character-${grupo}`);
+        actualizarInterfazIdentidad(grupo);
+        location.reload();
+    };
 
-        Object.entries(personajes).forEach(([key, p]) => {
-            const nombreLimpio = p.nombre ? String(p.nombre).replace(/"/g, '') : '';
-            const clanLimpio = p.clan ? String(p.clan).replace(/"/g, '') : 'Vástago';
-            const passLimpa = p.password ? String(p.password).replace(/"/g, '') : '';
-
-            const item = document.createElement('div');
-            item.className = 'character-item';
-            if (identidadActiva === nombreLimpio) {
-                item.classList.add('active');
-            }
-            
-            item.onclick = () => solicitarCodigo(nombreLimpio, passLimpa);
-            
-            item.innerHTML = `
-                <div>
-                    <div class="character-name">${nombreLimpio}</div>
-                    <div class="character-clan">${clanLimpio}</div>
-                </div>
-                <i class="fa-solid ${identidadActiva === nombreLimpio ? 'fa-unlock' : 'fa-lock'}" style="color: var(--accent-gold); font-size: 0.8rem;"></i>
-            `;
-            listContainer.appendChild(item);
-        });
-    });
-
+    // Modal contraseña personaje
     let personajeSeleccionado = null;
     let passwordEsperada = null;
+    let grupoDelPersonaje = null;
 
-    window.solicitarCodigo = function(nombre, password) {
+    window.solicitarCodigo = function(nombre, password, grupo) {
         personajeSeleccionado = nombre;
         passwordEsperada = password;
+        grupoDelPersonaje = grupo;
         document.getElementById('modalCharacterTitle').textContent = `Acceso: ${nombre}`;
         document.getElementById('characterCodeInput').value = '';
         document.getElementById('codeModal').style.display = 'flex';
@@ -661,18 +679,23 @@
     window.verificarCodigoPersonaje = function() {
         const ingresada = document.getElementById('characterCodeInput').value.trim();
         if (ingresada === passwordEsperada) {
-            localStorage.setItem(`vtm-active-character-${grupoActual}`, personajeSeleccionado);
+            localStorage.setItem(`vtm-active-character-${grupoDelPersonaje}`, personajeSeleccionado);
             alert(`¡Identidad verificada! Ahora actúas como ${personajeSeleccionado}.`);
             cerrarModalCodigo();
-            actualizarInterfazIdentidad();
-            location.reload(); 
+            actualizarInterfazIdentidad(grupoDelPersonaje);
+            location.reload();
         } else {
             alert("Contraseña incorrecta.");
         }
     };
 
+    // Al arrancar la página, comprobamos si ya había una crónica seleccionada
     window.addEventListener('DOMContentLoaded', () => {
-        actualizarInterfazIdentidad();
+        if (cronicaActual) {
+            cambiarVista('chat');
+        } else {
+            cambiarVista('lobby');
+        }
     });
 </script>
 
