@@ -262,14 +262,17 @@
         }
 
         .character-list { display: flex; flex-direction: column; gap: 10px; }
+        
+        /* Tarjeta base de personaje con transición elegante */
         .character-item {
-            background: var(--input-bg); border: 1px solid var(--card-border);
+            background: var(--input-bg); 
+            border: 1px solid var(--card-border);
             padding: 10px 12px; border-radius: 6px;
             display: flex; align-items: center; gap: 12px;
             transition: all 0.2s;
         }
-        .character-item:hover { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.05); }
-        .character-item.active { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.12); }
+        .character-item:hover { background: rgba(197, 160, 89, 0.05); }
+        .character-item.active { background: rgba(197, 160, 89, 0.12); }
         
         .character-clan-icon {
             width: 34px;
@@ -461,18 +464,22 @@
     </footer>
 </div>
 
-<!-- MODAL AYUDA -->
+<!-- MODAL AYUDA (GUÍA DE USO) -->
 <div id="helpModal" class="modal-overlay">
     <div class="modal-content">
         <h3><i class="fa-solid fa-book-skull"></i> Guía del Refugio</h3>
         <ul class="help-list">
             <li>
-                <i class="fa-solid fa-skull"></i>
-                <div><b>Panel Lateral y Escudos de Clan:</b><br>Cada vástago muestra su emblema adaptado al tema a la izquierda. Haz clic en el <b>nombre</b> para susurrarle, o en el <b>candado</b> para loguearte con contraseña.</div>
+                <i class="fa-solid fa-lock"></i>
+                <div><b>Identificación de Personaje:</b><br>Haz clic en el icono del <b>candado</b> 🔒 junto a tu nombre en el panel lateral e introduce tu contraseña secreta para tomar el control de tu vástago.</div>
             </li>
             <li>
-                <i class="fa-solid fa-user-secret"></i>
-                <div><b>Susurros y Notificaciones:</b><br>Si recibes un secreto nuevo, parpadea un punto rojo 🔴 en la pestaña de susurros. El narrador puede alternar entre bandejas con el desplegable.</div>
+                <i class="fa-solid fa-globe"></i>
+                <div><b>Canal General y Susurros:</b><br>El <i>Canal General</i> es visible para todos en la mesa. Si prefieres enviar secretos u ocultar información, usa la pestaña de <i>Susurros / Secretos</i>. Si recibes uno nuevo, parpadeará un punto rojo 🔴.</div>
+            </li>
+            <li>
+                <i class="fa-solid fa-feather"></i>
+                <div><b>Herramientas del Narrador:</b><br>El Narrador dispone de controles exclusivos en el panel lateral para registrar nuevos personajes o eliminar la crónica de forma segura si la mesa lo requiere.</div>
             </li>
         </ul>
         <div class="modal-buttons">
@@ -647,6 +654,27 @@
         if (c.includes('tzimisce')) return './iconos/clanes/Tzimisce_symbol.png';
         if (c.includes('ventrue')) return './iconos/clanes/Ventrue_symbol.png';
         return './iconos/VTM-Ank.png';
+    }
+
+    // Función para asignar un color distintivo en el borde y brillo según el clan (inspirado en la paleta tradicional)
+    function obtenerColorClan(clanStr) {
+        if (!clanStr) return '#c5a059'; // Dorado por defecto
+        const c = clanStr.toLowerCase();
+        if (c.includes('narrador') || c.includes('storyteller')) return '#c5a059'; // Oro Narrador
+        if (c.includes('ventrue')) return '#2563eb'; // Azul Real
+        if (c.includes('toreador')) return '#e11d48'; // Rojo Pasión / Rosa Intenso
+        if (c.includes('tremere')) return '#7c3aed'; // Violeta Oscuro / Carmesí
+        if (c.includes('brujah')) return '#dc2626'; // Rojo Escarlata
+        if (c.includes('lasombra')) return '#475569'; // Plata / Obsidiana
+        if (c.includes('malkavian')) return '#9333ea'; // Púrpura Neón
+        if (c.includes('nosferatu')) return '#15803d'; // Verde Musgo
+        if (c.includes('gangrel')) return '#c2410c'; // Naranja Cobrizo / Tierra
+        if (c.includes('hecata')) return '#0d9488'; // Verde Esmeralda / Hueso
+        if (c.includes('tzimisce')) return '#047857'; // Verde Carne / Oscuro
+        if (c.includes('banu')) return '#ca8a04'; // Oro Apagado / Oliva
+        if (c.includes('ministry') || c.includes('ministerio')) return '#d97706'; // Dorado Arena
+        if (c.includes('ravnos')) return '#2563eb'; // Azul Índigo
+        return '#c5a059';
     }
 
     window.cambiarCanal = function(canal) {
@@ -866,9 +894,14 @@
                 }
 
                 const iconoRuta = obtenerIconoClan(clanLimpio);
+                const colorClan = obtenerColorClan(clanLimpio);
 
                 const item = document.createElement('div');
                 item.className = 'character-item';
+                // Aplicamos el borde y el sutil brillo interior usando el color del clan
+                item.style.borderColor = colorClan;
+                item.style.boxShadow = `inset 0 0 10px ${colorClan}15, 0 0 8px ${colorClan}30`;
+
                 if (identidadActiva === nombreLimpio) item.classList.add('active');
                 
                 item.innerHTML = `
@@ -966,7 +999,6 @@
 
                 if (!mostrar) return;
 
-                // Notificación fiable si el mensaje va dirigido a ti y no estás en la pestaña de privados
                 if (msg.destinatario === identidadActual && canalActivo !== 'privado') {
                     hayNuevos = true;
                 }
