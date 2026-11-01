@@ -628,6 +628,9 @@
     let nombreNarradorActual = null;
     let receptorPrivadoST = null;
     let hayMensajesNuevosPrivados = false;
+    
+    // Objeto en memoria para guardar el mapa de [nombre_personaje -> clan] de la crónica actual
+    let mapaClanesJugadores = {};
 
     // Función auxiliar para obtener el icono de clan o el de Narrador (Narrador_symbol.png)
     function obtenerIconoClan(clanStr) {
@@ -653,25 +656,25 @@
         return './iconos/VTM-Ank.png';
     }
 
-    // Nueva paleta de colores de clan integrada para bordes y brillos interiores
+    // Paleta de colores vibrantes para bordes, brillos y nombres en el chat
     function obtenerColorClan(clanStr) {
-        if (!clanStr) return '#e2e8f0'; // Por defecto (Blanco Platino)
+        if (!clanStr) return '#e2e8f0'; 
         const c = clanStr.toLowerCase();
-        if (c.includes('narrador') || c.includes('storyteller')) return '#e2e8f0'; // Blanco Platino / Éter
-        if (c.includes('ventrue')) return '#3b82f6'; // Azul Brillante
-        if (c.includes('toreador')) return '#ec4899'; // Rosa Neón / Fucsia
-        if (c.includes('tremere')) return '#8b5cf6'; // Violeta Ametrino
-        if (c.includes('brujah')) return '#ef4444'; // Rojo Fuego
-        if (c.includes('lasombra')) return '#64748b'; // Gris Pizarra Oscuro
-        if (c.includes('malkavian')) return '#c084fc'; // Lavanda Eléctrico
-        if (c.includes('nosferatu')) return '#65a30d'; // Verde Lima Oscuro
-        if (c.includes('gangrel')) return '#ea580c'; // Naranja Fuego / Tierra
-        if (c.includes('hecata')) return '#14b8a6'; // Turquesa Oscuro / Cian
-        if (c.includes('tzimisce')) return '#065f46'; // Verde Bosque Profundo
-        if (c.includes('banu')) return '#eab308'; // Amarillo Oro / Ámbar
-        if (c.includes('ministry') || c.includes('ministerio')) return '#f59e0b'; // Ámbar Brillante / Templo
-        if (c.includes('ravnos')) return '#6366f1'; // Azul Índigo / Violeta suave
-        return '#e2e8f0'; // Por defecto
+        if (c.includes('narrador') || c.includes('storyteller')) return '#e2e8f0'; 
+        if (c.includes('ventrue')) return '#3b82f6'; 
+        if (c.includes('toreador')) return '#ec4899'; 
+        if (c.includes('tremere')) return '#8b5cf6'; 
+        if (c.includes('brujah')) return '#ef4444'; 
+        if (c.includes('lasombra')) return '#64748b'; 
+        if (c.includes('malkavian')) return '#c084fc'; 
+        if (c.includes('nosferatu')) return '#65a30d'; 
+        if (c.includes('gangrel')) return '#ea580c'; 
+        if (c.includes('hecata')) return '#14b8a6'; 
+        if (c.includes('tzimisce')) return '#065f46'; 
+        if (c.includes('banu')) return '#eab308'; 
+        if (c.includes('ministry') || c.includes('ministerio')) return '#f59e0b'; 
+        if (c.includes('ravnos')) return '#6366f1'; 
+        return '#e2e8f0'; 
     }
 
     window.cambiarCanal = function(canal) {
@@ -859,6 +862,8 @@
             listContainer.innerHTML = '';
             if (selectReceiver) selectReceiver.innerHTML = '<option value="">-- Selecciona un jugador para susurrar --</option>';
 
+            mapaClanesJugadores = {}; // Reiniciamos el mapa en cada actualización
+
             if (!snapshot.exists()) {
                 document.getElementById('registerStorytellerModal').style.display = 'flex';
                 listContainer.innerHTML = '<p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">Registrando Narrador...</p>';
@@ -873,6 +878,9 @@
                 const nombreLimpio = p.nombre ? String(p.nombre).replace(/"/g, '') : '';
                 const clanLimpio = p.clan ? String(p.clan).replace(/"/g, '') : 'Vástago';
                 const passLimpa = p.password ? String(p.password).replace(/"/g, '') : '';
+
+                // Guardamos el clan en el mapa para usarlo en los mensajes del chat
+                mapaClanesJugadores[nombreLimpio] = clanLimpio;
 
                 const esST = clanLimpio.toLowerCase().includes('narrador') || clanLimpio.toLowerCase().includes('storyteller');
 
@@ -895,7 +903,6 @@
 
                 const item = document.createElement('div');
                 item.className = 'character-item';
-                // Aplicamos los nuevos bordes y brillos vibrantes con la paleta seleccionada
                 item.style.borderColor = colorClan;
                 item.style.boxShadow = `inset 0 0 10px ${colorClan}15, 0 0 8px ${colorClan}30`;
 
@@ -948,11 +955,16 @@
                     fechaHoraFormateada = `${dia}/${mes}/${fecha.getFullYear()} a las ${horas}:${minutos}`;
                 }
 
+                const autorNombre = msg.autor || 'Anónimo';
+                // Obtenemos el clan del autor del mensaje para asignarle su color de clan destacado
+                const clanAutor = mapaClanesJugadores[autorNombre] || '';
+                const colorAutor = autorNombre === 'Sistema' ? 'var(--accent-gold)' : obtenerColorClan(clanAutor);
+
                 const msgDiv = document.createElement('div');
                 msgDiv.style.cssText = 'padding: 10px 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px;';
                 msgDiv.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
-                        <span style="font-size: 0.78rem; color: var(--accent-gold); font-family: 'Cinzel', serif; font-weight: bold;">${msg.autor || 'Anónimo'}</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span style="font-size: 1.05rem; color: ${colorAutor}; font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 0.5px;">${autorNombre}</span>
                         <span style="font-size: 0.68rem; color: var(--text-muted);">${fechaHoraFormateada}</span>
                     </div>
                     <div style="font-size: 0.9rem; color: var(--text-main);">${msg.texto}</div>
@@ -1010,11 +1022,15 @@
                     fechaHoraFormateada = `${dia}/${mes}/${fecha.getFullYear()} a las ${horas}:${minutos}`;
                 }
 
+                const remitenteNombre = msg.remitente || 'Anónimo';
+                const clanRemitente = mapaClanesJugadores[remitenteNombre] || '';
+                const colorRemitente = obtenerColorClan(clanRemitente);
+
                 const msgDiv = document.createElement('div');
                 msgDiv.style.cssText = 'padding: 10px 12px; background: rgba(197, 160, 89, 0.05); border: 1px solid var(--accent-gold); border-radius: 6px;';
                 msgDiv.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
-                        <span style="font-size: 0.78rem; color: var(--accent-gold); font-family: 'Cinzel', serif; font-weight: bold;">🔒 ${msg.remitente} → ${msg.destinatario}</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <span style="font-size: 1.05rem; color: ${colorRemitente}; font-family: 'Cinzel', serif; font-weight: bold; letter-spacing: 0.5px;">🔒 ${remitenteNombre} → ${msg.destinatario}</span>
                         <span style="font-size: 0.68rem; color: var(--text-muted);">${fechaHoraFormateada}</span>
                     </div>
                     <div style="font-size: 0.9rem; color: var(--text-main);">${msg.texto}</div>
