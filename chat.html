@@ -27,9 +27,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* =========================================================
-            VARIABLES DE TEMA (VAMPIRO: LA MASCARADA V5)
-            ========================================================= */
         :root {
             --bg-color: #0f0f12;
             --card-bg: #18181c;
@@ -95,9 +92,7 @@
             text-align: center;
         }
 
-        .header-logos {
-            display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 12px;
-        }
+        .header-logos { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 12px; }
         .header-ank-logo { height: 55px; width: auto; object-fit: contain; filter: var(--logo-filter); }
         .header-main-logo { height: 95px; max-width: 85vw; width: auto; object-fit: contain; filter: var(--logo-filter); }
 
@@ -119,11 +114,9 @@
         }
         .theme-btn-header:hover { background-color: var(--accent-red); color: #fff; transform: scale(1.08); }
 
-        /* VISTAS (LOBBY VS CHAT) */
         .view-section { display: none; }
         .view-section.active { display: block; }
 
-        /* LOBBY / SELECTOR DE CRÓNICAS */
         .lobby-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -162,7 +155,6 @@
             background: rgba(197, 160, 89, 0.03);
         }
 
-        /* CHAT LAYOUT */
         .chat-layout {
             display: grid;
             grid-template-columns: 1fr 320px;
@@ -228,7 +220,14 @@
         .character-name { font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; color: var(--card-title-color); }
         .character-clan { font-size: 0.75rem; color: var(--text-muted); font-style: italic; }
 
-        /* MODALES */
+        .storyteller-action-btn {
+            width: 100%; margin-top: 10px; padding: 10px;
+            background: rgba(197, 160, 89, 0.1); border: 1px dashed var(--accent-gold);
+            color: var(--accent-gold); font-family: 'Cinzel', serif; font-weight: bold;
+            border-radius: 6px; cursor: pointer; text-align: center; transition: background 0.2s;
+        }
+        .storyteller-action-btn:hover { background: rgba(197, 160, 89, 0.2); }
+
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.8); display: none; align-items: center; justify-content: center; z-index: 10000;
@@ -247,7 +246,6 @@
         .modal-btn-confirm { background: var(--accent-red); color: #fff; border: 1px solid var(--accent-crimson); }
         .modal-btn-cancel { background: var(--tag-bg); color: var(--text-muted); border: 1px solid var(--card-border); }
 
-        /* BOTONES FLOTANTES */
         .floating-btn-container {
             position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 10px; z-index: 100;
         }
@@ -310,12 +308,18 @@
                 </div>
             </div>
 
-            <!-- LATERAL DE PERSONAJES -->
+            <!-- LATERAL DE PERSONAJES Y GESTIÓN DE NARRADOR -->
             <div class="chat-panel">
                 <div>
-                    <div class="panel-title"><i class="fa-solid fa-user-secret"></i> Vástagos y Secretos</div>
+                    <div class="panel-title"><i class="fa-solid fa-user-secret"></i> Vástagos y Mesa</div>
                     <div class="character-list" id="characterList">
                         <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">Cargando personajes...</p>
+                    </div>
+                    <!-- Panel exclusivo para añadir jugadores (visible si el usuario actual es Narrador) -->
+                    <div id="storytellerPanel" style="display: none; margin-top: 15px;">
+                        <button class="storyteller-action-btn" onclick="abrirModalCrearPersonaje()">
+                            <i class="fa-solid fa-user-plus"></i> Añadir Personaje / Jugador
+                        </button>
                     </div>
                 </div>
                 <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 15px;" id="infoIdentidad">
@@ -364,6 +368,33 @@
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-confirm" onclick="verificarCodigoPersonaje()">Entrar</button>
             <button class="modal-btn modal-btn-cancel" onclick="cerrarModalCodigo()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL REGISTRO NARRADOR (SI LA SALA ESTÁ VACÍA) -->
+<div id="registerStorytellerModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Registrar Narrador</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Esta crónica no tiene Narrador. Define tu nombre y contraseña privada de Storyteller:</p>
+        <input type="text" id="stNameInput" placeholder="Tu nombre (ej. Álvaro)..." style="margin-bottom: 10px;">
+        <input type="password" id="stPassInput" placeholder="Contraseña secreta..." onkeypress="if(event.key === 'Enter') registrarNarradorCronica()">
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-confirm" onclick="registrarNarradorCronica()">Guardar Narrador</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AÑADIR JUGADOR / PERSONAJE (PARA EL NARRADOR) -->
+<div id="addCharacterModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Nuevo Personaje / Jugador</h3>
+        <input type="text" id="newCharName" placeholder="Nombre del personaje..." style="margin-bottom: 10px;">
+        <input type="text" id="newCharClan" placeholder="Clan (ej. Ventrue, Toreador)..." style="margin-bottom: 10px;">
+        <input type="password" id="newCharPass" placeholder="Contraseña secreta para el jugador..." onkeypress="if(event.key === 'Enter') guardarNuevoPersonaje()">
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-confirm" onclick="guardarNuevoPersonaje()">Crear Ficha</button>
+            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalCrearPersonaje()">Cancelar</button>
         </div>
     </div>
 </div>
@@ -436,7 +467,6 @@
 
     let cronicaActual = localStorage.getItem('vtm-active-chronicle') || null;
 
-    // Control de vistas
     function cambiarVista(vista) {
         document.getElementById('lobbyView').classList.remove('active');
         document.getElementById('chatView').classList.remove('active');
@@ -453,14 +483,12 @@
         }
     }
 
-    // 1. CARGAR EL LOBBY DE CRÓNICAS DESDE FIREBASE
     function cargarLobbyCronicas() {
         const gruposRef = ref(db, 'grupos');
         onValue(gruposRef, (snapshot) => {
             const listContainer = document.getElementById('lobbyChroniclesList');
             listContainer.innerHTML = '';
 
-            // Botón para crear nueva crónica siempre el primero
             const createCard = document.createElement('div');
             createCard.className = 'lobby-card create-chronicle-card';
             createCard.onclick = abrirModalCrearCronica;
@@ -504,7 +532,6 @@
         cambiarVista('lobby');
     };
 
-    // Modal Crear Crónica
     window.abrirModalCrearCronica = function() {
         document.getElementById('newChronicleNameInput').value = '';
         document.getElementById('createChronicleModal').style.display = 'flex';
@@ -519,7 +546,6 @@
             alert("Escribe un nombre válido para la crónica.");
             return;
         }
-        // Limpiamos espacios para evitar rutas rotas en Firebase
         nombre = nombre.replace(/\s+/g, '_').toLowerCase();
 
         const dbRef = ref(db);
@@ -527,12 +553,9 @@
             if (snapshot.exists()) {
                 alert("Ya existe una crónica con ese nombre.");
             } else {
-                // Creamos la estructura inicial para esta nueva crónica
-                set(ref(db, `grupos/${nombre}/personajes`), {
-                    narrador: { nombre: "Narrador", clan: " storyteller", password: "123" }
-                });
+                // Crónica limpia y vacía, lista para que el primer usuario sea el Narrador
                 set(ref(db, `grupos/${nombre}/mensajes_generales`), {
-                    msg1: { autor: "Narrador", texto: `La crónica "${nombre}" ha abierto sus puertas.`, timestamp: Date.now() }
+                    msg1: { autor: "Sistema", texto: `La crónica "${nombre}" ha sido creada.`, timestamp: Date.now() }
                 });
                 cerrarModalCronica();
                 seleccionarCronica(nombre);
@@ -540,12 +563,59 @@
         });
     };
 
-    // 2. LÓGICA DEL CHAT DE LA CRÓNICA ACTIVA
-    let unsubMensajes = null;
-    let unsubPersonajes = null;
-
     function inicializarChatCronica(grupo) {
         actualizarInterfazIdentidad(grupo);
+
+        // Verificar si la crónica tiene personajes (si está vacía, forzar registro de Narrador)
+        const personajesRef = ref(db, `grupos/${grupo}/personajes`);
+        onValue(personajesRef, (snapshot) => {
+            const listContainer = document.getElementById('characterList');
+            listContainer.innerHTML = '';
+
+            if (!snapshot.exists()) {
+                // Sala vacía -> Pedir crear Narrador
+                document.getElementById('registerStorytellerModal').style.display = 'flex';
+                listContainer.innerHTML = '<p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">Registrando Narrador...</p>';
+                return;
+            }
+
+            const personajes = snapshot.val();
+            const identidadActiva = localStorage.getItem(`vtm-active-character-${grupo}`);
+
+            // Comprobamos si el usuario actual es Narrador para mostrarle su panel de gestión
+            let esNarradorActual = false;
+
+            Object.entries(personajes).forEach(([key, p]) => {
+                const nombreLimpio = p.nombre ? String(p.nombre).replace(/"/g, '') : '';
+                const clanLimpio = p.clan ? String(p.clan).replace(/"/g, '') : 'Vástago';
+                const passLimpa = p.password ? String(p.password).replace(/"/g, '') : '';
+
+                if (identidadActiva === nombreLimpio && (clanLimpio.toLowerCase().includes('storyteller') || clanLimpio.toLowerCase().includes('narrador'))) {
+                    esNarradorActual = true;
+                }
+
+                const item = document.createElement('div');
+                item.className = 'character-item';
+                if (identidadActiva === nombreLimpio) item.classList.add('active');
+                
+                item.onclick = () => solicitarCodigo(nombreLimpio, passLimpa, grupo);
+                
+                item.innerHTML = `
+                    <div>
+                        <div class="character-name">${nombreLimpio}</div>
+                        <div class="character-clan">${clanLimpio}</div>
+                    </div>
+                    <i class="fa-solid ${identidadActiva === nombreLimpio ? 'fa-unlock' : 'fa-lock'}" style="color: var(--accent-gold); font-size: 0.8rem;"></i>
+                `;
+                listContainer.appendChild(item);
+            });
+
+            // Mostrar u ocultar el panel de gestión del narrador
+            const stPanel = document.getElementById('storytellerPanel');
+            if (stPanel) {
+                stPanel.style.display = esNarradorActual ? 'block' : 'none';
+            }
+        });
 
         // Mensajes en tiempo real
         const mensajesRef = ref(db, `grupos/${grupo}/mensajes_generales`);
@@ -570,43 +640,65 @@
             });
             container.scrollTop = container.scrollHeight;
         });
-
-        // Personajes en tiempo real
-        const personajesRef = ref(db, `grupos/${grupo}/personajes`);
-        onValue(personajesRef, (snapshot) => {
-            const listContainer = document.getElementById('characterList');
-            listContainer.innerHTML = '';
-
-            if (!snapshot.exists()) {
-                listContainer.innerHTML = '<p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">No hay personajes registrados.</p>';
-                return;
-            }
-
-            const personajes = snapshot.val();
-            const identidadActiva = localStorage.getItem(`vtm-active-character-${grupo}`);
-
-            Object.entries(personajes).forEach(([key, p]) => {
-                const nombreLimpio = p.nombre ? String(p.nombre).replace(/"/g, '') : '';
-                const clanLimpio = p.clan ? String(p.clan).replace(/"/g, '') : 'Vástago';
-                const passLimpa = p.password ? String(p.password).replace(/"/g, '') : '';
-
-                const item = document.createElement('div');
-                item.className = 'character-item';
-                if (identidadActiva === nombreLimpio) item.classList.add('active');
-                
-                item.onclick = () => solicitarCodigo(nombreLimpio, passLimpa, grupo);
-                
-                item.innerHTML = `
-                    <div>
-                        <div class="character-name">${nombreLimpio}</div>
-                        <div class="character-clan">${clanLimpio}</div>
-                    </div>
-                    <i class="fa-solid ${identidadActiva === nombreLimpio ? 'fa-unlock' : 'fa-lock'}" style="color: var(--accent-gold); font-size: 0.8rem;"></i>
-                `;
-                listContainer.appendChild(item);
-            });
-        });
     }
+
+    // Registrar Narrador inicial
+    window.registrarNarradorCronica = function() {
+        const nombreSt = document.getElementById('stNameInput').value.trim();
+        const passSt = document.getElementById('stPassInput').value.trim();
+        if (!nombreSt || !passSt) {
+            alert("Introduce un nombre y una contraseña para el Narrador.");
+            return;
+        }
+
+        const refPersonajes = ref(db, `grupos/${cronicaActual}/personajes`);
+        push(refPersonajes, {
+            nombre: nombreSt,
+            clan: "Narrador (Storyteller)",
+            password: passSt
+        }).then(() => {
+            document.getElementById('registerStorytellerModal').style.display = 'none';
+            alert(`¡Narrador "${nombreSt}" registrado con éxito! Ya puedes iniciar sesión.`);
+        }).catch(err => {
+            console.error(err);
+            alert("Error al registrar el Narrador.");
+        });
+    };
+
+    // Funciones de gestión del Narrador para añadir nuevos jugadores
+    window.abrirModalCrearPersonaje = function() {
+        document.getElementById('newCharName').value = '';
+        document.getElementById('newCharClan').value = '';
+        document.getElementById('newCharPass').value = '';
+        document.getElementById('addCharacterModal').style.display = 'flex';
+        document.getElementById('newCharName').focus();
+    };
+    window.cerrarModalCrearPersonaje = function() {
+        document.getElementById('addCharacterModal').style.display = 'none';
+    };
+    window.guardarNuevoPersonaje = function() {
+        const nombre = document.getElementById('newCharName').value.trim();
+        const clan = document.getElementById('newCharClan').value.trim();
+        const password = document.getElementById('newCharPass').value.trim();
+
+        if (!nombre || !clan || !password) {
+            alert("Rellena todos los campos del personaje.");
+            return;
+        }
+
+        const refPersonajes = ref(db, `grupos/${cronicaActual}/personajes`);
+        push(refPersonajes, {
+            nombre: nombre,
+            clan: clan,
+            password: password
+        }).then(() => {
+            cerrarModalCrearPersonaje();
+            alert(`¡Personaje "${nombre}" creado correctamente!`);
+        }).catch(err => {
+            console.error(err);
+            alert("No se pudo crear el personaje.");
+        });
+    };
 
     window.enviarMensajeGeneral = function() {
         const input = document.getElementById('generalInput');
@@ -657,7 +749,6 @@
         location.reload();
     };
 
-    // Modal contraseña personaje
     let personajeSeleccionado = null;
     let passwordEsperada = null;
     let grupoDelPersonaje = null;
@@ -689,7 +780,6 @@
         }
     };
 
-    // Al arrancar la página, comprobamos si ya había una crónica seleccionada
     window.addEventListener('DOMContentLoaded', () => {
         if (cronicaActual) {
             cambiarVista('chat');
