@@ -16,7 +16,7 @@
     <!-- End Google Tag Manager -->
     
     <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="../imagenes/dado_logo.png">
+    <link rel="icon" type="image/png" href="./iconos/drRol.png">
     
     <!-- FUENTES OFICIALES V5 (Google Fonts: Cinzel) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -186,6 +186,34 @@
             margin-bottom: 15px;
             border-bottom: 1px dashed var(--card-border);
             padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+        .chat-tab {
+            flex: 1;
+            padding: 8px;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .chat-tab.active {
+            background: rgba(197, 160, 89, 0.15);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
         }
 
         .messages-container {
@@ -195,12 +223,16 @@
             border-radius: 6px;
             padding: 15px;
             overflow-y: auto;
-            max-height: 450px;
+            max-height: 400px;
             margin-bottom: 15px;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 10px;
         }
 
-        .chat-input-box { display: flex; gap: 10px; }
-        .chat-input-box input {
+        .chat-input-box { display: flex; gap: 10px; flex-direction: column; }
+        .chat-input-row { display: flex; gap: 10px; width: 100%; }
+        .chat-input-row input {
             flex-grow: 1; padding: 10px 15px;
             background: var(--input-bg); border: 1px solid var(--card-border);
             color: var(--text-main); border-radius: 6px; outline: none;
@@ -248,7 +280,7 @@
             padding: 30px; border-radius: 10px; width: 90%; max-width: 480px; text-align: left;
         }
         .modal-content h3 { font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 15px; text-align: center; }
-        .modal-content input {
+        .modal-content input, .modal-content select {
             width: 100%; padding: 10px; background: var(--input-bg);
             border: 1px solid var(--card-border); color: var(--text-main); border-radius: 5px; text-align: center; margin-bottom: 15px; outline: none;
         }
@@ -285,8 +317,8 @@
             <button id="themeToggleBtn" class="header-icon-btn" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
         </div>
         <div class="header-logos">
-            <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
-            <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo.png';">
+            <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM">
+            <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada">
         </div>
         <div class="header-text">
             <h1 class="cabecera-principal" id="tituloHeader">Compendio de Crónicas</h1>
@@ -309,20 +341,42 @@
             <button onclick="volverAlLobby()" class="modal-btn modal-btn-cancel" style="cursor: pointer;"><i class="fa-solid fa-arrow-left"></i> Cambiar de Crónica</button>
         </div>
         <div class="chat-layout">
-            <!-- CANAL GENERAL -->
+            <!-- CANAL GENERAL Y PRIVADO -->
             <div class="chat-panel">
                 <div>
                     <div class="panel-title">
-                        <i class="fa-solid fa-comments"></i> <span id="nombreCronicaTitulo">Canal General</span> 
-                        <span id="identidadActualBadge" style="font-size: 0.75rem; float: right; color: var(--accent-gold); font-weight: normal; margin-top: 3px;">(Sin identificar)</span>
+                        <div><i class="fa-solid fa-comments"></i> <span id="nombreCronicaTitulo">Refugio</span></div>
+                        <span id="identidadActualBadge" style="font-size: 0.75rem; color: var(--accent-gold); font-weight: normal;">(Sin identificar)</span>
                     </div>
+
+                    <!-- Pestañas de Canales -->
+                    <div class="chat-tabs">
+                        <button class="chat-tab active" id="tabGeneral" onclick="cambiarCanal('general')"><i class="fa-solid fa-globe"></i> Canal General</button>
+                        <button class="chat-tab" id="tabPrivado" onclick="cambiarCanal('privado')"><i class="fa-solid fa-user-secret"></i> Susurros / Secretos</button>
+                    </div>
+
+                    <!-- Contenedor Mensajes General -->
                     <div class="messages-container" id="generalMessages">
                         <p style="color: var(--text-muted); text-align: center; font-style: italic; margin-top: 20px;">Cargando mensajes del refugio...</p>
                     </div>
+
+                    <!-- Contenedor Mensajes Privados -->
+                    <div class="messages-container" id="privateMessages" style="display: none;">
+                        <p style="color: var(--text-muted); text-align: center; font-style: italic; margin-top: 20px;">Selecciona un chat privado...</p>
+                    </div>
                 </div>
+
+                <!-- Caja de entrada -->
                 <div class="chat-input-box">
-                    <input type="text" id="generalInput" placeholder="Identifícate a la derecha para poder hablar..." onkeypress="if(event.key === 'Enter') enviarMensajeGeneral()">
-                    <button class="chat-send-btn" onclick="enviarMensajeGeneral()">Enviar</button>
+                    <div id="stSelectReceiverBox" style="display: none; margin-bottom: 5px;">
+                        <select id="stReceiverSelect" style="width: 100%; padding: 6px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--card-border); border-radius: 4px; font-size: 0.85rem;" onchange="actualizarDestinatarioST()">
+                            <option value="">-- Selecciona un jugador para susurrar --</option>
+                        </select>
+                    </div>
+                    <div class="chat-input-row">
+                        <input type="text" id="generalInput" placeholder="Identifícate a la derecha para poder hablar..." onkeypress="if(event.key === 'Enter') enviarMensajeActual()">
+                        <button class="chat-send-btn" onclick="enviarMensajeActual()">Enviar</button>
+                    </div>
                 </div>
             </div>
 
@@ -333,7 +387,6 @@
                     <div class="character-list" id="characterList">
                         <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">Cargando personajes...</p>
                     </div>
-                    <!-- Panel exclusivo para el Narrador -->
                     <div id="storytellerPanel" style="display: none; margin-top: 15px;">
                         <button class="storyteller-action-btn" onclick="abrirModalCrearPersonaje()">
                             <i class="fa-solid fa-user-plus"></i> Añadir Personaje / Jugador
@@ -385,8 +438,8 @@
                 <div><b>¿Cómo loguearse como Jugador?</b><br>Haz clic sobre tu nombre de personaje en el panel derecho e introduce la contraseña secreta que te haya asignado tu Narrador.</div>
             </li>
             <li>
-                <i class="fa-solid fa-trash-can"></i>
-                <div><b>Gestión del Narrador:</b><br>Si eres el Narrador, verás botones para añadir nuevos jugadores o eliminar la crónica de forma segura escribiendo una frase de confirmación.</div>
+                <i class="fa-solid fa-user-secret"></i>
+                <div><b>Susurros y Secretos:</b><br>Usa la pestaña <i>"Susurros / Secretos"</i> para chatear de forma totalmente privada y directa entre el Narrador y el personaje seleccionado.</div>
             </li>
         </ul>
         <div class="modal-buttons">
@@ -538,6 +591,37 @@
     const db = getDatabase(app);
 
     let cronicaActual = localStorage.getItem('vtm-active-chronicle') || null;
+    let canalActivo = 'general'; // 'general' o 'privado'
+    let nombreNarradorActual = null;
+    let receptorPrivadoST = null; // Jugador seleccionado por el ST para los susurros
+
+    window.cambiarCanal = function(canal) {
+        canalActivo = canal;
+        const btnGen = document.getElementById('tabGeneral');
+        const btnPriv = document.getElementById('tabPrivado');
+        const boxGen = document.getElementById('generalMessages');
+        const boxPriv = document.getElementById('privateMessages');
+        const stSelectBox = document.getElementById('stSelectReceiverBox');
+
+        if (canal === 'general') {
+            btnGen.classList.add('active');
+            btnPriv.classList.remove('active');
+            boxGen.style.display = 'flex';
+            boxPriv.style.display = 'none';
+            if (stSelectBox) stSelectBox.style.display = 'none';
+        } else {
+            btnPriv.classList.add('active');
+            btnGen.classList.remove('active');
+            boxPriv.style.display = 'flex';
+            boxGen.style.display = 'none';
+            
+            // Si el usuario actual es Narrador, mostrar el selector de jugador
+            const identidad = localStorage.getItem(`vtm-active-character-${cronicaActual}`);
+            if (identidad && identidad.toLowerCase() === (nombreNarradorActual || '').toLowerCase()) {
+                if (stSelectBox) stSelectBox.style.display = 'block';
+            }
+        }
+    };
 
     function cambiarVista(vista) {
         document.getElementById('lobbyView').classList.remove('active');
@@ -634,7 +718,6 @@
         });
     };
 
-    // Funciones del Modal de Borrado Seguro de Crónica
     window.abrirModalEliminarCronica = function() {
         document.getElementById('deleteChronicleNameLabel').textContent = cronicaActual;
         document.getElementById('deleteConfirmInput').value = '';
@@ -691,7 +774,9 @@
         const personajesRef = ref(db, `grupos/${grupo}/personajes`);
         onValue(personajesRef, (snapshot) => {
             const listContainer = document.getElementById('characterList');
+            const selectReceiver = document.getElementById('stReceiverSelect');
             listContainer.innerHTML = '';
+            if (selectReceiver) selectReceiver.innerHTML = '<option value="">-- Selecciona un jugador para susurrar --</option>';
 
             if (!snapshot.exists()) {
                 document.getElementById('registerStorytellerModal').style.display = 'flex';
@@ -709,7 +794,20 @@
                 const clanLimpio = p.clan ? String(p.clan).replace(/"/g, '') : 'Vástago';
                 const passLimpa = p.password ? String(p.password).replace(/"/g, '') : '';
 
-                if (identidadActiva === nombreLimpio && (clanLimpio.toLowerCase().includes('storyteller') || clanLimpio.toLowerCase().includes('narrador'))) {
+                const esST = clanLimpio.toLowerCase().includes('storyteller') || clanLimpio.toLowerCase().includes('narrador');
+
+                if (esST) {
+                    nombreNarradorActual = nombreLimpio;
+                } else if (selectReceiver) {
+                    // Rellenar desplegable del ST con los jugadores
+                    const opt = document.createElement('option');
+                    opt.value = nombreLimpio;
+                    opt.textContent = `${nombreLimpio} (${clanLimpio})`;
+                    if (receptorPrivadoST === nombreLimpio) opt.selected = true;
+                    selectReceiver.appendChild(opt);
+                }
+
+                if (identidadActiva === nombreLimpio && esST) {
                     esNarradorActual = true;
                 }
 
@@ -733,8 +831,15 @@
             if (stPanel) {
                 stPanel.style.display = esNarradorActual ? 'block' : 'none';
             }
+
+            // Mostrar u ocultar selector si está en pestaña privada
+            const stSelectBox = document.getElementById('stSelectReceiverBox');
+            if (stSelectBox) {
+                stSelectBox.style.display = (esNarradorActual && canalActivo === 'privado') ? 'block' : 'none';
+            }
         });
 
+        // Canal General
         const mensajesRef = ref(db, `grupos/${grupo}/mensajes_generales`);
         onValue(mensajesRef, (snapshot) => {
             const container = document.getElementById('generalMessages');
@@ -747,17 +852,97 @@
 
             const data = snapshot.val();
             Object.values(data).forEach(msg => {
+                let fechaHoraFormateada = '';
+                if (msg.timestamp) {
+                    const fecha = new Date(msg.timestamp);
+                    const dia = String(fecha.getDate()).padStart(2, '0');
+                    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                    const horas = String(fecha.getHours()).padStart(2, '0');
+                    const minutos = String(fecha.getMinutes()).padStart(2, '0');
+                    fechaHoraFormateada = `${dia}/${mes}/${fecha.getFullYear()} a las ${horas}:${minutos}`;
+                }
+
                 const msgDiv = document.createElement('div');
-                msgDiv.style.cssText = 'margin-bottom: 10px; padding: 10px 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px;';
+                msgDiv.style.cssText = 'padding: 10px 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px;';
                 msgDiv.innerHTML = `
-                    <div style="font-size: 0.78rem; color: var(--accent-gold); font-family: 'Cinzel', serif; font-weight: bold; margin-bottom: 2px;">${msg.autor || 'Anónimo'}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                        <span style="font-size: 0.78rem; color: var(--accent-gold); font-family: 'Cinzel', serif; font-weight: bold;">${msg.autor || 'Anónimo'}</span>
+                        <span style="font-size: 0.68rem; color: var(--text-muted);">${fechaHoraFormateada}</span>
+                    </div>
                     <div style="font-size: 0.9rem; color: var(--text-main);">${msg.texto}</div>
                 `;
                 container.appendChild(msgDiv);
             });
-            container.scrollTop = container.scrollHeight;
+        });
+
+        // Canal Privado (Susurros)
+        const privadosRef = ref(db, `grupos/${grupo}/mensajes_privados`);
+        onValue(privadosRef, (snapshot) => {
+            const container = document.getElementById('privateMessages');
+            container.innerHTML = '';
+
+            const identidadActual = localStorage.getItem(`vtm-active-character-${grupo}`);
+            if (!identidadActual) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-style: italic; margin-top: 20px;">Identifícate para ver tus susurros.</p>';
+                return;
+            }
+
+            if (!snapshot.exists()) {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-style: italic; margin-top: 20px;">No hay mensajes privados todavía.</p>';
+                return;
+            }
+
+            const data = snapshot.val();
+            const esST = identidadActual.toLowerCase() === (nombreNarradorActual || '').toLowerCase();
+
+            Object.values(data).forEach(msg => {
+                // Si es ST, filtrar por el jugador seleccionado en el desplegable. Si es jugador, filtrar por su propio nombre.
+                let mostrar = false;
+                if (esST) {
+                    if (receptorPrivadoST && (msg.remitente === receptorPrivadoST || msg.destinatario === receptorPrivadoST)) {
+                        mostrar = true;
+                    }
+                } else {
+                    if (msg.remitente === identidadActual || msg.destinatario === identidadActual) {
+                        mostrar = true;
+                    }
+                }
+
+                if (!mostrar) return;
+
+                let fechaHoraFormateada = '';
+                if (msg.timestamp) {
+                    const fecha = new Date(msg.timestamp);
+                    const dia = String(fecha.getDate()).padStart(2, '0');
+                    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                    const horas = String(fecha.getHours()).padStart(2, '0');
+                    const minutos = String(fecha.getMinutes()).padStart(2, '0');
+                    fechaHoraFormateada = `${dia}/${mes}/${fecha.getFullYear()} a las ${horas}:${minutos}`;
+                }
+
+                const msgDiv = document.createElement('div');
+                msgDiv.style.cssText = 'padding: 10px 12px; background: rgba(197, 160, 89, 0.05); border: 1px solid var(--accent-gold); border-radius: 6px;';
+                msgDiv.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                        <span style="font-size: 0.78rem; color: var(--accent-gold); font-family: 'Cinzel', serif; font-weight: bold;">🔒 ${msg.remitente} → ${msg.destinatario}</span>
+                        <span style="font-size: 0.68rem; color: var(--text-muted);">${fechaHoraFormateada}</span>
+                    </div>
+                    <div style="font-size: 0.9rem; color: var(--text-main);">${msg.texto}</div>
+                `;
+                container.appendChild(msgDiv);
+            });
+
+            if (container.innerHTML === '') {
+                container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-style: italic; margin-top: 20px;">Selecciona un interlocutor para ver los secretos.</p>';
+            }
         });
     }
+
+    window.actualizarDestinatarioST = function() {
+        receptorPrivadoST = document.getElementById('stReceiverSelect').value;
+        // Forzar actualización recargando vista si es necesario o disparando el onValue
+        inicializarChatCronica(cronicaActual);
+    };
 
     window.registrarNarradorCronica = function() {
         const nombreSt = document.getElementById('stNameInput').value.trim();
@@ -815,7 +1000,7 @@
         });
     };
 
-    window.enviarMensajeGeneral = function() {
+    window.enviarMensajeActual = function() {
         const input = document.getElementById('generalInput');
         const texto = input.value.trim();
         if (!texto || !cronicaActual) return;
@@ -826,17 +1011,44 @@
             return;
         }
 
-        const mensajesRef = ref(db, `grupos/${cronicaActual}/mensajes_generales`);
-        push(mensajesRef, {
-            autor: autorActual,
-            texto: texto,
-            timestamp: Date.now()
-        }).then(() => {
-            input.value = '';
-        }).catch((error) => {
-            console.error("Error al enviar:", error);
-            alert("No se pudo enviar el mensaje.");
-        });
+        if (canalActivo === 'general') {
+            const mensajesRef = ref(db, `grupos/${cronicaActual}/mensajes_generales`);
+            push(mensajesRef, {
+                autor: autorActual,
+                texto: texto,
+                timestamp: Date.now()
+            }).then(() => {
+                input.value = '';
+            }).catch((error) => {
+                console.error("Error al enviar:", error);
+                alert("No se pudo enviar el mensaje.");
+            });
+        } else {
+            // Canal Privado / Susurros
+            const esST = autorActual.toLowerCase() === (nombreNarradorActual || '').toLowerCase();
+            let destinatario = nombreNarradorActual;
+
+            if (esST) {
+                if (!receptorPrivadoST) {
+                    alert("Selecciona primero un jugador en el desplegable superior para enviarle el susurro.");
+                    return;
+                }
+                destinatario = receptorPrivadoST;
+            }
+
+            const privadosRef = ref(db, `grupos/${cronicaActual}/mensajes_privados`);
+            push(privadosRef, {
+                remitente: autorActual,
+                destinatario: destinatario,
+                texto: texto,
+                timestamp: Date.now()
+            }).then(() => {
+                input.value = '';
+            }).catch((error) => {
+                console.error("Error al enviar mensaje privado:", error);
+                alert("No se pudo enviar el susurro.");
+            });
+        }
     };
 
     function actualizarInterfazIdentidad(grupo) {
@@ -848,7 +1060,7 @@
         if (identidadGuardada) {
             badge.textContent = `[Activo: ${identidadGuardada}]`;
             badge.style.color = 'var(--accent-gold)';
-            inputMsg.placeholder = `Escribe como ${identidadGuardada}...`;
+            inputMsg.placeholder = `Escribe un mensaje...`;
             infoDiv.innerHTML = `Conectado como <b>${identidadGuardada}</b>. <a href="#" onclick="cerrarSesion('${grupo}')" style="color: var(--accent-gold); text-decoration: underline;">Cambiar</a>`;
         } else {
             badge.textContent = '(Sin identificar)';
