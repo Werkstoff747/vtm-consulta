@@ -218,7 +218,6 @@
             color: var(--accent-gold);
         }
 
-        /* Indicador de notificación parpadeante */
         .notification-dot {
             position: absolute;
             top: 6px;
@@ -266,13 +265,21 @@
         .character-item {
             background: var(--input-bg); border: 1px solid var(--card-border);
             padding: 10px 12px; border-radius: 6px;
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; align-items: center; gap: 12px;
             transition: all 0.2s;
         }
         .character-item:hover { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.05); }
         .character-item.active { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.12); }
         
-        /* Bloques separados en el panel lateral */
+        /* Estilo para el icono de clan grande a la izquierda */
+        .character-clan-icon {
+            width: 34px;
+            height: 34px;
+            object-fit: contain;
+            flex-shrink: 0;
+            filter: var(--logo-filter);
+        }
+
         .character-info-left {
             cursor: pointer;
             flex-grow: 1;
@@ -462,7 +469,7 @@
         <ul class="help-list">
             <li>
                 <i class="fa-solid fa-skull"></i>
-                <div><b>Panel Lateral Dividido:</b><br>Haz clic en el <b>nombre</b> de un jugador para abrir su bandeja de susurros, o en el <b>candado</b> para hacer login introduciendo su contraseña.</div>
+                <div><b>Panel Lateral y Escudos de Clan:</b><br>Cada vástago muestra el emblema oficial de su clan a la izquierda. Haz clic en el <b>nombre</b> para susurrarle, o en el <b>candado</b> para loguearte con contraseña.</div>
             </li>
             <li>
                 <i class="fa-solid fa-user-secret"></i>
@@ -599,7 +606,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, push, onValue, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    // Credenciales exactas de tu proyecto Firebase (RolKit-Chat)
     const firebaseConfig = {
         apiKey: "AIzaSyCDAvjhGUW1W6EdnX7nV--LHWvKEoJztL8",
         authDomain: "drrol-chat.firebaseapp.com",
@@ -619,6 +625,30 @@
     let nombreNarradorActual = null;
     let receptorPrivadoST = null;
     let hayMensajesNuevosPrivados = false;
+
+    // Función auxiliar para obtener el icono de clan desde ./iconos/clanes/
+    function obtenerIconoClan(clanStr) {
+        if (!clanStr) return './iconos/VTM-Ank.png';
+        const c = clanStr.toLowerCase();
+        if (c.includes('narrador') || c.includes('storyteller')) return './iconos/VTM-Ank.png';
+        if (c.includes('banu')) return './iconos/clanes/Banu_Haqim_Symbol.png';
+        if (c.includes('brujah')) return './iconos/clanes/Brujah_symbol.png';
+        if (c.includes('caitiff')) return './iconos/clanes/Caitiff_symbol.png';
+        if (c.includes('gangrel')) return './iconos/clanes/Gangrel_symbol.png';
+        if (c.includes('hecata')) return './iconos/clanes/Hecata_symbol.png';
+        if (c.includes('lasombra')) return './iconos/clanes/Lasombra_symbol.png';
+        if (c.includes('malkavian')) return './iconos/clanes/Malkavian_symbol.png';
+        if (c.includes('ministry') || c.includes('ministerio')) return './iconos/clanes/Ministry_symbol.png';
+        if (c.includes('nosferatu')) return './iconos/clanes/Nosferatu_symbol.png';
+        if (c.includes('ravnos')) return './iconos/clanes/Ravnos_symbol.png';
+        if (c.includes('salubri')) return './iconos/clanes/Salubri_symbol.png';
+        if (c.includes('thin') || c.includes('debil') || c.includes('débil')) return './iconos/clanes/Thinblood_symbol.png';
+        if (c.includes('toreador')) return './iconos/clanes/Toreador_symbol.png';
+        if (c.includes('tremere')) return './iconos/clanes/Tremere_symbol.png';
+        if (c.includes('tzimisce')) return './iconos/clanes/Tzimisce_symbol.png';
+        if (c.includes('ventrue')) return './iconos/clanes/Ventrue_symbol.png';
+        return './iconos/VTM-Ank.png'; // Fallback por defecto
+    }
 
     window.cambiarCanal = function(canal) {
         canalActivo = canal;
@@ -641,7 +671,6 @@
             boxPriv.style.display = 'flex';
             boxGen.style.display = 'none';
             
-            // Ocultar notificación al entrar a la pestaña privada
             hayMensajesNuevosPrivados = false;
             if (dot) dot.style.display = 'none';
 
@@ -817,7 +846,6 @@
             let esNarradorActual = false;
 
             Object.entries(personajes).forEach(([key, p]) => {
-                // 1. Limpieza automática de comillas con .replace(/"/g, '')
                 const nombreLimpio = p.nombre ? String(p.nombre).replace(/"/g, '') : '';
                 const clanLimpio = p.clan ? String(p.clan).replace(/"/g, '') : 'Vástago';
                 const passLimpa = p.password ? String(p.password).replace(/"/g, '') : '';
@@ -838,12 +866,16 @@
                     esNarradorActual = true;
                 }
 
-                // 2. Panel lateral dividido: Nombre clicable (izquierda) + Candado login (derecha)
+                // Obtener ruta del logo de clan correspondiente
+                const iconoRuta = obtenerIconoClan(clanLimpio);
+
+                // Renderizado de la tarjeta con imagen de clan a la izquierda
                 const item = document.createElement('div');
                 item.className = 'character-item';
                 if (identidadActiva === nombreLimpio) item.classList.add('active');
                 
                 item.innerHTML = `
+                    <img src="${iconoRuta}" class="character-clan-icon" alt="${clanLimpio}" onerror="this.onerror=null; this.src='./iconos/VTM-Ank.png';">
                     <div class="character-info-left" onclick="clicNombrePersonaje('${nombreLimpio}', ${esST})">
                         <div class="character-name">${nombreLimpio}</div>
                         <div class="character-clan">${clanLimpio}</div>
@@ -937,7 +969,6 @@
 
                 if (!mostrar) return;
 
-                // Detectar si el mensaje es reciente y dirigido al usuario actual estando fuera de la pestaña
                 if (msg.destinatario === identidadActual && canalActivo !== 'privado' && (Date.now() - msg.timestamp < 10000)) {
                     hayNuevos = true;
                 }
@@ -976,7 +1007,6 @@
         });
     }
 
-    // Acción al hacer clic en el nombre (columna izquierda de la tarjeta)
     window.clicNombrePersonaje = function(nombreClicked, esSTClicked) {
         const identidadActual = localStorage.getItem(`vtm-active-character-${cronicaActual}`);
         const esSTActual = identidadActual && identidadActual.toLowerCase() === (nombreNarradorActual || '').toLowerCase();
@@ -984,7 +1014,6 @@
         cambiarCanal('privado');
 
         if (esSTActual && !esSTClicked) {
-            // Si el usuario actual es Narrador, selecciona automáticamente al jugador en el desplegable
             receptorPrivadoST = nombreClicked;
             const selectReceiver = document.getElementById('stReceiverSelect');
             if (selectReceiver) selectReceiver.value = nombreClicked;
