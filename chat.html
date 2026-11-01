@@ -16,7 +16,7 @@
     <!-- End Google Tag Manager -->
     
     <!-- FAVICON -->
-    <link rel="icon" type="image/png" href="./iconos/drRol.png">
+    <link rel="icon" type="image/png" href="../imagenes/dado_logo.png">
     
     <!-- FUENTES OFICIALES V5 (Google Fonts: Cinzel) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -105,14 +105,17 @@
             text-transform: uppercase;
         }
 
-        .theme-btn-header {
-            position: absolute; top: 15px; right: 15px; width: 38px; height: 38px;
+        .header-btn-container {
+            position: absolute; top: 15px; right: 15px; display: flex; gap: 8px; z-index: 10;
+        }
+        .header-icon-btn {
+            width: 38px; height: 38px;
             border-radius: 50%; background-color: rgba(0, 0, 0, 0.35);
             border: 1px solid var(--accent-gold); color: var(--accent-gold);
             font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            z-index: 10; transition: all 0.2s;
+            transition: all 0.2s; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
         }
-        .theme-btn-header:hover { background-color: var(--accent-red); color: #fff; transform: scale(1.08); }
+        .header-icon-btn:hover { background-color: var(--accent-red); color: #fff; transform: scale(1.08); }
 
         .view-section { display: none; }
         .view-section.active { display: block; }
@@ -234,9 +237,9 @@
         }
         .modal-content {
             background: var(--card-bg); border: 2px solid var(--accent-gold);
-            padding: 30px; border-radius: 10px; width: 90%; max-width: 450px; text-align: center;
+            padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; text-align: left;
         }
-        .modal-content h3 { font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 15px; }
+        .modal-content h3 { font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 15px; text-align: center; }
         .modal-content input {
             width: 100%; padding: 10px; background: var(--input-bg);
             border: 1px solid var(--card-border); color: var(--text-main); border-radius: 5px; text-align: center; margin-bottom: 15px; outline: none;
@@ -245,6 +248,10 @@
         .modal-btn { padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; border: none; }
         .modal-btn-confirm { background: var(--accent-red); color: #fff; border: 1px solid var(--accent-crimson); }
         .modal-btn-cancel { background: var(--tag-bg); color: var(--text-muted); border: 1px solid var(--card-border); }
+
+        .help-list { font-size: 0.88rem; color: var(--text-main); display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .help-list li { list-style: none; display: flex; gap: 10px; align-items: flex-start; }
+        .help-list i { color: var(--accent-gold); margin-top: 4px; }
 
         .floating-btn-container {
             position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 10px; z-index: 100;
@@ -265,7 +272,10 @@
 
 <div class="container">
     <header>
-        <button id="themeToggleBtn" class="theme-btn-header" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
+        <div class="header-btn-container">
+            <button class="header-icon-btn" onclick="abrirModalAyuda()" title="Ayuda y Guía de Uso"><i class="fa-solid fa-circle-question"></i></button>
+            <button id="themeToggleBtn" class="header-icon-btn" onclick="toggleTheme()" title="Cambiar Tema Día/Noche">🌙</button>
+        </div>
         <div class="header-logos">
             <img src="./iconos/VTM-Ank.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
             <img src="./iconos/VTM-Logo-Largo.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo.png';">
@@ -346,6 +356,34 @@
     </footer>
 </div>
 
+<!-- MODAL AYUDA / GUÍA DE USO -->
+<div id="helpModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3><i class="fa-solid fa-book-skull"></i> Guía del Refugio</h3>
+        <ul class="help-list">
+            <li>
+                <i class="fa-solid fa-skull"></i>
+                <div><b>¿Cómo crear una Crónica?</b><br>En el menú principal (Lobby), haz clic en la tarjeta punteada de <i>"Nueva Crónica"</i>, escribe el nombre de tu grupo y se creará al instante.</div>
+            </li>
+            <li>
+                <i class="fa-solid fa-feather"></i>
+                <div><b>¿Cómo ser el Narrador?</b><br>Al entrar por primera vez a una crónica nueva vacía, el sistema te pedirá automáticamente que registres tu nombre y contraseña privada como Storyteller.</div>
+            </li>
+            <li>
+                <i class="fa-solid fa-user-lock"></i>
+                <div><b>¿Cómo loguearse como Jugador?</b><br>Haz clic sobre tu nombre de personaje en el panel derecho e introduce la contraseña secreta que te haya asignado tu Narrador.</div>
+            </li>
+            <li>
+                <i class="fa-solid fa-comments"></i>
+                <div><b>Chatear en el Refugio:</b><br>Una vez identificado con tu identidad desbloqueada (icono de candado abierto), podrás escribir libremente en el Canal General.</div>
+            </li>
+        </ul>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-confirm" onclick="cerrarModalAyuda()">Entendido</button>
+        </div>
+    </div>
+</div>
+
 <!-- MODAL CREAR CRÓNICA -->
 <div id="createChronicleModal" class="modal-overlay">
     <div class="modal-content">
@@ -408,7 +446,7 @@
     </a>
 </div>
 
-<!-- GESTIÓN DE TEMA -->
+<!-- GESTIÓN DE TEMA Y AYUDA -->
 <script>
     function updateDarkPackLogo() {
         const logoImg = document.querySelector('.darkpack-logo');
@@ -441,6 +479,14 @@
             localStorage.setItem('vtm-theme', 'dark');
         }
         updateDarkPackLogo();
+    }
+
+    // Funciones del Modal de Ayuda
+    function abrirModalAyuda() {
+        document.getElementById('helpModal').style.display = 'flex';
+    }
+    function cerrarModalAyuda() {
+        document.getElementById('helpModal').style.display = 'none';
     }
 
     window.addEventListener('DOMContentLoaded', () => initTheme());
@@ -553,7 +599,6 @@
             if (snapshot.exists()) {
                 alert("Ya existe una crónica con ese nombre.");
             } else {
-                // Crónica limpia y vacía, lista para que el primer usuario sea el Narrador
                 set(ref(db, `grupos/${nombre}/mensajes_generales`), {
                     msg1: { autor: "Sistema", texto: `La crónica "${nombre}" ha sido creada.`, timestamp: Date.now() }
                 });
@@ -566,14 +611,12 @@
     function inicializarChatCronica(grupo) {
         actualizarInterfazIdentidad(grupo);
 
-        // Verificar si la crónica tiene personajes (si está vacía, forzar registro de Narrador)
         const personajesRef = ref(db, `grupos/${grupo}/personajes`);
         onValue(personajesRef, (snapshot) => {
             const listContainer = document.getElementById('characterList');
             listContainer.innerHTML = '';
 
             if (!snapshot.exists()) {
-                // Sala vacía -> Pedir crear Narrador
                 document.getElementById('registerStorytellerModal').style.display = 'flex';
                 listContainer.innerHTML = '<p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">Registrando Narrador...</p>';
                 return;
@@ -582,7 +625,6 @@
             const personajes = snapshot.val();
             const identidadActiva = localStorage.getItem(`vtm-active-character-${grupo}`);
 
-            // Comprobamos si el usuario actual es Narrador para mostrarle su panel de gestión
             let esNarradorActual = false;
 
             Object.entries(personajes).forEach(([key, p]) => {
@@ -610,14 +652,12 @@
                 listContainer.appendChild(item);
             });
 
-            // Mostrar u ocultar el panel de gestión del narrador
             const stPanel = document.getElementById('storytellerPanel');
             if (stPanel) {
                 stPanel.style.display = esNarradorActual ? 'block' : 'none';
             }
         });
 
-        // Mensajes en tiempo real
         const mensajesRef = ref(db, `grupos/${grupo}/mensajes_generales`);
         onValue(mensajesRef, (snapshot) => {
             const container = document.getElementById('generalMessages');
@@ -642,7 +682,6 @@
         });
     }
 
-    // Registrar Narrador inicial
     window.registrarNarradorCronica = function() {
         const nombreSt = document.getElementById('stNameInput').value.trim();
         const passSt = document.getElementById('stPassInput').value.trim();
@@ -665,7 +704,6 @@
         });
     };
 
-    // Funciones de gestión del Narrador para añadir nuevos jugadores
     window.abrirModalCrearPersonaje = function() {
         document.getElementById('newCharName').value = '';
         document.getElementById('newCharClan').value = '';
