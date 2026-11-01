@@ -271,7 +271,6 @@
         .character-item:hover { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.05); }
         .character-item.active { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.12); }
         
-        /* Estilo para el icono de clan grande a la izquierda */
         .character-clan-icon {
             width: 34px;
             height: 34px;
@@ -626,11 +625,11 @@
     let receptorPrivadoST = null;
     let hayMensajesNuevosPrivados = false;
 
-    // Función auxiliar para obtener el icono de clan desde ./iconos/clanes/
+    // Función auxiliar para obtener el icono de clan o narrador desde ./iconos/clanes/
     function obtenerIconoClan(clanStr) {
         if (!clanStr) return './iconos/VTM-Ank.png';
         const c = clanStr.toLowerCase();
-        if (c.includes('narrador') || c.includes('storyteller')) return './iconos/VTM-Ank.png';
+        if (c.includes('narrador') || c.includes('storyteller')) return './iconos/clanes/Narrador_symbol.png';
         if (c.includes('banu')) return './iconos/clanes/Banu_Haqim_Symbol.png';
         if (c.includes('brujah')) return './iconos/clanes/Brujah_symbol.png';
         if (c.includes('caitiff')) return './iconos/clanes/Caitiff_symbol.png';
@@ -647,7 +646,7 @@
         if (c.includes('tremere')) return './iconos/clanes/Tremere_symbol.png';
         if (c.includes('tzimisce')) return './iconos/clanes/Tzimisce_symbol.png';
         if (c.includes('ventrue')) return './iconos/clanes/Ventrue_symbol.png';
-        return './iconos/VTM-Ank.png'; // Fallback por defecto
+        return './iconos/VTM-Ank.png';
     }
 
     window.cambiarCanal = function(canal) {
@@ -866,10 +865,8 @@
                     esNarradorActual = true;
                 }
 
-                // Obtener ruta del logo de clan correspondiente
                 const iconoRuta = obtenerIconoClan(clanLimpio);
 
-                // Renderizado de la tarjeta con imagen de clan a la izquierda
                 const item = document.createElement('div');
                 item.className = 'character-item';
                 if (identidadActiva === nombreLimpio) item.classList.add('active');
@@ -1037,7 +1034,7 @@
         const refPersonajes = ref(db, `grupos/${cronicaActual}/personajes`);
         push(refPersonajes, {
             nombre: nombreSt,
-            clan: "Narrador (Storyteller)",
+            clan: "Narrador", // Simplificado sin (Storyteller)
             password: passSt
         }).then(() => {
             document.getElementById('registerStorytellerModal').style.display = 'none';
