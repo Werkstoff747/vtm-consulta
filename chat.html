@@ -231,13 +231,21 @@
         }
         .storyteller-action-btn:hover { background: rgba(197, 160, 89, 0.2); }
 
+        .storyteller-danger-btn {
+            width: 100%; margin-top: 10px; padding: 10px;
+            background: rgba(139, 0, 0, 0.15); border: 1px dashed var(--accent-crimson);
+            color: var(--accent-crimson); font-family: 'Cinzel', serif; font-weight: bold;
+            border-radius: 6px; cursor: pointer; text-align: center; transition: background 0.2s;
+        }
+        .storyteller-danger-btn:hover { background: rgba(139, 0, 0, 0.3); color: #fff; }
+
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.8); display: none; align-items: center; justify-content: center; z-index: 10000;
         }
         .modal-content {
             background: var(--card-bg); border: 2px solid var(--accent-gold);
-            padding: 30px; border-radius: 10px; width: 90%; max-width: 500px; text-align: left;
+            padding: 30px; border-radius: 10px; width: 90%; max-width: 480px; text-align: left;
         }
         .modal-content h3 { font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 15px; text-align: center; }
         .modal-content input {
@@ -325,10 +333,13 @@
                     <div class="character-list" id="characterList">
                         <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">Cargando personajes...</p>
                     </div>
-                    <!-- Panel exclusivo para añadir jugadores (visible si el usuario actual es Narrador) -->
+                    <!-- Panel exclusivo para el Narrador -->
                     <div id="storytellerPanel" style="display: none; margin-top: 15px;">
                         <button class="storyteller-action-btn" onclick="abrirModalCrearPersonaje()">
                             <i class="fa-solid fa-user-plus"></i> Añadir Personaje / Jugador
+                        </button>
+                        <button class="storyteller-danger-btn" onclick="abrirModalEliminarCronica()">
+                            <i class="fa-solid fa-trash-can"></i> Eliminar Crónica
                         </button>
                     </div>
                 </div>
@@ -367,15 +378,15 @@
             </li>
             <li>
                 <i class="fa-solid fa-feather"></i>
-                <div><b>¿Cómo ser el Narrador?</b><br>Al entrar por primera vez a una crónica nueva vacía, el sistema te pedirá automáticamente que registres tu nombre y contraseña privada como Storyteller.</div>
+                <div><b>¿Cómo ser el Narrador?</b><br>Al entrar por primera vez a una crónica nueva vacía, el sistema te pedirá automáticamente que registres tu nombre y contraseña privada de Storyteller.</div>
             </li>
             <li>
                 <i class="fa-solid fa-user-lock"></i>
                 <div><b>¿Cómo loguearse como Jugador?</b><br>Haz clic sobre tu nombre de personaje en el panel derecho e introduce la contraseña secreta que te haya asignado tu Narrador.</div>
             </li>
             <li>
-                <i class="fa-solid fa-comments"></i>
-                <div><b>Chatear en el Refugio:</b><br>Una vez identificado con tu identidad desbloqueada (icono de candado abierto), podrás escribir libremente en el Canal General.</div>
+                <i class="fa-solid fa-trash-can"></i>
+                <div><b>Gestión del Narrador:</b><br>Si eres el Narrador, verás botones para añadir nuevos jugadores o eliminar la crónica de forma segura escribiendo una frase de confirmación.</div>
             </li>
         </ul>
         <div class="modal-buttons">
@@ -393,6 +404,22 @@
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-confirm" onclick="confirmarCrearCronica()">Crear</button>
             <button class="modal-btn modal-btn-cancel" onclick="cerrarModalCronica()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ELIMINAR CRÓNICA (SEGURIDAD ACTIVA) -->
+<div id="deleteChronicleModal" class="modal-overlay">
+    <div class="modal-content" style="border-color: var(--accent-crimson);">
+        <h3 style="color: var(--accent-crimson);"><i class="fa-solid fa-triangle-exclamation"></i> Zona de Peligro</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">
+            Vas a eliminar por completo la crónica <b><span id="deleteChronicleNameLabel"></span></b> y todos sus datos. Para confirmar, escribe exactamente la frase: <br><br>
+            <code style="color: var(--accent-gold); user-select: none;">Confirmo que quiero eliminar la crónica</code>
+        </p>
+        <input type="text" id="deleteConfirmInput" placeholder="Escribe la frase aquí..." oninput="verificarTextoEliminar()" style="margin-bottom: 15px;">
+        <div class="modal-buttons">
+            <button id="btnEjecutarEliminar" class="modal-btn" style="background: var(--accent-crimson); color: #fff; opacity: 0.5; cursor: not-allowed;" disabled onclick="ejecutarEliminarCronica()">Eliminar Definitivamente</button>
+            <button class="modal-btn modal-btn-cancel" onclick="cerrarModalEliminarCronica()">Cancelar</button>
         </div>
     </div>
 </div>
@@ -481,7 +508,6 @@
         updateDarkPackLogo();
     }
 
-    // Funciones del Modal de Ayuda
     function abrirModalAyuda() {
         document.getElementById('helpModal').style.display = 'flex';
     }
@@ -495,7 +521,7 @@
 <!-- FIREBASE Y LÓGICA DE CRÓNICAS Y CHAT -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, push, onValue, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getDatabase, ref, push, onValue, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCDAvjhGUW1W6EdnX7nV--LHWvKEoJztL8",
@@ -605,6 +631,57 @@
                 cerrarModalCronica();
                 seleccionarCronica(nombre);
             }
+        });
+    };
+
+    // Funciones del Modal de Borrado Seguro de Crónica
+    window.abrirModalEliminarCronica = function() {
+        document.getElementById('deleteChronicleNameLabel').textContent = cronicaActual;
+        document.getElementById('deleteConfirmInput').value = '';
+        const btnEliminar = document.getElementById('btnEjecutarEliminar');
+        btnEliminar.disabled = true;
+        btnEliminar.style.opacity = '0.5';
+        btnEliminar.style.cursor = 'not-allowed';
+        document.getElementById('deleteChronicleModal').style.display = 'flex';
+        document.getElementById('deleteConfirmInput').focus();
+    };
+
+    window.cerrarModalEliminarCronica = function() {
+        document.getElementById('deleteChronicleModal').style.display = 'none';
+    };
+
+    window.verificarTextoEliminar = function() {
+        const textoEscrito = document.getElementById('deleteConfirmInput').value.trim();
+        const fraseObjetivo = "Confirmo que quiero eliminar la crónica";
+        const btnEliminar = document.getElementById('btnEjecutarEliminar');
+
+        if (textoEscrito === fraseObjetivo) {
+            btnEliminar.disabled = false;
+            btnEliminar.style.opacity = '1';
+            btnEliminar.style.cursor = 'pointer';
+        } else {
+            btnEliminar.disabled = true;
+            btnEliminar.style.opacity = '0.5';
+            btnEliminar.style.cursor = 'not-allowed';
+        }
+    };
+
+    window.ejecutarEliminarCronica = function() {
+        if (!cronicaActual) return;
+
+        const cronicaAEliminar = cronicaActual;
+        const grupoRef = ref(db, `grupos/${cronicaAEliminar}`);
+
+        remove(grupoRef).then(() => {
+            localStorage.removeItem(`vtm-active-character-${cronicaAEliminar}`);
+            localStorage.removeItem('vtm-active-chronicle');
+            cronicaActual = null;
+            cerrarModalEliminarCronica();
+            alert(`La crónica "${cronicaAEliminar}" ha sido eliminada por completo.`);
+            cambiarVista('lobby');
+        }).catch((error) => {
+            console.error("Error al eliminar la crónica:", error);
+            alert("No se pudo eliminar la crónica.");
         });
     };
 
