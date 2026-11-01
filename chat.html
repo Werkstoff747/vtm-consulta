@@ -41,7 +41,6 @@
             --header-bg: linear-gradient(180deg, rgba(139,0,0,0.3) 0%, rgba(15,15,18,0) 100%);
             --header-border: #8b0000;
             --card-title-color: #ffffff;
-            /* Filtro para modo oscuro: Vuelve los iconos blancos */
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.4)) brightness(0) invert(1);
         }
 
@@ -59,7 +58,6 @@
             --header-bg: #2b0408;
             --header-border: #7a0000;
             --card-title-color: #111115;
-            /* Filtro para modo claro: Vuelve los iconos negros */
             --logo-filter: drop-shadow(0px 2px 8px rgba(201, 42, 42, 0.5)) brightness(0);
         }
 
@@ -273,7 +271,6 @@
         .character-item:hover { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.05); }
         .character-item.active { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.12); }
         
-        /* Icono de clan adaptado al tema mediante la variable --logo-filter */
         .character-clan-icon {
             width: 34px;
             height: 34px;
@@ -471,11 +468,11 @@
         <ul class="help-list">
             <li>
                 <i class="fa-solid fa-skull"></i>
-                <div><b>Panel Lateral y Escudos de Clan:</b><br>Cada vástago muestra su emblema oficial (adaptable a modo día/noche) a la izquierda. Haz clic en el <b>nombre</b> para susurrarle, o en el <b>candado</b> para loguearte con contraseña.</div>
+                <div><b>Panel Lateral y Escudos de Clan:</b><br>Cada vástago muestra su emblema adaptado al tema a la izquierda. Haz clic en el <b>nombre</b> para susurrarle, o en el <b>candado</b> para loguearte con contraseña.</div>
             </li>
             <li>
                 <i class="fa-solid fa-user-secret"></i>
-                <div><b>Susurros y Notificaciones:</b><br>Si recibes un secreto nuevo, parpadeara un punto rojo 🔴 en la pestaña de susurros. El narrador puede alternar entre bandejas con el desplegable.</div>
+                <div><b>Susurros y Notificaciones:</b><br>Si recibes un secreto nuevo, parpadea un punto rojo 🔴 en la pestaña de susurros. El narrador puede alternar entre bandejas con el desplegable.</div>
             </li>
         </ul>
         <div class="modal-buttons">
@@ -852,7 +849,7 @@
                 const clanLimpio = p.clan ? String(p.clan).replace(/"/g, '') : 'Vástago';
                 const passLimpa = p.password ? String(p.password).replace(/"/g, '') : '';
 
-                const esST = clanLimpio.toLowerCase().includes('storyteller') || clanLimpio.toLowerCase().includes('narrador');
+                const esST = clanLimpio.toLowerCase().includes('narrador') || clanLimpio.toLowerCase().includes('storyteller');
 
                 if (esST) {
                     nombreNarradorActual = nombreLimpio;
@@ -969,7 +966,8 @@
 
                 if (!mostrar) return;
 
-                if (msg.destinatario === identidadActual && canalActivo !== 'privado' && (Date.now() - msg.timestamp < 10000)) {
+                // Notificación fiable si el mensaje va dirigido a ti y no estás en la pestaña de privados
+                if (msg.destinatario === identidadActual && canalActivo !== 'privado') {
                     hayNuevos = true;
                 }
 
@@ -1037,7 +1035,7 @@
         const refPersonajes = ref(db, `grupos/${cronicaActual}/personajes`);
         push(refPersonajes, {
             nombre: nombreSt,
-            clan: "Narrador", // Definido simplemente como Narrador
+            clan: "Narrador",
             password: passSt
         }).then(() => {
             document.getElementById('registerStorytellerModal').style.display = 'none';
@@ -1172,13 +1170,15 @@
     };
 
     window.cerrarModalCodigo = function() {
-        document.getElementById('modalCharacterModal').style.display = 'none'; // Corregido de forma segura
+        document.getElementById('characterCodeInput').value = '';
+        document.getElementById('codeModal').style.display = 'none';
     };
 
     window.verificarCodigoPersonaje = function() {
         const ingresada = document.getElementById('characterCodeInput').value.trim();
         if (ingresada === passwordEsperada) {
             localStorage.setItem(`vtm-active-character-${grupoDelPersonaje}`, personajeSeleccionado);
+            document.getElementById('characterCodeInput').value = '';
             alert(`¡Identidad verificada! Ahora actúas como ${personajeSeleccionado}.`);
             cerrarModalCodigo();
             actualizarInterfazIdentidad(grupoDelPersonaje);
