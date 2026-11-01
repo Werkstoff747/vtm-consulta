@@ -195,6 +195,7 @@
             display: flex;
             gap: 5px;
             margin-bottom: 15px;
+            position: relative;
         }
         .chat-tab {
             flex: 1;
@@ -209,11 +210,29 @@
             cursor: pointer;
             text-align: center;
             transition: all 0.2s;
+            position: relative;
         }
         .chat-tab.active {
             background: rgba(197, 160, 89, 0.15);
             border-color: var(--accent-gold);
             color: var(--accent-gold);
+        }
+
+        /* Indicador de notificación parpadeante */
+        .notification-dot {
+            position: absolute;
+            top: 6px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-crimson);
+            border-radius: 50%;
+            animation: pulse-dot 1.5s infinite;
+        }
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); opacity: 0.9; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.9; }
         }
 
         .messages-container {
@@ -246,12 +265,25 @@
         .character-list { display: flex; flex-direction: column; gap: 10px; }
         .character-item {
             background: var(--input-bg); border: 1px solid var(--card-border);
-            padding: 12px; border-radius: 6px; cursor: pointer;
+            padding: 10px 12px; border-radius: 6px;
             display: flex; align-items: center; justify-content: space-between;
             transition: all 0.2s;
         }
         .character-item:hover { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.05); }
         .character-item.active { border-color: var(--accent-gold); background: rgba(197, 160, 89, 0.12); }
+        
+        /* Bloques separados en el panel lateral */
+        .character-info-left {
+            cursor: pointer;
+            flex-grow: 1;
+        }
+        .character-lock-right {
+            cursor: pointer;
+            padding-left: 10px;
+            border-left: 1px dashed var(--card-border);
+            display: flex;
+            align-items: center;
+        }
         .character-name { font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; color: var(--card-title-color); }
         .character-clan { font-size: 0.75rem; color: var(--text-muted); font-style: italic; }
 
@@ -349,10 +381,13 @@
                         <span id="identidadActualBadge" style="font-size: 0.75rem; color: var(--accent-gold); font-weight: normal;">(Sin identificar)</span>
                     </div>
 
-                    <!-- Pestañas de Canales -->
+                    <!-- Pestañas de Canales con Notificación -->
                     <div class="chat-tabs">
                         <button class="chat-tab active" id="tabGeneral" onclick="cambiarCanal('general')"><i class="fa-solid fa-globe"></i> Canal General</button>
-                        <button class="chat-tab" id="tabPrivado" onclick="cambiarCanal('privado')"><i class="fa-solid fa-user-secret"></i> Susurros / Secretos</button>
+                        <button class="chat-tab" id="tabPrivado" onclick="cambiarCanal('privado')">
+                            <i class="fa-solid fa-user-secret"></i> Susurros / Secretos
+                            <span id="notificationDot" class="notification-dot" style="display: none;"></span>
+                        </button>
                     </div>
 
                     <!-- Contenedor Mensajes General -->
@@ -397,7 +432,7 @@
                     </div>
                 </div>
                 <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 15px;" id="infoIdentidad">
-                    Haz clic sobre tu nombre e introduce tu contraseña.
+                    Haz clic sobre tu nombre o candado e introduce tu contraseña.
                 </div>
             </div>
         </div>
@@ -420,26 +455,18 @@
     </footer>
 </div>
 
-<!-- MODAL AYUDA / GUÍA DE USO -->
+<!-- MODAL AYUDA -->
 <div id="helpModal" class="modal-overlay">
     <div class="modal-content">
         <h3><i class="fa-solid fa-book-skull"></i> Guía del Refugio</h3>
         <ul class="help-list">
             <li>
                 <i class="fa-solid fa-skull"></i>
-                <div><b>¿Cómo crear una Crónica?</b><br>En el menú principal (Lobby), haz clic en la tarjeta punteada de <i>"Nueva Crónica"</i>, escribe el nombre de tu grupo y se creará al instante.</div>
-            </li>
-            <li>
-                <i class="fa-solid fa-feather"></i>
-                <div><b>¿Cómo ser el Narrador?</b><br>Al entrar por primera vez a una crónica nueva vacía, el sistema te pedirá automáticamente que registres tu nombre y contraseña privada de Storyteller.</div>
-            </li>
-            <li>
-                <i class="fa-solid fa-user-lock"></i>
-                <div><b>¿Cómo loguearse como Jugador?</b><br>Haz clic sobre tu nombre de personaje en el panel derecho e introduce la contraseña secreta que te haya asignado tu Narrador.</div>
+                <div><b>Panel Lateral Dividido:</b><br>Haz clic en el <b>nombre</b> de un jugador para abrir su bandeja de susurros, o en el <b>candado</b> para hacer login introduciendo su contraseña.</div>
             </li>
             <li>
                 <i class="fa-solid fa-user-secret"></i>
-                <div><b>Susurros y Secretos:</b><br>Usa la pestaña <i>"Susurros / Secretos"</i> para chatear de forma totalmente privada y directa entre el Narrador y el personaje seleccionado.</div>
+                <div><b>Susurros y Notificaciones:</b><br>Si recibes un secreto nuevo, parpadeara un punto rojo 🔴 en la pestaña de susurros. El narrador puede alternar entre bandejas con el desplegable.</div>
             </li>
         </ul>
         <div class="modal-buttons">
@@ -461,12 +488,12 @@
     </div>
 </div>
 
-<!-- MODAL ELIMINAR CRÓNICA (SEGURIDAD ACTIVA) -->
+<!-- MODAL ELIMINAR CRÓNICA -->
 <div id="deleteChronicleModal" class="modal-overlay">
     <div class="modal-content" style="border-color: var(--accent-crimson);">
         <h3 style="color: var(--accent-crimson);"><i class="fa-solid fa-triangle-exclamation"></i> Zona de Peligro</h3>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">
-            Vas a eliminar por completo la crónica <b><span id="deleteChronicleNameLabel"></span></b> y todos sus datos. Para confirmar, escribe exactamente la frase: <br><br>
+            Vas a eliminar por completo la crónica <b><span id="deleteChronicleNameLabel"></span></b>. Escribe exactamente: <br><br>
             <code style="color: var(--accent-gold); user-select: none;">Confirmo que quiero eliminar la crónica</code>
         </p>
         <input type="text" id="deleteConfirmInput" placeholder="Escribe la frase aquí..." oninput="verificarTextoEliminar()" style="margin-bottom: 15px;">
@@ -490,12 +517,12 @@
     </div>
 </div>
 
-<!-- MODAL REGISTRO NARRADOR (SI LA SALA ESTÁ VACÍA) -->
+<!-- MODAL REGISTRO NARRADOR -->
 <div id="registerStorytellerModal" class="modal-overlay">
     <div class="modal-content">
         <h3>Registrar Narrador</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Esta crónica no tiene Narrador. Define tu nombre y contraseña privada de Storyteller:</p>
-        <input type="text" id="stNameInput" placeholder="Tu nombre (ej. Álvaro)..." style="margin-bottom: 10px;">
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">Esta crónica no tiene Narrador. Define tu nombre y contraseña privada:</p>
+        <input type="text" id="stNameInput" placeholder="Tu nombre..." style="margin-bottom: 10px;">
         <input type="password" id="stPassInput" placeholder="Contraseña secreta..." onkeypress="if(event.key === 'Enter') registrarNarradorCronica()">
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-confirm" onclick="registrarNarradorCronica()">Guardar Narrador</button>
@@ -503,13 +530,13 @@
     </div>
 </div>
 
-<!-- MODAL AÑADIR JUGADOR / PERSONAJE (PARA EL NARRADOR) -->
+<!-- MODAL AÑADIR JUGADOR -->
 <div id="addCharacterModal" class="modal-overlay">
     <div class="modal-content">
         <h3>Nuevo Personaje / Jugador</h3>
         <input type="text" id="newCharName" placeholder="Nombre del personaje..." style="margin-bottom: 10px;">
-        <input type="text" id="newCharClan" placeholder="Clan (ej. Ventrue, Toreador)..." style="margin-bottom: 10px;">
-        <input type="password" id="newCharPass" placeholder="Contraseña secreta para el jugador..." onkeypress="if(event.key === 'Enter') guardarNuevoPersonaje()">
+        <input type="text" id="newCharClan" placeholder="Clan (ej. Ventrue)..." style="margin-bottom: 10px;">
+        <input type="password" id="newCharPass" placeholder="Contraseña secreta..." onkeypress="if(event.key === 'Enter') guardarNuevoPersonaje()">
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-confirm" onclick="guardarNuevoPersonaje()">Crear Ficha</button>
             <button class="modal-btn modal-btn-cancel" onclick="cerrarModalCrearPersonaje()">Cancelar</button>
@@ -561,12 +588,8 @@
         updateDarkPackLogo();
     }
 
-    function abrirModalAyuda() {
-        document.getElementById('helpModal').style.display = 'flex';
-    }
-    function cerrarModalAyuda() {
-        document.getElementById('helpModal').style.display = 'none';
-    }
+    function abrirModalAyuda() { document.getElementById('helpModal').style.display = 'flex'; }
+    function cerrarModalAyuda() { document.getElementById('helpModal').style.display = 'none'; }
 
     window.addEventListener('DOMContentLoaded', () => initTheme());
 </script>
@@ -576,6 +599,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getDatabase, ref, push, onValue, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
+    // Credenciales exactas de tu proyecto Firebase (RolKit-Chat)
     const firebaseConfig = {
         apiKey: "AIzaSyCDAvjhGUW1W6EdnX7nV--LHWvKEoJztL8",
         authDomain: "drrol-chat.firebaseapp.com",
@@ -591,9 +615,10 @@
     const db = getDatabase(app);
 
     let cronicaActual = localStorage.getItem('vtm-active-chronicle') || null;
-    let canalActivo = 'general'; // 'general' o 'privado'
+    let canalActivo = 'general';
     let nombreNarradorActual = null;
-    let receptorPrivadoST = null; // Jugador seleccionado por el ST para los susurros
+    let receptorPrivadoST = null;
+    let hayMensajesNuevosPrivados = false;
 
     window.cambiarCanal = function(canal) {
         canalActivo = canal;
@@ -602,6 +627,7 @@
         const boxGen = document.getElementById('generalMessages');
         const boxPriv = document.getElementById('privateMessages');
         const stSelectBox = document.getElementById('stSelectReceiverBox');
+        const dot = document.getElementById('notificationDot');
 
         if (canal === 'general') {
             btnGen.classList.add('active');
@@ -615,7 +641,10 @@
             boxPriv.style.display = 'flex';
             boxGen.style.display = 'none';
             
-            // Si el usuario actual es Narrador, mostrar el selector de jugador
+            // Ocultar notificación al entrar a la pestaña privada
+            hayMensajesNuevosPrivados = false;
+            if (dot) dot.style.display = 'none';
+
             const identidad = localStorage.getItem(`vtm-active-character-${cronicaActual}`);
             if (identidad && identidad.toLowerCase() === (nombreNarradorActual || '').toLowerCase()) {
                 if (stSelectBox) stSelectBox.style.display = 'block';
@@ -751,7 +780,6 @@
 
     window.ejecutarEliminarCronica = function() {
         if (!cronicaActual) return;
-
         const cronicaAEliminar = cronicaActual;
         const grupoRef = ref(db, `grupos/${cronicaAEliminar}`);
 
@@ -786,10 +814,10 @@
 
             const personajes = snapshot.val();
             const identidadActiva = localStorage.getItem(`vtm-active-character-${grupo}`);
-
             let esNarradorActual = false;
 
             Object.entries(personajes).forEach(([key, p]) => {
+                // 1. Limpieza automática de comillas con .replace(/"/g, '')
                 const nombreLimpio = p.nombre ? String(p.nombre).replace(/"/g, '') : '';
                 const clanLimpio = p.clan ? String(p.clan).replace(/"/g, '') : 'Vástago';
                 const passLimpa = p.password ? String(p.password).replace(/"/g, '') : '';
@@ -799,7 +827,6 @@
                 if (esST) {
                     nombreNarradorActual = nombreLimpio;
                 } else if (selectReceiver) {
-                    // Rellenar desplegable del ST con los jugadores
                     const opt = document.createElement('option');
                     opt.value = nombreLimpio;
                     opt.textContent = `${nombreLimpio} (${clanLimpio})`;
@@ -811,18 +838,19 @@
                     esNarradorActual = true;
                 }
 
+                // 2. Panel lateral dividido: Nombre clicable (izquierda) + Candado login (derecha)
                 const item = document.createElement('div');
                 item.className = 'character-item';
                 if (identidadActiva === nombreLimpio) item.classList.add('active');
                 
-                item.onclick = () => solicitarCodigo(nombreLimpio, passLimpa, grupo);
-                
                 item.innerHTML = `
-                    <div>
+                    <div class="character-info-left" onclick="clicNombrePersonaje('${nombreLimpio}', ${esST})">
                         <div class="character-name">${nombreLimpio}</div>
                         <div class="character-clan">${clanLimpio}</div>
                     </div>
-                    <i class="fa-solid ${identidadActiva === nombreLimpio ? 'fa-unlock' : 'fa-lock'}" style="color: var(--accent-gold); font-size: 0.8rem;"></i>
+                    <div class="character-lock-right" onclick="solicitarCodigo('${nombreLimpio}', '${passLimpa}', '${grupo}')" title="Identificarse con contraseña">
+                        <i class="fa-solid ${identidadActiva === nombreLimpio ? 'fa-unlock' : 'fa-lock'}" style="color: var(--accent-gold); font-size: 0.9rem;"></i>
+                    </div>
                 `;
                 listContainer.appendChild(item);
             });
@@ -832,7 +860,6 @@
                 stPanel.style.display = esNarradorActual ? 'block' : 'none';
             }
 
-            // Mostrar u ocultar selector si está en pestaña privada
             const stSelectBox = document.getElementById('stSelectReceiverBox');
             if (stSelectBox) {
                 stSelectBox.style.display = (esNarradorActual && canalActivo === 'privado') ? 'block' : 'none';
@@ -894,9 +921,9 @@
 
             const data = snapshot.val();
             const esST = identidadActual.toLowerCase() === (nombreNarradorActual || '').toLowerCase();
+            let hayNuevos = false;
 
             Object.values(data).forEach(msg => {
-                // Si es ST, filtrar por el jugador seleccionado en el desplegable. Si es jugador, filtrar por su propio nombre.
                 let mostrar = false;
                 if (esST) {
                     if (receptorPrivadoST && (msg.remitente === receptorPrivadoST || msg.destinatario === receptorPrivadoST)) {
@@ -909,6 +936,11 @@
                 }
 
                 if (!mostrar) return;
+
+                // Detectar si el mensaje es reciente y dirigido al usuario actual estando fuera de la pestaña
+                if (msg.destinatario === identidadActual && canalActivo !== 'privado' && (Date.now() - msg.timestamp < 10000)) {
+                    hayNuevos = true;
+                }
 
                 let fechaHoraFormateada = '';
                 if (msg.timestamp) {
@@ -932,15 +964,36 @@
                 container.appendChild(msgDiv);
             });
 
+            if (hayNuevos) {
+                hayMensajesNuevosPrivados = true;
+                const dot = document.getElementById('notificationDot');
+                if (dot) dot.style.display = 'block';
+            }
+
             if (container.innerHTML === '') {
                 container.innerHTML = '<p style="color: var(--text-muted); text-align: center; font-style: italic; margin-top: 20px;">Selecciona un interlocutor para ver los secretos.</p>';
             }
         });
     }
 
+    // Acción al hacer clic en el nombre (columna izquierda de la tarjeta)
+    window.clicNombrePersonaje = function(nombreClicked, esSTClicked) {
+        const identidadActual = localStorage.getItem(`vtm-active-character-${cronicaActual}`);
+        const esSTActual = identidadActual && identidadActual.toLowerCase() === (nombreNarradorActual || '').toLowerCase();
+
+        cambiarCanal('privado');
+
+        if (esSTActual && !esSTClicked) {
+            // Si el usuario actual es Narrador, selecciona automáticamente al jugador en el desplegable
+            receptorPrivadoST = nombreClicked;
+            const selectReceiver = document.getElementById('stReceiverSelect');
+            if (selectReceiver) selectReceiver.value = nombreClicked;
+            inicializarChatCronica(cronicaActual);
+        }
+    };
+
     window.actualizarDestinatarioST = function() {
         receptorPrivadoST = document.getElementById('stReceiverSelect').value;
-        // Forzar actualización recargando vista si es necesario o disparando el onValue
         inicializarChatCronica(cronicaActual);
     };
 
@@ -1024,7 +1077,6 @@
                 alert("No se pudo enviar el mensaje.");
             });
         } else {
-            // Canal Privado / Susurros
             const esST = autorActual.toLowerCase() === (nombreNarradorActual || '').toLowerCase();
             let destinatario = nombreNarradorActual;
 
@@ -1066,7 +1118,7 @@
             badge.textContent = '(Sin identificar)';
             badge.style.color = 'var(--accent-crimson)';
             inputMsg.placeholder = 'Identifícate a la derecha para poder hablar...';
-            infoDiv.textContent = 'Haz clic sobre tu nombre e introduce tu contraseña.';
+            infoDiv.textContent = 'Haz clic sobre tu nombre o candado e introduce tu contraseña.';
         }
     }
 
