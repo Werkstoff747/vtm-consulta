@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+html_content = """<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -202,7 +202,7 @@
         .page-sheet {
             width: 210mm;
             min-height: 297mm;
-            padding: 15mm;
+            padding: 12mm 15mm;
             margin: 0 auto 30px auto;
             background: white;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
@@ -215,53 +215,44 @@
 
         .page-sheet:last-child { margin-bottom: 0; }
 
-        /* CABECERA DE DISCIPLINA DENTRO DE LA HOJA */
+        /* BLOQUE DE DISCIPLINA DENTRO DE LA HOJA */
+        .discipline-block {
+            margin-bottom: 15px;
+        }
+        .discipline-block:last-child {
+            margin-bottom: 0;
+        }
+
+        /* CABECERA DE DISCIPLINA (Línea superior/inferior eliminada) */
         .sheet-discipline-header {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             letter-spacing: 1.5px;
             text-transform: uppercase;
             color: var(--accent-red);
-            border-bottom: 2px solid var(--accent-gold);
-            padding-bottom: 6px;
-            margin-top: 15px;
-            margin-bottom: 12px;
+            border: none;
+            padding-bottom: 4px;
+            margin-top: 10px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
-        .sheet-discipline-header:first-child { margin-top: 0; }
-        .discipline-icon { width: 28px; height: 28px; object-fit: contain; }
+        .sheet-discipline-header:first-child {
+            margin-top: 0;
+        }
+        .discipline-icon { width: 26px; height: 26px; object-fit: contain; }
 
-        /* REJILLAS DINÁMICAS SEGÚN CANTIDAD DE CARTAS (1 A 4) */
-        .sheet-grid {
+        /* REJILLAS AISLADAS POR BLOQUE DE DISCIPLINA */
+        .discipline-cards-grid {
             display: grid;
-            gap: 15px;
-            flex-grow: 1;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
-
-        /* 1 carta: Ocupa gran espacio protagonista */
-        .sheet-grid.layout-1 {
+        .discipline-cards-grid.count-1 {
             grid-template-columns: 1fr;
-            grid-template-rows: 1fr;
-            max-width: 120mm;
-            margin: 0 auto;
-            align-self: center;
-        }
-        .sheet-grid.layout-1 .card { font-size: 1.05rem; padding: 25px; }
-
-        /* 2 cartas: En paralelo equilibradas */
-        .sheet-grid.layout-2 {
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: 1fr;
-            align-items: center;
-        }
-
-        /* 3 o 4 cartas: Cuadrícula simétrica 2x2 */
-        .sheet-grid.layout-3, .sheet-grid.layout-4 {
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, 1fr);
+            max-width: 100mm;
         }
 
         /* TARJETA INDIVIDUAL */
@@ -269,14 +260,13 @@
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 8px;
-            padding: 16px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            height: 100%;
         }
 
         .card::before {
@@ -287,21 +277,21 @@
             background-color: var(--accent-red);
         }
 
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
-        .card-title { font-weight: 700; font-size: 1.25rem; font-variant: small-caps; color: var(--card-title-color); line-height: 1.1; }
-        .card-level-badge { display: inline-block; background-color: #5c101c; color: #ffffff; font-weight: 700; font-size: 0.8rem; padding: 2px 6px; border-radius: 4px; border: 1px solid #8b0000; margin-bottom: 6px; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
+        .card-title { font-weight: 700; font-size: 1.15rem; font-variant: small-caps; color: var(--card-title-color); line-height: 1.1; }
+        .card-level-badge { display: inline-block; background-color: #5c101c; color: #ffffff; font-weight: 700; font-size: 0.78rem; padding: 2px 6px; border-radius: 4px; border: 1px solid #8b0000; margin-bottom: 4px; }
         
-        .card-page-badge { font-size: 0.7rem; background-color: rgba(139, 0, 0, 0.08); color: var(--accent-red); padding: 3px 6px; border-radius: 4px; border: 1px solid rgba(139, 0, 0, 0.25); text-align: right; line-height: 1.2; flex-shrink: 0; }
-        .card-page-badge .book-name { font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
-        .card-page-badge .page-num { display: block; opacity: 0.8; font-size: 0.65rem; }
+        .card-page-badge { font-size: 0.68rem; background-color: rgba(139, 0, 0, 0.08); color: var(--accent-red); padding: 3px 6px; border-radius: 4px; border: 1px solid rgba(139, 0, 0, 0.25); text-align: right; line-height: 1.2; flex-shrink: 0; }
+        .card-page-badge .book-name { font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
+        .card-page-badge .page-num { display: block; opacity: 0.8; font-size: 0.6rem; }
 
-        .card-meta { font-size: 0.8rem; color: var(--accent-gold); margin-bottom: 10px; font-weight: 600; }
-        .card-roll { font-size: 0.85rem; color: var(--text-main); background-color: var(--card-roll-bg); padding: 6px 10px; border-radius: 6px; border-left: 3px solid var(--accent-red); margin-bottom: 10px; font-weight: 500; }
-        .card-desc { font-size: 0.88rem; color: var(--text-main); flex-grow: 1; }
-        .card-notes { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-top: 8px; padding: 6px 8px; background-color: var(--card-notes-bg); border-radius: 6px; border-top: 1px dashed var(--card-border); }
+        .card-meta { font-size: 0.78rem; color: var(--accent-gold); margin-bottom: 8px; font-weight: 600; }
+        .card-roll { font-size: 0.82rem; color: var(--text-main); background-color: var(--card-roll-bg); padding: 5px 8px; border-radius: 6px; border-left: 3px solid var(--accent-red); margin-bottom: 8px; font-weight: 500; }
+        .card-desc { font-size: 0.85rem; color: var(--text-main); flex-grow: 1; }
+        .card-notes { font-size: 0.78rem; color: var(--text-muted); font-style: italic; margin-top: 6px; padding: 5px 6px; background-color: var(--card-notes-bg); border-radius: 6px; border-top: 1px dashed var(--card-border); }
 
-        .card-tags { margin-top: 12px; display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
-        .badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background-color: var(--tag-bg); color: var(--text-muted); border: 1px solid #b8b5ae; }
+        .card-tags { margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+        .badge { font-size: 0.68rem; padding: 2px 6px; border-radius: 4px; background-color: var(--tag-bg); color: var(--text-muted); border: 1px solid #b8b5ae; }
         .badge-ceremonia { background-color: rgba(107, 33, 168, 0.08); color: #6b21a8; border-color: rgba(107, 33, 168, 0.25); }
         .badge-ritual { background-color: rgba(153, 27, 27, 0.08); color: #991b1b; border-color: rgba(153, 27, 27, 0.25); }
         .badge-duration { background-color: rgba(197, 160, 89, 0.15); border-color: rgba(197, 160, 89, 0.3); color: var(--accent-gold); }
@@ -450,7 +440,6 @@
                 poblarFiltrosSelects();
                 filtrarYConstruirLista();
 
-                // Seleccionar todos por defecto al cargar
                 datosGlobales.forEach(p => poderesSeleccionados.add(p.nombre));
                 renderizarPaginasInteligentes();
             }
@@ -614,7 +603,6 @@
         const container = document.getElementById('cardsContainer');
         container.innerHTML = '';
 
-        // Filtrar los poderes activos ordenados por disciplina y nivel
         const poderesActivos = datosGlobales.filter(item => poderesSeleccionados.has(item.nombre));
         poderesActivos.sort((a, b) => {
             if (a.disciplina !== b.disciplina) return a.disciplina.localeCompare(b.disciplina);
@@ -626,36 +614,42 @@
             return;
         }
 
-        // Dividir en bloques de máximo 4 cartas por página A4
         const chunkSize = 4;
         for (let i = 0; i < poderesActivos.length; i += chunkSize) {
             const chunk = poderesActivos.slice(i, i + chunkSize);
             const pageSheet = document.createElement('div');
             pageSheet.className = 'page-sheet';
 
-            // Crear una rejilla inteligente según el número exacto de cartas en este folio (1 a 4)
-            const sheetGrid = document.createElement('div');
-            sheetGrid.className = `sheet-grid layout-${chunk.length}`;
-
-            let disciplinaActualEnHoja = '';
-
+            const gruposPorDisciplina = {};
             chunk.forEach(item => {
-                // Si la disciplina cambia dentro de esta misma hoja, insertar cabecera de disciplina integrada
-                if (item.disciplina !== disciplinaActualEnHoja) {
-                    disciplinaActualEnHoja = item.disciplina;
-                    const iconoArchivo = ICONOS_MAP[disciplinaActualEnHoja];
-                    let imgHTML = iconoArchivo ? `<img src="./iconos/${iconoArchivo}" class="discipline-icon" onerror="this.style.display='none'">` : '';
-                    
-                    const headerDisc = document.createElement('div');
-                    headerDisc.className = 'sheet-discipline-header';
-                    headerDisc.innerHTML = `${imgHTML}<span>${disciplinaActualEnHoja}</span>`;
-                    pageSheet.appendChild(headerDisc);
-                }
-
-                sheetGrid.appendChild(crearElementoTarjeta(item));
+                const disc = item.disciplina || 'General';
+                if (!gruposPorDisciplina[disc]) gruposPorDisciplina[disc] = [];
+                gruposPorDisciplina[disc].push(item);
             });
 
-            pageSheet.appendChild(sheetGrid);
+            Object.keys(gruposPorDisciplina).forEach(disc => {
+                const discBlock = document.createElement('div');
+                discBlock.className = 'discipline-block';
+
+                const iconoArchivo = ICONOS_MAP[disc];
+                let imgHTML = iconoArchivo ? `<img src="./iconos/${iconoArchivo}" class="discipline-icon" onerror="this.style.display='none'">` : '';
+                
+                const headerDisc = document.createElement('div');
+                headerDisc.className = 'sheet-discipline-header';
+                headerDisc.innerHTML = `${imgHTML}<span>${disc}</span>`;
+                discBlock.appendChild(headerDisc);
+
+                const cardsGrid = document.createElement('div');
+                cardsGrid.className = `discipline-cards-grid count-${gruposPorDisciplina[disc].length}`;
+
+                gruposPorDisciplina[disc].forEach(item => {
+                    cardsGrid.appendChild(crearElementoTarjeta(item));
+                });
+
+                discBlock.appendChild(cardsGrid);
+                pageSheet.appendChild(discBlock);
+            });
+
             container.appendChild(pageSheet);
         }
 
@@ -665,3 +659,9 @@
 
 </body>
 </html>
+"""
+
+with open("disci_mesa.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print("Archivo disci_mesa.html actualizado correctamente.")
