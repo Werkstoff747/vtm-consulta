@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compendio de Disciplinas V5 - Tarjetas de Mesa</title>
+    <title>Compendio de Disciplinas V5 - Tarjetas de Mesa Inteligentes</title>
 
     <!-- Google Tag Manager -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0REGNEJC1G"></script>
@@ -18,7 +18,7 @@
     <!-- FAVICON -->
     <link rel="icon" type="image/png" href="./iconos/drRol.png">
     
-    <!-- FUENTES OFICIALES V5 (Cinzel y Segoe UI) -->
+    <!-- FUENTES OFICIALES V5 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
@@ -27,9 +27,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
-        /* =========================================================
-            ESTILOS DE MESA / IMPRESIÓN OPTIMIZADA (FONDO BLANCO)
-           ========================================================= */
         :root {
             --bg-color: #f4f4f6;
             --card-bg: #ffffff;
@@ -69,7 +66,7 @@
             margin: 0 auto;
         }
 
-        /* CABECERA */
+        /* CABECERA WEB */
         header {
             position: relative;
             display: flex;
@@ -93,18 +90,8 @@
             max-width: 100%;
         }
 
-        .header-ank-logo {
-            height: 55px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .header-main-logo {
-            height: 95px;
-            max-width: 85vw;
-            width: auto;
-            object-fit: contain;
-        }
+        .header-ank-logo { height: 55px; width: auto; object-fit: contain; }
+        .header-main-logo { height: 95px; max-width: 85vw; width: auto; object-fit: contain; }
 
         h1.cabecera-principal {
             font-family: 'Cinzel', serif;
@@ -114,8 +101,6 @@
             font-variant: small-caps;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 0px;
-            line-height: 1.15;
         }
 
         /* PANEL DE CONTROLES (NO IMPRIMIBLE) */
@@ -136,11 +121,7 @@
             margin-bottom: 15px;
         }
 
-        .search-box {
-            flex: 2;
-            min-width: 240px;
-        }
-
+        .search-box { flex: 2; min-width: 240px; }
         .search-box input, .source-select, .filter-select {
             width: 100%;
             padding: 10px 15px;
@@ -150,11 +131,6 @@
             color: var(--text-main);
             font-size: 1rem;
             outline: none;
-            transition: border-color 0.2s;
-        }
-
-        .search-box input:focus, .source-select:focus, .filter-select:focus {
-            border-color: var(--accent-crimson);
         }
 
         .filters-grid {
@@ -185,21 +161,9 @@
             font-size: 0.85rem;
             transition: all 0.2s ease;
         }
-
-        button.btn-action:hover {
-            background-color: var(--accent-crimson);
-        }
-
-        button.btn-secondary {
-            background-color: var(--tag-bg);
-            color: var(--text-main);
-            border-color: var(--card-border);
-        }
-
-        button.btn-secondary:hover {
-            background-color: var(--accent-red);
-            color: #fff;
-        }
+        button.btn-action:hover { background-color: var(--accent-crimson); }
+        button.btn-secondary { background-color: var(--tag-bg); color: var(--text-main); border-color: var(--card-border); }
+        button.btn-secondary:hover { background-color: var(--accent-red); color: #fff; }
 
         /* LISTA DE SELECCIÓN A LA CARTA */
         .builder-container {
@@ -225,278 +189,142 @@
             cursor: pointer;
             background: #fafaf9;
             border: 1px solid #eee;
-            transition: all 0.15s;
+        }
+        .builder-item:hover { background: rgba(197, 160, 89, 0.1); border-color: rgba(197, 160, 89, 0.4); }
+        .builder-item input[type="checkbox"] { cursor: pointer; accent-color: var(--accent-red); width: 18px; height: 18px; margin-right: 10px; }
+        .builder-badge { font-size: 0.75rem; background: var(--accent-red); color: #fff; padding: 2px 8px; border-radius: 4px; font-family: 'Cinzel', serif; }
+
+        .results-counter { font-size: 0.95rem; color: var(--accent-gold); margin-bottom: 20px; font-weight: 600; }
+
+        /* =========================================================
+           MAQUETACIÓN DE PÁGINAS A4 INTELIGENTES (MÁX. 4 TARJETAS)
+           ========================================================= */
+        .page-sheet {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm;
+            margin: 0 auto 30px auto;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            page-break-after: always;
+            break-after: page;
         }
 
-        .builder-item:hover {
-            background: rgba(197, 160, 89, 0.1);
-            border-color: rgba(197, 160, 89, 0.4);
-        }
+        .page-sheet:last-child { margin-bottom: 0; }
 
-        .builder-item input[type="checkbox"] {
-            cursor: pointer;
-            accent-color: var(--accent-red);
-            width: 18px;
-            height: 18px;
-            margin-right: 10px;
-        }
-
-        .builder-badge {
-            font-size: 0.75rem;
-            background: var(--accent-red);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-family: 'Cinzel', serif;
-        }
-
-        .results-counter {
-            font-size: 0.95rem;
-            color: var(--accent-gold);
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-
-        /* SECCIONES Y TARJETAS ESTILO "DISCIPLINAS.HTML" (ANCHAS) */
-        .discipline-section {
-            margin-bottom: 40px;
-        }
-
-        .section-title {
+        /* CABECERA DE DISCIPLINA DENTRO DE LA HOJA */
+        .sheet-discipline-header {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.6rem;
-            letter-spacing: 2px;
+            font-size: 1.25rem;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
             color: var(--accent-red);
             border-bottom: 2px solid var(--accent-gold);
-            padding-bottom: 8px;
-            margin-bottom: 20px;
+            padding-bottom: 6px;
+            margin-top: 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
+        .sheet-discipline-header:first-child { margin-top: 0; }
+        .discipline-icon { width: 28px; height: 28px; object-fit: contain; }
 
-        .discipline-icon {
-            width: 36px;
-            height: 36px;
-            object-fit: contain;
-        }
-
-        .grid {
+        /* REJILLAS DINÁMICAS SEGÚN CANTIDAD DE CARTAS (1 A 4) */
+        .sheet-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 20px;
+            gap: 15px;
+            flex-grow: 1;
         }
 
+        /* 1 carta: Ocupa gran espacio protagonista */
+        .sheet-grid.layout-1 {
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr;
+            max-width: 120mm;
+            margin: 0 auto;
+            align-self: center;
+        }
+        .sheet-grid.layout-1 .card { font-size: 1.05rem; padding: 25px; }
+
+        /* 2 cartas: En paralelo equilibradas */
+        .sheet-grid.layout-2 {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: 1fr;
+            align-items: center;
+        }
+
+        /* 3 o 4 cartas: Cuadrícula simétrica 2x2 */
+        .sheet-grid.layout-3, .sheet-grid.layout-4 {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+        }
+
+        /* TARJETA INDIVIDUAL */
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 8px;
-            padding: 20px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            height: 100%;
         }
 
         .card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
             background-color: var(--accent-red);
         }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
-            gap: 10px;
-        }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
+        .card-title { font-weight: 700; font-size: 1.25rem; font-variant: small-caps; color: var(--card-title-color); line-height: 1.1; }
+        .card-level-badge { display: inline-block; background-color: #5c101c; color: #ffffff; font-weight: 700; font-size: 0.8rem; padding: 2px 6px; border-radius: 4px; border: 1px solid #8b0000; margin-bottom: 6px; }
+        
+        .card-page-badge { font-size: 0.7rem; background-color: rgba(139, 0, 0, 0.08); color: var(--accent-red); padding: 3px 6px; border-radius: 4px; border: 1px solid rgba(139, 0, 0, 0.25); text-align: right; line-height: 1.2; flex-shrink: 0; }
+        .card-page-badge .book-name { font-weight: 700; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+        .card-page-badge .page-num { display: block; opacity: 0.8; font-size: 0.65rem; }
 
-        .card-title {
-            font-weight: 700;
-            font-size: 1.4rem;
-            font-variant: small-caps;
-            color: var(--card-title-color);
-            line-height: 1.15;
-            flex-grow: 1;
-        }
+        .card-meta { font-size: 0.8rem; color: var(--accent-gold); margin-bottom: 10px; font-weight: 600; }
+        .card-roll { font-size: 0.85rem; color: var(--text-main); background-color: var(--card-roll-bg); padding: 6px 10px; border-radius: 6px; border-left: 3px solid var(--accent-red); margin-bottom: 10px; font-weight: 500; }
+        .card-desc { font-size: 0.88rem; color: var(--text-main); flex-grow: 1; }
+        .card-notes { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-top: 8px; padding: 6px 8px; background-color: var(--card-notes-bg); border-radius: 6px; border-top: 1px dashed var(--card-border); }
 
-        .card-level-badge {
-            display: inline-block;
-            background-color: #5c101c;
-            color: #ffffff;
-            font-weight: 700;
-            font-size: 0.85rem;
-            padding: 3px 8px;
-            border-radius: 4px;
-            border: 1px solid #8b0000;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
+        .card-tags { margin-top: 12px; display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+        .badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background-color: var(--tag-bg); color: var(--text-muted); border: 1px solid #b8b5ae; }
+        .badge-ceremonia { background-color: rgba(107, 33, 168, 0.08); color: #6b21a8; border-color: rgba(107, 33, 168, 0.25); }
+        .badge-ritual { background-color: rgba(153, 27, 27, 0.08); color: #991b1b; border-color: rgba(153, 27, 27, 0.25); }
+        .badge-duration { background-color: rgba(197, 160, 89, 0.15); border-color: rgba(197, 160, 89, 0.3); color: var(--accent-gold); }
 
-        .card-page-badge {
-            font-size: 0.75rem;
-            background-color: rgba(139, 0, 0, 0.08);
-            color: var(--accent-red);
-            padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid rgba(139, 0, 0, 0.25);
-            text-align: right;
-            line-height: 1.2;
-            flex-shrink: 0;
-            max-width: 140px;
-        }
-
-        .card-page-badge .book-name {
-            font-weight: 700;
-            display: block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-page-badge .page-num {
-            display: block;
-            opacity: 0.8;
-            font-size: 0.7rem;
-        }
-
-        .card-meta {
-            font-size: 0.85rem;
-            color: var(--accent-gold);
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-        .card-roll {
-            font-size: 0.9rem;
-            color: var(--text-main);
-            background-color: var(--card-roll-bg);
-            padding: 8px 12px;
-            border-radius: 6px;
-            border-left: 4px solid var(--accent-red);
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-
-        .card-desc {
-            font-size: 0.93rem;
-            color: var(--text-main);
-            flex-grow: 1;
-        }
-
-        .card-notes {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-style: italic;
-            margin-top: 10px;
-            padding: 8px 10px;
-            background-color: var(--card-notes-bg);
-            border-radius: 6px;
-            border-top: 1px dashed var(--card-border);
-        }
-
-        .card-tags {
-            margin-top: 15px;
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .badge {
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            border-radius: 4px;
-            background-color: var(--tag-bg);
-            color: var(--text-muted);
-            border: 1px solid #b8b5ae;
-        }
-
-        .badge-ceremonia {
-            background-color: rgba(107, 33, 168, 0.08);
-            color: #6b21a8;
-            border-color: rgba(107, 33, 168, 0.25);
-        }
-
-        .badge-ritual {
-            background-color: rgba(153, 27, 27, 0.08);
-            color: #991b1b;
-            border-color: rgba(153, 27, 27, 0.25);
-        }
-
-        .badge-duration {
-            background-color: rgba(197, 160, 89, 0.15);
-            border-color: rgba(197, 160, 89, 0.3);
-            color: var(--accent-gold);
-        }
-
-        #loading {
-            text-align: center;
-            font-size: 1.1rem;
-            color: var(--accent-gold);
-            padding: 40px;
-            font-family: 'Cinzel', serif;
-        }
+        #loading { text-align: center; font-size: 1.1rem; color: var(--accent-gold); padding: 40px; font-family: 'Cinzel', serif; }
 
         /* BOTONES FLOTANTES */
-        .floating-btn-container {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 100;
-        }
-
-        .floating-action-btn, .scroll-top-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background-color: var(--accent-red);
-            color: #fff;
-            border: 1px solid var(--accent-crimson);
-            font-size: 1.1rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            text-decoration: none;
-            transition: transform 0.2s;
-        }
-
+        .floating-btn-container { position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
+        .floating-action-btn, .scroll-top-btn { width: 45px; height: 45px; border-radius: 50%; background-color: var(--accent-red); color: #fff; border: 1px solid var(--accent-crimson); font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); text-decoration: none; transition: transform 0.2s; }
         .scroll-top-btn { display: none; }
         .floating-action-btn:hover { transform: translateY(-3px); }
 
-        /* ESTILOS DE IMPRESIÓN */
+        /* ESTILOS DE IMPRESIÓN PURA A4 */
         @media print {
-            body {
-                background: white !important;
-                color: black !important;
-                padding: 0 !important;
-            }
-            .no-print-controls, header, .floating-btn-container {
-                display: none !important;
-            }
-            .card {
-                break-inside: avoid;
-                page-break-inside: avoid;
+            body { background: white !important; padding: 0 !important; }
+            .no-print-controls, header, .floating-btn-container { display: none !important; }
+            .page-sheet {
                 box-shadow: none !important;
-                border: 1px solid #aaa !important;
-            }
-            .grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 15px !important;
+                margin: 0 !important;
+                page-break-after: always;
+                break-after: page;
+                height: 297mm;
+                width: 210mm;
             }
         }
     </style>
@@ -514,7 +342,7 @@
         </div>
     </header>
 
-    <!-- PANEL DE CONTROL Y SELECCIÓN A LA CARTA -->
+    <!-- PANEL DE CONTROL -->
     <div class="no-print-controls">
         <div class="controls-row-top">
             <div class="search-box">
@@ -539,22 +367,21 @@
             </select>
         </div>
 
-        <!-- LISTA DE SELECCIÓN RÁPIDA (CHECKBOXES) -->
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">Selecciona los poderes que quieres incluir en tu hoja de mesa:</p>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">Selecciona los poderes que quieres incluir en tu hoja de mesa (máximo 4 por página A4):</p>
         <div class="builder-container" id="builderListContainer"></div>
 
         <div class="action-buttons-row">
             <button class="btn-action btn-secondary" onclick="seleccionarVisibles(true)">Seleccionar Visibles</button>
             <button class="btn-action btn-secondary" onclick="seleccionarVisibles(false)">Deseleccionar Visibles</button>
-            <button class="btn-action" onclick="window.print()">🖨️ Imprimir Selección Formato Mesa</button>
+            <button class="btn-action" onclick="window.print()">🖨️ Imprimir Folios A4 Inteligentes</button>
         </div>
     </div>
 
     <div id="resultsCounter" class="results-counter"></div>
     <div id="loading">Cargando disciplinas desde Google Sheets...</div>
 
-    <!-- CONTENEDOR DE TARJETAS DETALLADAS -->
-    <div id="disciplinesWrapper"></div>
+    <!-- CONTENEDOR DE PÁGINAS A4 INTELIGENTES -->
+    <div id="cardsContainer"></div>
 
     <footer>
         <div style="text-align: center; padding: 20px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--card-border); margin-top: 40px;">
@@ -591,7 +418,7 @@
     };
 
     let datosGlobales = [];
-    let poderesSeleccionados = new Set(); // Almacena los nombres de los poderes marcados
+    let poderesSeleccionados = new Set();
 
     window.addEventListener('DOMContentLoaded', () => {
         Papa.parse(CSV_URL, {
@@ -623,9 +450,9 @@
                 poblarFiltrosSelects();
                 filtrarYConstruirLista();
 
-                // Por defecto seleccionamos todos al iniciar para que se vea completo, o puedes vaciarlo si prefieres empezar limpio
+                // Seleccionar todos por defecto al cargar
                 datosGlobales.forEach(p => poderesSeleccionados.add(p.nombre));
-                renderizarTarjetasMesa();
+                renderizarPaginasInteligentes();
             }
         });
 
@@ -700,7 +527,7 @@
         } else {
             poderesSeleccionados.delete(nombrePoder);
         }
-        renderizarTarjetasMesa();
+        renderizarPaginasInteligentes();
     }
 
     function seleccionarVisibles(seleccionar) {
@@ -713,116 +540,126 @@
                 poderesSeleccionados.delete(cb.value);
             }
         });
-        renderizarTarjetasMesa();
+        renderizarPaginasInteligentes();
     }
 
-    function renderizarTarjetasMesa() {
-        const wrapper = document.getElementById('disciplinesWrapper');
-        wrapper.innerHTML = '';
+    function crearElementoTarjeta(item) {
+        const card = document.createElement('div');
+        card.className = 'card';
 
+        let metaPartes = [];
+        if (item.coste && item.coste !== '-') metaPartes.push(`Coste: ${item.coste}`);
+        if (item.amalgama && item.amalgama !== '-' && item.amalgama.toLowerCase() !== 'ninguna') metaPartes.push(`Amalgama: ${item.amalgama}`);
+        if (item.prereq && item.prereq !== '-' && item.prereq.toLowerCase() !== 'ninguno') metaPartes.push(`Req: ${item.prereq}`);
+        const metaText = metaPartes.join(' • ');
+
+        let rollHTML = '';
+        if (item.reservaDados && item.reservaDados !== '-' && item.reservaDados.toLowerCase() !== 'ninguna') {
+            let textTirada = `🎲 <strong>Tirada:</strong> ${item.reservaDados}`;
+            if (item.reservaOposicion && item.reservaOposicion !== '-' && item.reservaOposicion.toLowerCase() !== 'sin oposición') {
+                textTirada += ` <em>vs</em> ${item.reservaOposicion}`;
+            }
+            rollHTML = `<div class="card-roll">${textTirada}</div>`;
+        }
+
+        let notesHTML = '';
+        let textoNotas = [];
+        if (item.efectoRapido && item.efectoRapido !== '-' && item.efectoRapido.toLowerCase() !== 'n/a') textoNotas.push(item.efectoRapido);
+        if (item.notas && item.notas !== '-' && item.notas.toLowerCase() !== 'ninguna') textoNotas.push(item.notas);
+        if (textoNotas.length > 0) {
+            notesHTML = `<div class="card-notes">📌 ${textoNotas.join(' — ')}</div>`;
+        }
+
+        let badgeTipo = `<span class="badge">${item.categoria}</span>`;
+        if (item.categoria.toLowerCase().includes('ceremonia')) badgeTipo = `<span class="badge badge-ceremonia">${item.categoria}</span>`;
+        else if (item.categoria.toLowerCase().includes('ritual')) badgeTipo = `<span class="badge badge-ritual">${item.categoria}</span>`;
+
+        let badgeDuracion = (item.duracion && item.duracion !== '-') ? `<span class="badge badge-duration">⏳ ${item.duracion}</span>` : '';
+
+        let badgeFuenteHTML = '';
+        if (item.fuenteLibro) {
+            const pagFmt = item.fuentePag ? `pág. ${item.fuentePag}` : '';
+            badgeFuenteHTML = `
+                <div class="card-page-badge">
+                    <span class="book-name">${item.fuenteLibro}</span>
+                    ${pagFmt ? `<span class="page-num">${pagFmt}</span>` : ''}
+                </div>
+            `;
+        }
+
+        card.innerHTML = `
+            <div>
+                <div class="card-header">
+                    <div class="card-title">${item.nombre}</div>
+                    ${badgeFuenteHTML}
+                </div>
+                ${item.nombreIngles && item.nombreIngles !== '-' ? `<div style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; margin-top: -4px; margin-bottom: 6px;">(${item.nombreIngles})</div>` : ''}
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px;">
+                    ${item.nivel && item.nivel !== '-' ? `<div class="card-level-badge">Nivel ${item.nivel}</div>` : ''}
+                    ${metaText ? `<div class="card-meta" style="margin-bottom: 0;">${metaText}</div>` : ''}
+                </div>
+                ${rollHTML}
+                <div class="card-desc">${item.descripcion}</div>
+                ${notesHTML}
+            </div>
+            <div class="card-tags">
+                ${badgeTipo}
+                ${badgeDuracion}
+            </div>
+        `;
+        return card;
+    }
+
+    function renderizarPaginasInteligentes() {
+        const container = document.getElementById('cardsContainer');
+        container.innerHTML = '';
+
+        // Filtrar los poderes activos ordenados por disciplina y nivel
         const poderesActivos = datosGlobales.filter(item => poderesSeleccionados.has(item.nombre));
-
-        const agrupados = {};
-        poderesActivos.forEach(row => {
-            const disc = row.disciplina || 'Otras';
-            if (!agrupados[disc]) agrupados[disc] = [];
-            agrupados[disc].push(row);
+        poderesActivos.sort((a, b) => {
+            if (a.disciplina !== b.disciplina) return a.disciplina.localeCompare(b.disciplina);
+            return (parseInt(a.nivel) || 0) - (parseInt(b.nivel) || 0);
         });
 
-        let totalCards = 0;
+        if (poderesActivos.length === 0) {
+            document.getElementById('resultsCounter').textContent = `No hay poderes seleccionados`;
+            return;
+        }
 
-        Object.keys(agrupados).sort().forEach(disc => {
-            const sec = document.createElement('div');
-            sec.className = 'discipline-section';
+        // Dividir en bloques de máximo 4 cartas por página A4
+        const chunkSize = 4;
+        for (let i = 0; i < poderesActivos.length; i += chunkSize) {
+            const chunk = poderesActivos.slice(i, i + chunkSize);
+            const pageSheet = document.createElement('div');
+            pageSheet.className = 'page-sheet';
 
-            const iconoArchivo = ICONOS_MAP[disc];
-            let imgHTML = iconoArchivo ? `<img src="./iconos/${iconoArchivo}" class="discipline-icon" onerror="this.style.display='none'">` : '';
+            // Crear una rejilla inteligente según el número exacto de cartas en este folio (1 a 4)
+            const sheetGrid = document.createElement('div');
+            sheetGrid.className = `sheet-grid layout-${chunk.length}`;
 
-            sec.innerHTML = `
-                <h2 class="section-title">
-                    ${imgHTML}
-                    <span>${disc}</span>
-                </h2>
-                <div class="grid"></div>
-            `;
+            let disciplinaActualEnHoja = '';
 
-            const grid = sec.querySelector('.grid');
-            agrupados[disc].sort((a, b) => (parseInt(a.nivel) || 0) - (parseInt(b.nivel) || 0));
-
-            agrupados[disc].forEach(item => {
-                totalCards++;
-                const card = document.createElement('div');
-                card.className = 'card';
-
-                let metaPartes = [];
-                if (item.coste && item.coste !== '-') metaPartes.push(`Coste: ${item.coste}`);
-                if (item.amalgama && item.amalgama !== '-' && item.amalgama.toLowerCase() !== 'ninguna') metaPartes.push(`Amalgama: ${item.amalgama}`);
-                if (item.prereq && item.prereq !== '-' && item.prereq.toLowerCase() !== 'ninguno') metaPartes.push(`Req: ${item.prereq}`);
-                const metaText = metaPartes.join(' • ');
-
-                let rollHTML = '';
-                if (item.reservaDados && item.reservaDados !== '-' && item.reservaDados.toLowerCase() !== 'ninguna') {
-                    let textTirada = `🎲 <strong>Tirada:</strong> ${item.reservaDados}`;
-                    if (item.reservaOposicion && item.reservaOposicion !== '-' && item.reservaOposicion.toLowerCase() !== 'sin oposición') {
-                        textTirada += ` <em>vs</em> ${item.reservaOposicion}`;
-                    }
-                    rollHTML = `<div class="card-roll">${textTirada}</div>`;
+            chunk.forEach(item => {
+                // Si la disciplina cambia dentro de esta misma hoja, insertar cabecera de disciplina integrada
+                if (item.disciplina !== disciplinaActualEnHoja) {
+                    disciplinaActualEnHoja = item.disciplina;
+                    const iconoArchivo = ICONOS_MAP[disciplinaActualEnHoja];
+                    let imgHTML = iconoArchivo ? `<img src="./iconos/${iconoArchivo}" class="discipline-icon" onerror="this.style.display='none'">` : '';
+                    
+                    const headerDisc = document.createElement('div');
+                    headerDisc.className = 'sheet-discipline-header';
+                    headerDisc.innerHTML = `${imgHTML}<span>${disciplinaActualEnHoja}</span>`;
+                    pageSheet.appendChild(headerDisc);
                 }
 
-                let notesHTML = '';
-                let textoNotas = [];
-                if (item.efectoRapido && item.efectoRapido !== '-' && item.efectoRapido.toLowerCase() !== 'n/a') textoNotas.push(item.efectoRapido);
-                if (item.notas && item.notas !== '-' && item.notas.toLowerCase() !== 'ninguna') textoNotas.push(item.notas);
-                if (textoNotas.length > 0) {
-                    notesHTML = `<div class="card-notes">📌 ${textoNotas.join(' — ')}</div>`;
-                }
-
-                let badgeTipo = `<span class="badge">${item.categoria}</span>`;
-                if (item.categoria.toLowerCase().includes('ceremonia')) badgeTipo = `<span class="badge badge-ceremonia">${item.categoria}</span>`;
-                else if (item.categoria.toLowerCase().includes('ritual')) badgeTipo = `<span class="badge badge-ritual">${item.categoria}</span>`;
-
-                let badgeDuracion = (item.duracion && item.duracion !== '-') ? `<span class="badge badge-duration">⏳ ${item.duracion}</span>` : '';
-
-                let badgeFuenteHTML = '';
-                if (item.fuenteLibro) {
-                    const pagFmt = item.fuentePag ? `pág. ${item.fuentePag}` : '';
-                    badgeFuenteHTML = `
-                        <div class="card-page-badge">
-                            <span class="book-name">${item.fuenteLibro}</span>
-                            ${pagFmt ? `<span class="page-num">${pagFmt}</span>` : ''}
-                        </div>
-                    `;
-                }
-
-                card.innerHTML = `
-                    <div>
-                        <div class="card-header">
-                            <div class="card-title">${item.nombre}</div>
-                            ${badgeFuenteHTML}
-                        </div>
-                        ${item.nombreIngles && item.nombreIngles !== '-' ? `<div style="font-size: 0.95rem; color: var(--text-muted); font-style: italic; margin-top: -6px; margin-bottom: 8px;">(${item.nombreIngles})</div>` : ''}
-                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;">
-                            ${item.nivel && item.nivel !== '-' ? `<div class="card-level-badge">Nivel ${item.nivel}</div>` : ''}
-                            ${metaText ? `<div class="card-meta" style="margin-bottom: 0;">${metaText}</div>` : ''}
-                        </div>
-                        ${rollHTML}
-                        <div class="card-desc">${item.descripcion}</div>
-                        ${notesHTML}
-                    </div>
-                    <div class="card-tags">
-                        ${badgeTipo}
-                        ${badgeDuracion}
-                        <span class="badge">${disc}</span>
-                    </div>
-                `;
-
-                grid.appendChild(card);
+                sheetGrid.appendChild(crearElementoTarjeta(item));
             });
 
-            wrapper.appendChild(sec);
-        });
+            pageSheet.appendChild(sheetGrid);
+            container.appendChild(pageSheet);
+        }
 
-        document.getElementById('resultsCounter').textContent = `Mostrando ${totalCards} poder(es) seleccionados para tu sesión o personaje`;
+        document.getElementById('resultsCounter').textContent = `Mostrando ${poderesActivos.length} poder(es) distribuidos inteligentemente en folios A4 (máx. 4 por página)`;
     }
 </script>
 
