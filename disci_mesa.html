@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compendio de Disciplinas V5 - Tarjetas de Mesa</title>
+
+    <!-- Google Tag Manager -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0REGNEJC1G"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-0REGNEJC1G');
+    </script>
+    <!-- End Google Tag Manager -->
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="./iconos/drRol.png">
+    
+    <!-- FUENTES OFICIALES V5 (Cinzel y Segoe UI) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- Librería PapaParse -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+    <style>
+        /* =========================================================
+            ESTILOS DE MESA / IMPRESIÓN OPTIMIZADA (FONDO BLANCO)
+           ========================================================= */
+        :root {
+            --bg-color: #f4f4f6;
+            --card-bg: #ffffff;
+            --card-border: #d1d1d6;
+            --accent-red: #8b0000;
+            --accent-crimson: #c92a2a;
+            --accent-gold: #8d6722;
+            --text-main: #1f1f22;
+            --text-muted: #555459;
+            --tag-bg: #f2f0eb;
+            --input-bg: #ffffff;
+            --header-bg: #2b0408;
+            --header-border: #7a0000;
+            --card-title-color: #111115;
+            --card-roll-bg: #f5f4f0;
+            --card-notes-bg: #f9f8f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important; 
+            print-color-adjust: exact !important;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* CABECERA */
+        header {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 20px 20px 20px;
+            border-bottom: 2px solid var(--header-border);
+            margin-bottom: 25px;
+            background: var(--header-bg);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .header-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 12px;
+            max-width: 100%;
+        }
+
+        .header-ank-logo {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-main-logo {
+            height: 95px;
+            max-width: 85vw;
+            width: auto;
+            object-fit: contain;
+        }
+
+        h1.cabecera-principal {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--accent-gold);
+            font-variant: small-caps;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0px;
+            line-height: 1.15;
+        }
+
+        /* PANEL DE CONTROLES (NO IMPRIMIBLE) */
+        .no-print-controls {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .controls-row-top {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .search-box {
+            flex: 2;
+            min-width: 240px;
+        }
+
+        .search-box input, .source-select, .filter-select {
+            width: 100%;
+            padding: 10px 15px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus, .source-select:focus, .filter-select:focus {
+            border-color: var(--accent-crimson);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons-row {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            border-top: 1px dashed var(--card-border);
+            padding-top: 15px;
+        }
+
+        button.btn-action {
+            font-family: 'Cinzel', serif;
+            background-color: var(--accent-red);
+            color: #fff;
+            border: 1px solid var(--accent-gold);
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        button.btn-action:hover {
+            background-color: var(--accent-crimson);
+        }
+
+        button.btn-secondary {
+            background-color: var(--tag-bg);
+            color: var(--text-main);
+            border-color: var(--card-border);
+        }
+
+        button.btn-secondary:hover {
+            background-color: var(--accent-red);
+            color: #fff;
+        }
+
+        /* LISTA DE SELECCIÓN A LA CARTA */
+        .builder-container {
+            max-height: 280px;
+            overflow-y: auto;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            background: #fff;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .builder-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #fafaf9;
+            border: 1px solid #eee;
+            transition: all 0.15s;
+        }
+
+        .builder-item:hover {
+            background: rgba(197, 160, 89, 0.1);
+            border-color: rgba(197, 160, 89, 0.4);
+        }
+
+        .builder-item input[type="checkbox"] {
+            cursor: pointer;
+            accent-color: var(--accent-red);
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+        }
+
+        .builder-badge {
+            font-size: 0.75rem;
+            background: var(--accent-red);
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .results-counter {
+            font-size: 0.95rem;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* SECCIONES Y TARJETAS ESTILO "DISCIPLINAS.HTML" (ANCHAS) */
+        .discipline-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-red);
+            border-bottom: 2px solid var(--accent-gold);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .discipline-icon {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--accent-red);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            font-variant: small-caps;
+            color: var(--card-title-color);
+            line-height: 1.15;
+            flex-grow: 1;
+        }
+
+        .card-level-badge {
+            display: inline-block;
+            background-color: #5c101c;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid #8b0000;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .card-page-badge {
+            font-size: 0.75rem;
+            background-color: rgba(139, 0, 0, 0.08);
+            color: var(--accent-red);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(139, 0, 0, 0.25);
+            text-align: right;
+            line-height: 1.2;
+            flex-shrink: 0;
+            max-width: 140px;
+        }
+
+        .card-page-badge .book-name {
+            font-weight: 700;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-page-badge .page-num {
+            display: block;
+            opacity: 0.8;
+            font-size: 0.7rem;
+        }
+
+        .card-meta {
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .card-roll {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            background-color: var(--card-roll-bg);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-red);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .card-desc {
+            font-size: 0.93rem;
+            color: var(--text-main);
+            flex-grow: 1;
+        }
+
+        .card-notes {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 10px;
+            padding: 8px 10px;
+            background-color: var(--card-notes-bg);
+            border-radius: 6px;
+            border-top: 1px dashed var(--card-border);
+        }
+
+        .card-tags {
+            margin-top: 15px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background-color: var(--tag-bg);
+            color: var(--text-muted);
+            border: 1px solid #b8b5ae;
+        }
+
+        .badge-ceremonia {
+            background-color: rgba(107, 33, 168, 0.08);
+            color: #6b21a8;
+            border-color: rgba(107, 33, 168, 0.25);
+        }
+
+        .badge-ritual {
+            background-color: rgba(153, 27, 27, 0.08);
+            color: #991b1b;
+            border-color: rgba(153, 27, 27, 0.25);
+        }
+
+        .badge-duration {
+            background-color: rgba(197, 160, 89, 0.15);
+            border-color: rgba(197, 160, 89, 0.3);
+            color: var(--accent-gold);
+        }
+
+        #loading {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            padding: 40px;
+            font-family: 'Cinzel', serif;
+        }
+
+        /* BOTONES FLOTANTES */
+        .floating-btn-container {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .floating-action-btn, .scroll-top-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--accent-red);
+            color: #fff;
+            border: 1px solid var(--accent-crimson);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .scroll-top-btn { display: none; }
+        .floating-action-btn:hover { transform: translateY(-3px); }
+
+        /* ESTILOS DE IMPRESIÓN */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+            .no-print-controls, header, .floating-btn-container {
+                display: none !important;
+            }
+            .card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                box-shadow: none !important;
+                border: 1px solid #aaa !important;
+            }
+            .grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 15px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="header-logos">
+            <img src="./iconos/VTM-Ank-N.png" class="header-ank-logo" alt="Ankh VTM" onerror="this.onerror=null; this.src='iconos/VTM-Ank.png';">
+            <img src="./iconos/VTM-Logo-Largo-N.png" class="header-main-logo" alt="Vampiro La Mascarada" onerror="this.onerror=null; this.src='iconos/VTM-Logo-Largo-N.png';">
+        </div>
+        <div class="header-text">
+            <h1 class="cabecera-principal">Selección de Disciplinas para Mesa</h1>
+        </div>
+    </header>
+
+    <!-- PANEL DE CONTROL Y SELECCIÓN A LA CARTA -->
+    <div class="no-print-controls">
+        <div class="controls-row-top">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre, efecto, tirada..." oninput="filtrarYConstruirLista()">
+            </div>
+            <select id="sourceSelect" class="source-select" onchange="filtrarYConstruirLista()">
+                <option value="all">📚 Todas las fuentes</option>
+            </select>
+        </div>
+
+        <div class="filters-grid">
+            <select id="disciplineSelect" class="filter-select" onchange="filtrarYConstruirLista()">
+                <option value="all">🩸 Todas las Disciplinas</option>
+            </select>
+            <select id="levelSelect" class="filter-select" onchange="filtrarYConstruirLista()">
+                <option value="all">⭐ Todos los Niveles</option>
+                <option value="1">Nivel 1</option>
+                <option value="2">Nivel 2</option>
+                <option value="3">Nivel 3</option>
+                <option value="4">Nivel 4</option>
+                <option value="5">Nivel 5</option>
+            </select>
+        </div>
+
+        <!-- LISTA DE SELECCIÓN RÁPIDA (CHECKBOXES) -->
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600;">Selecciona los poderes que quieres incluir en tu hoja de mesa:</p>
+        <div class="builder-container" id="builderListContainer"></div>
+
+        <div class="action-buttons-row">
+            <button class="btn-action btn-secondary" onclick="seleccionarVisibles(true)">Seleccionar Visibles</button>
+            <button class="btn-action btn-secondary" onclick="seleccionarVisibles(false)">Deseleccionar Visibles</button>
+            <button class="btn-action" onclick="window.print()">🖨️ Imprimir Selección Formato Mesa</button>
+        </div>
+    </div>
+
+    <div id="resultsCounter" class="results-counter"></div>
+    <div id="loading">Cargando disciplinas desde Google Sheets...</div>
+
+    <!-- CONTENEDOR DE TARJETAS DETALLADAS -->
+    <div id="disciplinesWrapper"></div>
+
+    <footer>
+        <div style="text-align: center; padding: 20px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--card-border); margin-top: 40px;">
+            Vampiro: La Mascarada 5ª Edición • Herramienta no oficial de ayuda de juego.
+        </div>
+    </footer>
+</div>
+
+<!-- BOTONES FLOTANTES -->
+<div class="floating-btn-container">
+    <a href="index.html" class="floating-action-btn" title="Volver al Inicio">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" style="vertical-align: middle;"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+    </a>
+    <button class="floating-action-btn" onclick="history.back()" title="Volver atrás">◁</button>
+    <button id="scrollTopBtn" class="scroll-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Subir">▲</button>
+</div>
+
+<script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQaQJuLj6_QRdKghfXWQFV5NThMJF-tXWJDIRJiwShVfbusDaCsQbHL-ZFHL-NaB4DF9MCllinL6RfA/pub?gid=0&single=true&output=csv';
+    
+    const ICONOS_MAP = {
+        'Animalismo': 'Animalism_symbol.png',
+        'Auspex': 'Auspex_symbol.png',
+        'Celeridad': 'Celerity_symbol.png',
+        'Dominación': 'Dominate_symbol.png',
+        'Fortaleza': 'Fortitude_symbol.png',
+        'Hechicería de Sangre': 'Blood_Sorcery_symbol.png',
+        'Ofuscación': 'Obfuscate_symbol.png',
+        'Olvido': 'Oblivion_symbol.png',
+        'Potencia': 'Potence_symbol.png',
+        'Presencia': 'Presence_symbol.png',
+        'Protean': 'Protean_symbol.png',
+        'Alquimia de Sangre Débil': 'Alchemy_symbol.png'
+    };
+
+    let datosGlobales = [];
+    let poderesSeleccionados = new Set(); // Almacena los nombres de los poderes marcados
+
+    window.addEventListener('DOMContentLoaded', () => {
+        Papa.parse(CSV_URL, {
+            download: true,
+            header: false,
+            skipEmptyLines: true,
+            complete: function(results) {
+                const filas = results.data;
+                datosGlobales = filas.slice(1).map(row => ({
+                    nombre: (row[0] || '').trim(),
+                    nombreIngles: (row[1] || '').trim(),
+                    disciplina: (row[2] || '').trim(),
+                    nivel: (row[3] || '').trim(),
+                    categoria: (row[4] || 'Poder Estándar').trim(),
+                    amalgama: (row[5] || '').trim(),
+                    prereq: (row[6] || '').trim(),
+                    coste: (row[7] || '').trim(),
+                    reservaDados: (row[8] || '').trim(),
+                    reservaOposicion: (row[9] || '').trim(),
+                    duracion: (row[10] || '').trim(),
+                    efectoRapido: (row[11] || '').trim(),
+                    descripcion: (row[12] || '').trim(),
+                    notas: (row[13] || '').trim(),
+                    fuenteLibro: (row[14] || '').trim(),
+                    fuentePag: (row[15] || '').trim()
+                })).filter(item => item.nombre && item.nombre.toLowerCase() !== 'nombre poder');
+
+                document.getElementById('loading').style.display = 'none';
+                poblarFiltrosSelects();
+                filtrarYConstruirLista();
+
+                // Por defecto seleccionamos todos al iniciar para que se vea completo, o puedes vaciarlo si prefieres empezar limpio
+                datosGlobales.forEach(p => poderesSeleccionados.add(p.nombre));
+                renderizarTarjetasMesa();
+            }
+        });
+
+        window.addEventListener('scroll', () => {
+            const btn = document.getElementById('scrollTopBtn');
+            btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+        });
+    });
+
+    function poblarFiltrosSelects() {
+        const discSelect = document.getElementById('disciplineSelect');
+        const sourceSelect = document.getElementById('sourceSelect');
+
+        const disciplinas = [...new Set(datosGlobales.map(i => i.disciplina).filter(Boolean))].sort();
+        disciplinas.forEach(disc => {
+            const opt = document.createElement('option');
+            opt.value = disc;
+            opt.textContent = disc;
+            discSelect.appendChild(opt);
+        });
+
+        const fuentes = [...new Set(datosGlobales.map(i => i.fuenteLibro).filter(Boolean))].sort();
+        fuentes.forEach(fuente => {
+            const opt = document.createElement('option');
+            opt.value = fuente;
+            opt.textContent = fuente;
+            sourceSelect.appendChild(opt);
+        });
+    }
+
+    function filtrarYConstruirLista() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const discFilter = document.getElementById('disciplineSelect').value;
+        const levelFilter = document.getElementById('levelSelect').value;
+        const sourceFilter = document.getElementById('sourceSelect').value;
+
+        const container = document.getElementById('builderListContainer');
+        container.innerHTML = '';
+
+        let visiblesCount = 0;
+
+        datosGlobales.forEach((item, index) => {
+            const matchesSearch = !query || item.nombre.toLowerCase().includes(query) || item.descripcion.toLowerCase().includes(query);
+            const matchesDisc = (discFilter === 'all' || item.disciplina === discFilter);
+            const matchesLevel = (levelFilter === 'all' || item.nivel === levelFilter);
+            const matchesSource = (sourceFilter === 'all' || item.fuenteLibro.toLowerCase().includes(sourceFilter.toLowerCase()));
+
+            if (matchesSearch && matchesDisc && matchesLevel && matchesSource) {
+                visiblesCount++;
+                const isChecked = poderesSeleccionados.has(item.nombre) ? 'checked' : '';
+                const uniqueId = `chk_${index}`;
+
+                const div = document.createElement('div');
+                div.className = 'builder-row-item';
+                div.innerHTML = `
+                    <label class="builder-item" for="${uniqueId}">
+                        <div style="display: flex; align-items: center;">
+                            <input type="checkbox" id="${uniqueId}" value="${item.nombre.replace(/"/g, '&quot;')}" ${isChecked} onchange="togglePoderSeleccionado(this.value, this.checked)">
+                            <span><strong>${item.nombre}</strong> <span style="font-size:0.8rem; color:var(--text-muted);">(${item.fuenteLibro})</span></span>
+                        </div>
+                        <span class="builder-badge">${item.disciplina} • Nivel ${item.nivel}</span>
+                    </label>
+                `;
+                container.appendChild(div);
+            }
+        });
+    }
+
+    function togglePoderSeleccionado(nombrePoder, isChecked) {
+        if (isChecked) {
+            poderesSeleccionados.add(nombrePoder);
+        } else {
+            poderesSeleccionados.delete(nombrePoder);
+        }
+        renderizarTarjetasMesa();
+    }
+
+    function seleccionarVisibles(seleccionar) {
+        const checkboxes = document.querySelectorAll('#builderListContainer input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+            cb.checked = seleccionar;
+            if (seleccionar) {
+                poderesSeleccionados.add(cb.value);
+            } else {
+                poderesSeleccionados.delete(cb.value);
+            }
+        });
+        renderizarTarjetasMesa();
+    }
+
+    function renderizarTarjetasMesa() {
+        const wrapper = document.getElementById('disciplinesWrapper');
+        wrapper.innerHTML = '';
+
+        const poderesActivos = datosGlobales.filter(item => poderesSeleccionados.has(item.nombre));
+
+        const agrupados = {};
+        poderesActivos.forEach(row => {
+            const disc = row.disciplina || 'Otras';
+            if (!agrupados[disc]) agrupados[disc] = [];
+            agrupados[disc].push(row);
+        });
+
+        let totalCards = 0;
+
+        Object.keys(agrupados).sort().forEach(disc => {
+            const sec = document.createElement('div');
+            sec.className = 'discipline-section';
+
+            const iconoArchivo = ICONOS_MAP[disc];
+            let imgHTML = iconoArchivo ? `<img src="./iconos/${iconoArchivo}" class="discipline-icon" onerror="this.style.display='none'">` : '';
+
+            sec.innerHTML = `
+                <h2 class="section-title">
+                    ${imgHTML}
+                    <span>${disc}</span>
+                </h2>
+                <div class="grid"></div>
+            `;
+
+            const grid = sec.querySelector('.grid');
+            agrupados[disc].sort((a, b) => (parseInt(a.nivel) || 0) - (parseInt(b.nivel) || 0));
+
+            agrupados[disc].forEach(item => {
+                totalCards++;
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                let metaPartes = [];
+                if (item.coste && item.coste !== '-') metaPartes.push(`Coste: ${item.coste}`);
+                if (item.amalgama && item.amalgama !== '-' && item.amalgama.toLowerCase() !== 'ninguna') metaPartes.push(`Amalgama: ${item.amalgama}`);
+                if (item.prereq && item.prereq !== '-' && item.prereq.toLowerCase() !== 'ninguno') metaPartes.push(`Req: ${item.prereq}`);
+                const metaText = metaPartes.join(' • ');
+
+                let rollHTML = '';
+                if (item.reservaDados && item.reservaDados !== '-' && item.reservaDados.toLowerCase() !== 'ninguna') {
+                    let textTirada = `🎲 <strong>Tirada:</strong> ${item.reservaDados}`;
+                    if (item.reservaOposicion && item.reservaOposicion !== '-' && item.reservaOposicion.toLowerCase() !== 'sin oposición') {
+                        textTirada += ` <em>vs</em> ${item.reservaOposicion}`;
+                    }
+                    rollHTML = `<div class="card-roll">${textTirada}</div>`;
+                }
+
+                let notesHTML = '';
+                let textoNotas = [];
+                if (item.efectoRapido && item.efectoRapido !== '-' && item.efectoRapido.toLowerCase() !== 'n/a') textoNotas.push(item.efectoRapido);
+                if (item.notas && item.notas !== '-' && item.notas.toLowerCase() !== 'ninguna') textoNotas.push(item.notas);
+                if (textoNotas.length > 0) {
+                    notesHTML = `<div class="card-notes">📌 ${textoNotas.join(' — ')}</div>`;
+                }
+
+                let badgeTipo = `<span class="badge">${item.categoria}</span>`;
+                if (item.categoria.toLowerCase().includes('ceremonia')) badgeTipo = `<span class="badge badge-ceremonia">${item.categoria}</span>`;
+                else if (item.categoria.toLowerCase().includes('ritual')) badgeTipo = `<span class="badge badge-ritual">${item.categoria}</span>`;
+
+                let badgeDuracion = (item.duracion && item.duracion !== '-') ? `<span class="badge badge-duration">⏳ ${item.duracion}</span>` : '';
+
+                let badgeFuenteHTML = '';
+                if (item.fuenteLibro) {
+                    const pagFmt = item.fuentePag ? `pág. ${item.fuentePag}` : '';
+                    badgeFuenteHTML = `
+                        <div class="card-page-badge">
+                            <span class="book-name">${item.fuenteLibro}</span>
+                            ${pagFmt ? `<span class="page-num">${pagFmt}</span>` : ''}
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="card-header">
+                            <div class="card-title">${item.nombre}</div>
+                            ${badgeFuenteHTML}
+                        </div>
+                        ${item.nombreIngles && item.nombreIngles !== '-' ? `<div style="font-size: 0.95rem; color: var(--text-muted); font-style: italic; margin-top: -6px; margin-bottom: 8px;">(${item.nombreIngles})</div>` : ''}
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;">
+                            ${item.nivel && item.nivel !== '-' ? `<div class="card-level-badge">Nivel ${item.nivel}</div>` : ''}
+                            ${metaText ? `<div class="card-meta" style="margin-bottom: 0;">${metaText}</div>` : ''}
+                        </div>
+                        ${rollHTML}
+                        <div class="card-desc">${item.descripcion}</div>
+                        ${notesHTML}
+                    </div>
+                    <div class="card-tags">
+                        ${badgeTipo}
+                        ${badgeDuracion}
+                        <span class="badge">${disc}</span>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            wrapper.appendChild(sec);
+        });
+
+        document.getElementById('resultsCounter').textContent = `Mostrando ${totalCards} poder(es) seleccionados para tu sesión o personaje`;
+    }
+</script>
+
+</body>
+</html>
