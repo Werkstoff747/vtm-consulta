@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compendio de Disciplinas V5 - Tarjetas de Mesa Inteligentes</title>
+    <title>Compendio de Disciplinas V5 - Tarjetas de Mesa</title>
 
     <!-- Google Tag Manager -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0REGNEJC1G"></script>
@@ -197,63 +197,25 @@
         .results-counter { font-size: 0.95rem; color: var(--accent-gold); margin-bottom: 20px; font-weight: 600; }
 
         /* =========================================================
-           MAQUETACIÓN DE PÁGINAS A4 INTELIGENTES (MÁX. 4 TARJETAS)
+           MAQUETACIÓN DE PÁGINAS A4 (2x2 FIJO = 4 TARJETAS POR HOJA)
            ========================================================= */
         .page-sheet {
             width: 210mm;
-            min-height: 297mm;
+            height: 297mm;
             padding: 12mm 15mm;
-            margin: 0 auto 30px auto;
+            margin: 0 auto 30mm auto;
             background: white;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 12px;
             box-sizing: border-box;
             page-break-after: always;
             break-after: page;
         }
 
         .page-sheet:last-child { margin-bottom: 0; }
-
-        /* BLOQUE DE DISCIPLINA DENTRO DE LA HOJA */
-        .discipline-block {
-            margin-bottom: 15px;
-        }
-        .discipline-block:last-child {
-            margin-bottom: 0;
-        }
-
-        /* CABECERA DE DISCIPLINA (Líneas eliminadas) */
-        .sheet-discipline-header {
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            font-size: 1.15rem;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--accent-red);
-            border: none;
-            padding-bottom: 4px;
-            margin-top: 10px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .sheet-discipline-header:first-child {
-            margin-top: 0;
-        }
-        .discipline-icon { width: 26px; height: 26px; object-fit: contain; }
-
-        /* REJILLAS AISLADAS POR BLOQUE DE DISCIPLINA */
-        .discipline-cards-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-        .discipline-cards-grid.count-1 {
-            grid-template-columns: 1fr;
-            max-width: 100mm;
-        }
 
         /* TARJETA INDIVIDUAL */
         .card {
@@ -267,6 +229,7 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            height: 100%;
         }
 
         .card::before {
@@ -278,7 +241,32 @@
         }
 
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; gap: 8px; }
+        
+        .card-title-area {
+            flex-grow: 1;
+        }
+
+        .card-discipline-badge {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .card-discipline-icon {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+        }
+
         .card-title { font-weight: 700; font-size: 1.15rem; font-variant: small-caps; color: var(--card-title-color); line-height: 1.1; }
+        
         .card-level-badge { display: inline-block; background-color: #5c101c; color: #ffffff; font-weight: 700; font-size: 0.78rem; padding: 2px 6px; border-radius: 4px; border: 1px solid #8b0000; margin-bottom: 4px; }
         
         .card-page-badge { font-size: 0.68rem; background-color: rgba(139, 0, 0, 0.08); color: var(--accent-red); padding: 3px 6px; border-radius: 4px; border: 1px solid rgba(139, 0, 0, 0.25); text-align: right; line-height: 1.2; flex-shrink: 0; }
@@ -363,14 +351,14 @@
         <div class="action-buttons-row">
             <button class="btn-action btn-secondary" onclick="seleccionarVisibles(true)">Seleccionar Visibles</button>
             <button class="btn-action btn-secondary" onclick="seleccionarVisibles(false)">Deseleccionar Visibles</button>
-            <button class="btn-action" onclick="window.print()">🖨️ Imprimir Folios A4 Inteligentes</button>
+            <button class="btn-action" onclick="window.print()">🖨️ Imprimir Folios A4 de Mesa</button>
         </div>
     </div>
 
     <div id="resultsCounter" class="results-counter"></div>
     <div id="loading">Cargando disciplinas desde Google Sheets...</div>
 
-    <!-- CONTENEDOR DE PÁGINAS A4 INTELIGENTES -->
+    <!-- CONTENEDOR DE PÁGINAS A4 -->
     <div id="cardsContainer"></div>
 
     <footer>
@@ -536,6 +524,10 @@
         const card = document.createElement('div');
         card.className = 'card';
 
+        const disc = item.disciplina || 'General';
+        const iconoArchivo = ICONOS_MAP[disc];
+        let discIconHTML = iconoArchivo ? `<img src="./iconos/${iconoArchivo}" class="card-discipline-icon" onerror="this.style.display='none'">` : '';
+
         let metaPartes = [];
         if (item.coste && item.coste !== '-') metaPartes.push(`Coste: ${item.coste}`);
         if (item.amalgama && item.amalgama !== '-' && item.amalgama.toLowerCase() !== 'ninguna') metaPartes.push(`Amalgama: ${item.amalgama}`);
@@ -579,7 +571,10 @@
         card.innerHTML = `
             <div>
                 <div class="card-header">
-                    <div class="card-title">${item.nombre}</div>
+                    <div class="card-title-area">
+                        <div class="card-discipline-badge">${discIconHTML} ${disc}</div>
+                        <div class="card-title">${item.nombre}</div>
+                    </div>
                     ${badgeFuenteHTML}
                 </div>
                 ${item.nombreIngles && item.nombreIngles !== '-' ? `<div style="font-size: 0.85rem; color: var(--text-muted); font-style: italic; margin-top: -4px; margin-bottom: 6px;">(${item.nombreIngles})</div>` : ''}
@@ -620,40 +615,25 @@
             const pageSheet = document.createElement('div');
             pageSheet.className = 'page-sheet';
 
-            const gruposPorDisciplina = {};
             chunk.forEach(item => {
-                const disc = item.disciplina || 'General';
-                if (!gruposPorDisciplina[disc]) gruposPorDisciplina[disc] = [];
-                gruposPorDisciplina[disc].push(item);
+                pageSheet.appendChild(crearElementoTarjeta(item));
             });
 
-            Object.keys(gruposPorDisciplina).forEach(disc => {
-                const discBlock = document.createElement('div');
-                discBlock.className = 'discipline-block';
-
-                const iconoArchivo = ICONOS_MAP[disc];
-                let imgHTML = iconoArchivo ? `<img src="./iconos/${iconoArchivo}" class="discipline-icon" onerror="this.style.display='none'">` : '';
-                
-                const headerDisc = document.createElement('div');
-                headerDisc.className = 'sheet-discipline-header';
-                headerDisc.innerHTML = `${imgHTML}<span>${disc}</span>`;
-                discBlock.appendChild(headerDisc);
-
-                const cardsGrid = document.createElement('div');
-                cardsGrid.className = `discipline-cards-grid count-${gruposPorDisciplina[disc].length}`;
-
-                gruposPorDisciplina[disc].forEach(item => {
-                    cardsGrid.appendChild(crearElementoTarjeta(item));
-                });
-
-                discBlock.appendChild(cardsGrid);
-                pageSheet.appendChild(discBlock);
-            });
+            // Rellenar huecos vacíos si hay menos de 4 cartas en la última página
+            const resto = chunkSize - chunk.length;
+            if (resto > 0) {
+                for (let r = 0; r < resto; r++) {
+                    const emptyCard = document.createElement('div');
+                    emptyCard.className = 'card';
+                    emptyCard.style.visibility = 'hidden';
+                    pageSheet.appendChild(emptyCard);
+                }
+            }
 
             container.appendChild(pageSheet);
         }
 
-        document.getElementById('resultsCounter').textContent = `Mostrando ${poderesActivos.length} poder(es) distribuidos inteligentemente en folios A4 (máx. 4 por página)`;
+        document.getElementById('resultsCounter').textContent = `Mostrando ${poderesActivos.length} poder(es) distribuidos en folios A4 (máx. 4 por página en rejilla perfecta 2x2)`;
     }
 </script>
 
